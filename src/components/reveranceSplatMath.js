@@ -147,3 +147,28 @@ export function getKeyboardFloorTarget(floors, currentFloor, key) {
 
   return currentIndex === -1 ? floorNumbers.at(-1) : Number(currentFloor);
 }
+
+export function getFloorTooltipPosition(
+  pointer,
+  bounds,
+  tooltip = { width: 122, height: 64 },
+) {
+  const gutter = 12;
+  const offset = 16;
+  const verticalOffset = 18;
+  const safeWidth = Math.max(tooltip.width + gutter * 2, Number(bounds?.width) || 0);
+  const safeHeight = Math.max(tooltip.height + gutter * 2, Number(bounds?.height) || 0);
+  const pointerX = clamp(Number(pointer?.x) || 0, 0, safeWidth);
+  const pointerY = clamp(Number(pointer?.y) || 0, 0, safeHeight);
+  const preferredX = pointerX + offset;
+  const flippedX = pointerX - tooltip.width - offset;
+  const x = preferredX + tooltip.width <= safeWidth - gutter
+    ? preferredX
+    : Math.max(gutter, flippedX);
+  const preferredY = pointerY - tooltip.height - verticalOffset;
+  const y = preferredY >= gutter
+    ? preferredY
+    : Math.min(safeHeight - tooltip.height - gutter, pointerY + verticalOffset);
+
+  return { x, y };
+}

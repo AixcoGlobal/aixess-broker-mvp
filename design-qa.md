@@ -5,12 +5,13 @@
 - Canonical settled source: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/frame-097.png` (1920 x 1080 px).
 - All-angle source-to-render evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/splat-reconstruction/evaluation/full-scene-fallback-glare-repaired/orbit-97-contact-sheet.jpg` and `official-source-vs-sog-contact-sheet.jpg`.
 - Browser-rendered implementation: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/implementation-final-desktop-front.png` (1121 x 752 px), `implementation-final-mobile-320.png` (320 x 700 px), and `implementation-final-mobile-floor-11.png` (320 x 700 px).
+- Artifact/hover repair evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/artifact-hover-fixed.png` and the side-by-side `artifact-hover-comparison.jpg`.
 - Combined full-view comparison: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/design-comparison-full-front.jpg` (2242 x 752 px).
 - Combined focused building comparison: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/design-comparison-building-crop.jpg` (1248 x 624 px).
 - Desktop viewport: 1121 x 752 CSS px at device scale factor 1. The official 1920 x 1080 source was normalized to 1121 x 631 px and vertically centered beside the same-width browser capture for the full comparison.
 - Focused normalization: the source's centered 1080 x 1080 crop was downsampled to 624 x 624 px and compared with the browser's 624 x 624 px WebGL stage crop.
 - Mobile viewport: 320 x 700 CSS px at device scale factor 1.
-- State: scroll animation settled at official frame-097 front elevation, no floor selected. Additional evidence covers frame-073 side entry, intermediate rotation, free orbit, rear elevation, zoom, pan, reset, direct 3D floor picking, keyboard floor selection, and the Floor 11 modal.
+- State: scroll animation settled at official frame-097 front elevation, no floor selected. Additional evidence covers frame-073 side entry, intermediate rotation, the calibrated horizontal orbit, rear elevation, bounded zoom, reset, direct 3D floor picking, keyboard floor selection, and the Floor 11 modal.
 
 **Full-view comparison evidence**
 
@@ -47,16 +48,18 @@
 - Iteration 4 - P2 accessibility: floor-rail Enter/Space selection was not explicit after custom arrow-key navigation. Fixed in `Reverance3D.jsx`; Enter now opens Floor 11 and focus returns after modal close. Post-fix evidence: `implementation-final-mobile-floor-11.png` and browser keyboard verification.
 - Iteration 5 - P2 loading performance: the 3D engine and 8.5 MB scene began loading during the first paint. Fixed by code-splitting `Reverance3D` and mounting it only as the explorer approaches the viewport. Post-fix evidence: initial page load has zero WebGL canvases; navigating to Residences mounts the canvas and reaches the ready state.
 - Iteration 6 - P2 color fidelity: the technical-stage vignette noticeably darkened the official façade and vegetation. Fixed by reducing the model overlay to a subtle lower-edge gradient. Post-fix evidence: the revised full-view and equal-size focused comparison files listed above.
+- Iteration 7 - P1 orbit artifacts: the previous 5.4-unit zoom-out exposed unsupported near-camera splats as detached leaves, car fragments, sky streaks, and a gray foreground smear. Fixed without changing the 8.5 MB building asset by capping the validated radius at 4.2, disabling unbounded pan, and increasing the near clip to 0.5. Stress testing at the new maximum radius remains clean. Post-fix evidence: `artifact-hover-comparison.jpg`.
+- Iteration 8 - P1 floor feedback: canvas hover previously changed only a tiny rail row and could be cleared by bubbled pointer movement. Fixed with a texture-preserving GSplat shader that tints only the actual Gaussians inside the complete calibrated floor volume, a pointer-adjacent floor/availability label, a stronger synchronized rail state, touch-safe behavior, and stale-state cleanup. Direct canvas hover, rail hover, reset/instruction transitions, and modal selection were verified in-browser.
 
 **Primary interactions and technical checks**
 
 - Scroll-driven side-to-front rotation with reduced-motion handling.
-- Post-settle orbit, pan, zoom, and deterministic reset.
+- Post-settle horizontal orbit, artifact-safe bounded zoom, and deterministic reset.
 - Direct ray-based floor selection from front and rear views, plus 15 accessible floor controls and arrow/Home/End/Enter/Space keyboard behavior.
 - Floor-plan modal, previous/next floor controls, live availability refresh, verified local snapshot fallback, filtering, residence details, close/Escape, and focus trapping/restoration.
 - Loading, empty/filter, network fallback, image fallback, WebGL failure fallback, and reduced-motion states retained.
 - Desktop and 320 px mobile browser checks completed with no horizontal overflow and no runtime console errors.
-- Automated checks: 22 unit/integration tests pass; 4 Sites worker/package tests pass; production build passes; production dependency audit reports 0 vulnerabilities.
+- Automated checks: 24 unit/integration tests pass; 4 Sites worker/package tests pass; production build passes; production dependency audit reports 0 vulnerabilities.
 
 **Implementation checklist**
 

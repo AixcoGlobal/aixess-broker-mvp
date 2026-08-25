@@ -21,6 +21,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - Include both official landscape systems: the layered tropical entrance garden and the raised inner-side shared courtyard/podium with hedge, real trees, pavilion, and X-trellis. Visually inspect matched front, side, rear, roof, and browser views during every reconstruction pass.
 - The third full landing-page section is a production-quality Residence Explorer: the Project Reverance building is clickable by floor, and selecting a floor opens an AiXESS-branded modal with the floor plan, apartment availability, and unit details.
 - Treat the Residence Explorer as a core product flow, not a visual demo. Preserve live-data refresh with a local snapshot fallback, keyboard access, responsive behavior, loading/empty/error states, and comprehensive automated and browser testing.
+- Preserve the accepted production SOG building exactly. Keep free interaction inside the calibrated artifact-free orbit, and make hover unmistakable by tinting the actual splats across the complete floor while synchronizing the floor rail and availability label.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   createFloorVolumes,
   getCameraPathPose,
+  getFloorTooltipPosition,
   getKeyboardFloorTarget,
   getSplatPose,
 } from "./reveranceSplatMath";
@@ -68,5 +69,21 @@ describe("Reverance splat floor interaction volumes", () => {
     expect(getKeyboardFloorTarget(floors, 8, "End")).toBe(2);
     expect(getKeyboardFloorTarget(floors, 16, "ArrowUp")).toBe(16);
     expect(getKeyboardFloorTarget(floors, 2, "ArrowDown")).toBe(2);
+  });
+});
+
+describe("Reverance floor hover label", () => {
+  it("keeps the label beside the pointer in open canvas space", () => {
+    expect(getFloorTooltipPosition(
+      { x: 220, y: 180 },
+      { width: 590, height: 590 },
+    )).toEqual({ x: 236, y: 98 });
+  });
+
+  it("flips and clamps the label at the canvas edges", () => {
+    expect(getFloorTooltipPosition(
+      { x: 582, y: 10 },
+      { width: 590, height: 590 },
+    )).toEqual({ x: 444, y: 28 });
   });
 });

@@ -375,8 +375,9 @@
 .model-floor-rail button:hover,
 .model-floor-rail button:focus-visible,
 .model-floor-rail button.is-active {
-  background: rgba(241, 101, 16, 0.13);
+  background: rgba(241, 101, 16, 0.28);
   color: #fff;
+  box-shadow: inset 2px 0 0 var(--orange), 0 0 0.8rem rgba(241, 101, 16, 0.18);
 }
 
 .model-floor-rail button span {
@@ -391,6 +392,11 @@
   height: 1px;
   background: var(--orange);
   box-shadow: 0 0 0.4rem rgba(241, 101, 16, 0.4);
+}
+
+.model-floor-rail button.is-active i {
+  height: 2px;
+  box-shadow: 0 0 0.65rem rgba(241, 101, 16, 0.85);
 }
 
 .building-model-instruction {
@@ -453,17 +459,26 @@
 }
 
 .model-floor-tooltip {
+  position: absolute;
+  z-index: 10;
   display: grid;
   min-width: 7.2rem;
   grid-template-columns: auto 1fr;
   align-items: end;
   gap: 0 0.45rem;
   padding: 0.62rem 0.7rem;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-left: 3px solid var(--orange);
   background: rgba(14, 14, 13, 0.9);
-  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.34);
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.34), 0 0 1.1rem rgba(241, 101, 16, 0.18);
   color: white;
   pointer-events: none;
+  animation: floor-tooltip-in 120ms ease-out both;
+}
+
+@keyframes floor-tooltip-in {
+  from { opacity: 0; transform: translateY(0.25rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .model-floor-tooltip strong {
@@ -485,6 +500,18 @@
 
 .model-floor-tooltip small {
   color: rgba(255, 255, 255, 0.58);
+}
+
+.model-floor-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .model-static-fallback,
@@ -1139,6 +1166,7 @@
   .model-floor-rail,
   .model-reset-view,
   .unit-hotspot polygon { transition: none; }
+  .model-floor-tooltip { animation: none; }
   .model-loading span,
   .explorer-loading span { animation: none; }
 }

@@ -1,7 +1,7 @@
 import { Component, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Application, Entity } from "@playcanvas/react";
 import { Camera, GSplat, Script } from "@playcanvas/react/components";
-import { useAppEvent, useSplat } from "@playcanvas/react/hooks";
+import { useApp, useAppEvent, useSplat } from "@playcanvas/react/hooks";
 import { CameraControls } from "playcanvas/scripts/esm/camera-controls.mjs";
 import {
   DEVICETYPE_WEBGL2,
@@ -16,7 +16,11 @@ import {
   Vec3,
 } from "playcanvas";
 import { getFloorSummary } from "../data/reveranceApi";
-import { getCameraPathPose, getKeyboardFloorTarget } from "./reveranceSplatMath";
+import {
+  getCameraPathPose,
+  getFloorTooltipPosition,
+  getKeyboardFloorTarget,
+} from "./reveranceSplatMath";
 
 const SPLAT_URL = "/assets/reverance-3d/reverance-official-97.sog?v=acb1246f";
 const CAMERA_FOV = 41.09622780396063;
@@ -27,7 +31,7 @@ const CAMERA_UP = [-0.000569128058664063, 0.9999881472011365, -0.004835447289666
 const CAMERA_FOCUS = new Vec3(...CAMERA_TARGET);
 const CAMERA_PITCH_RANGE = new Vec2(-0.08, 0.08);
 const CAMERA_YAW_RANGE = new Vec2(-360, 360);
-const CAMERA_ZOOM_RANGE = new Vec2(2.72, 5.4);
+const CAMERA_ZOOM_RANGE = new Vec2(3.35, 4.2);
 const CANVAS_STYLE = { width: "100%", height: "100%" };
 const GRAPHICS_OPTIONS = {
   alpha: false,
@@ -65,6 +69,40 @@ const FLOOR_PICK_BOXES = FLOOR_VOLUMES.map((volume) => {
     box: new OrientedBox(transform, new Vec3(...FLOOR_SCALE).mulScalar(0.5)),
   };
 });
+const FLOOR_HIGHLIGHT_HALF_SIZE = new Float32Array(FLOOR_SCALE.map((value) => value * 0.5));
+const FLOOR_HIGHLIGHT_GLSL = `
+uniform mat4 uFloorWorldToLocal;
+uniform vec3 uFloorHalfSize;
+uniform float uFloorHighlightEnabled;
+
+void modifySplatCenter(inout vec3 center) {}
+void modifySplatRotationScale(vec3 originalCenter, vec3 modifiedCenter, inout vec4 rotation, inout vec3 scale) {}
+void modifySplatColor(vec3 center, inout vec4 color) {
+  vec3 localCenter = abs((uFloorWorldToLocal * vec4(center, 1.0)).xyz);
+  bool insideFloor = localCenter.x <= uFloorHalfSize.x
+    && localCenter.y <= uFloorHalfSize.y
+    && localCenter.z <= uFloorHalfSize.z;
+  if (uFloorHighlightEnabled > 0.5 && insideFloor) {
+    color.rgb = mix(color.rgb, vec3(1.0, 0.36, 0.04), 0.58);
+  }
+}
+`;
+const FLOOR_HIGHLIGHT_WGSL = `
+uniform uFloorWorldToLocal: mat4x4f;
+uniform uFloorHalfSize: vec3f;
+uniform uFloorHighlightEnabled: f32;
+
+fn modifySplatCenter(center: ptr<function, vec3f>) {}
+fn modifySplatRotationScale(originalCenter: vec3f, modifiedCenter: vec3f, rotation: ptr<function, vec4f>, scale: ptr<function, vec3f>) {}
+fn modifySplatColor(center: vec3f, color: ptr<function, vec4f>) {
+  let localCenter = abs((uniform.uFloorWorldToLocal * vec4f(center, 1.0)).xyz);
+  let insideFloor = all(localCenter <= uniform.uFloorHalfSize);
+  if (uniform.uFloorHighlightEnabled > 0.5 && insideFloor) {
+    let rgb = mix((*color).rgb, vec3f(1.0, 0.36, 0.04), 0.58);
+    *color = vec4f(rgb, (*color).a);
+  }
+}
+`;
 
 function floorName(number) {
   return `Floor ${String(number).padStart(2, "0")}`;
@@ -134,13 +172,13 @@ function CameraRig({ onCameraReady, progressRef, reducedMotion, settled }) {
 
   return (
     <Entity ref={entityRef} name="Official Reverance orbit camera" position={initialPose.position}>
-      <Camera clearColor="#9aabb7" fov={CAMERA_FOV} nearClip={0.01} farClip={500} />
+      <Camera clearColor="#9aabb7" fov={CAMERA_FOV} nearClip={0.5} farClip={500} />
       {settled && (
         <Script
           script={CameraControls}
           enableOrbit
           enableFly={false}
-          enablePan
+          enablePan={false}
           focusPoint={CAMERA_FOCUS}
           pitchRange={CAMERA_PITCH_RANGE}
           yawRange={CAMERA_YAW_RANGE}
@@ -180,7 +218,72 @@ function SplatAsset({ onStateChange }) {
   return <GSplat asset={asset} castShadows={false} unified />;
 }
 
-function SplatScene({ onCameraReady, onStateChange, progressRef, reducedMotion, settled }) {
+function FloorHighlight({ floorNumber }) {
+  const app = useApp();
+
+  useEffect(() => {
+    const material = app.scene.gsplat.material;
+    const glslChunks = material.getShaderChunks("glsl");
+    const wgslChunks = material.getShaderChunks("wgsl");
+    const previousGlsl = glslChunks.get("gsplatModifyVS");
+    const previousWgsl = wgslChunks.get("gsplatModifyVS");
+    const parameterNames = [
+      "uFloorWorldToLocal",
+      "uFloorHalfSize",
+      "uFloorHighlightEnabled",
+    ];
+    const previousParameters = parameterNames.map((name) => ({
+      name,
+      present: Boolean(material.getParameter(name)),
+      data: material.getParameter(name)?.data,
+    }));
+
+    glslChunks.set("gsplatModifyVS", FLOOR_HIGHLIGHT_GLSL);
+    wgslChunks.set("gsplatModifyVS", FLOOR_HIGHLIGHT_WGSL);
+    material.update();
+
+    return () => {
+      if (previousGlsl === undefined) glslChunks.delete("gsplatModifyVS");
+      else glslChunks.set("gsplatModifyVS", previousGlsl);
+      if (previousWgsl === undefined) wgslChunks.delete("gsplatModifyVS");
+      else wgslChunks.set("gsplatModifyVS", previousWgsl);
+      previousParameters.forEach(({ name, present, data }) => {
+        if (present) material.setParameter(name, data);
+        else material.deleteParameter(name);
+      });
+      material.update();
+    };
+  }, [app]);
+
+  useEffect(() => {
+    const material = app.scene.gsplat.material;
+    const volume = FLOOR_VOLUMES.find((candidate) => candidate.number === floorNumber);
+    const transform = new Mat4();
+    if (volume) {
+      transform.setTRS(
+        new Vec3(...volume.position),
+        new Quat().setFromEulerAngles(...FLOOR_ROTATION),
+        Vec3.ONE,
+      ).invert();
+    }
+
+    material.setParameter("uFloorWorldToLocal", transform.data);
+    material.setParameter("uFloorHalfSize", FLOOR_HIGHLIGHT_HALF_SIZE);
+    material.setParameter("uFloorHighlightEnabled", volume ? 1 : 0);
+    material.update();
+  }, [app, floorNumber]);
+
+  return null;
+}
+
+function SplatScene({
+  hoveredFloor,
+  onCameraReady,
+  onStateChange,
+  progressRef,
+  reducedMotion,
+  settled,
+}) {
   return (
     <>
       <CameraRig
@@ -192,6 +295,7 @@ function SplatScene({ onCameraReady, onStateChange, progressRef, reducedMotion, 
       <Entity name="Official Project Reverance reconstruction" rotation={[0, 0, 180]}>
         <SplatAsset onStateChange={onStateChange} />
       </Entity>
+      {settled && <FloorHighlight floorNumber={hoveredFloor} />}
     </>
   );
 }
@@ -246,9 +350,12 @@ function StaticFallback({ snapshot, onSelectFloor }) {
 
 export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
   const [hoveredFloor, setHoveredFloor] = useState(null);
+  const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
   const cameraEntityRef = useRef(null);
   const pointerStartRef = useRef(null);
+  const draggedRef = useRef(false);
+  const suppressClickRef = useRef(false);
   const railRef = useRef(null);
   const reducedMotion = useReducedMotion();
   const canRenderSplat = typeof window !== "undefined"
@@ -257,6 +364,17 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
     () => [...snapshot.floors].sort((a, b) => b.number - a.number),
     [snapshot.floors],
   );
+  const hoveredFloorData = useMemo(
+    () => snapshot.floors.find((floor) => floor.number === hoveredFloor) || null,
+    [hoveredFloor, snapshot.floors],
+  );
+  const hoveredFloorSummary = hoveredFloorData ? getFloorSummary(hoveredFloorData) : null;
+
+  useEffect(() => {
+    if (settled) return;
+    setHoveredFloor(null);
+    setHoverPoint(null);
+  }, [settled]);
 
   const reportState = useCallback((nextState) => setLoadState(nextState), []);
   const handleCameraReady = useCallback((entity) => {
@@ -313,20 +431,65 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
 
   const handleModelPointerMove = useCallback((event) => {
     if (!settled) return;
-    setHoveredFloor(pickFloor(event));
+    const pointerStart = pointerStartRef.current;
+    if (pointerStart && (event.buttons > 0 || event.pointerType === "touch")) {
+      if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 6) {
+        draggedRef.current = true;
+      }
+      setHoveredFloor(null);
+      setHoverPoint(null);
+      return;
+    }
+    if (event.pointerType === "touch") {
+      setHoveredFloor(null);
+      setHoverPoint(null);
+      return;
+    }
+    if (draggedRef.current) return;
+    if (!event.target.closest?.("canvas")) {
+      if (!event.target.closest?.(".model-floor-rail button")) {
+        setHoveredFloor(null);
+        setHoverPoint(null);
+      }
+      return;
+    }
+    const floor = pickFloor(event);
+    setHoveredFloor(floor);
+    if (floor === null) {
+      setHoverPoint(null);
+      return;
+    }
+    const rect = event.currentTarget.getBoundingClientRect();
+    setHoverPoint(getFloorTooltipPosition(
+      { x: event.clientX - rect.left, y: event.clientY - rect.top },
+      { width: rect.width, height: rect.height },
+    ));
   }, [pickFloor, settled]);
 
   const handleModelClick = useCallback((event) => {
     if (!settled) return;
-    const start = pointerStartRef.current;
-    if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 6) return;
+    const dragged = draggedRef.current || suppressClickRef.current;
+    pointerStartRef.current = null;
+    draggedRef.current = false;
+    suppressClickRef.current = false;
+    if (!event.target.closest?.("canvas")) {
+      return;
+    }
+    if (dragged) return;
     const floor = pickFloor(event);
-    if (floor !== null) onSelectFloor(floor);
+    if (floor !== null) {
+      setHoverPoint(null);
+      onSelectFloor(floor);
+    }
   }, [onSelectFloor, pickFloor, settled]);
 
   const handleResetView = useCallback((event) => {
     event.stopPropagation();
+    pointerStartRef.current = null;
+    draggedRef.current = false;
+    suppressClickRef.current = false;
     setHoveredFloor(null);
+    setHoverPoint(null);
     const cameraEntity = cameraEntityRef.current;
     const controls = cameraEntity?.script?.cameraControls;
     if (controls?.reset) {
@@ -346,10 +509,30 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
       data-hovered-floor={hoveredFloor ?? undefined}
       aria-busy={loadState.status === "loading"}
       onPointerDown={(event) => {
-        if (event.target.closest?.("canvas")) pointerStartRef.current = { x: event.clientX, y: event.clientY };
+        if (event.target.closest?.("canvas")) {
+          pointerStartRef.current = { x: event.clientX, y: event.clientY };
+          draggedRef.current = false;
+          suppressClickRef.current = false;
+        }
       }}
       onPointerMove={handleModelPointerMove}
-      onPointerLeave={() => setHoveredFloor(null)}
+      onPointerUp={() => {
+        suppressClickRef.current = draggedRef.current;
+        pointerStartRef.current = null;
+        draggedRef.current = false;
+      }}
+      onPointerCancel={() => {
+        pointerStartRef.current = null;
+        draggedRef.current = false;
+        suppressClickRef.current = false;
+      }}
+      onPointerLeave={() => {
+        pointerStartRef.current = null;
+        draggedRef.current = false;
+        suppressClickRef.current = false;
+        setHoveredFloor(null);
+        setHoverPoint(null);
+      }}
       onClick={handleModelClick}
     >
       {canRenderSplat ? (
@@ -364,6 +547,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
             maxDeltaTime={0.05}
           >
             <SplatScene
+              hoveredFloor={hoveredFloor}
               onCameraReady={handleCameraReady}
               onStateChange={reportState}
               progressRef={progressRef}
@@ -402,9 +586,15 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
                   className={hoveredFloor === floor.number ? "is-active" : ""}
                   tabIndex={settled ? 0 : -1}
                   aria-label={`${floorName(floor.number)}, ${summary.available} available residences`}
-                  onMouseEnter={() => setHoveredFloor(floor.number)}
+                  onMouseEnter={() => {
+                    setHoveredFloor(floor.number);
+                    setHoverPoint(null);
+                  }}
                   onMouseLeave={() => setHoveredFloor(null)}
-                  onFocus={() => setHoveredFloor(floor.number)}
+                  onFocus={() => {
+                    setHoveredFloor(floor.number);
+                    setHoverPoint(null);
+                  }}
                   onBlur={() => setHoveredFloor(null)}
                   onKeyDown={(event) => handleFloorKeyDown(event, floor.number)}
                   onClick={() => onSelectFloor(floor.number)}
@@ -415,6 +605,22 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
               );
             })}
           </div>
+          {settled && hoveredFloorSummary && hoverPoint && (
+            <div
+              className="model-floor-tooltip"
+              style={{ left: hoverPoint.x, top: hoverPoint.y }}
+              aria-hidden="true"
+            >
+              <strong>{String(hoveredFloor).padStart(2, "0")}</strong>
+              <span>FLOOR</span>
+              <small>{hoveredFloorSummary.available} AVAILABLE</small>
+            </div>
+          )}
+          <span className="model-floor-status" role="status" aria-live="polite" aria-atomic="true">
+            {hoveredFloorSummary
+              ? `${floorName(hoveredFloor)} highlighted, ${hoveredFloorSummary.available} available ${hoveredFloorSummary.available === 1 ? "residence" : "residences"}.`
+              : ""}
+          </span>
         </>
       )}
 
@@ -423,7 +629,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
         <strong>
           {settled ? (
             <>
-              <span className="model-instruction-desktop">DRAG TO ROTATE · SHIFT+DRAG TO PAN · WHEEL TO ZOOM · SELECT A FLOOR</span>
+              <span className="model-instruction-desktop">DRAG TO ROTATE · WHEEL TO ZOOM · SELECT A FLOOR</span>
               <span className="model-instruction-mobile">DRAG TO ROTATE · PINCH TO ZOOM · TAP A FLOOR</span>
             </>
           ) : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}
