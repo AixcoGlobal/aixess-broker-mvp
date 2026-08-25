@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.git/
+.vercel/
+.playwright-mcp/
+references/
+qa/
+__pycache__/
+*.py[cod]
+.env*
+*.local
+
+# Local visual-QA captures
+implementation-*.png
+comparison-*.png
+explorer-*.png
+local-*.png
+otium-*.png
+reference-*.png
+vercel-*.png
+qa-*.png
+*-snapshot.md
+*-images.json
