@@ -1,0 +1,71 @@
+**Comparison target**
+
+- Landing-page visual truth: `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-4b026ff3-ef29-4b10-85de-ca848e2f1139.png` (approved black, silver, and orange AiXESS direction).
+- Residence Explorer visual truth: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/frame-001.png` through `frame-100.png`, captured from Otium's official Project Reverance orbit at `https://otium.ge/ka/project/7`.
+- Canonical settled source: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/frame-097.png` (1920 x 1080 px).
+- All-angle source-to-render evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/splat-reconstruction/evaluation/full-scene-fallback-glare-repaired/orbit-97-contact-sheet.jpg` and `official-source-vs-sog-contact-sheet.jpg`.
+- Browser-rendered implementation: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/implementation-final-desktop-front.png` (1121 x 752 px), `implementation-final-mobile-320.png` (320 x 700 px), and `implementation-final-mobile-floor-11.png` (320 x 700 px).
+- Combined full-view comparison: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/design-comparison-full-front.jpg` (2242 x 752 px).
+- Combined focused building comparison: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/design-comparison-building-crop.jpg` (1248 x 624 px).
+- Desktop viewport: 1121 x 752 CSS px at device scale factor 1. The official 1920 x 1080 source was normalized to 1121 x 631 px and vertically centered beside the same-width browser capture for the full comparison.
+- Focused normalization: the source's centered 1080 x 1080 crop was downsampled to 624 x 624 px and compared with the browser's 624 x 624 px WebGL stage crop.
+- Mobile viewport: 320 x 700 CSS px at device scale factor 1.
+- State: scroll animation settled at official frame-097 front elevation, no floor selected. Additional evidence covers frame-073 side entry, intermediate rotation, free orbit, rear elevation, zoom, pan, reset, direct 3D floor picking, keyboard floor selection, and the Floor 11 modal.
+
+**Full-view comparison evidence**
+
+- The implementation preserves the approved AiXESS language: Gilroy typography, square geometry, black field, brushed-silver section, restrained orange accents, and dense uppercase broker UI.
+- The Residence Explorer is a real continuously rendered WebGL scene reconstructed from the official orbit. The frame-073 side camera and frame-097 settled camera use Otium's calibrated positions and field of view, so the scroll transition follows the source orbit rather than approximating it with raster cross-fades.
+- The official roof portal, both 16-storey towers, glazed and planted balcony grid, pale rear elevations, central garden, real trees, road, surrounding landscape, and skyline remain continuous through all 97 supported angles.
+- At 320 x 700, the copy, metrics, model, reset action, horizontal floor rail, and interaction instructions remain visible and usable with zero page-level horizontal overflow.
+
+**Focused region comparison evidence**
+
+- `design-comparison-building-crop.jpg` verifies the front façade, crown spacing, tower depth, balcony rhythm, base, and landscape against the same official front state at equal 624 px square presentation size.
+- `official-source-vs-sog-contact-sheet.jpg` verifies six canonical source/render pairs, while `orbit-97-contact-sheet.jpg` verifies continuity and absence of crop explosions, floating façade planes, pasted-on trees, roof substitutions, or missing garden/context around the entire supported orbit.
+- A separate 1600 x 900 retrain was visually and quantitatively evaluated. Although it appeared slightly sharper, it was 19.49% larger and less faithful on every canonical A-tower mask (mean PSNR delta -3.140 dB), so the closer 8,496,041-byte baseline was retained.
+
+**Required fidelity surfaces**
+
+- Fonts and typography: Gilroy assets load locally; display, body, metrics, floor labels, and modal copy retain the approved weight, line-height, wrapping, and uppercase hierarchy across desktop and mobile.
+- Spacing and layout rhythm: the two-column desktop composition, square model stage, bottom motion caption, and compact mobile stack remain aligned without clipping or stretched proportions.
+- Colors and visual tokens: black, warm silver, white, and AiXESS orange remain mapped to the approved design. The final model overlay was reduced so Otium's original sky, façade, vegetation, and warm lighting are not artificially darkened.
+- Image quality and asset fidelity: the supplied AiXESS logo and official Otium imagery are used directly. The building is not CSS art, a custom SVG, a hand-modeled approximation, or a raster turntable.
+- Copy and content: broker-facing copy is concise and coherent; project name, A Block, Batumi, floors 02-16, availability metrics, and completion information are consistent throughout the journey.
+
+**Findings**
+
+- No actionable P0, P1, or P2 issues remain.
+- P3 / source constraint: Otium exposes a raster orbit rather than owner CAD/BIM or a native mesh. Gaussian reconstruction introduces minor fine-detail softness at very close zoom, but preserves the official appearance and provides true parallax and continuous WebGL rotation within the validated level camera ring.
+- P3 / dependency lifecycle: PlayCanvas emits one upstream deprecation warning for the explicit unified splat renderer flag. The flag is required by the current React adapter for correct SOG rendering; there are no runtime errors and no visible or functional impact.
+
+**Comparison history**
+
+- Iteration 1 - P1 image/geometry fidelity: the earlier manual GLB differed in roof profile, façade materials, vegetation, garden treatment, and rear geometry. Fixed by replacing it with a full-scene Gaussian reconstruction trained from the official Otium orbit. Post-fix evidence: the six-view and 97-view source/render contact sheets.
+- Iteration 2 - P2 orbit stability: early reconstruction attempts produced seam/crop artifacts and unstable glare outside selected views. Fixed through full-scene training, deterministic removal of the isolated glare cluster, and validation of every official orbit frame. Post-fix evidence: `orbit-97-contact-sheet.jpg` and the five all-angle chunk sheets in the same evaluation directory.
+- Iteration 3 - P2 responsive controls: the vertical floor rail collapsed at 320 px and competed with the reset action. Fixed by switching to a horizontally scrollable mobile rail, compact badge copy, and mobile-specific interaction guidance. Post-fix evidence: `implementation-final-mobile-320.png` with `scrollWidth` equal to the 320 px viewport.
+- Iteration 4 - P2 accessibility: floor-rail Enter/Space selection was not explicit after custom arrow-key navigation. Fixed in `Reverance3D.jsx`; Enter now opens Floor 11 and focus returns after modal close. Post-fix evidence: `implementation-final-mobile-floor-11.png` and browser keyboard verification.
+- Iteration 5 - P2 loading performance: the 3D engine and 8.5 MB scene began loading during the first paint. Fixed by code-splitting `Reverance3D` and mounting it only as the explorer approaches the viewport. Post-fix evidence: initial page load has zero WebGL canvases; navigating to Residences mounts the canvas and reaches the ready state.
+- Iteration 6 - P2 color fidelity: the technical-stage vignette noticeably darkened the official façade and vegetation. Fixed by reducing the model overlay to a subtle lower-edge gradient. Post-fix evidence: the revised full-view and equal-size focused comparison files listed above.
+
+**Primary interactions and technical checks**
+
+- Scroll-driven side-to-front rotation with reduced-motion handling.
+- Post-settle orbit, pan, zoom, and deterministic reset.
+- Direct ray-based floor selection from front and rear views, plus 15 accessible floor controls and arrow/Home/End/Enter/Space keyboard behavior.
+- Floor-plan modal, previous/next floor controls, live availability refresh, verified local snapshot fallback, filtering, residence details, close/Escape, and focus trapping/restoration.
+- Loading, empty/filter, network fallback, image fallback, WebGL failure fallback, and reduced-motion states retained.
+- Desktop and 320 px mobile browser checks completed with no horizontal overflow and no runtime console errors.
+- Automated checks: 22 unit/integration tests pass; 4 Sites worker/package tests pass; production build passes; production dependency audit reports 0 vulnerabilities.
+
+**Implementation checklist**
+
+- [x] Official Otium building and landscape reconstructed as continuous WebGL.
+- [x] Exact supported camera ring and scroll choreography applied.
+- [x] Direct floor picking and broker inventory modal verified.
+- [x] Desktop and 320 px responsive states visually inspected.
+- [x] Keyboard, focus, reduced motion, loading, error, and fallback states verified.
+- [x] Heavy WebGL/SOG payload deferred until the explorer approaches the viewport.
+- [x] Tests, production build, Sites packaging, and dependency audit pass.
+
+final result: passed
