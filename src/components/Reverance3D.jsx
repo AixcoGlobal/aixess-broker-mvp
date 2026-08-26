@@ -1,4 +1,12 @@
-import { Component, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Component,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Application, Entity } from "@playcanvas/react";
 import { Camera, GSplat, Render, Script } from "@playcanvas/react/components";
 import { useApp, useAppEvent, useSplat, useTexture } from "@playcanvas/react/hooks";
@@ -11,10 +19,11 @@ import {
   CULLFACE_FRONT,
   FILLMODE_NONE,
   FILTER_LINEAR,
+  GSPLATDATA_LARGE,
   Mat4,
   OrientedBox,
   Ray,
-  RESOLUTION_AUTO,
+  RESOLUTION_FIXED,
   StandardMaterial,
   TYPE_FLOAT32,
   Vec2,
@@ -50,6 +59,8 @@ const CAMERA_PITCH_RANGE = new Vec2(-0.08, 0.08);
 const CAMERA_YAW_RANGE = new Vec2(-360, 360);
 const CAMERA_ZOOM_RANGE = new Vec2(3.7123, 3.7165);
 const DISTANT_ENVIRONMENT_RADIUS = 20;
+const RENDER_SCALE = 2;
+const RENDER_MAX_DIMENSION = 1440;
 const CANVAS_STYLE = { width: "100%", height: "100%" };
 const GRAPHICS_OPTIONS = {
   alpha: false,
@@ -58,7 +69,7 @@ const GRAPHICS_OPTIONS = {
   stencil: false,
   powerPreference: "high-performance",
   preserveDrawingBuffer: false,
-  desynchronized: true,
+  desynchronized: false,
 };
 const FLOOR_PICK_BOXES = REVERANCE_FLOOR_VOLUMES.map((volume) => {
   const transform = getFloorWorldTransform(volume);
@@ -198,13 +209,65 @@ function useReducedMotion() {
   return reducedMotion;
 }
 
+function RenderQuality() {
+  const app = useApp();
+
+  useLayoutEffect(() => {
+    const canvas = app.graphicsDevice.canvas;
+    const gsplat = app.scene.gsplat;
+    const previous = {
+      antiAlias: gsplat.antiAlias,
+      dataFormat: gsplat.dataFormat,
+      minPixelSize: gsplat.minPixelSize,
+      radialSorting: gsplat.radialSorting,
+    };
+    let resizeFrame = 0;
+
+    const resize = () => {
+      resizeFrame = 0;
+      const bounds = canvas.getBoundingClientRect();
+      if (bounds.width <= 0 || bounds.height <= 0) return;
+      const scale = Math.min(
+        RENDER_SCALE,
+        RENDER_MAX_DIMENSION / Math.max(bounds.width, bounds.height),
+      );
+      app.setCanvasResolution(
+        RESOLUTION_FIXED,
+        Math.round(bounds.width * scale),
+        Math.round(bounds.height * scale),
+      );
+    };
+    const scheduleResize = () => {
+      if (!resizeFrame) resizeFrame = window.requestAnimationFrame(resize);
+    };
+    const resizeObserver = new ResizeObserver(scheduleResize);
+
+    gsplat.radialSorting = true;
+    gsplat.antiAlias = true;
+    gsplat.minPixelSize = 0.75;
+    gsplat.dataFormat = GSPLATDATA_LARGE;
+    resizeObserver.observe(canvas);
+    resize();
+
+    return () => {
+      if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+      resizeObserver.disconnect();
+      gsplat.radialSorting = previous.radialSorting;
+      gsplat.antiAlias = previous.antiAlias;
+      gsplat.minPixelSize = previous.minPixelSize;
+      gsplat.dataFormat = previous.dataFormat;
+    };
+  }, [app]);
+
+  return null;
+}
+
 function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) {
   const entityRef = useRef(null);
   const initialPose = useMemo(
     () => getCameraPathPose(progressRef.current, CAMERA_START, CAMERA_END, CAMERA_TARGET, reducedMotion),
     [progressRef, reducedMotion],
   );
-  const smoothedPosition = useRef([...initialPose.position]);
 
   const placeCamera = useCallback((position) => {
     const entity = entityRef.current;
@@ -215,7 +278,6 @@ function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) 
 
   useEffect(() => {
     if (!settled) return;
-    smoothedPosition.current = [...CAMERA_END];
     placeCamera(CAMERA_END);
   }, [placeCamera, settled]);
 
@@ -225,7 +287,7 @@ function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) 
     return () => onCameraReady(null);
   }, [onCameraReady]);
 
-  useAppEvent("update", (delta) => {
+  useAppEvent("update", () => {
     if (settled) return;
     const target = getCameraPathPose(
       progressRef.current,
@@ -234,12 +296,9 @@ function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) 
       CAMERA_TARGET,
       reducedMotion,
     ).position;
-    const response = reducedMotion ? 1 : 1 - Math.exp(-Math.min(delta, 0.05) * 7.2);
-    const current = smoothedPosition.current;
-    for (let index = 0; index < 3; index += 1) {
-      current[index] += (target[index] - current[index]) * response;
-    }
-    placeCamera(current);
+    // A trailing camera tween outlives the scroll event and makes WebGL's async
+    // splat sorter display stale intermediate orders. Track the scroll pose exactly.
+    placeCamera(target);
   });
 
   return (
@@ -747,11 +806,12 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, interactive = se
             className="building-canvas building-splat-canvas"
             style={CANVAS_STYLE}
             fillMode={FILLMODE_NONE}
-            resolutionMode={RESOLUTION_AUTO}
-            deviceTypes={[DEVICETYPE_WEBGL2, DEVICETYPE_WEBGPU]}
+            resolutionMode={RESOLUTION_FIXED}
+            deviceTypes={[DEVICETYPE_WEBGPU, DEVICETYPE_WEBGL2]}
             graphicsDeviceOptions={GRAPHICS_OPTIONS}
             maxDeltaTime={0.05}
           >
+            <RenderQuality />
             <SplatScene
               fov={cameraFov}
               interactive={interactive}
