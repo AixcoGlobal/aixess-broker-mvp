@@ -121,7 +121,7 @@ describe("Residence explorer", () => {
     expect(snapshotLoader).toHaveBeenCalledTimes(2);
   });
 
-  it("enables floor controls as soon as the explorer is visible during scroll", async () => {
+  it("enables 3D floor controls on entry and starts the filter transition once the explorer pins", async () => {
     window.matchMedia = vi.fn().mockReturnValue({
       matches: false,
       addEventListener: vi.fn(),
@@ -138,7 +138,7 @@ describe("Residence explorer", () => {
 
     await waitFor(() => expect(explorer).toHaveAttribute("data-interactive", "true"));
     expect(explorer).toHaveAttribute("data-settled", "false");
-    await waitFor(() => expect(Number(explorer.style.getPropertyValue("--filter-progress"))).toBeGreaterThan(0));
+    await waitFor(() => expect(explorer.style.getPropertyValue("--filter-progress")).toBe("0.0000"));
     const enteringFilterProgress = Number(explorer.style.getPropertyValue("--filter-progress"));
 
     explorer.getBoundingClientRect = vi.fn(() => ({ top: -96, bottom: 2504, left: 0, right: 1280, width: 1280, height: 2600 }));
