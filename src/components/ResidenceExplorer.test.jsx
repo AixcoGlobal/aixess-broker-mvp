@@ -143,4 +143,34 @@ describe("Residence explorer", () => {
     fireEvent.scroll(window);
     await waitFor(() => expect(explorer).toHaveAttribute("data-interactive", "false"));
   });
+
+  it("filters residences by floor, bedrooms, area, and status while linking the result to the building and modal", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <ResidenceExplorer
+        onBrokerAccess={vi.fn()}
+        snapshotLoader={() => Promise.resolve(snapshot)}
+        floorLoader={() => Promise.resolve(snapshot.floors[0].units)}
+      />,
+    );
+
+    const controls = await screen.findByLabelText("Filter Project Reverance residences");
+    await waitFor(() => expect(controls.closest(".residence-filter-panel")).toHaveAttribute("aria-hidden", "false"));
+    expect(screen.getByText("1 MATCH")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Residence 411, floor 4/i })).toBeInTheDocument();
+    expect(container.querySelector(".model-static-fallback polygon.is-filter-match")).toHaveAttribute("aria-label", expect.stringMatching(/Floor 04/i));
+
+    await user.selectOptions(within(controls).getByLabelText("FLOOR"), "4");
+    await user.click(within(controls).getByRole("button", { name: "2" }));
+    await user.click(within(within(controls).getByRole("group", { name: "AVAILABILITY" })).getByRole("button", { name: "ALL" }));
+    fireEvent.change(within(controls).getByLabelText("Minimum area"), { target: { value: "60" } });
+
+    const reservedResult = screen.getByRole("button", { name: /Residence 412, floor 4, 64.8 square metres, Reserved/i });
+    expect(reservedResult).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Residence 411, floor 4/i })).not.toBeInTheDocument();
+
+    await user.click(reservedResult);
+    expect(await screen.findByRole("dialog", { name: /Floor 04/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Residence 412" })).toBeInTheDocument();
+  });
 });

@@ -498,6 +498,7 @@ function FloorHighlight({ floorNumber }) {
 
 function SplatScene({
   hoveredFloor,
+  highlightedFloor,
   fov,
   interactive,
   onCameraReady,
@@ -519,7 +520,7 @@ function SplatScene({
       <Entity name="Official Project Reverance reconstruction" rotation={REVERANCE_SPLAT_ROTATION}>
         <SplatAsset onStateChange={onStateChange} />
       </Entity>
-      <FloorHighlight floorNumber={interactive ? hoveredFloor : null} />
+      <FloorHighlight floorNumber={interactive ? hoveredFloor ?? highlightedFloor : null} />
     </>
   );
 }
@@ -544,7 +545,7 @@ class WebGLErrorBoundary extends Component {
   }
 }
 
-function StaticFallback({ snapshot, onSelectFloor }) {
+function StaticFallback({ snapshot, highlightedFloor, onSelectFloor }) {
   const floorsByNumber = new Map(snapshot.floors.map((floor) => [String(floor.number), floor]));
   return (
     <div className="model-static-fallback">
@@ -555,6 +556,7 @@ function StaticFallback({ snapshot, onSelectFloor }) {
           const summary = getFloorSummary(floor);
           return (
             <polygon
+              className={Number(shape.target) === highlightedFloor ? "is-filter-match" : ""}
               key={shape.id}
               tabIndex="0"
               role="button"
@@ -572,7 +574,7 @@ function StaticFallback({ snapshot, onSelectFloor }) {
   );
 }
 
-export function Reverance3D({ snapshot, onSelectFloor, settled, interactive = settled, progressRef }) {
+export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, settled, interactive = settled, progressRef }) {
   const [hoveredFloor, setHoveredFloor] = useState(null);
   const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
@@ -596,6 +598,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, interactive = se
     [hoveredFloor, snapshot.floors],
   );
   const hoveredFloorSummary = hoveredFloorData ? getFloorSummary(hoveredFloorData) : null;
+  const effectiveHighlightedFloor = hoveredFloor ?? highlightedFloor;
 
   useEffect(() => {
     if (interactive) return;
@@ -747,13 +750,14 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, interactive = se
     cameraEntity?.lookAt(...CAMERA_TARGET, ...CAMERA_UP);
   }, []);
 
-  const fallback = <StaticFallback snapshot={snapshot} onSelectFloor={onSelectFloor} />;
+  const fallback = <StaticFallback snapshot={snapshot} highlightedFloor={effectiveHighlightedFloor} onSelectFloor={onSelectFloor} />;
 
   return (
     <div
       className={`building-map building-model building-splat ${settled ? "is-settled" : "is-turning"} ${interactive ? "is-interactive" : ""}`}
       data-load-state={loadState.status}
       data-hovered-floor={hoveredFloor ?? undefined}
+      data-filtered-floor={highlightedFloor ?? undefined}
       aria-busy={loadState.status === "loading"}
       onPointerDown={(event) => {
         if (event.pointerType === "touch") {
@@ -814,6 +818,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, interactive = se
             <RenderQuality />
             <SplatScene
               fov={cameraFov}
+              highlightedFloor={highlightedFloor}
               interactive={interactive}
               hoveredFloor={hoveredFloor}
               onCameraReady={handleCameraReady}
@@ -851,7 +856,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, interactive = se
                   key={floor.number}
                   type="button"
                   data-floor={floor.number}
-                  className={hoveredFloor === floor.number ? "is-active" : ""}
+                  className={`${hoveredFloor === floor.number ? "is-active" : ""} ${hoveredFloor === null && highlightedFloor === floor.number ? "is-filter-match" : ""}`}
                   tabIndex={interactive ? 0 : -1}
                   aria-label={`${floorName(floor.number)}, ${summary.available} available residences`}
                   onMouseEnter={() => {
