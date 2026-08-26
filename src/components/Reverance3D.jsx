@@ -9,7 +9,6 @@ import {
   FILLMODE_NONE,
   Mat4,
   OrientedBox,
-  Quat,
   Ray,
   RESOLUTION_AUTO,
   Vec2,
@@ -21,6 +20,13 @@ import {
   getFloorTooltipPosition,
   getKeyboardFloorTarget,
 } from "./reveranceSplatMath";
+import {
+  getFloorWorldTransform,
+  REVERANCE_FLOOR_SIZE,
+  REVERANCE_FLOOR_VOLUMES,
+  REVERANCE_SPLAT_ROTATION,
+  getWorldToFloorTransform,
+} from "./reveranceFloorHighlight";
 
 const SPLAT_URL = "/assets/reverance-3d/reverance-official-97.sog?v=acb1246f";
 const CAMERA_FOV = 41.09622780396063;
@@ -42,34 +48,18 @@ const GRAPHICS_OPTIONS = {
   preserveDrawingBuffer: false,
   desynchronized: true,
 };
-const FLOOR_ROTATION = [-179.71965180947012, 8.877656364351859, -179.92406130155297];
-const FLOOR_SCALE = [0.8217690190291913, 0.07267751885234101, 0.4953117381288637];
-const FLOOR_VOLUMES = [
-  [2, 0.3465929124598087, -0.8097063560444595, -0.46356909413651887],
-  [3, 0.3465468627576663, -0.7289545140944962, -0.46395948241105345],
-  [4, 0.3465008130555239, -0.6482026721445328, -0.464349870685588],
-  [5, 0.3464547633533815, -0.5674508301945694, -0.46474025896012255],
-  [6, 0.34640871365123904, -0.486698988244606, -0.46513064723465714],
-  [7, 0.34636266394909665, -0.4059471462946426, -0.46552103550919166],
-  [8, 0.34631661424695426, -0.3251953043446792, -0.46591142378372624],
-  [9, 0.3462705645448118, -0.24444346239471576, -0.46630181205826077],
-  [10, 0.3462245148426694, -0.16369162044475238, -0.46669220033279535],
-  [11, 0.346178465140527, -0.08293977849478897, -0.46708258860732993],
-  [12, 0.3461324154383846, -0.002187936544825593, -0.46747297688186445],
-  [13, 0.3460863657362422, 0.07856390540513782, -0.46786336515639904],
-  [14, 0.3460403160340998, 0.15931574735510118, -0.46825375343093356],
-  [15, 0.3459942663319574, 0.24006758930506455, -0.46864414170546814],
-  [16, 0.34594821662981495, 0.32081943125502793, -0.4690345299800027],
-].map(([number, x, y, z]) => ({ number, position: [x, y, z] }));
-const FLOOR_PICK_BOXES = FLOOR_VOLUMES.map((volume) => {
-  const rotation = new Quat().setFromEulerAngles(...FLOOR_ROTATION);
-  const transform = new Mat4().setTRS(new Vec3(...volume.position), rotation, Vec3.ONE);
+const FLOOR_PICK_BOXES = REVERANCE_FLOOR_VOLUMES.map((volume) => {
   return {
     ...volume,
-    box: new OrientedBox(transform, new Vec3(...FLOOR_SCALE).mulScalar(0.5)),
+    box: new OrientedBox(
+      getFloorWorldTransform(volume),
+      new Vec3(...REVERANCE_FLOOR_SIZE).mulScalar(0.5),
+    ),
   };
 });
-const FLOOR_HIGHLIGHT_HALF_SIZE = new Float32Array(FLOOR_SCALE.map((value) => value * 0.5));
+const FLOOR_HIGHLIGHT_HALF_SIZE = new Float32Array(
+  REVERANCE_FLOOR_SIZE.map((value) => value * 0.5),
+);
 const FLOOR_HIGHLIGHT_GLSL = `
 uniform mat4 uFloorWorldToLocal;
 uniform vec3 uFloorHalfSize;
@@ -257,14 +247,10 @@ function FloorHighlight({ floorNumber }) {
 
   useEffect(() => {
     const material = app.scene.gsplat.material;
-    const volume = FLOOR_VOLUMES.find((candidate) => candidate.number === floorNumber);
+    const volume = REVERANCE_FLOOR_VOLUMES.find((candidate) => candidate.number === floorNumber);
     const transform = new Mat4();
     if (volume) {
-      transform.setTRS(
-        new Vec3(...volume.position),
-        new Quat().setFromEulerAngles(...FLOOR_ROTATION),
-        Vec3.ONE,
-      ).invert();
+      transform.copy(getWorldToFloorTransform(volume));
     }
 
     material.setParameter("uFloorWorldToLocal", transform.data);
@@ -292,7 +278,7 @@ function SplatScene({
         reducedMotion={reducedMotion}
         settled={settled}
       />
-      <Entity name="Official Project Reverance reconstruction" rotation={[0, 0, 180]}>
+      <Entity name="Official Project Reverance reconstruction" rotation={REVERANCE_SPLAT_ROTATION}>
         <SplatAsset onStateChange={onStateChange} />
       </Entity>
       {settled && <FloorHighlight floorNumber={hoveredFloor} />}

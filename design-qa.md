@@ -6,12 +6,15 @@
 - All-angle source-to-render evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/splat-reconstruction/evaluation/full-scene-fallback-glare-repaired/orbit-97-contact-sheet.jpg` and `official-source-vs-sog-contact-sheet.jpg`.
 - Browser-rendered implementation: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/implementation-final-desktop-front.png` (1121 x 752 px), `implementation-final-mobile-320.png` (320 x 700 px), and `implementation-final-mobile-floor-11.png` (320 x 700 px).
 - Artifact/hover repair evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/artifact-hover-fixed.png` and the side-by-side `artifact-hover-comparison.jpg`.
+- Full-floor highlight source: `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-b4ecb87f-c490-4079-a285-af8cf266b631.png` (495 x 532 px).
+- Full-floor highlight implementation: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/floor-highlight-front-fixed.png` (592 x 592 px) and the normalized side-by-side `floor-highlight-before-after.jpg` (990 x 568 px).
 - Combined full-view comparison: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/design-comparison-full-front.jpg` (2242 x 752 px).
 - Combined focused building comparison: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/design-comparison-building-crop.jpg` (1248 x 624 px).
 - Desktop viewport: 1121 x 752 CSS px at device scale factor 1. The official 1920 x 1080 source was normalized to 1121 x 631 px and vertically centered beside the same-width browser capture for the full comparison.
 - Focused normalization: the source's centered 1080 x 1080 crop was downsampled to 624 x 624 px and compared with the browser's 624 x 624 px WebGL stage crop.
 - Mobile viewport: 320 x 700 CSS px at device scale factor 1.
-- State: scroll animation settled at official frame-097 front elevation, no floor selected. Additional evidence covers frame-073 side entry, intermediate rotation, the calibrated horizontal orbit, rear elevation, bounded zoom, reset, direct 3D floor picking, keyboard floor selection, and the Floor 11 modal.
+- Full-floor normalization: the implementation was resized to 532 x 532 px and center-cropped to 495 x 532 px before being paired with the user screenshot. Both halves show Floor 13 hovered at the settled front elevation.
+- State: scroll animation settled at official frame-097 front elevation. Additional evidence covers frame-073 side entry, intermediate rotation, the calibrated horizontal orbit, rear elevation, bounded zoom, reset, direct 3D floor picking, keyboard floor selection, the Floor 11 modal, and direct Floor 13 hover across the complete A-block footprint.
 
 **Full-view comparison evidence**
 
@@ -25,6 +28,7 @@
 - `design-comparison-building-crop.jpg` verifies the front façade, crown spacing, tower depth, balcony rhythm, base, and landscape against the same official front state at equal 624 px square presentation size.
 - `official-source-vs-sog-contact-sheet.jpg` verifies six canonical source/render pairs, while `orbit-97-contact-sheet.jpg` verifies continuity and absence of crop explosions, floating façade planes, pasted-on trees, roof substitutions, or missing garden/context around the entire supported orbit.
 - A separate 1600 x 900 retrain was visually and quantitatively evaluated. Although it appeared slightly sharper, it was 19.49% larger and less faithful on every canonical A-tower mask (mean PSNR delta -3.140 dB), so the closer 8,496,041-byte baseline was retained.
+- `floor-highlight-before-after.jpg` verifies that the former narrow center band now spans the full visible A-block storey from the left façade through the right return. The highlight remains confined to Floor 13 with no tint on Floors 12 or 14.
 
 **Required fidelity surfaces**
 
@@ -50,6 +54,7 @@
 - Iteration 6 - P2 color fidelity: the technical-stage vignette noticeably darkened the official façade and vegetation. Fixed by reducing the model overlay to a subtle lower-edge gradient. Post-fix evidence: the revised full-view and equal-size focused comparison files listed above.
 - Iteration 7 - P1 orbit artifacts: the previous 5.4-unit zoom-out exposed unsupported near-camera splats as detached leaves, car fragments, sky streaks, and a gray foreground smear. Fixed without changing the 8.5 MB building asset by capping the validated radius at 4.2, disabling unbounded pan, and increasing the near clip to 0.5. Stress testing at the new maximum radius remains clean. Post-fix evidence: `artifact-hover-comparison.jpg`.
 - Iteration 8 - P1 floor feedback: canvas hover previously changed only a tiny rail row and could be cleared by bubbled pointer movement. Fixed with a texture-preserving GSplat shader that tints only the actual Gaussians inside the complete calibrated floor volume, a pointer-adjacent floor/availability label, a stronger synchronized rail state, touch-safe behavior, and stale-state cleanup. Direct canvas hover, rail hover, reset/instruction transitions, and modal selection were verified in-browser.
+- Iteration 9 - P1 incomplete floor mask: the prior oriented volume covered only the center of each storey, leaving the left façade and most of the building depth untinted. Fixed by measuring A Block across the production SOG, recentering the volume, and expanding its width/depth to the complete footprint while preserving the storey height. Picking and the GSplat shader now consume the same transform. Post-fix evidence: `floor-highlight-before-after.jpg`, a full-width direct-hover sweep on Floor 13, top/middle/bottom floor checks, adjacent-floor isolation tests, and a direct Floor 13 click opening the correct modal.
 
 **Primary interactions and technical checks**
 
@@ -59,7 +64,7 @@
 - Floor-plan modal, previous/next floor controls, live availability refresh, verified local snapshot fallback, filtering, residence details, close/Escape, and focus trapping/restoration.
 - Loading, empty/filter, network fallback, image fallback, WebGL failure fallback, and reduced-motion states retained.
 - Desktop and 320 px mobile browser checks completed with no horizontal overflow and no runtime console errors.
-- Automated checks: 24 unit/integration tests pass; 4 Sites worker/package tests pass; production build passes; production dependency audit reports 0 vulnerabilities.
+- Automated checks: 28 unit/integration tests pass; 4 Sites worker/package tests pass; production build passes; production dependency audit reports 0 vulnerabilities.
 
 **Implementation checklist**
 
