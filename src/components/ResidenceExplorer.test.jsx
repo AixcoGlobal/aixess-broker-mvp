@@ -141,7 +141,12 @@ describe("Residence explorer", () => {
 
     explorer.getBoundingClientRect = vi.fn(() => ({ top: -96, bottom: 2504, left: 0, right: 1280, width: 1280, height: 2600 }));
     fireEvent.scroll(window);
-    await waitFor(() => expect(explorer.style.getPropertyValue("--filter-progress")).toBe("0.1250"));
+    await waitFor(() => expect(explorer.style.getPropertyValue("--filter-progress")).toBe("0.0543"));
+
+    explorer.getBoundingClientRect = vi.fn(() => ({ top: -1768, bottom: 832, left: 0, right: 1280, width: 1280, height: 2600 }));
+    fireEvent.scroll(window);
+    await waitFor(() => expect(explorer).toHaveAttribute("data-settled", "true"));
+    expect(explorer.style.getPropertyValue("--filter-progress")).toBe("1.0000");
 
     explorer.getBoundingClientRect = vi.fn(() => ({ top: 900, bottom: 3500, left: 0, right: 1280, width: 1280, height: 2600 }));
     fireEvent.scroll(window);

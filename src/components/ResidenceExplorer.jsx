@@ -64,6 +64,8 @@ function clamp(value, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
+const EXPLORER_SETTLE_PROGRESS = 0.965;
+
 function useScrollStage(sectionRef) {
   const [settled, setSettled] = useState(false);
   const [interactive, setInteractive] = useState(false);
@@ -84,17 +86,17 @@ function useScrollStage(sectionRef) {
       const progress = reducedMotion.matches
         ? 1
         : clamp(-bounds.top / height);
-      const isSettled = reducedMotion.matches || progress >= 0.965;
+      const isSettled = reducedMotion.matches || progress >= EXPLORER_SETTLE_PROGRESS;
       const isInteractive = reducedMotion.matches
         || (bounds.top < window.innerHeight && bounds.bottom > 0);
       const filterProgress = reducedMotion.matches
         ? 1
-        : clamp(-bounds.top / Math.max(window.innerHeight, 1));
+        : clamp(progress / EXPLORER_SETTLE_PROGRESS);
       const isFilterActive = reducedMotion.matches || filterProgress >= 0.5;
 
       progressRef.current = progress;
       section.style.setProperty("--explorer-progress", progress.toFixed(4));
-      section.style.setProperty("--copy-shift", `${(-progress * 1.5).toFixed(3)}rem`);
+      section.style.setProperty("--copy-shift", "0rem");
       section.style.setProperty("--filter-progress", filterProgress.toFixed(4));
       setSettled((current) => (current === isSettled ? current : isSettled));
       setInteractive((current) => (current === isInteractive ? current : isInteractive));
@@ -514,26 +516,36 @@ function ResidenceFilter({
       </div>
 
       <div className="residence-filter-results" aria-live="polite">
-        {matchingUnits.length ? matchingUnits.map((unit) => {
-          const status = normalizeStatus(unit.status);
-          const isActive = String(previewResidence?.id) === String(unit.id);
-          return (
-            <button
-              className={`residence-filter-result ${isActive ? "is-active" : ""}`}
-              key={`${unit.floor}-${unit.id}`}
-              type="button"
-              aria-label={`Residence ${unit.name}, floor ${unit.floor}, ${unit.totalArea.toFixed(1)} square metres, ${getStatusLabel(status)}`}
-              onMouseEnter={() => onPreviewResidence(unit)}
-              onFocus={() => onPreviewResidence(unit)}
-              onClick={() => onOpenResidence(unit)}
-            >
-              <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
-              <span>F{String(unit.floor).padStart(2, "0")}</span>
-              <strong>{unit.totalArea.toFixed(1)} m²</strong>
-              <ArrowRight aria-hidden="true" />
-            </button>
-          );
-        }) : (
+        {matchingUnits.length ? (
+          <>
+            <div className="residence-filter-results-head" aria-hidden="true">
+              <span>RESIDENCE</span>
+              <span>FLOOR</span>
+              <span>AREA</span>
+              <span />
+            </div>
+            {matchingUnits.map((unit) => {
+              const status = normalizeStatus(unit.status);
+              const isActive = String(previewResidence?.id) === String(unit.id);
+              return (
+                <button
+                  className={`residence-filter-result ${isActive ? "is-active" : ""}`}
+                  key={`${unit.floor}-${unit.id}`}
+                  type="button"
+                  aria-label={`Residence ${unit.name}, floor ${unit.floor}, ${unit.totalArea.toFixed(1)} square metres, ${getStatusLabel(status)}`}
+                  onMouseEnter={() => onPreviewResidence(unit)}
+                  onFocus={() => onPreviewResidence(unit)}
+                  onClick={() => onOpenResidence(unit)}
+                >
+                  <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
+                  <span>F{String(unit.floor).padStart(2, "0")}</span>
+                  <strong>{unit.totalArea.toFixed(1)} m²</strong>
+                  <ArrowRight aria-hidden="true" />
+                </button>
+              );
+            })}
+          </>
+        ) : (
           <div className="residence-filter-empty">
             <strong>NO MATCHES</strong>
             <p>Adjust the area, floor, or availability filters.</p>
