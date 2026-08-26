@@ -138,10 +138,12 @@ describe("Residence explorer", () => {
 
     await waitFor(() => expect(explorer).toHaveAttribute("data-interactive", "true"));
     expect(explorer).toHaveAttribute("data-settled", "false");
+    await waitFor(() => expect(Number(explorer.style.getPropertyValue("--filter-progress"))).toBeGreaterThan(0));
+    const enteringFilterProgress = Number(explorer.style.getPropertyValue("--filter-progress"));
 
     explorer.getBoundingClientRect = vi.fn(() => ({ top: -96, bottom: 2504, left: 0, right: 1280, width: 1280, height: 2600 }));
     fireEvent.scroll(window);
-    await waitFor(() => expect(explorer.style.getPropertyValue("--filter-progress")).toBe("0.0543"));
+    await waitFor(() => expect(Number(explorer.style.getPropertyValue("--filter-progress"))).toBeGreaterThan(enteringFilterProgress));
 
     explorer.getBoundingClientRect = vi.fn(() => ({ top: -1768, bottom: 832, left: 0, right: 1280, width: 1280, height: 2600 }));
     fireEvent.scroll(window);

@@ -89,9 +89,10 @@ function useScrollStage(sectionRef) {
       const isSettled = reducedMotion.matches || progress >= EXPLORER_SETTLE_PROGRESS;
       const isInteractive = reducedMotion.matches
         || (bounds.top < window.innerHeight && bounds.bottom > 0);
+      const filterTravel = window.innerHeight + (height * EXPLORER_SETTLE_PROGRESS);
       const filterProgress = reducedMotion.matches
         ? 1
-        : clamp(progress / EXPLORER_SETTLE_PROGRESS);
+        : clamp((window.innerHeight - bounds.top) / filterTravel);
       const isFilterActive = reducedMotion.matches || filterProgress >= 0.5;
 
       progressRef.current = progress;
