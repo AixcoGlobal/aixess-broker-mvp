@@ -24,6 +24,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - Preserve the accepted production SOG building exactly. Keep free interaction inside the calibrated artifact-free orbit, and make hover unmistakable by tinting the actual splats across the complete floor while synchronizing the floor rail and availability label.
 - Keep the orange hover tint depth-aware and confined to the exact selected storey at every orbit angle. Large Gaussian footprints must be clipped at the calibrated floor boundaries and must never tint the floor above or below.
 - Treat one selectable floor as the complete façade bay between two consecutive horizontal slab lines; the tint should meet those two slab edges without crossing either one.
+- Enable floor hover and selection as soon as the Residence Explorer is visible during scroll; keep the automatic side-to-front camera motion running until settled, then expose orbit and zoom controls.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
 

@@ -440,6 +440,7 @@ function FloorHighlight({ floorNumber }) {
 function SplatScene({
   hoveredFloor,
   fov,
+  interactive,
   onCameraReady,
   onStateChange,
   progressRef,
@@ -459,7 +460,7 @@ function SplatScene({
       <Entity name="Official Project Reverance reconstruction" rotation={REVERANCE_SPLAT_ROTATION}>
         <SplatAsset onStateChange={onStateChange} />
       </Entity>
-      <FloorHighlight floorNumber={settled ? hoveredFloor : null} />
+      <FloorHighlight floorNumber={interactive ? hoveredFloor : null} />
     </>
   );
 }
@@ -512,7 +513,7 @@ function StaticFallback({ snapshot, onSelectFloor }) {
   );
 }
 
-export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
+export function Reverance3D({ snapshot, onSelectFloor, settled, interactive = settled, progressRef }) {
   const [hoveredFloor, setHoveredFloor] = useState(null);
   const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
@@ -538,10 +539,10 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
   const hoveredFloorSummary = hoveredFloorData ? getFloorSummary(hoveredFloorData) : null;
 
   useEffect(() => {
-    if (settled) return;
+    if (interactive) return;
     setHoveredFloor(null);
     setHoverPoint(null);
-  }, [settled]);
+  }, [interactive]);
 
   const reportState = useCallback((nextState) => setLoadState(nextState), []);
   const handleCameraReady = useCallback((entity) => {
@@ -568,7 +569,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
   }, [onSelectFloor, snapshot.floors]);
 
   const pickFloor = useCallback((event) => {
-    if (!settled || !event.target.closest?.("canvas")) return null;
+    if (!interactive || !event.target.closest?.("canvas")) return null;
     const camera = cameraEntityRef.current?.camera;
     const canvas = event.currentTarget.querySelector("canvas");
     if (!camera || !canvas) return null;
@@ -594,7 +595,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
       }
     }
     return nearest;
-  }, [settled]);
+  }, [interactive]);
 
   const handleOpticalZoom = useCallback((delta) => {
     if (!settled || !Number.isFinite(delta)) return;
@@ -605,7 +606,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
   }, [settled]);
 
   const handleModelPointerMove = useCallback((event) => {
-    if (!settled) return;
+    if (!interactive) return;
     if (event.pointerType === "touch" && touchPointersRef.current.has(event.pointerId)) {
       touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
       if (touchPointersRef.current.size === 2) {
@@ -650,10 +651,10 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
       { x: event.clientX - rect.left, y: event.clientY - rect.top },
       { width: rect.width, height: rect.height },
     ));
-  }, [handleOpticalZoom, pickFloor, settled]);
+  }, [handleOpticalZoom, interactive, pickFloor]);
 
   const handleModelClick = useCallback((event) => {
-    if (!settled) return;
+    if (!interactive) return;
     const dragged = draggedRef.current || suppressClickRef.current;
     pointerStartRef.current = null;
     draggedRef.current = false;
@@ -667,7 +668,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
       setHoverPoint(null);
       onSelectFloor(floor);
     }
-  }, [onSelectFloor, pickFloor, settled]);
+  }, [interactive, onSelectFloor, pickFloor]);
 
   const handleResetView = useCallback((event) => {
     event.stopPropagation();
@@ -691,7 +692,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
 
   return (
     <div
-      className={`building-map building-model building-splat ${settled ? "is-settled" : "is-turning"}`}
+      className={`building-map building-model building-splat ${settled ? "is-settled" : "is-turning"} ${interactive ? "is-interactive" : ""}`}
       data-load-state={loadState.status}
       data-hovered-floor={hoveredFloor ?? undefined}
       aria-busy={loadState.status === "loading"}
@@ -703,7 +704,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
             pinchDistanceRef.current = Math.hypot(second.x - first.x, second.y - first.y);
           }
         }
-        if (event.target.closest?.("canvas")) {
+        if (interactive && event.target.closest?.("canvas")) {
           pointerStartRef.current = { x: event.clientX, y: event.clientY };
           draggedRef.current = false;
           suppressClickRef.current = false;
@@ -753,6 +754,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
           >
             <SplatScene
               fov={cameraFov}
+              interactive={interactive}
               hoveredFloor={hoveredFloor}
               onCameraReady={handleCameraReady}
               onStateChange={reportState}
@@ -781,7 +783,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
           >
             RESET VIEW
           </button>
-          <div ref={railRef} className={`model-floor-rail ${settled ? "is-visible" : ""}`} aria-label="Select building floor">
+          <div ref={railRef} className={`model-floor-rail ${interactive ? "is-visible" : ""}`} aria-label="Select building floor">
             {orderedFloors.map((floor) => {
               const summary = getFloorSummary(floor);
               return (
@@ -790,7 +792,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
                   type="button"
                   data-floor={floor.number}
                   className={hoveredFloor === floor.number ? "is-active" : ""}
-                  tabIndex={settled ? 0 : -1}
+                  tabIndex={interactive ? 0 : -1}
                   aria-label={`${floorName(floor.number)}, ${summary.available} available residences`}
                   onMouseEnter={() => {
                     setHoveredFloor(floor.number);
@@ -811,7 +813,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
               );
             })}
           </div>
-          {settled && hoveredFloorSummary && hoverPoint && (
+          {interactive && hoveredFloorSummary && hoverPoint && (
             <div
               className="model-floor-tooltip"
               style={{ left: hoverPoint.x, top: hoverPoint.y }}
@@ -831,14 +833,14 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
       )}
 
       <div className="building-model-instruction" aria-live="polite">
-        <span className="model-instruction-index">{settled ? "LIVE 3D" : "SCROLL"}</span>
+        <span className="model-instruction-index">{settled ? "LIVE 3D" : interactive ? "INTERACTIVE" : "SCROLL"}</span>
         <strong>
           {settled ? (
             <>
               <span className="model-instruction-desktop">DRAG TO ROTATE · WHEEL TO ZOOM · SELECT A FLOOR</span>
               <span className="model-instruction-mobile">DRAG TO ROTATE · PINCH TO ZOOM · TAP A FLOOR</span>
             </>
-          ) : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}
+          ) : interactive ? "HOVER OR SELECT A FLOOR · SCROLL TO SETTLE FRONT VIEW" : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}
         </strong>
       </div>
       <span className="building-model-badge" aria-hidden="true">

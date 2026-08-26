@@ -120,4 +120,27 @@ describe("Residence explorer", () => {
     expect(await screen.findByRole("button", { name: /Floor 04/i })).toBeInTheDocument();
     expect(snapshotLoader).toHaveBeenCalledTimes(2);
   });
+
+  it("enables floor controls as soon as the explorer is visible during scroll", async () => {
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    });
+
+    const { container } = render(<ResidenceExplorer onBrokerAccess={vi.fn()} snapshotLoader={() => Promise.resolve(snapshot)} floorLoader={vi.fn()} />);
+    const explorer = container.querySelector(".residence-explorer");
+    expect(explorer).toBeInTheDocument();
+
+    Object.defineProperty(explorer, "offsetHeight", { configurable: true, value: 2600 });
+    explorer.getBoundingClientRect = vi.fn(() => ({ top: 180, bottom: 2780, left: 0, right: 1280, width: 1280, height: 2600 }));
+    fireEvent.scroll(window);
+
+    await waitFor(() => expect(explorer).toHaveAttribute("data-interactive", "true"));
+    expect(explorer).toHaveAttribute("data-settled", "false");
+
+    explorer.getBoundingClientRect = vi.fn(() => ({ top: 900, bottom: 3500, left: 0, right: 1280, width: 1280, height: 2600 }));
+    fireEvent.scroll(window);
+    await waitFor(() => expect(explorer).toHaveAttribute("data-interactive", "false"));
+  });
 });

@@ -66,6 +66,7 @@ function clamp(value, minimum = 0, maximum = 1) {
 
 function useScrollStage(sectionRef) {
   const [settled, setSettled] = useState(false);
+  const [interactive, setInteractive] = useState(false);
   const progressRef = useRef(0);
 
   useEffect(() => {
@@ -82,11 +83,15 @@ function useScrollStage(sectionRef) {
         ? 1
         : clamp(-section.getBoundingClientRect().top / height);
       const isSettled = reducedMotion.matches || progress >= 0.965;
+      const bounds = section.getBoundingClientRect();
+      const isInteractive = reducedMotion.matches
+        || (bounds.top < window.innerHeight && bounds.bottom > 0);
 
       progressRef.current = progress;
       section.style.setProperty("--explorer-progress", progress.toFixed(4));
       section.style.setProperty("--copy-shift", `${(-progress * 1.5).toFixed(3)}rem`);
       setSettled((current) => (current === isSettled ? current : isSettled));
+      setInteractive((current) => (current === isInteractive ? current : isInteractive));
     };
 
     const schedule = () => {
@@ -106,7 +111,7 @@ function useScrollStage(sectionRef) {
     };
   }, [sectionRef]);
 
-  return { settled, progressRef };
+  return { interactive, settled, progressRef };
 }
 
 function useDialogA11y(open, onClose, dialogRef) {
@@ -412,7 +417,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   const [canMountModel, setCanMountModel] = useState(() => (
     typeof window === "undefined" || !("IntersectionObserver" in window)
   ));
-  const { settled, progressRef } = useScrollStage(sectionRef);
+  const { interactive, settled, progressRef } = useScrollStage(sectionRef);
 
   useEffect(() => {
     let active = true;
@@ -451,6 +456,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
       id="residences"
       ref={sectionRef}
       data-settled={settled}
+      data-interactive={interactive}
       aria-labelledby="residence-explorer-title"
     >
       <div className="explorer-sticky">
@@ -478,6 +484,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
                 <Reverance3D
                   snapshot={snapshot}
                   onSelectFloor={setSelectedFloor}
+                  interactive={interactive}
                   settled={settled}
                   progressRef={progressRef}
                 />
