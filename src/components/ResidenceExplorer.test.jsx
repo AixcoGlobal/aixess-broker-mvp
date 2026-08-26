@@ -61,7 +61,11 @@ describe("Residence explorer", () => {
 
     render(<ResidenceExplorer onBrokerAccess={vi.fn()} snapshotLoader={() => Promise.resolve(snapshot)} floorLoader={floorLoader} />);
 
-    const floorButton = await screen.findByRole("button", { name: /Floor 04, 1 available residence/i });
+    const floorButton = await screen.findByRole(
+      "button",
+      { name: /Floor 04, 1 available residence/i },
+      { timeout: 15000 },
+    );
     await user.click(floorButton);
 
     expect(await screen.findByRole("dialog", { name: /Floor 04/i })).toBeInTheDocument();

@@ -187,6 +187,11 @@
   letter-spacing: 0.14em;
 }
 
+.residence-choice-field legend {
+  position: relative;
+  top: 0.72rem;
+}
+
 .residence-select-field select {
   width: 100%;
   min-height: 2.2rem;
@@ -1441,6 +1446,7 @@
   .residence-select-field,
   .residence-choice-field,
   .residence-area-field { padding: 0.5rem; }
+  .residence-choice-field legend { top: 0.5rem; }
   .residence-area-field { grid-column: 1; }
   .residence-status-field { grid-column: 2; }
   .residence-filter-results {
