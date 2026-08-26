@@ -208,6 +208,11 @@
   letter-spacing: 0.06em;
 }
 
+.residence-select-field select option {
+  background: #171311;
+  color: var(--paper);
+}
+
 .residence-choice-field > div {
   display: flex;
   min-height: 2.2rem;
