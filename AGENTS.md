@@ -22,6 +22,8 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - The third full landing-page section is a production-quality Residence Explorer: the Project Reverance building is clickable by floor, and selecting a floor opens an AiXESS-branded modal with the floor plan, apartment availability, and unit details.
 - Treat the Residence Explorer as a core product flow, not a visual demo. Preserve live-data refresh with a local snapshot fallback, keyboard access, responsive behavior, loading/empty/error states, and comprehensive automated and browser testing.
 - Preserve the accepted production SOG building exactly. Keep free interaction inside the calibrated artifact-free orbit, and make hover unmistakable by tinting the actual splats across the complete floor while synchronizing the floor rail and availability label.
+- Keep the orange hover tint depth-aware and confined to the exact selected storey at every orbit angle. Large Gaussian footprints must be clipped at the calibrated floor boundaries and must never tint the floor above or below.
+- Treat one selectable floor as the complete façade bay between two consecutive horizontal slab lines; the tint should meet those two slab edges without crossing either one.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
 

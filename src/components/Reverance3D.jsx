@@ -1,16 +1,22 @@
 import { Component, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Application, Entity } from "@playcanvas/react";
-import { Camera, GSplat, Script } from "@playcanvas/react/components";
-import { useApp, useAppEvent, useSplat } from "@playcanvas/react/hooks";
+import { Camera, GSplat, Render, Script } from "@playcanvas/react/components";
+import { useApp, useAppEvent, useSplat, useTexture } from "@playcanvas/react/hooks";
 import { CameraControls } from "playcanvas/scripts/esm/camera-controls.mjs";
 import {
   DEVICETYPE_WEBGL2,
   DEVICETYPE_WEBGPU,
+  ADDRESS_CLAMP_TO_EDGE,
+  ADDRESS_REPEAT,
+  CULLFACE_FRONT,
   FILLMODE_NONE,
+  FILTER_LINEAR,
   Mat4,
   OrientedBox,
   Ray,
   RESOLUTION_AUTO,
+  StandardMaterial,
+  TYPE_FLOAT32,
   Vec2,
   Vec3,
 } from "playcanvas";
@@ -22,6 +28,9 @@ import {
 } from "./reveranceSplatMath";
 import {
   getFloorWorldTransform,
+  REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON,
+  REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
+  REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER,
   REVERANCE_FLOOR_SIZE,
   REVERANCE_FLOOR_VOLUMES,
   REVERANCE_SPLAT_ROTATION,
@@ -29,7 +38,9 @@ import {
 } from "./reveranceFloorHighlight";
 
 const SPLAT_URL = "/assets/reverance-3d/reverance-official-97.sog?v=acb1246f";
+const HORIZON_URL = "/assets/reverance-3d/reverance-official-horizon.webp";
 const CAMERA_FOV = 41.09622780396063;
+const CAMERA_MIN_FOV = 31;
 const CAMERA_TARGET = [-0.10454206208274158, 0.0008068618049380962, 0.10121364916726469];
 const CAMERA_START = [2.504352717259611, 0.014715904099223222, 2.7438049729703717];
 const CAMERA_END = [2.571008603437904, -0.010401810476404838, -2.4755136248454392];
@@ -37,7 +48,8 @@ const CAMERA_UP = [-0.000569128058664063, 0.9999881472011365, -0.004835447289666
 const CAMERA_FOCUS = new Vec3(...CAMERA_TARGET);
 const CAMERA_PITCH_RANGE = new Vec2(-0.08, 0.08);
 const CAMERA_YAW_RANGE = new Vec2(-360, 360);
-const CAMERA_ZOOM_RANGE = new Vec2(3.35, 4.2);
+const CAMERA_ZOOM_RANGE = new Vec2(3.7123, 3.7165);
+const DISTANT_ENVIRONMENT_RADIUS = 20;
 const CANVAS_STYLE = { width: "100%", height: "100%" };
 const GRAPHICS_OPTIONS = {
   alpha: false,
@@ -49,48 +61,118 @@ const GRAPHICS_OPTIONS = {
   desynchronized: true,
 };
 const FLOOR_PICK_BOXES = REVERANCE_FLOOR_VOLUMES.map((volume) => {
+  const transform = getFloorWorldTransform(volume);
+  const halfSize = new Vec3(...REVERANCE_FLOOR_SIZE).mulScalar(0.5);
   return {
     ...volume,
     box: new OrientedBox(
-      getFloorWorldTransform(volume),
-      new Vec3(...REVERANCE_FLOOR_SIZE).mulScalar(0.5),
+      transform,
+      halfSize,
     ),
   };
 });
 const FLOOR_HIGHLIGHT_HALF_SIZE = new Float32Array(
-  REVERANCE_FLOOR_SIZE.map((value) => value * 0.5),
+  [
+    REVERANCE_FLOOR_SIZE[0] * 0.5,
+    REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5,
+    REVERANCE_FLOOR_SIZE[2] * 0.5,
+  ],
 );
 const FLOOR_HIGHLIGHT_GLSL = `
 uniform mat4 uFloorWorldToLocal;
 uniform vec3 uFloorHalfSize;
 uniform float uFloorHighlightEnabled;
+uniform float uDistantEnvironmentRadius;
+uniform vec4 uFloorWorldToClipW;
 
 void modifySplatCenter(inout vec3 center) {}
 void modifySplatRotationScale(vec3 originalCenter, vec3 modifiedCenter, inout vec4 rotation, inout vec3 scale) {}
 void modifySplatColor(vec3 center, inout vec4 color) {
-  vec3 localCenter = abs((uFloorWorldToLocal * vec4(center, 1.0)).xyz);
-  bool insideFloor = localCenter.x <= uFloorHalfSize.x
-    && localCenter.y <= uFloorHalfSize.y
-    && localCenter.z <= uFloorHalfSize.z;
-  if (uFloorHighlightEnabled > 0.5 && insideFloor) {
-    color.rgb = mix(color.rgb, vec3(1.0, 0.36, 0.04), 0.58);
+  setFloorSpan(vec2(0.0));
+  if (length(center) >= uDistantEnvironmentRadius) {
+    color.a = 0.0;
+    return;
   }
+  vec3 localCenter = (uFloorWorldToLocal * vec4(center, 1.0)).xyz;
+  bool insideFloor = all(lessThanEqual(abs(localCenter), uFloorHalfSize));
+  float clipW = dot(uFloorWorldToClipW, vec4(center, 1.0));
+  setFloorSpan(vec2(
+    localCenter.y,
+    uFloorHighlightEnabled > 0.5 && insideFloor ? clipW : 0.0
+  ));
 }
 `;
 const FLOOR_HIGHLIGHT_WGSL = `
 uniform uFloorWorldToLocal: mat4x4f;
 uniform uFloorHalfSize: vec3f;
 uniform uFloorHighlightEnabled: f32;
+uniform uDistantEnvironmentRadius: f32;
+uniform uFloorWorldToClipW: vec4f;
 
 fn modifySplatCenter(center: ptr<function, vec3f>) {}
 fn modifySplatRotationScale(originalCenter: vec3f, modifiedCenter: vec3f, rotation: ptr<function, vec4f>, scale: ptr<function, vec3f>) {}
 fn modifySplatColor(center: vec3f, color: ptr<function, vec4f>) {
-  let localCenter = abs((uniform.uFloorWorldToLocal * vec4f(center, 1.0)).xyz);
-  let insideFloor = all(localCenter <= uniform.uFloorHalfSize);
-  if (uniform.uFloorHighlightEnabled > 0.5 && insideFloor) {
-    let rgb = mix((*color).rgb, vec3f(1.0, 0.36, 0.04), 0.58);
-    *color = vec4f(rgb, (*color).a);
+  setFloorSpan(vec2f(0.0));
+  if (length(center) >= uniform.uDistantEnvironmentRadius) {
+    *color = vec4f((*color).rgb, 0.0);
+    return;
   }
+  let localCenter = (uniform.uFloorWorldToLocal * vec4f(center, 1.0)).xyz;
+  let insideFloor = all(abs(localCenter) <= uniform.uFloorHalfSize);
+  let clipW = dot(uniform.uFloorWorldToClipW, vec4f(center, 1.0));
+  setFloorSpan(vec2f(
+    localCenter.y,
+    select(0.0, clipW, uniform.uFloorHighlightEnabled > 0.5 && insideFloor)
+  ));
+}
+`;
+const FLOOR_HIGHLIGHT_FRAGMENT_GLSL = `
+uniform vec2 uFloorPixelToLocalY;
+uniform vec3 uFloorHalfSize;
+
+void modifySplatColor(vec2 gaussianUV, inout vec4 color) {
+  vec2 dx = dFdx(gaussianUV);
+  vec2 dy = dFdy(gaussianUV);
+  float determinant = dx.x * dy.y - dy.x * dx.y;
+  float safeDeterminant = abs(determinant) > 1e-8 ? determinant : 1.0;
+  vec2 pixelOffset = vec2(
+    gaussianUV.x * dy.y - dy.x * gaussianUV.y,
+    dx.x * gaussianUV.y - gaussianUV.x * dx.y
+  ) / safeDeterminant;
+  vec2 floorSpan = getFloorSpan();
+  float fragmentY = floorSpan.x
+    + floorSpan.y * dot(pixelOffset, uFloorPixelToLocalY);
+  float antialiasWidth = max(fwidth(fragmentY), ${REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER});
+  float slab = smoothstep(0.0, antialiasWidth, uFloorHalfSize.y - abs(fragmentY));
+  float mask = step(${REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON}, abs(floorSpan.y)) * slab;
+  color.rgb = mix(color.rgb, vec3(1.0, 0.36, 0.04), 0.58 * mask);
+}
+`;
+const FLOOR_HIGHLIGHT_FRAGMENT_WGSL = `
+uniform uFloorPixelToLocalY: vec2f;
+uniform uFloorHalfSize: vec3f;
+
+fn modifySplatColor(gaussianUV: vec2f, color: ptr<function, vec4f>) {
+  let dx = dpdx(gaussianUV);
+  let dy = dpdy(gaussianUV);
+  let determinant = dx.x * dy.y - dy.x * dx.y;
+  let safeDeterminant = select(1.0, determinant, abs(determinant) > 1e-8);
+  let pixelOffset = vec2f(
+    gaussianUV.x * dy.y - dy.x * gaussianUV.y,
+    dx.x * gaussianUV.y - gaussianUV.x * dx.y
+  ) / safeDeterminant;
+  let floorSpan = getFloorSpan();
+  let pixelToLocalY = vec2f(
+    uniform.uFloorPixelToLocalY.x,
+    -uniform.uFloorPixelToLocalY.y
+  );
+  let fragmentY = floorSpan.x
+    + floorSpan.y * dot(pixelOffset, pixelToLocalY);
+  let antialiasWidth = max(fwidth(fragmentY), ${REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER});
+  let slab = smoothstep(0.0, antialiasWidth, uniform.uFloorHalfSize.y - abs(fragmentY));
+  let mask = step(${REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON}, abs(floorSpan.y)) * slab;
+  let rgb = mix((*color).rgb, vec3f(1.0, 0.36, 0.04), 0.58 * mask);
+  *color = vec4f(rgb, (*color).a);
 }
 `;
 
@@ -116,7 +198,7 @@ function useReducedMotion() {
   return reducedMotion;
 }
 
-function CameraRig({ onCameraReady, progressRef, reducedMotion, settled }) {
+function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) {
   const entityRef = useRef(null);
   const initialPose = useMemo(
     () => getCameraPathPose(progressRef.current, CAMERA_START, CAMERA_END, CAMERA_TARGET, reducedMotion),
@@ -162,7 +244,7 @@ function CameraRig({ onCameraReady, progressRef, reducedMotion, settled }) {
 
   return (
     <Entity ref={entityRef} name="Official Reverance orbit camera" position={initialPose.position}>
-      <Camera clearColor="#9aabb7" fov={CAMERA_FOV} nearClip={0.5} farClip={500} />
+      <Camera clearColor="#9aabb7" fov={fov} nearClip={1} farClip={500} />
       {settled && (
         <Script
           script={CameraControls}
@@ -174,13 +256,49 @@ function CameraRig({ onCameraReady, progressRef, reducedMotion, settled }) {
           yawRange={CAMERA_YAW_RANGE}
           zoomRange={CAMERA_ZOOM_RANGE}
           rotateSpeed={0.12}
-          zoomSpeed={0.0008}
+          zoomSpeed={0}
           moveDamping={0.96}
           rotateDamping={0.97}
           zoomDamping={0.965}
           focusDamping={0.93}
         />
       )}
+    </Entity>
+  );
+}
+
+function HorizonEnvironment() {
+  const { asset } = useTexture(HORIZON_URL, { data: { mipmaps: true } });
+  const material = useMemo(() => {
+    if (!asset?.resource) return null;
+    const texture = asset.resource;
+    texture.addressU = ADDRESS_REPEAT;
+    texture.addressV = ADDRESS_CLAMP_TO_EDGE;
+    texture.minFilter = FILTER_LINEAR;
+    texture.magFilter = FILTER_LINEAR;
+
+    const nextMaterial = new StandardMaterial();
+    nextMaterial.diffuseMap = texture;
+    nextMaterial.emissiveMap = texture;
+    nextMaterial.emissive.set(1, 1, 1);
+    nextMaterial.useLighting = false;
+    nextMaterial.cull = CULLFACE_FRONT;
+    nextMaterial.depthWrite = false;
+    nextMaterial.update();
+    return nextMaterial;
+  }, [asset]);
+
+  useEffect(() => () => material?.destroy(), [material]);
+  if (!material) return null;
+
+  return (
+    <Entity
+      name="Official Otium distant mountain environment"
+      position={CAMERA_TARGET}
+      rotation={[0, 180, 0]}
+      scale={[70, 70, 70]}
+    >
+      <Render type="sphere" material={material} castShadows={false} receiveShadows={false} />
     </Entity>
   );
 }
@@ -210,17 +328,30 @@ function SplatAsset({ onStateChange }) {
 
 function FloorHighlight({ floorNumber }) {
   const app = useApp();
+  const viewProjection = useRef(new Mat4());
+  const inverseViewProjection = useRef(new Mat4());
+  const floorFromClip = useRef(new Mat4());
+  const floorWorldToLocal = useRef(new Mat4());
+  const worldToClipW = useRef(new Float32Array(4));
+  const pixelToLocalY = useRef(new Float32Array(2));
 
   useEffect(() => {
     const material = app.scene.gsplat.material;
+    const varyings = app.scene.gsplat.varyings;
     const glslChunks = material.getShaderChunks("glsl");
     const wgslChunks = material.getShaderChunks("wgsl");
     const previousGlsl = glslChunks.get("gsplatModifyVS");
     const previousWgsl = wgslChunks.get("gsplatModifyVS");
+    const previousFragmentGlsl = glslChunks.get("gsplatModifyPS");
+    const previousFragmentWgsl = wgslChunks.get("gsplatModifyPS");
+    const addedFloorSpan = !varyings.streams.some(({ name }) => name === "floorSpan");
     const parameterNames = [
       "uFloorWorldToLocal",
       "uFloorHalfSize",
       "uFloorHighlightEnabled",
+      "uFloorWorldToClipW",
+      "uFloorPixelToLocalY",
+      "uDistantEnvironmentRadius",
     ];
     const previousParameters = parameterNames.map((name) => ({
       name,
@@ -228,8 +359,14 @@ function FloorHighlight({ floorNumber }) {
       data: material.getParameter(name)?.data,
     }));
 
+    if (addedFloorSpan) {
+      varyings.add([{ name: "floorSpan", type: TYPE_FLOAT32, components: 2 }]);
+      varyings.apply(material);
+    }
     glslChunks.set("gsplatModifyVS", FLOOR_HIGHLIGHT_GLSL);
     wgslChunks.set("gsplatModifyVS", FLOOR_HIGHLIGHT_WGSL);
+    glslChunks.set("gsplatModifyPS", FLOOR_HIGHLIGHT_FRAGMENT_GLSL);
+    wgslChunks.set("gsplatModifyPS", FLOOR_HIGHLIGHT_FRAGMENT_WGSL);
     material.update();
 
     return () => {
@@ -237,6 +374,14 @@ function FloorHighlight({ floorNumber }) {
       else glslChunks.set("gsplatModifyVS", previousGlsl);
       if (previousWgsl === undefined) wgslChunks.delete("gsplatModifyVS");
       else wgslChunks.set("gsplatModifyVS", previousWgsl);
+      if (previousFragmentGlsl === undefined) glslChunks.delete("gsplatModifyPS");
+      else glslChunks.set("gsplatModifyPS", previousFragmentGlsl);
+      if (previousFragmentWgsl === undefined) wgslChunks.delete("gsplatModifyPS");
+      else wgslChunks.set("gsplatModifyPS", previousFragmentWgsl);
+      if (addedFloorSpan) {
+        varyings.remove(["floorSpan"]);
+        varyings.apply(material);
+      }
       previousParameters.forEach(({ name, present, data }) => {
         if (present) material.setParameter(name, data);
         else material.deleteParameter(name);
@@ -252,18 +397,49 @@ function FloorHighlight({ floorNumber }) {
     if (volume) {
       transform.copy(getWorldToFloorTransform(volume));
     }
+    floorWorldToLocal.current.copy(transform);
 
     material.setParameter("uFloorWorldToLocal", transform.data);
     material.setParameter("uFloorHalfSize", FLOOR_HIGHLIGHT_HALF_SIZE);
     material.setParameter("uFloorHighlightEnabled", volume ? 1 : 0);
+    material.setParameter("uFloorWorldToClipW", worldToClipW.current);
+    material.setParameter("uFloorPixelToLocalY", pixelToLocalY.current);
+    material.setParameter("uDistantEnvironmentRadius", DISTANT_ENVIRONMENT_RADIUS);
     material.update();
   }, [app, floorNumber]);
+
+  useAppEvent("update", () => {
+    const camera = app.root.findByName("Official Reverance orbit camera")?.camera;
+    if (!camera) return;
+
+    const projection = camera.projectionMatrix;
+    const view = camera.viewMatrix;
+    const vp = viewProjection.current.mul2(projection, view);
+    const invVp = inverseViewProjection.current.copy(vp).invert();
+    const fromClip = floorFromClip.current.mul2(floorWorldToLocal.current, invVp);
+    const vpData = vp.data;
+    const fromClipData = fromClip.data;
+    const width = Math.max(1, app.graphicsDevice.width);
+    const height = Math.max(1, app.graphicsDevice.height);
+
+    worldToClipW.current[0] = vpData[3];
+    worldToClipW.current[1] = vpData[7];
+    worldToClipW.current[2] = vpData[11];
+    worldToClipW.current[3] = vpData[15];
+    pixelToLocalY.current[0] = (2 * fromClipData[1]) / width;
+    pixelToLocalY.current[1] = (2 * fromClipData[5]) / height;
+
+    const material = app.scene.gsplat.material;
+    material.setParameter("uFloorWorldToClipW", worldToClipW.current);
+    material.setParameter("uFloorPixelToLocalY", pixelToLocalY.current);
+  });
 
   return null;
 }
 
 function SplatScene({
   hoveredFloor,
+  fov,
   onCameraReady,
   onStateChange,
   progressRef,
@@ -273,15 +449,17 @@ function SplatScene({
   return (
     <>
       <CameraRig
+        fov={fov}
         onCameraReady={onCameraReady}
         progressRef={progressRef}
         reducedMotion={reducedMotion}
         settled={settled}
       />
+      <HorizonEnvironment />
       <Entity name="Official Project Reverance reconstruction" rotation={REVERANCE_SPLAT_ROTATION}>
         <SplatAsset onStateChange={onStateChange} />
       </Entity>
-      {settled && <FloorHighlight floorNumber={hoveredFloor} />}
+      <FloorHighlight floorNumber={settled ? hoveredFloor : null} />
     </>
   );
 }
@@ -338,8 +516,11 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
   const [hoveredFloor, setHoveredFloor] = useState(null);
   const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
+  const [cameraFov, setCameraFov] = useState(CAMERA_FOV);
   const cameraEntityRef = useRef(null);
   const pointerStartRef = useRef(null);
+  const touchPointersRef = useRef(new Map());
+  const pinchDistanceRef = useRef(null);
   const draggedRef = useRef(false);
   const suppressClickRef = useRef(false);
   const railRef = useRef(null);
@@ -415,8 +596,27 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
     return nearest;
   }, [settled]);
 
+  const handleOpticalZoom = useCallback((delta) => {
+    if (!settled || !Number.isFinite(delta)) return;
+    setCameraFov((current) => Math.min(CAMERA_FOV, Math.max(
+      CAMERA_MIN_FOV,
+      current + delta,
+    )));
+  }, [settled]);
+
   const handleModelPointerMove = useCallback((event) => {
     if (!settled) return;
+    if (event.pointerType === "touch" && touchPointersRef.current.has(event.pointerId)) {
+      touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (touchPointersRef.current.size === 2) {
+        const [first, second] = [...touchPointersRef.current.values()];
+        const distance = Math.hypot(second.x - first.x, second.y - first.y);
+        if (pinchDistanceRef.current && distance > 0) {
+          handleOpticalZoom(Math.log(pinchDistanceRef.current / distance) * 10);
+        }
+        pinchDistanceRef.current = distance;
+      }
+    }
     const pointerStart = pointerStartRef.current;
     if (pointerStart && (event.buttons > 0 || event.pointerType === "touch")) {
       if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 6) {
@@ -450,7 +650,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
       { x: event.clientX - rect.left, y: event.clientY - rect.top },
       { width: rect.width, height: rect.height },
     ));
-  }, [pickFloor, settled]);
+  }, [handleOpticalZoom, pickFloor, settled]);
 
   const handleModelClick = useCallback((event) => {
     if (!settled) return;
@@ -476,6 +676,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
     suppressClickRef.current = false;
     setHoveredFloor(null);
     setHoverPoint(null);
+    setCameraFov(CAMERA_FOV);
     const cameraEntity = cameraEntityRef.current;
     const controls = cameraEntity?.script?.cameraControls;
     if (controls?.reset) {
@@ -495,6 +696,13 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
       data-hovered-floor={hoveredFloor ?? undefined}
       aria-busy={loadState.status === "loading"}
       onPointerDown={(event) => {
+        if (event.pointerType === "touch") {
+          touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+          if (touchPointersRef.current.size === 2) {
+            const [first, second] = [...touchPointersRef.current.values()];
+            pinchDistanceRef.current = Math.hypot(second.x - first.x, second.y - first.y);
+          }
+        }
         if (event.target.closest?.("canvas")) {
           pointerStartRef.current = { x: event.clientX, y: event.clientY };
           draggedRef.current = false;
@@ -502,17 +710,28 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
         }
       }}
       onPointerMove={handleModelPointerMove}
-      onPointerUp={() => {
+      onWheel={(event) => {
+        if (!settled || !event.target.closest?.("canvas")) return;
+        event.preventDefault();
+        handleOpticalZoom(event.deltaY * 0.012);
+      }}
+      onPointerUp={(event) => {
+        touchPointersRef.current.delete(event.pointerId);
+        pinchDistanceRef.current = null;
         suppressClickRef.current = draggedRef.current;
         pointerStartRef.current = null;
         draggedRef.current = false;
       }}
-      onPointerCancel={() => {
+      onPointerCancel={(event) => {
+        touchPointersRef.current.delete(event.pointerId);
+        pinchDistanceRef.current = null;
         pointerStartRef.current = null;
         draggedRef.current = false;
         suppressClickRef.current = false;
       }}
       onPointerLeave={() => {
+        touchPointersRef.current.clear();
+        pinchDistanceRef.current = null;
         pointerStartRef.current = null;
         draggedRef.current = false;
         suppressClickRef.current = false;
@@ -533,6 +752,7 @@ export function Reverance3D({ snapshot, onSelectFloor, settled, progressRef }) {
             maxDeltaTime={0.05}
           >
             <SplatScene
+              fov={cameraFov}
               hoveredFloor={hoveredFloor}
               onCameraReady={handleCameraReady}
               onStateChange={reportState}

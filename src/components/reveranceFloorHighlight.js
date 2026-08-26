@@ -6,12 +6,19 @@ export const REVERANCE_FLOOR_ROTATION = Object.freeze([
   8.877656364351859,
   -179.92406130155297,
 ]);
-export const REVERANCE_FLOOR_LOCAL_CENTER = Object.freeze([-0.12, 0, -0.282]);
+export const REVERANCE_FLOOR_HIGHLIGHT_HEIGHT = 0.08075279872482334;
+export const REVERANCE_FLOOR_LOCAL_CENTER = Object.freeze([
+  -0.12,
+  -REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5,
+  -0.282,
+]);
 export const REVERANCE_FLOOR_SIZE = Object.freeze([
   1.04,
   0.07267751885234101,
   1.12,
 ]);
+export const REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER = 0.00035;
+export const REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON = 1e-5;
 export const REVERANCE_FLOOR_VOLUMES = Object.freeze([
   [2, 0.3465929124598087, -0.8097063560444595, -0.46356909413651887],
   [3, 0.3465468627576663, -0.7289545140944962, -0.46395948241105345],
@@ -46,4 +53,60 @@ export function getFloorWorldTransform(volume) {
 
 export function getWorldToFloorTransform(volume) {
   return getFloorWorldTransform(volume).invert();
+}
+
+export function getFloorHighlightProjection(
+  viewProjection,
+  worldToFloor,
+  viewportWidth,
+  viewportHeight,
+) {
+  const inverseViewProjection = viewProjection.clone().invert();
+  const floorFromClip = new Mat4().mul2(worldToFloor, inverseViewProjection);
+  const viewProjectionData = viewProjection.data;
+  const floorFromClipData = floorFromClip.data;
+  const width = Math.max(1, viewportWidth);
+  const height = Math.max(1, viewportHeight);
+
+  return {
+    worldToClipW: new Float32Array([
+      viewProjectionData[3],
+      viewProjectionData[7],
+      viewProjectionData[11],
+      viewProjectionData[15],
+    ]),
+    pixelToLocalY: new Float32Array([
+      (2 * floorFromClipData[1]) / width,
+      (2 * floorFromClipData[5]) / height,
+    ]),
+  };
+}
+
+export function getFloorFragmentLocalY(
+  centerLocalY,
+  centerClipW,
+  pixelOffset,
+  pixelToLocalY,
+  flipScreenY = false,
+) {
+  const ySlope = flipScreenY ? -pixelToLocalY[1] : pixelToLocalY[1];
+  return centerLocalY + centerClipW * (
+    pixelOffset[0] * pixelToLocalY[0] + pixelOffset[1] * ySlope
+  );
+}
+
+export function getFloorFragmentHighlightMask(
+  fragmentLocalY,
+  antialiasWidth,
+  candidateClipW = 1,
+) {
+  if (Math.abs(candidateClipW) < REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON) return 0;
+
+  const halfHeight = REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5;
+  const width = Math.max(antialiasWidth, REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER);
+  const normalizedEdge = Math.min(1, Math.max(
+    0,
+    (halfHeight - Math.abs(fragmentLocalY)) / width,
+  ));
+  return normalizedEdge * normalizedEdge * (3 - 2 * normalizedEdge);
 }
