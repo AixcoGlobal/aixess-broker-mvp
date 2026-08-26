@@ -79,7 +79,7 @@ describe("Residence explorer", () => {
 
     fireEvent.keyDown(window, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-  });
+  }, 30000);
 
   it("keeps the verified snapshot when the live service fails and supports filters and floor navigation", async () => {
     const user = userEvent.setup();

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   createFloorVolumes,
+  getCanvasScreenPoint,
   getCameraPathPose,
   getFloorTooltipPosition,
   getKeyboardFloorTarget,
@@ -73,6 +74,14 @@ describe("Reverance splat floor interaction volumes", () => {
 });
 
 describe("Reverance floor hover label", () => {
+  it("converts CSS pointer coordinates to the render buffer used by the camera", () => {
+    expect(getCanvasScreenPoint(
+      { x: 180, y: 240 },
+      { width: 600, height: 600 },
+      { width: 1200, height: 1200 },
+    )).toEqual({ x: 360, y: 480 });
+  });
+
   it("keeps the label beside the pointer in open canvas space", () => {
     expect(getFloorTooltipPosition(
       { x: 220, y: 180 },

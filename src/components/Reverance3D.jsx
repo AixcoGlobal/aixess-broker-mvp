@@ -31,6 +31,7 @@ import {
 } from "playcanvas";
 import { getFloorSummary } from "../data/reveranceApi";
 import {
+  getCanvasScreenPoint,
   getCameraPathPose,
   getFloorTooltipPosition,
   getKeyboardFloorTarget,
@@ -637,9 +638,14 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     if (!camera || !canvas) return null;
 
     const rect = canvas.getBoundingClientRect();
-    const screenX = event.clientX - rect.left;
-    const screenY = event.clientY - rect.top;
-    if (screenX < 0 || screenY < 0 || screenX > rect.width || screenY > rect.height) return null;
+    const cssX = event.clientX - rect.left;
+    const cssY = event.clientY - rect.top;
+    if (cssX < 0 || cssY < 0 || cssX > rect.width || cssY > rect.height) return null;
+    const { x: screenX, y: screenY } = getCanvasScreenPoint(
+      { x: cssX, y: cssY },
+      { width: rect.width, height: rect.height },
+      { width: canvas.width, height: canvas.height },
+    );
 
     const start = camera.screenToWorld(screenX, screenY, camera.nearClip, new Vec3());
     const end = camera.screenToWorld(screenX, screenY, camera.farClip, new Vec3());
