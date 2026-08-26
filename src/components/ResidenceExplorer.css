@@ -107,6 +107,7 @@
 
 .residence-filter-panel > * {
   width: min(100%, 38rem);
+  max-width: 100%;
 }
 
 .explorer-copy .section-eyebrow {
@@ -382,6 +383,7 @@
 
 .residence-filter-result > span:first-child {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 0.65rem;
   color: var(--paper);
@@ -391,6 +393,7 @@
 .residence-filter-result strong {
   color: var(--paper);
   font-size: 0.78rem;
+  white-space: nowrap;
   text-align: right;
 }
 
@@ -1460,12 +1463,20 @@
     margin-top: 0.55rem;
   }
   .residence-filter-results-head { display: none; }
-  .residence-filter-result { min-height: 2.5rem; }
+  .residence-filter-result {
+    min-height: 2.5rem;
+    grid-template-columns: minmax(0, 1fr) 2.7rem 4.8rem 1rem;
+    gap: 0.45rem;
+    padding-inline: 0.55rem;
+  }
+  .residence-filter-result > span:first-child,
+  .residence-filter-result > span:nth-child(2) { white-space: nowrap; }
   .explorer-stage { padding: 0 0.8rem 3.2rem; }
   .building-map,
   .explorer-loading,
-  .explorer-error { width: min(100%, calc(100svh - 23.5rem)); }
+  .explorer-error { width: min(100%, max(11rem, calc(100svh - 19.5rem))); }
   .building-model-instruction { right: 0.65rem; bottom: 0.65rem; left: 0.65rem; min-height: 2.3rem; }
+  .building-model-instruction strong { min-width: 0; max-width: none; }
   .building-model-instruction strong { font-size: 0.48rem; }
   .model-floor-rail { top: 55%; right: 0.45rem; width: 2.65rem; }
   .model-floor-rail button { height: 1.25rem; grid-template-columns: 1rem 1fr; }
@@ -1504,7 +1515,7 @@
   .residence-choice-field button { font-size: 0.46rem; }
   .building-map,
   .explorer-loading,
-  .explorer-error { width: min(100%, calc(100svh - 21rem)); }
+  .explorer-error { width: min(100%, max(11rem, calc(100svh - 19.5rem))); }
   .building-model-instruction { left: 0.5rem; right: 0.5rem; }
   .building-model-instruction strong { max-width: 12rem; }
   .model-badge-desktop { display: none; }
@@ -1536,6 +1547,183 @@
   .model-floor-rail button i { display: none; }
   .explorer-motion-caption span:nth-child(2) { display: none; }
   .floor-plan-pane { min-height: 26rem; }
+}
+
+@media (max-width: 700px) {
+  .building-map,
+  .explorer-loading,
+  .explorer-error {
+    width: min(100%, max(11rem, calc(100svh - 19.5rem)));
+  }
+
+  .model-loading {
+    max-width: calc(100% - 2rem);
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  .residence-explorer {
+    height: 300svh;
+    min-height: 0;
+  }
+
+  .explorer-sticky {
+    min-height: 100svh;
+    grid-template-columns: minmax(15rem, 0.86fr) minmax(0, 1.14fr);
+    grid-template-rows: 1fr;
+    background: linear-gradient(105deg, #141210 0%, #141210 42%, #101419 42.1%, #111419 100%);
+  }
+
+  .explorer-copy {
+    height: auto;
+    transform: translateY(var(--copy-shift));
+  }
+
+  .explorer-copy-panel,
+  .residence-filter-panel {
+    justify-content: center;
+    padding: 1.25rem 1rem 2.4rem;
+  }
+
+  .explorer-copy h2 {
+    font-size: clamp(2.25rem, 7.4vw, 4rem);
+  }
+
+  .explorer-description {
+    max-width: 22rem;
+    margin-top: 0.8rem;
+    font-size: clamp(0.68rem, 1.65vw, 0.88rem);
+    line-height: 1.3;
+  }
+
+  .explorer-metrics {
+    margin-top: 1rem;
+  }
+
+  .explorer-intro-panel > .availability-legend,
+  .explorer-footnote {
+    display: none;
+  }
+
+  .residence-filter-heading {
+    margin-bottom: 0.35rem;
+  }
+
+  .residence-filter-heading > span {
+    font-size: 0.55rem;
+  }
+
+  .residence-filter-panel h2 {
+    font-size: clamp(2rem, 6.2vw, 3.4rem);
+  }
+
+  .residence-filter-controls {
+    margin-top: 0.6rem;
+  }
+
+  .residence-filter-results {
+    max-height: 7rem;
+  }
+
+  .explorer-stage {
+    padding: 0.6rem 0.7rem 2.6rem 0;
+  }
+
+  .building-map,
+  .explorer-loading,
+  .explorer-error {
+    width: min(100%, calc(100svh - 3.4rem));
+  }
+
+  .building-model-instruction {
+    right: 0.45rem;
+    bottom: 0.45rem;
+    left: 0.45rem;
+    min-height: 2rem;
+    gap: 0.45rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .model-instruction-desktop {
+    display: none;
+  }
+
+  .model-instruction-mobile {
+    display: inline;
+  }
+
+  .building-model-instruction strong {
+    font-size: 0.43rem;
+    letter-spacing: 0.08em;
+  }
+
+  .building-model-badge,
+  .model-reset-view {
+    top: 0.45rem;
+  }
+
+  .building-model-badge {
+    left: 0.45rem;
+  }
+
+  .model-reset-view {
+    right: 0.45rem;
+  }
+
+  .model-floor-rail {
+    right: 0.35rem;
+    width: 2.35rem;
+  }
+
+  .explorer-motion-caption {
+    right: 0.8rem;
+    bottom: 0.7rem;
+    left: 0.8rem;
+    font-size: 0.4rem;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1180px) and (max-height: 760px) {
+  .explorer-sticky {
+    min-height: 0;
+  }
+
+  .explorer-copy-panel,
+  .residence-filter-panel {
+    padding-top: 2.8rem;
+    padding-bottom: 3.3rem;
+  }
+
+  .explorer-description,
+  .residence-filter-intro {
+    display: none;
+  }
+
+  .explorer-metrics {
+    margin-top: 1.55rem;
+  }
+
+  .residence-filter-controls {
+    margin-top: 0.8rem;
+  }
+
+  .residence-filter-results {
+    max-height: 9.2rem;
+  }
+
+  .explorer-stage {
+    padding-top: 1rem;
+    padding-bottom: 3rem;
+  }
+
+  .building-map,
+  .explorer-loading,
+  .explorer-error {
+    width: min(100%, calc(100svh - 4rem));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

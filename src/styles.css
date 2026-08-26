@@ -54,7 +54,7 @@
 }
 
 html {
-  min-width: 320px;
+  min-width: 0;
   scroll-behavior: smooth;
   scrollbar-width: none;
   background: var(--ink);
@@ -66,7 +66,7 @@ body::-webkit-scrollbar {
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   min-height: 100vh;
   overflow-x: hidden;
   background: var(--ink);
@@ -867,6 +867,74 @@ input:focus-visible {
   .hero h1 { font-size: 3.05rem; }
   .hero-meta { font-size: 0.56rem; }
   .project-stats { gap: 0.8rem; }
+}
+
+/* Short viewports and phone landscape need a little more vertical and
+   horizontal breathing room than the portrait breakpoints above provide. */
+@media (min-width: 701px) and (max-height: 760px) {
+  .hero {
+    height: 100svh;
+    min-height: 34rem;
+  }
+
+  .site-header {
+    height: 5.2rem;
+  }
+
+  .hero-copy {
+    padding-top: 2.45rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(5.4rem, 8.3vw, 8.2rem);
+  }
+
+  .hero-subtitle {
+    margin-top: 1.25rem;
+    font-size: clamp(1.2rem, 1.75vw, 1.55rem);
+  }
+
+  .hero-meta {
+    margin-top: 1.65rem;
+  }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  .hero {
+    min-height: 100svh;
+  }
+
+  .hero-copy {
+    padding-top: 1.4rem;
+    padding-bottom: 1.3rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 8.7vw, 4.4rem);
+    line-height: 0.92;
+  }
+
+  .accent-rule {
+    margin-top: 1rem;
+  }
+
+  .hero-subtitle {
+    margin-top: 0.85rem;
+    font-size: clamp(0.92rem, 2.5vw, 1.25rem);
+  }
+
+  .hero-meta {
+    margin-top: 1rem;
+    font-size: 0.55rem;
+  }
+
+  .hero-media {
+    height: min(24rem, 72svh);
+  }
+
+  .access-section {
+    padding-block: 2rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
