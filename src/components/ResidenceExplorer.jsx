@@ -79,17 +79,17 @@ function useScrollStage(sectionRef) {
 
     const render = () => {
       frame = 0;
+      const bounds = section.getBoundingClientRect();
       const height = Math.max(section.offsetHeight - window.innerHeight, 1);
       const progress = reducedMotion.matches
         ? 1
-        : clamp(-section.getBoundingClientRect().top / height);
+        : clamp(-bounds.top / height);
       const isSettled = reducedMotion.matches || progress >= 0.965;
-      const bounds = section.getBoundingClientRect();
       const isInteractive = reducedMotion.matches
         || (bounds.top < window.innerHeight && bounds.bottom > 0);
       const filterProgress = reducedMotion.matches
         ? 1
-        : clamp((progress - 0.44) / 0.18);
+        : clamp(-bounds.top / Math.max(window.innerHeight, 1));
       const isFilterActive = reducedMotion.matches || filterProgress >= 0.5;
 
       progressRef.current = progress;
