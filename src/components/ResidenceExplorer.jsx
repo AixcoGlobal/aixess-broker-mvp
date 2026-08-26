@@ -431,6 +431,9 @@ function ResidenceFilter({
   previewResidence,
 }) {
   const formatArea = (value) => `${Number(value).toFixed(0)} m²`;
+  const areaRange = Math.max(areaBounds.max - areaBounds.min, 1);
+  const minAreaProgress = ((filters.minArea - areaBounds.min) / areaRange) * 100;
+  const maxAreaProgress = ((filters.maxArea - areaBounds.min) / areaRange) * 100;
 
   return (
     <div
@@ -487,6 +490,7 @@ function ResidenceFilter({
               max={areaBounds.max}
               step="1"
               value={filters.minArea}
+              style={{ "--range-progress": `${minAreaProgress}%` }}
               aria-label="Minimum area"
               onChange={(event) => onChange("minArea", Math.min(Number(event.target.value), filters.maxArea))}
             />
@@ -496,6 +500,7 @@ function ResidenceFilter({
               max={areaBounds.max}
               step="1"
               value={filters.maxArea}
+              style={{ "--range-progress": `${maxAreaProgress}%` }}
               aria-label="Maximum area"
               onChange={(event) => onChange("maxArea", Math.max(Number(event.target.value), filters.minArea))}
             />
