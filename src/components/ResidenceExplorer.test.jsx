@@ -173,9 +173,15 @@ describe("Residence explorer", () => {
     await waitFor(() => expect(controls.closest(".residence-filter-panel")).toHaveAttribute("aria-hidden", "false"));
     expect(screen.getByText("1 MATCH")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Residence 411, floor 4/i })).toBeInTheDocument();
-    expect(container.querySelector(".model-static-fallback polygon.is-filter-match")).toHaveAttribute("aria-label", expect.stringMatching(/Floor 04/i));
+    expect(container.querySelector(".model-static-fallback polygon.is-filter-match")).toBeNull();
 
     await user.selectOptions(within(controls).getByLabelText("FLOOR"), "4");
+    expect(container.querySelector(".model-static-fallback polygon.is-filter-match")).toHaveAttribute("aria-label", expect.stringMatching(/Floor 04/i));
+
+    await user.click(screen.getByRole("button", { name: /Reset filters/i }));
+    expect(within(controls).getByLabelText("FLOOR")).toHaveValue("all");
+    expect(container.querySelector(".model-static-fallback polygon.is-filter-match")).toBeNull();
+
     await user.click(within(controls).getByRole("button", { name: "2" }));
     await user.click(within(within(controls).getByRole("group", { name: "AVAILABILITY" })).getByRole("button", { name: "ALL" }));
     fireEvent.change(within(controls).getByLabelText("Minimum area"), { target: { value: "60" } });

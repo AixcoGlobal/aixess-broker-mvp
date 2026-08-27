@@ -65,6 +65,13 @@ function clamp(value, minimum = 0, maximum = 1) {
 }
 
 const EXPLORER_SETTLE_PROGRESS = 0.965;
+const DEFAULT_FILTERS = {
+  floor: "all",
+  bedrooms: "all",
+  minArea: 0,
+  maxArea: 100,
+  status: "available",
+};
 
 function useScrollStage(sectionRef) {
   const [settled, setSettled] = useState(false);
@@ -429,6 +436,7 @@ function ResidenceFilter({
   onOpenResidence,
   onPreviewResidence,
   previewResidence,
+  onReset,
 }) {
   const formatArea = (value) => `${Number(value).toFixed(0)} m²`;
   const areaRange = Math.max(areaBounds.max - areaBounds.min, 1);
@@ -443,7 +451,10 @@ function ResidenceFilter({
     >
       <div className="residence-filter-heading">
         <p className="section-eyebrow">FIND A RESIDENCE</p>
-        <span>{matchingUnits.length} MATCH{matchingUnits.length === 1 ? "" : "ES"}</span>
+        <div className="residence-filter-heading-actions">
+          <span>{matchingUnits.length} MATCH{matchingUnits.length === 1 ? "" : "ES"}</span>
+          <button className="residence-filter-reset" type="button" onClick={onReset}>RESET FILTERS</button>
+        </div>
       </div>
       <h2>FILTER THE<br />OPPORTUNITY.</h2>
       <p className="residence-filter-intro">Refine the live inventory. Every selection is reflected directly on the building.</p>
@@ -570,13 +581,8 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [selectedUnitName, setSelectedUnitName] = useState(null);
   const [previewUnitId, setPreviewUnitId] = useState(null);
-  const [filters, setFilters] = useState({
-    floor: "all",
-    bedrooms: "all",
-    minArea: 0,
-    maxArea: 100,
-    status: "available",
-  });
+  const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS }));
+  const [filtersTouched, setFiltersTouched] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
   const [canMountModel, setCanMountModel] = useState(() => (
     typeof window === "undefined" || !("IntersectionObserver" in window)
@@ -656,12 +662,23 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
     () => matchingUnits.find((unit) => String(unit.id) === String(previewUnitId)) || matchingUnits[0] || null,
     [matchingUnits, previewUnitId],
   );
-  const filterHighlightedFloor = filterActive ? previewResidence?.floor ?? null : null;
+  const filterHighlightedFloor = filterActive && filtersTouched ? previewResidence?.floor ?? null : null;
 
   const updateFilter = useCallback((name, value) => {
     setFilters((current) => ({ ...current, [name]: value }));
     setPreviewUnitId(null);
+    setFiltersTouched(true);
   }, []);
+
+  const resetFilters = useCallback(() => {
+    setFilters({
+      ...DEFAULT_FILTERS,
+      minArea: areaBounds.min,
+      maxArea: areaBounds.max,
+    });
+    setPreviewUnitId(null);
+    setFiltersTouched(false);
+  }, [areaBounds.max, areaBounds.min]);
 
   const openResidence = useCallback((unit) => {
     setSelectedUnitName(String(unit.name));
@@ -707,6 +724,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
             onOpenResidence={openResidence}
             onPreviewResidence={(unit) => setPreviewUnitId(unit.id)}
             previewResidence={previewResidence}
+            onReset={resetFilters}
           />
         </div>
 

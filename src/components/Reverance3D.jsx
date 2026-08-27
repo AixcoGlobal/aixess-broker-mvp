@@ -581,6 +581,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
   const [cameraFov, setCameraFov] = useState(CAMERA_FOV);
   const cameraEntityRef = useRef(null);
+  const modelRef = useRef(null);
   const pointerStartRef = useRef(null);
   const touchPointersRef = useRef(new Map());
   const pinchDistanceRef = useRef(null);
@@ -671,6 +672,18 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     )));
   }, [settled]);
 
+  useEffect(() => {
+    const model = modelRef.current;
+    if (!model) return undefined;
+    const handleWheel = (event) => {
+      if (!settled || !event.target.closest?.("canvas")) return;
+      event.preventDefault();
+      handleOpticalZoom(event.deltaY * 0.012);
+    };
+    model.addEventListener("wheel", handleWheel, { passive: false });
+    return () => model.removeEventListener("wheel", handleWheel);
+  }, [handleOpticalZoom, settled]);
+
   const handleModelPointerMove = useCallback((event) => {
     if (!interactive) return;
     if (event.pointerType === "touch" && touchPointersRef.current.has(event.pointerId)) {
@@ -758,6 +771,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
   return (
     <div
+      ref={modelRef}
       className={`building-map building-model building-splat ${settled ? "is-settled" : "is-turning"} ${interactive ? "is-interactive" : ""}`}
       data-load-state={loadState.status}
       data-hovered-floor={hoveredFloor ?? undefined}
@@ -778,10 +792,6 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         }
       }}
       onPointerMove={handleModelPointerMove}
-      onWheel={(event) => {
-        if (!settled || !event.target.closest?.("canvas")) return;
-        handleOpticalZoom(event.deltaY * 0.012);
-      }}
       onPointerUp={(event) => {
         touchPointersRef.current.delete(event.pointerId);
         pinchDistanceRef.current = null;
