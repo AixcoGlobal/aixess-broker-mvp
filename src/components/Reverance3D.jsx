@@ -57,6 +57,8 @@ const CAMERA_PITCH_RANGE = new Vec2(-0.08, 0.08);
 const CAMERA_YAW_RANGE = new Vec2(-360, 360);
 const CAMERA_ZOOM_RANGE = new Vec2(3.7123, 3.7165);
 const DISTANT_ENVIRONMENT_RADIUS = 20;
+const HOVER_PICK_INTERVAL_MS = 32;
+const PICKER_PREPARE_INTERVAL_MS = 120;
 const RENDER_SCALE = 2;
 const RENDER_MAX_DIMENSION = 1440;
 const CANVAS_STYLE = { width: "100%", height: "100%" };
@@ -418,8 +420,10 @@ function SplatPicker({ cameraEntityRef, pickerRef }) {
     const state = {
       picker,
       depthPicking,
+      layers: null,
       prepared: false,
       signature: null,
+      lastPreparedAt: 0,
     };
 
     pickerRef.current = {
@@ -434,19 +438,26 @@ function SplatPicker({ cameraEntityRef, pickerRef }) {
         if (nextSize.width !== picker.width || nextSize.height !== picker.height) {
           picker.resize(nextSize.width, nextSize.height);
           state.prepared = false;
+          state.signature = null;
+          state.lastPreparedAt = 0;
         }
 
-        const layers = app.scene.layers.layerList.filter((layer) => (
-          layer.gsplatPlacements?.some((placement) => placement.node?.gsplat)
-        ));
-        if (layers.length === 0) return null;
+        if (!state.layers) {
+          state.layers = app.scene.layers.layerList.filter((layer) => (
+            layer.gsplatPlacements?.some((placement) => placement.node?.gsplat)
+          ));
+        }
+        if (state.layers.length === 0) return null;
 
         const signature = getCameraSignature(cameraEntity);
         if (!signature) return null;
         if (!state.prepared || state.signature !== signature) {
-          picker.prepare(camera, app.scene, layers);
+          const now = window.performance?.now?.() ?? Date.now();
+          if (state.prepared && now - state.lastPreparedAt < PICKER_PREPARE_INTERVAL_MS) return null;
+          picker.prepare(camera, app.scene, state.layers);
           state.signature = signature;
           state.prepared = true;
+          state.lastPreparedAt = now;
         }
 
         const scaleX = picker.width / rect.width;
@@ -462,6 +473,8 @@ function SplatPicker({ cameraEntityRef, pickerRef }) {
       if (nextSize.width !== picker.width || nextSize.height !== picker.height) {
         picker.resize(nextSize.width, nextSize.height);
         state.prepared = false;
+        state.signature = null;
+        state.lastPreparedAt = 0;
       }
     });
     resizeObserver.observe(canvas);
@@ -686,6 +699,10 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const touchPointersRef = useRef(new Map());
   const pinchDistanceRef = useRef(null);
   const hoverRequestRef = useRef(0);
+  const hoverFrameRef = useRef(0);
+  const hoverPickInFlightRef = useRef(false);
+  const lastHoverPickTimeRef = useRef(0);
+  const latestHoverRef = useRef(null);
   const draggedRef = useRef(false);
   const suppressClickRef = useRef(false);
   const railRef = useRef(null);
@@ -702,13 +719,6 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   );
   const hoveredFloorSummary = hoveredFloorData ? getFloorSummary(hoveredFloorData) : null;
   const effectiveHighlightedFloor = hoveredFloor ?? highlightedFloor;
-
-  useEffect(() => {
-    if (interactive) return;
-    hoverRequestRef.current += 1;
-    setHoveredFloor(null);
-    setHoverPoint(null);
-  }, [interactive]);
 
   const reportState = useCallback((nextState) => setLoadState(nextState), []);
   const handleCameraReady = useCallback((entity) => {
@@ -734,17 +744,76 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     railRef.current?.querySelector(`[data-floor="${target}"]`)?.focus();
   }, [onSelectFloor, snapshot.floors]);
 
-  const pickFloor = useCallback((event) => {
-    if (!interactive || loadState.status !== "ready" || !event.target.closest?.("canvas")) return null;
-    const canvas = event.currentTarget.querySelector("canvas");
-    if (!canvas || !pickerRef.current?.pick) return null;
-
+  const pickFloorAtPoint = useCallback((canvas, cssX, cssY) => {
+    if (!interactive || loadState.status !== "ready" || !canvas || !pickerRef.current?.pick) return null;
     const rect = canvas.getBoundingClientRect();
-    const cssX = event.clientX - rect.left;
-    const cssY = event.clientY - rect.top;
     if (cssX < 0 || cssY < 0 || cssX > rect.width || cssY > rect.height) return null;
     return pickerRef.current.pick(cssX, cssY);
   }, [interactive, loadState.status]);
+
+  const invalidateHoverPick = useCallback(() => {
+    hoverRequestRef.current += 1;
+    latestHoverRef.current = null;
+    if (hoverFrameRef.current) {
+      window.cancelAnimationFrame(hoverFrameRef.current);
+      hoverFrameRef.current = 0;
+    }
+  }, []);
+
+  const scheduleHoverPick = useCallback((payload) => {
+    latestHoverRef.current = payload;
+    if (hoverFrameRef.current) return;
+    const run = () => {
+      hoverFrameRef.current = 0;
+      const next = latestHoverRef.current;
+      latestHoverRef.current = null;
+      if (!next) return;
+      if (hoverPickInFlightRef.current) {
+        latestHoverRef.current = next;
+        hoverFrameRef.current = window.requestAnimationFrame(run);
+        return;
+      }
+      const now = window.performance?.now?.() ?? Date.now();
+      const elapsed = now - lastHoverPickTimeRef.current;
+      if (elapsed < HOVER_PICK_INTERVAL_MS) {
+        latestHoverRef.current = next;
+        hoverFrameRef.current = window.requestAnimationFrame(run);
+        return;
+      }
+      lastHoverPickTimeRef.current = now;
+      hoverPickInFlightRef.current = true;
+      Promise.resolve(pickFloorAtPoint(next.canvas, next.x, next.y))
+        .then((floor) => {
+          if (next.request !== hoverRequestRef.current) return;
+          setHoveredFloor(floor);
+          if (floor === null) {
+            setHoverPoint(null);
+            return;
+          }
+          setHoverPoint(getFloorTooltipPosition(next.pointer, next.tooltipSize));
+        }, () => {
+          if (next.request !== hoverRequestRef.current) return;
+          setHoveredFloor(null);
+          setHoverPoint(null);
+        })
+        .finally(() => {
+          hoverPickInFlightRef.current = false;
+          if (latestHoverRef.current && !hoverFrameRef.current) {
+            hoverFrameRef.current = window.requestAnimationFrame(run);
+          }
+        });
+    };
+    hoverFrameRef.current = window.requestAnimationFrame(run);
+  }, [pickFloorAtPoint]);
+
+  useEffect(() => {
+    if (interactive) return;
+    invalidateHoverPick();
+    setHoveredFloor(null);
+    setHoverPoint(null);
+  }, [interactive, invalidateHoverPick]);
+
+  useEffect(() => () => invalidateHoverPick(), [invalidateHoverPick]);
 
   const handleOpticalZoom = useCallback((delta) => {
     if (!settled || !Number.isFinite(delta)) return;
@@ -784,43 +853,41 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 6) {
         draggedRef.current = true;
       }
-      hoverRequestRef.current += 1;
+      invalidateHoverPick();
       setHoveredFloor(null);
       setHoverPoint(null);
       return;
     }
     if (event.pointerType === "touch") {
-      hoverRequestRef.current += 1;
+      invalidateHoverPick();
       setHoveredFloor(null);
       setHoverPoint(null);
       return;
     }
     if (draggedRef.current) return;
     if (!event.target.closest?.("canvas")) {
-      hoverRequestRef.current += 1;
+      invalidateHoverPick();
       if (!event.target.closest?.(".model-floor-rail button")) {
         setHoveredFloor(null);
         setHoverPoint(null);
       }
       return;
     }
-    const rect = event.currentTarget.getBoundingClientRect();
+    const canvas = event.currentTarget.querySelector("canvas");
+    const rect = canvas?.getBoundingClientRect();
+    if (!canvas || !rect) return;
     const pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top };
     const request = ++hoverRequestRef.current;
     const tooltipSize = { width: rect.width, height: rect.height };
-    Promise.resolve(pickFloor(event)).then((floor) => {
-      if (request !== hoverRequestRef.current) return;
-      setHoveredFloor(floor);
-      if (floor === null) {
-        setHoverPoint(null);
-        return;
-      }
-      setHoverPoint(getFloorTooltipPosition(
-        pointer,
-        tooltipSize,
-      ));
+    scheduleHoverPick({
+      canvas,
+      x: pointer.x,
+      y: pointer.y,
+      pointer,
+      request,
+      tooltipSize,
     });
-  }, [handleOpticalZoom, interactive, pickFloor]);
+  }, [handleOpticalZoom, interactive, invalidateHoverPick, scheduleHoverPick]);
 
   const handleModelClick = useCallback((event) => {
     if (!interactive) return;
@@ -832,13 +899,21 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       return;
     }
     if (dragged) return;
+    const canvas = event.currentTarget.querySelector("canvas");
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const floorPick = pickFloorAtPoint(
+      canvas,
+      event.clientX - rect.left,
+      event.clientY - rect.top,
+    );
     const request = ++hoverRequestRef.current;
-    Promise.resolve(pickFloor(event)).then((floor) => {
+    Promise.resolve(floorPick).then((floor) => {
       if (request !== hoverRequestRef.current || floor === null) return;
       setHoverPoint(null);
       onSelectFloor(floor);
     });
-  }, [interactive, onSelectFloor, pickFloor]);
+  }, [interactive, onSelectFloor, pickFloorAtPoint]);
 
   const handleResetView = useCallback((event) => {
     event.stopPropagation();
