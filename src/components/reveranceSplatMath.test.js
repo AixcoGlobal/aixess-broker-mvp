@@ -74,12 +74,10 @@ describe("Reverance splat floor interaction volumes", () => {
 });
 
 describe("Reverance floor hover label", () => {
-  it("converts CSS pointer coordinates to the render buffer used by the camera", () => {
+  it("keeps pointer coordinates in CSS pixels for the camera component", () => {
     expect(getCanvasScreenPoint(
       { x: 180, y: 240 },
-      { width: 600, height: 600 },
-      { width: 1200, height: 1200 },
-    )).toEqual({ x: 360, y: 480 });
+    )).toEqual({ x: 180, y: 240 });
   });
 
   it("keeps the label beside the pointer in open canvas space", () => {

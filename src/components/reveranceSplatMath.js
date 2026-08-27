@@ -148,15 +148,13 @@ export function getKeyboardFloorTarget(floors, currentFloor, key) {
   return currentIndex === -1 ? floorNumbers.at(-1) : Number(currentFloor);
 }
 
-export function getCanvasScreenPoint(pointer, bounds, canvasSize) {
-  const cssWidth = Math.max(1, Number(bounds?.width) || 0);
-  const cssHeight = Math.max(1, Number(bounds?.height) || 0);
-  const renderWidth = Math.max(cssWidth, Number(canvasSize?.width) || 0);
-  const renderHeight = Math.max(cssHeight, Number(canvasSize?.height) || 0);
-
+export function getCanvasScreenPoint(pointer) {
+  // CameraComponent.screenToWorld consumes client/CSS pixels. The canvas can
+  // render at a higher backing resolution for crisp splats, but that scale
+  // must not be applied to pointer coordinates.
   return {
-    x: (Number(pointer?.x) || 0) * renderWidth / cssWidth,
-    y: (Number(pointer?.y) || 0) * renderHeight / cssHeight,
+    x: Number(pointer?.x) || 0,
+    y: Number(pointer?.y) || 0,
   };
 }
 

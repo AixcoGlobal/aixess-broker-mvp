@@ -643,8 +643,6 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     if (cssX < 0 || cssY < 0 || cssX > rect.width || cssY > rect.height) return null;
     const { x: screenX, y: screenY } = getCanvasScreenPoint(
       { x: cssX, y: cssY },
-      { width: rect.width, height: rect.height },
-      { width: canvas.width, height: canvas.height },
     );
 
     const start = camera.screenToWorld(screenX, screenY, camera.nearClip, new Vec3());
@@ -782,7 +780,6 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       onPointerMove={handleModelPointerMove}
       onWheel={(event) => {
         if (!settled || !event.target.closest?.("canvas")) return;
-        event.preventDefault();
         handleOpticalZoom(event.deltaY * 0.012);
       }}
       onPointerUp={(event) => {
