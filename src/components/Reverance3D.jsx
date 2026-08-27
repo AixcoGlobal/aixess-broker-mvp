@@ -21,8 +21,7 @@ import {
   FILTER_LINEAR,
   GSPLATDATA_LARGE,
   Mat4,
-  OrientedBox,
-  Ray,
+  Picker,
   RESOLUTION_FIXED,
   StandardMaterial,
   TYPE_FLOAT32,
@@ -31,13 +30,11 @@ import {
 } from "playcanvas";
 import { getFloorSummary } from "../data/reveranceApi";
 import {
-  getCanvasScreenPoint,
   getCameraPathPose,
   getFloorTooltipPosition,
   getKeyboardFloorTarget,
 } from "./reveranceSplatMath";
 import {
-  getFloorWorldTransform,
   REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON,
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
   REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER,
@@ -72,17 +69,6 @@ const GRAPHICS_OPTIONS = {
   preserveDrawingBuffer: false,
   desynchronized: false,
 };
-const FLOOR_PICK_BOXES = REVERANCE_FLOOR_VOLUMES.map((volume) => {
-  const transform = getFloorWorldTransform(volume);
-  const halfSize = new Vec3(...REVERANCE_FLOOR_SIZE).mulScalar(0.5);
-  return {
-    ...volume,
-    box: new OrientedBox(
-      transform,
-      halfSize,
-    ),
-  };
-});
 const FLOOR_HIGHLIGHT_HALF_SIZE = new Float32Array(
   [
     REVERANCE_FLOOR_SIZE[0] * 0.5,
@@ -90,6 +76,10 @@ const FLOOR_HIGHLIGHT_HALF_SIZE = new Float32Array(
     REVERANCE_FLOOR_SIZE[2] * 0.5,
   ],
 );
+const FLOOR_PICK_VOLUMES = REVERANCE_FLOOR_VOLUMES.map((volume) => ({
+  number: volume.number,
+  worldToLocal: getWorldToFloorTransform(volume),
+}));
 const FLOOR_HIGHLIGHT_GLSL = `
 uniform mat4 uFloorWorldToLocal;
 uniform vec3 uFloorHalfSize;
@@ -386,6 +376,112 @@ function SplatAsset({ onStateChange }) {
   return <GSplat asset={asset} castShadows={false} unified />;
 }
 
+function getCameraSignature(entity) {
+  const transform = entity?.worldTransform?.data;
+  const fov = entity?.camera?.fov;
+  if (!transform || !Number.isFinite(fov)) return null;
+  return `${Array.from(transform, (value) => value.toFixed(6)).join(",")}|${fov.toFixed(4)}`;
+}
+
+export function getFloorAtWorldPoint(worldPoint) {
+  const localPoint = new Vec3();
+  for (const volume of FLOOR_PICK_VOLUMES) {
+    volume.worldToLocal.transformPoint(worldPoint, localPoint);
+    if (
+      Math.abs(localPoint.x) < FLOOR_HIGHLIGHT_HALF_SIZE[0]
+      && Math.abs(localPoint.y) < FLOOR_HIGHLIGHT_HALF_SIZE[1]
+      && Math.abs(localPoint.z) < FLOOR_HIGHLIGHT_HALF_SIZE[2]
+    ) {
+      return volume.number;
+    }
+  }
+  return null;
+}
+
+function SplatPicker({ cameraEntityRef, pickerRef }) {
+  const app = useApp();
+
+  useLayoutEffect(() => {
+    const canvas = app.graphicsDevice.canvas;
+    if (!canvas) return undefined;
+
+    const getSize = () => {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        width: Math.max(1, Math.floor(rect.width)),
+        height: Math.max(1, Math.floor(rect.height)),
+      };
+    };
+    const size = getSize();
+    const depthPicking = app.graphicsDevice.isWebGL2;
+    const picker = new Picker(app, size.width, size.height, depthPicking);
+    const state = {
+      picker,
+      depthPicking,
+      prepared: false,
+      signature: null,
+    };
+
+    pickerRef.current = {
+      picker,
+      pick: async (x, y) => {
+        const cameraEntity = cameraEntityRef.current;
+        const camera = cameraEntity?.camera;
+        const rect = canvas.getBoundingClientRect();
+        if (!state.depthPicking || !camera || rect.width <= 0 || rect.height <= 0) return null;
+
+        const nextSize = getSize();
+        if (nextSize.width !== picker.width || nextSize.height !== picker.height) {
+          picker.resize(nextSize.width, nextSize.height);
+          state.prepared = false;
+        }
+
+        const layers = app.scene.layers.layerList.filter((layer) => (
+          layer.gsplatPlacements?.some((placement) => placement.node?.gsplat)
+        ));
+        if (layers.length === 0) return null;
+
+        const signature = getCameraSignature(cameraEntity);
+        if (!signature) return null;
+        if (!state.prepared || state.signature !== signature) {
+          picker.prepare(camera, app.scene, layers);
+          state.signature = signature;
+          state.prepared = true;
+        }
+
+        const scaleX = picker.width / rect.width;
+        const scaleY = picker.height / rect.height;
+        const worldPoint = await picker.getWorldPointAsync(x * scaleX, y * scaleY);
+        if (!worldPoint || getCameraSignature(cameraEntity) !== signature) return null;
+        return getFloorAtWorldPoint(worldPoint);
+      },
+    };
+
+    const resizeObserver = new ResizeObserver(() => {
+      const nextSize = getSize();
+      if (nextSize.width !== picker.width || nextSize.height !== picker.height) {
+        picker.resize(nextSize.width, nextSize.height);
+        state.prepared = false;
+      }
+    });
+    resizeObserver.observe(canvas);
+
+    return () => {
+      resizeObserver.disconnect();
+      if (!app.graphicsDevice?._destroyed) {
+        try {
+          picker.destroy();
+        } catch {
+          // The Application may tear down the graphics device before child cleanup runs.
+        }
+      }
+      if (pickerRef.current?.picker === picker) pickerRef.current = null;
+    };
+  }, [app, cameraEntityRef, pickerRef]);
+
+  return null;
+}
+
 function FloorHighlight({ floorNumber }) {
   const app = useApp();
   const viewProjection = useRef(new Mat4());
@@ -498,12 +594,14 @@ function FloorHighlight({ floorNumber }) {
 }
 
 function SplatScene({
+  cameraEntityRef,
   hoveredFloor,
   highlightedFloor,
   fov,
   interactive,
   onCameraReady,
   onStateChange,
+  pickerRef,
   progressRef,
   reducedMotion,
   settled,
@@ -521,6 +619,7 @@ function SplatScene({
       <Entity name="Official Project Reverance reconstruction" rotation={REVERANCE_SPLAT_ROTATION}>
         <SplatAsset onStateChange={onStateChange} />
       </Entity>
+      <SplatPicker cameraEntityRef={cameraEntityRef} pickerRef={pickerRef} />
       <FloorHighlight floorNumber={interactive ? hoveredFloor ?? highlightedFloor : null} />
     </>
   );
@@ -581,10 +680,12 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
   const [cameraFov, setCameraFov] = useState(CAMERA_FOV);
   const cameraEntityRef = useRef(null);
+  const pickerRef = useRef(null);
   const modelRef = useRef(null);
   const pointerStartRef = useRef(null);
   const touchPointersRef = useRef(new Map());
   const pinchDistanceRef = useRef(null);
+  const hoverRequestRef = useRef(0);
   const draggedRef = useRef(false);
   const suppressClickRef = useRef(false);
   const railRef = useRef(null);
@@ -604,6 +705,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
   useEffect(() => {
     if (interactive) return;
+    hoverRequestRef.current += 1;
     setHoveredFloor(null);
     setHoverPoint(null);
   }, [interactive]);
@@ -633,36 +735,16 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   }, [onSelectFloor, snapshot.floors]);
 
   const pickFloor = useCallback((event) => {
-    if (!interactive || !event.target.closest?.("canvas")) return null;
-    const camera = cameraEntityRef.current?.camera;
+    if (!interactive || loadState.status !== "ready" || !event.target.closest?.("canvas")) return null;
     const canvas = event.currentTarget.querySelector("canvas");
-    if (!camera || !canvas) return null;
+    if (!canvas || !pickerRef.current?.pick) return null;
 
     const rect = canvas.getBoundingClientRect();
     const cssX = event.clientX - rect.left;
     const cssY = event.clientY - rect.top;
     if (cssX < 0 || cssY < 0 || cssX > rect.width || cssY > rect.height) return null;
-    const { x: screenX, y: screenY } = getCanvasScreenPoint(
-      { x: cssX, y: cssY },
-    );
-
-    const start = camera.screenToWorld(screenX, screenY, camera.nearClip, new Vec3());
-    const end = camera.screenToWorld(screenX, screenY, camera.farClip, new Vec3());
-    const ray = new Ray(start, end.clone().sub(start).normalize());
-    const intersection = new Vec3();
-    let nearest = null;
-    let nearestDistance = Infinity;
-
-    for (const volume of FLOOR_PICK_BOXES) {
-      if (!volume.box.intersectsRay(ray, intersection)) continue;
-      const distance = intersection.distance(start);
-      if (distance < nearestDistance) {
-        nearest = volume.number;
-        nearestDistance = distance;
-      }
-    }
-    return nearest;
-  }, [interactive]);
+    return pickerRef.current.pick(cssX, cssY);
+  }, [interactive, loadState.status]);
 
   const handleOpticalZoom = useCallback((delta) => {
     if (!settled || !Number.isFinite(delta)) return;
@@ -702,34 +784,42 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 6) {
         draggedRef.current = true;
       }
+      hoverRequestRef.current += 1;
       setHoveredFloor(null);
       setHoverPoint(null);
       return;
     }
     if (event.pointerType === "touch") {
+      hoverRequestRef.current += 1;
       setHoveredFloor(null);
       setHoverPoint(null);
       return;
     }
     if (draggedRef.current) return;
     if (!event.target.closest?.("canvas")) {
+      hoverRequestRef.current += 1;
       if (!event.target.closest?.(".model-floor-rail button")) {
         setHoveredFloor(null);
         setHoverPoint(null);
       }
       return;
     }
-    const floor = pickFloor(event);
-    setHoveredFloor(floor);
-    if (floor === null) {
-      setHoverPoint(null);
-      return;
-    }
     const rect = event.currentTarget.getBoundingClientRect();
-    setHoverPoint(getFloorTooltipPosition(
-      { x: event.clientX - rect.left, y: event.clientY - rect.top },
-      { width: rect.width, height: rect.height },
-    ));
+    const pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    const request = ++hoverRequestRef.current;
+    const tooltipSize = { width: rect.width, height: rect.height };
+    Promise.resolve(pickFloor(event)).then((floor) => {
+      if (request !== hoverRequestRef.current) return;
+      setHoveredFloor(floor);
+      if (floor === null) {
+        setHoverPoint(null);
+        return;
+      }
+      setHoverPoint(getFloorTooltipPosition(
+        pointer,
+        tooltipSize,
+      ));
+    });
   }, [handleOpticalZoom, interactive, pickFloor]);
 
   const handleModelClick = useCallback((event) => {
@@ -742,11 +832,12 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       return;
     }
     if (dragged) return;
-    const floor = pickFloor(event);
-    if (floor !== null) {
+    const request = ++hoverRequestRef.current;
+    Promise.resolve(pickFloor(event)).then((floor) => {
+      if (request !== hoverRequestRef.current || floor === null) return;
       setHoverPoint(null);
       onSelectFloor(floor);
-    }
+    });
   }, [interactive, onSelectFloor, pickFloor]);
 
   const handleResetView = useCallback((event) => {
@@ -805,6 +896,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         pointerStartRef.current = null;
         draggedRef.current = false;
         suppressClickRef.current = false;
+        hoverRequestRef.current += 1;
       }}
       onPointerLeave={() => {
         touchPointersRef.current.clear();
@@ -812,6 +904,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         pointerStartRef.current = null;
         draggedRef.current = false;
         suppressClickRef.current = false;
+        hoverRequestRef.current += 1;
         setHoveredFloor(null);
         setHoverPoint(null);
       }}
@@ -824,18 +917,20 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
             style={CANVAS_STYLE}
             fillMode={FILLMODE_NONE}
             resolutionMode={RESOLUTION_FIXED}
-            deviceTypes={[DEVICETYPE_WEBGPU, DEVICETYPE_WEBGL2]}
+            deviceTypes={[DEVICETYPE_WEBGL2, DEVICETYPE_WEBGPU]}
             graphicsDeviceOptions={GRAPHICS_OPTIONS}
             maxDeltaTime={0.05}
           >
             <RenderQuality />
             <SplatScene
+              cameraEntityRef={cameraEntityRef}
               fov={cameraFov}
               highlightedFloor={highlightedFloor}
               interactive={interactive}
               hoveredFloor={hoveredFloor}
               onCameraReady={handleCameraReady}
               onStateChange={reportState}
+              pickerRef={pickerRef}
               progressRef={progressRef}
               reducedMotion={reducedMotion}
               settled={settled}

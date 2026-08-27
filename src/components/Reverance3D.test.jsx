@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Reverance3D } from "./Reverance3D";
+import { getFloorAtWorldPoint, Reverance3D } from "./Reverance3D";
+import { getFloorWorldTransform, REVERANCE_FLOOR_HIGHLIGHT_HEIGHT, REVERANCE_FLOOR_VOLUMES } from "./reveranceFloorHighlight";
+import { Vec3 } from "playcanvas";
 
 const snapshot = {
   buildingImage: "/building.webp",
@@ -51,5 +53,17 @@ describe("Reverance official 3D reconstruction", () => {
 
     fireEvent.keyDown(screen.getByRole("button", { name: /Floor 04/i }), { key: "Enter" });
     expect(onSelectFloor).toHaveBeenCalledWith(4);
+  });
+
+  it("accepts only points inside the exact highlighted floor volume", () => {
+    const floor = REVERANCE_FLOOR_VOLUMES.find(({ number }) => number === 7);
+    const transform = getFloorWorldTransform(floor);
+    const center = transform.transformPoint(new Vec3(0, 0, 0));
+    const outsideFacade = transform.transformPoint(new Vec3(0.53, 0, 0));
+    const slabEdge = transform.transformPoint(new Vec3(0, REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5, 0));
+
+    expect(getFloorAtWorldPoint(center)).toBe(7);
+    expect(getFloorAtWorldPoint(outsideFacade)).toBeNull();
+    expect(getFloorAtWorldPoint(slabEdge)).toBeNull();
   });
 });
