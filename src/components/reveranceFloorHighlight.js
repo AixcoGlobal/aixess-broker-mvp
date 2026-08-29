@@ -7,9 +7,11 @@ export const REVERANCE_FLOOR_ROTATION = Object.freeze([
   -179.92406130155297,
 ]);
 export const REVERANCE_FLOOR_HIGHLIGHT_HEIGHT = 0.08075279872482334;
+export const REVERANCE_FLOOR_PHASE = 0.5;
+export const REVERANCE_FLOOR_VISUAL_Y_OFFSET = REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.07;
 export const REVERANCE_FLOOR_LOCAL_CENTER = Object.freeze([
   -0.12,
-  -REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5,
+  -REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * REVERANCE_FLOOR_PHASE,
   -0.282,
 ]);
 export const REVERANCE_FLOOR_SIZE = Object.freeze([
@@ -103,10 +105,141 @@ export function getFloorFragmentHighlightMask(
   if (Math.abs(candidateClipW) < REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON) return 0;
 
   const halfHeight = REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5;
+  const adjustedY = fragmentLocalY + REVERANCE_FLOOR_VISUAL_Y_OFFSET;
   const width = Math.max(antialiasWidth, REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER);
   const normalizedEdge = Math.min(1, Math.max(
     0,
-    (halfHeight - Math.abs(fragmentLocalY)) / width,
+    (halfHeight - Math.abs(adjustedY)) / width,
   ));
   return normalizedEdge * normalizedEdge * (3 - 2 * normalizedEdge);
+}
+
+export const REVERANCE_FLOOR_PICK_HALF_SIZE = Object.freeze([
+  REVERANCE_FLOOR_SIZE[0] * 0.5,
+  REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5,
+  REVERANCE_FLOOR_SIZE[2] * 0.5,
+]);
+
+export function intersectRayFloorVolume(rayOrigin, rayDir, worldToLocal, halfSize) {
+  const localOrigin = worldToLocal.transformPoint(rayOrigin);
+  const localEnd = worldToLocal.transformPoint(new Vec3().add2(rayOrigin, rayDir));
+  const localDir = new Vec3().sub2(localEnd, localOrigin);
+  const dirLength = localDir.length();
+  if (dirLength <= Number.EPSILON) return null;
+  localDir.mulScalar(1 / dirLength);
+
+  let tmin = -Infinity;
+  let tmax = Infinity;
+  const axes = [
+    [localOrigin.x, localDir.x, halfSize[0]],
+    [localOrigin.y, localDir.y, halfSize[1]],
+    [localOrigin.z, localDir.z, halfSize[2]],
+  ];
+
+  for (const [origin, direction, half] of axes) {
+    if (Math.abs(direction) < 1e-8) {
+      if (origin < -half || origin > half) return null;
+      continue;
+    }
+    const invDirection = 1 / direction;
+    let t1 = (-half - origin) * invDirection;
+    let t2 = (half - origin) * invDirection;
+    if (t1 > t2) {
+      const swap = t1;
+      t1 = t2;
+      t2 = swap;
+    }
+    tmin = Math.max(tmin, t1);
+    tmax = Math.min(tmax, t2);
+    if (tmax < tmin) return null;
+  }
+
+  if (tmax < 0) return null;
+  return tmin >= 0 ? tmin : tmax;
+}
+
+export function pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canvasHeight) {
+  const camera = cameraEntity?.camera;
+  if (!camera || canvasWidth <= 0 || canvasHeight <= 0) return null;
+
+  const screenCenter = new Vec3();
+  const screenUpper = new Vec3();
+  const screenLower = new Vec3();
+  const screenLeft = new Vec3();
+  const screenRight = new Vec3();
+  let bandFloor = null;
+  let bandScore = Infinity;
+  let nearestFloor = null;
+  let nearestDistance = Infinity;
+
+  for (const volume of REVERANCE_FLOOR_VOLUMES) {
+    const floorToWorld = getFloorWorldTransform(volume);
+    const center = floorToWorld.transformPoint(new Vec3(0, 0, 0));
+    camera.worldToScreen(center, screenCenter);
+
+    const dx = cssX - screenCenter.x;
+    const dy = cssY - screenCenter.y;
+    const distance = Math.hypot(dx, dy);
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestFloor = volume.number;
+    }
+
+    const upper = floorToWorld.transformPoint(new Vec3(0, REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0));
+    const lower = floorToWorld.transformPoint(new Vec3(0, -REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0));
+    const left = floorToWorld.transformPoint(new Vec3(-REVERANCE_FLOOR_PICK_HALF_SIZE[0], 0, 0));
+    const right = floorToWorld.transformPoint(new Vec3(REVERANCE_FLOOR_PICK_HALF_SIZE[0], 0, 0));
+    camera.worldToScreen(upper, screenUpper);
+    camera.worldToScreen(lower, screenLower);
+    camera.worldToScreen(left, screenLeft);
+    camera.worldToScreen(right, screenRight);
+
+    const top = Math.min(screenUpper.y, screenLower.y);
+    const bottom = Math.max(screenUpper.y, screenLower.y);
+    const minX = Math.min(screenLeft.x, screenRight.x);
+    const maxX = Math.max(screenLeft.x, screenRight.x);
+    if (cssY < top || cssY > bottom || cssX < minX || cssX > maxX) continue;
+
+    const score = Math.abs(cssY - screenCenter.y) + Math.abs(cssX - screenCenter.x) * 0.35;
+    if (score < bandScore) {
+      bandScore = score;
+      bandFloor = volume.number;
+    }
+  }
+
+  if (bandFloor !== null) return bandFloor;
+
+  const near = new Vec3();
+  const far = new Vec3();
+  camera.screenToWorld(cssX, cssY, camera.nearClip, near);
+  camera.screenToWorld(cssX, cssY, camera.farClip, far);
+  const rayDir = new Vec3().sub2(far, near);
+  const dirLength = rayDir.length();
+  if (dirLength <= Number.EPSILON) return nearestFloor;
+  rayDir.mulScalar(1 / dirLength);
+
+  let rayFloor = null;
+  let rayScore = Infinity;
+  for (const volume of REVERANCE_FLOOR_VOLUMES) {
+    const worldToLocal = getWorldToFloorTransform(volume);
+    const distance = intersectRayFloorVolume(
+      near,
+      rayDir,
+      worldToLocal,
+      REVERANCE_FLOOR_PICK_HALF_SIZE,
+    );
+    if (distance === null) continue;
+
+    const hitPoint = new Vec3().add2(
+      near,
+      new Vec3(rayDir.x * distance, rayDir.y * distance, rayDir.z * distance),
+    );
+    const centerScore = Math.abs(worldToLocal.transformPoint(hitPoint).y);
+    if (centerScore < rayScore) {
+      rayScore = centerScore;
+      rayFloor = volume.number;
+    }
+  }
+
+  return rayFloor ?? nearestFloor;
 }

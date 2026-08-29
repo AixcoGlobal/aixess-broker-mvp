@@ -10,8 +10,11 @@ import {
   getFloorFragmentLocalY,
   getFloorHighlightProjection,
   getFloorWorldTransform,
+  intersectRayFloorVolume,
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
+  REVERANCE_FLOOR_PICK_HALF_SIZE,
   REVERANCE_FLOOR_SIZE,
+  REVERANCE_FLOOR_VISUAL_Y_OFFSET,
   REVERANCE_FLOOR_VOLUMES,
   getWorldToFloorTransform,
 } from "./reveranceFloorHighlight";
@@ -152,8 +155,14 @@ describe("Reverance production floor highlight transform", () => {
       FLOOR_11_GAUSSIAN_272736.localCenter[1],
       0.001,
     )).toBe(1);
-    expect(getFloorFragmentHighlightMask(-halfHeight, 0.001)).toBe(0);
-    expect(getFloorFragmentHighlightMask(-halfHeight - 1e-6, 0.001)).toBe(0);
+    expect(getFloorFragmentHighlightMask(
+      halfHeight - REVERANCE_FLOOR_VISUAL_Y_OFFSET + 1e-6,
+      0.001,
+    )).toBe(0);
+    expect(getFloorFragmentHighlightMask(
+      -halfHeight - REVERANCE_FLOOR_VISUAL_Y_OFFSET - 1e-6,
+      0.001,
+    )).toBe(0);
     expect(getFloorFragmentHighlightMask(adjacentCenterY, 0.001)).toBe(0);
     expect(getFloorFragmentHighlightMask(0, 0.001, 0)).toBe(0);
   });
@@ -215,5 +224,29 @@ describe("Reverance production floor highlight transform", () => {
       expectReconstruction(pixelOffset);
     });
     expectReconstruction([13, 9], true);
+  });
+
+  it("resolves the nearest floor along a front-view ray through floor 11", () => {
+    const floor11 = REVERANCE_FLOOR_VOLUMES.find(({ number }) => number === 11);
+    const centerWorld = getFloorWorldTransform(floor11).transformPoint(new Vec3(0, 0, 0));
+    const rayOrigin = CAMERA_FRONT.clone();
+    const rayDir = new Vec3().sub2(centerWorld, rayOrigin).normalize();
+
+    let closest = null;
+    let closestDistance = Infinity;
+    for (const volume of REVERANCE_FLOOR_VOLUMES) {
+      const distance = intersectRayFloorVolume(
+        rayOrigin,
+        rayDir,
+        getWorldToFloorTransform(volume),
+        REVERANCE_FLOOR_PICK_HALF_SIZE,
+      );
+      if (distance !== null && distance < closestDistance) {
+        closestDistance = distance;
+        closest = volume.number;
+      }
+    }
+
+    expect(closest).toBe(11);
   });
 });
