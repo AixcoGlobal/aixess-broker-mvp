@@ -434,9 +434,28 @@
 
 .residence-filter-result:is(:hover, :focus-visible, .is-active) {
   outline: 0;
-  background: rgba(241, 101, 16, 0.14);
-  box-shadow: inset 0.18rem 0 var(--orange);
-  color: var(--orange);
+  background: rgba(63, 154, 88, 0.14);
+  box-shadow: inset 0.18rem 0 var(--available);
+  color: var(--available);
+}
+
+.residence-filter-result.is-sold,
+.residence-filter-result.is-unavailable {
+  color: rgba(239, 239, 236, 0.42);
+}
+
+.residence-filter-result.is-sold > span:first-child,
+.residence-filter-result.is-unavailable > span:first-child,
+.residence-filter-result.is-sold strong,
+.residence-filter-result.is-unavailable strong {
+  color: rgba(239, 239, 236, 0.48);
+}
+
+.residence-filter-result.is-sold:is(:hover, :focus-visible, .is-active),
+.residence-filter-result.is-unavailable:is(:hover, :focus-visible, .is-active) {
+  background: rgba(122, 118, 114, 0.16);
+  box-shadow: inset 0.18rem 0 var(--sold);
+  color: var(--sold);
 }
 
 .residence-filter-empty {
@@ -532,10 +551,10 @@
   background: transparent;
 }
 
-.status-swatch.is-available { border-color: var(--orange); background: var(--orange); }
+.status-swatch.is-available { border-color: var(--available); background: var(--available); }
 .status-swatch.is-reserved { border-color: #b28b43; background: #b28b43; }
 .status-swatch.is-sold,
-.status-swatch.is-unavailable { border-color: #77736e; background: #77736e; }
+.status-swatch.is-unavailable { border-color: var(--sold); background: var(--sold); }
 
 .explorer-footnote {
   margin: 1.5rem 0 0;
@@ -1133,16 +1152,35 @@
   transition: fill 130ms ease, stroke 130ms ease, opacity 130ms ease;
 }
 
-.unit-hotspot.is-available polygon { fill: rgba(241, 101, 16, 0.24); stroke: #d95100; }
+.unit-hotspot.is-available polygon { fill: rgba(63, 154, 88, 0.28); stroke: #2f7a44; }
 .unit-hotspot.is-reserved polygon { fill: rgba(178, 139, 67, 0.3); stroke: #856526; }
 .unit-hotspot.is-sold polygon,
-.unit-hotspot.is-unavailable polygon { fill: rgba(72, 70, 68, 0.14); stroke: rgba(72, 70, 68, 0.42); }
+.unit-hotspot.is-unavailable polygon { fill: rgba(90, 88, 86, 0.22); stroke: rgba(90, 88, 86, 0.55); }
 
-.unit-hotspot:hover polygon,
-.unit-hotspot:focus polygon,
-.unit-hotspot.is-active polygon {
-  fill: rgba(241, 101, 16, 0.62);
-  stroke: #b94300;
+.unit-hotspot.is-available:hover polygon,
+.unit-hotspot.is-available:focus polygon,
+.unit-hotspot.is-available.is-active polygon {
+  fill: rgba(63, 154, 88, 0.58);
+  stroke: #246338;
+  stroke-width: 0.28;
+}
+
+.unit-hotspot.is-reserved:hover polygon,
+.unit-hotspot.is-reserved:focus polygon,
+.unit-hotspot.is-reserved.is-active polygon {
+  fill: rgba(178, 139, 67, 0.55);
+  stroke: #856526;
+  stroke-width: 0.28;
+}
+
+.unit-hotspot.is-sold:hover polygon,
+.unit-hotspot.is-sold:focus polygon,
+.unit-hotspot.is-sold.is-active polygon,
+.unit-hotspot.is-unavailable:hover polygon,
+.unit-hotspot.is-unavailable:focus polygon,
+.unit-hotspot.is-unavailable.is-active polygon {
+  fill: rgba(90, 88, 86, 0.38);
+  stroke: rgba(90, 88, 86, 0.78);
   stroke-width: 0.28;
 }
 
@@ -1293,10 +1331,28 @@
 .unit-row > span:nth-child(3) { text-transform: uppercase; }
 .unit-row > svg { width: 0.9rem; }
 
+.unit-row.is-sold,
+.unit-row.is-unavailable {
+  color: rgba(239, 239, 236, 0.38);
+}
+
+.unit-row.is-sold > span:first-child,
+.unit-row.is-unavailable > span:first-child {
+  color: rgba(239, 239, 236, 0.48);
+}
+
 .unit-row:hover,
 .unit-row.is-active {
   color: #fff;
-  background: rgba(241, 101, 16, 0.1);
+  background: rgba(63, 154, 88, 0.12);
+}
+
+.unit-row.is-sold:hover,
+.unit-row.is-sold.is-active,
+.unit-row.is-unavailable:hover,
+.unit-row.is-unavailable.is-active {
+  color: rgba(239, 239, 236, 0.55);
+  background: rgba(122, 118, 114, 0.16);
 }
 
 .inventory-empty {
@@ -1330,10 +1386,10 @@
 }
 
 .unit-status span { width: 0.5rem; height: 0.5rem; background: currentColor; }
-.unit-status.is-available { color: var(--orange); }
+.unit-status.is-available { color: var(--available); }
 .unit-status.is-reserved { color: #b28b43; }
 .unit-status.is-sold,
-.unit-status.is-unavailable { color: #77736e; }
+.unit-status.is-unavailable { color: var(--sold); }
 
 .unit-detail h3 {
   margin: 0;

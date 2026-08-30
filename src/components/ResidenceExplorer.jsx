@@ -407,7 +407,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
                 const status = normalizeStatus(unit.status);
                 const active = selectedUnit && String(selectedUnit.name) === String(unit.name);
                 return (
-                  <button className={`unit-row ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
+                  <button className={`unit-row is-${status} ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
                     <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
                     <span>{unit.totalArea ? `${unit.totalArea.toFixed(1)} m²` : "—"}</span>
                     <span>{getStatusLabel(status)}</span>
@@ -546,7 +546,7 @@ function ResidenceFilter({
               const isActive = String(previewResidence?.id) === String(unit.id);
               return (
                 <button
-                  className={`residence-filter-result ${isActive ? "is-active" : ""}`}
+                  className={`residence-filter-result is-${status} ${isActive ? "is-active" : ""}`}
                   key={`${unit.floor}-${unit.id}`}
                   type="button"
                   aria-label={`Residence ${unit.name}, floor ${unit.floor}, ${unit.totalArea.toFixed(1)} square metres, ${getStatusLabel(status)}`}

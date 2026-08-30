@@ -61,12 +61,7 @@ describe("Residence explorer", () => {
 
     render(<ResidenceExplorer onBrokerAccess={vi.fn()} snapshotLoader={() => Promise.resolve(snapshot)} floorLoader={floorLoader} />);
 
-    const floorButton = await screen.findByRole(
-      "button",
-      { name: /Floor 04, 1 available residence/i },
-      { timeout: 15000 },
-    );
-    await user.click(floorButton);
+    await user.click(await screen.findByRole("button", { name: /Residence 411, floor 4/i }, { timeout: 15000 }));
 
     expect(await screen.findByRole("dialog", { name: /Floor 04/i })).toBeInTheDocument();
     await waitFor(() => expect(screen.getByText("Live availability")).toBeInTheDocument());
@@ -90,12 +85,14 @@ describe("Residence explorer", () => {
 
     await user.click(screen.getByRole("button", { name: "Available" }));
     const list = screen.getByLabelText("Floor residences");
-    expect(within(list).getByRole("button", { name: /#411/i })).toBeInTheDocument();
+    expect(within(list).getByRole("button", { name: /#411/i })).toHaveClass("is-available");
     expect(within(list).queryByRole("button", { name: /#412/i })).not.toBeInTheDocument();
 
+    await user.click(within(list).getByRole("button", { name: "All" }));
     await user.click(screen.getByRole("button", { name: "Next floor" }));
     expect(await screen.findByRole("heading", { name: "Floor 05" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Residence 501, Sold/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Residence 501, Sold/i })).toHaveClass("is-sold");
+    expect(within(list).getByRole("button", { name: /#501/i })).toHaveClass("is-sold");
   });
 
   it("hands an available residence into the broker access journey", async () => {
