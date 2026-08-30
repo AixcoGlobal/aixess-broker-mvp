@@ -38,9 +38,10 @@ import {
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
   REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER,
   REVERANCE_FLOOR_SIZE,
-  REVERANCE_FLOOR_VISUAL_Y_OFFSET,
   REVERANCE_FLOOR_VOLUMES,
   REVERANCE_SPLAT_ROTATION,
+  getFloorVisualYOffset,
+  getHighlightWorldToFloorTransform,
   getWorldToFloorTransform,
   pickFloorFromScreen,
 } from "./reveranceFloorHighlight";
@@ -152,8 +153,7 @@ void modifySplatColor(vec2 gaussianUV, inout vec4 color) {
   ) / safeDeterminant;
   vec2 floorSpan = getFloorSpan();
   float fragmentY = floorSpan.x
-    + floorSpan.y * dot(pixelOffset, uFloorPixelToLocalY)
-    + uFloorVisualYOffset;
+    + floorSpan.y * dot(pixelOffset, uFloorPixelToLocalY);
   float antialiasWidth = max(fwidth(fragmentY), ${REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER});
   float slab = smoothstep(0.0, antialiasWidth, uFloorHalfSize.y - abs(fragmentY));
   float mask = step(${REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON}, abs(floorSpan.y)) * slab;
@@ -180,8 +180,7 @@ fn modifySplatColor(gaussianUV: vec2f, color: ptr<function, vec4f>) {
     -uniform.uFloorPixelToLocalY.y
   );
   let fragmentY = floorSpan.x
-    + floorSpan.y * dot(pixelOffset, pixelToLocalY)
-    + uniform.uFloorVisualYOffset;
+    + floorSpan.y * dot(pixelOffset, pixelToLocalY);
   let antialiasWidth = max(fwidth(fragmentY), ${REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER});
   let slab = smoothstep(0.0, antialiasWidth, uniform.uFloorHalfSize.y - abs(fragmentY));
   let mask = step(${REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON}, abs(floorSpan.y)) * slab;
@@ -551,7 +550,7 @@ function FloorHighlight({ floorNumber, splatReady }) {
     const volume = REVERANCE_FLOOR_VOLUMES.find((candidate) => candidate.number === floorNumber);
     const transform = new Mat4();
     if (volume) {
-      transform.copy(getWorldToFloorTransform(volume));
+      transform.copy(getHighlightWorldToFloorTransform(volume));
     }
     floorWorldToLocal.current.copy(transform);
 
@@ -560,7 +559,7 @@ function FloorHighlight({ floorNumber, splatReady }) {
     material.setParameter("uFloorHighlightEnabled", volume ? 1 : 0);
     material.setParameter("uFloorWorldToClipW", worldToClipW.current);
     material.setParameter("uFloorPixelToLocalY", pixelToLocalY.current);
-    material.setParameter("uFloorVisualYOffset", REVERANCE_FLOOR_VISUAL_Y_OFFSET);
+    material.setParameter("uFloorVisualYOffset", volume ? getFloorVisualYOffset(volume.number) : 0);
     material.setParameter("uDistantEnvironmentRadius", DISTANT_ENVIRONMENT_RADIUS);
     material.update();
     app.scene.gsplat.dirty = true;

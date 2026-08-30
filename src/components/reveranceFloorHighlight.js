@@ -8,7 +8,9 @@ export const REVERANCE_FLOOR_ROTATION = Object.freeze([
 ]);
 export const REVERANCE_FLOOR_HIGHLIGHT_HEIGHT = 0.08075279872482334;
 export const REVERANCE_FLOOR_PHASE = 0.5;
-export const REVERANCE_FLOOR_VISUAL_Y_OFFSET = REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.07;
+export const REVERANCE_FLOOR_VISUAL_Y_OFFSET_BOTTOM = REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.07;
+export const REVERANCE_FLOOR_VISUAL_Y_OFFSET_TOP = REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.55;
+export const REVERANCE_FLOOR_VISUAL_Y_OFFSET = REVERANCE_FLOOR_VISUAL_Y_OFFSET_BOTTOM;
 export const REVERANCE_FLOOR_LOCAL_CENTER = Object.freeze([
   -0.12,
   -REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * REVERANCE_FLOOR_PHASE,
@@ -40,6 +42,18 @@ export const REVERANCE_FLOOR_VOLUMES = Object.freeze([
 ].map(([number, x, y, z]) => Object.freeze({ number, position: Object.freeze([x, y, z]) })));
 
 const FLOOR_ROTATION_QUATERNION = new Quat().setFromEulerAngles(...REVERANCE_FLOOR_ROTATION);
+const FIRST_HIGHLIGHT_FLOOR = REVERANCE_FLOOR_VOLUMES[0].number;
+const LAST_HIGHLIGHT_FLOOR = REVERANCE_FLOOR_VOLUMES[REVERANCE_FLOOR_VOLUMES.length - 1].number;
+
+export function getFloorVisualYOffset(floorNumber) {
+  const span = LAST_HIGHLIGHT_FLOOR - FIRST_HIGHLIGHT_FLOOR;
+  const t = span <= 0
+    ? 0
+    : Math.min(1, Math.max(0, (Number(floorNumber) - FIRST_HIGHLIGHT_FLOOR) / span));
+  const upperBias = t * t;
+  return REVERANCE_FLOOR_VISUAL_Y_OFFSET_BOTTOM
+    + (REVERANCE_FLOOR_VISUAL_Y_OFFSET_TOP - REVERANCE_FLOOR_VISUAL_Y_OFFSET_BOTTOM) * upperBias;
+}
 
 export function getFloorWorldTransform(volume) {
   const center = FLOOR_ROTATION_QUATERNION
@@ -51,6 +65,23 @@ export function getFloorWorldTransform(volume) {
     FLOOR_ROTATION_QUATERNION,
     Vec3.ONE,
   );
+}
+
+export function getHighlightWorldToFloorTransform(volume) {
+  const visualYOffset = getFloorVisualYOffset(volume.number);
+  const center = FLOOR_ROTATION_QUATERNION
+    .transformVector(new Vec3(
+      REVERANCE_FLOOR_LOCAL_CENTER[0],
+      REVERANCE_FLOOR_LOCAL_CENTER[1] - visualYOffset,
+      REVERANCE_FLOOR_LOCAL_CENTER[2],
+    ))
+    .add(new Vec3(...volume.position));
+
+  return new Mat4().setTRS(
+    center,
+    FLOOR_ROTATION_QUATERNION,
+    Vec3.ONE,
+  ).invert();
 }
 
 export function getWorldToFloorTransform(volume) {
@@ -101,11 +132,12 @@ export function getFloorFragmentHighlightMask(
   fragmentLocalY,
   antialiasWidth,
   candidateClipW = 1,
+  visualYOffset = REVERANCE_FLOOR_VISUAL_Y_OFFSET,
 ) {
   if (Math.abs(candidateClipW) < REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON) return 0;
 
   const halfHeight = REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5;
-  const adjustedY = fragmentLocalY + REVERANCE_FLOOR_VISUAL_Y_OFFSET;
+  const adjustedY = fragmentLocalY + visualYOffset;
   const width = Math.max(antialiasWidth, REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER);
   const normalizedEdge = Math.min(1, Math.max(
     0,

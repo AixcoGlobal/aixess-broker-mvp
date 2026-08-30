@@ -10,11 +10,15 @@ import {
   getFloorFragmentLocalY,
   getFloorHighlightProjection,
   getFloorWorldTransform,
+  getFloorVisualYOffset,
+  getHighlightWorldToFloorTransform,
   intersectRayFloorVolume,
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
   REVERANCE_FLOOR_PICK_HALF_SIZE,
   REVERANCE_FLOOR_SIZE,
   REVERANCE_FLOOR_VISUAL_Y_OFFSET,
+  REVERANCE_FLOOR_VISUAL_Y_OFFSET_BOTTOM,
+  REVERANCE_FLOOR_VISUAL_Y_OFFSET_TOP,
   REVERANCE_FLOOR_VOLUMES,
   getWorldToFloorTransform,
 } from "./reveranceFloorHighlight";
@@ -132,6 +136,23 @@ describe("Reverance production floor highlight transform", () => {
       const floorLocal = getWorldToFloorTransform(volume).transformPoint(worldCenter);
       expectVectorClose(floorLocal, [0, 0, 0]);
     });
+  });
+
+  it("shifts the visual highlight farther down on upper floors only", () => {
+    expect(getFloorVisualYOffset(2)).toBeCloseTo(REVERANCE_FLOOR_VISUAL_Y_OFFSET_BOTTOM, 8);
+    expect(getFloorVisualYOffset(16)).toBeCloseTo(REVERANCE_FLOOR_VISUAL_Y_OFFSET_TOP, 8);
+    expect(getFloorVisualYOffset(2)).toBeCloseTo(REVERANCE_FLOOR_VISUAL_Y_OFFSET, 8);
+    expect(getFloorVisualYOffset(16)).toBeGreaterThan(getFloorVisualYOffset(9));
+    expect(getFloorVisualYOffset(9)).toBeGreaterThan(getFloorVisualYOffset(2));
+  });
+
+  it("moves the highlight volume down the storey without changing pick slab calibration", () => {
+    const floor16 = REVERANCE_FLOOR_VOLUMES.find(({ number }) => number === 16);
+    const pickCenter = getFloorWorldTransform(floor16).transformPoint(Vec3.ZERO);
+    const highlightLocal = getHighlightWorldToFloorTransform(floor16).transformPoint(pickCenter);
+    expect(highlightLocal.x).toBeCloseTo(0, 5);
+    expect(highlightLocal.z).toBeCloseTo(0, 5);
+    expect(highlightLocal.y).toBeCloseTo(getFloorVisualYOffset(16), 5);
   });
 
   it("clips the real Floor 11 Gaussian at the fragment boundary without shrinking its center volume", () => {
