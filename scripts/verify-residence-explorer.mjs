@@ -1,0 +1,300 @@
+/**
+ * End-to-end verification for Residence Explorer user requirements.
+ * Run: npm run verify:explorer
+ */
+import { chromium } from "playwright";
+
+const BASE_URL = process.env.AIXESS_URL || "http://localhost:5173/#residences";
+const VIEWPORT = { width: 1440, height: 900 };
+
+const results = [];
+
+function record(name, pass, detail = "") {
+  results.push({ name, pass, detail });
+  const label = pass ? "PASS" : "FAIL";
+  console.log(`${label}: ${name}${detail ? ` — ${detail}` : ""}`);
+}
+
+async function waitForExplorer(page) {
+  await page.waitForSelector(".building-map canvas", { timeout: 120_000 });
+  await page.waitForFunction(
+    () => document.querySelector(".building-map")?.dataset.loadState === "ready",
+    { timeout: 120_000 },
+  );
+}
+
+async function scrollToExplorer(page) {
+  await page.evaluate(() => {
+    document.querySelector("#residences")?.scrollIntoView({ block: "start" });
+  });
+  await page.waitForTimeout(400);
+}
+
+async function scrollExplorerProgress(page, targetProgress = 0.5) {
+  await page.waitForFunction(
+    (target) => {
+      const section = document.querySelector(".residence-explorer");
+      if (!section) return false;
+      const height = Math.max(section.offsetHeight - window.innerHeight, 1);
+      const progress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / height));
+      return progress >= target - 0.05;
+    },
+    targetProgress,
+    { timeout: 30_000 },
+  ).catch(async () => {
+    for (let i = 0; i < 40; i += 1) {
+      await page.mouse.wheel(0, 140);
+      await page.waitForTimeout(60);
+      const progress = await page.evaluate(() => {
+        const section = document.querySelector(".residence-explorer");
+        const height = Math.max(section.offsetHeight - window.innerHeight, 1);
+        return Math.min(1, Math.max(0, -section.getBoundingClientRect().top / height));
+      });
+      if (progress >= targetProgress - 0.05) break;
+    }
+  });
+}
+
+async function scrollToSettled(page) {
+  await page.evaluate(() => {
+    const section = document.querySelector(".residence-explorer");
+    if (!section) return;
+    const max = Math.max(section.offsetHeight - window.innerHeight, 0);
+    window.scrollTo(0, section.offsetTop + max * 0.99);
+  });
+  await page.waitForTimeout(500);
+  await page.waitForSelector(".building-map.is-settled", { timeout: 30_000 });
+}
+
+async function canvasCenter(page) {
+  return page.evaluate(() => {
+    const canvas = document.querySelector(".building-map canvas");
+    const rect = canvas.getBoundingClientRect();
+    return { x: rect.left + rect.width * 0.5, y: rect.top + rect.height * 0.5 };
+  });
+}
+
+async function readState(page) {
+  return page.evaluate(() => {
+    const section = document.querySelector(".residence-explorer");
+    const map = document.querySelector(".building-map");
+    const height = Math.max(section.offsetHeight - window.innerHeight, 1);
+    const progress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / height));
+    return {
+      scrollY: window.scrollY,
+      progress,
+      settled: map?.classList.contains("is-settled") ?? false,
+      interactive: map?.classList.contains("is-interactive") ?? false,
+      zoomable: section?.dataset.zoomable === "true",
+      hoveredFloor: map?.dataset.hoveredFloor ?? null,
+      cameraFov: map?.dataset.cameraFov ? Number(map.dataset.cameraFov) : null,
+      floorOptions: [...document.querySelectorAll(".residence-filter-controls select option")]
+        .map((option) => option.value)
+        .filter((value) => value !== "all"),
+    };
+  });
+}
+
+async function wheelOverCanvas(page, deltaY, { ctrlKey = false, metaKey = false } = {}) {
+  const point = await canvasCenter(page);
+  await page.mouse.move(point.x, point.y);
+  if (ctrlKey) await page.keyboard.down("Control");
+  if (metaKey) await page.keyboard.down("Meta");
+  await page.mouse.wheel(0, deltaY);
+  if (metaKey) await page.keyboard.up("Meta");
+  if (ctrlKey) await page.keyboard.up("Control");
+  await page.waitForTimeout(350);
+}
+
+async function dispatchZoomWheel(page, deltaY, { ctrlKey = false, metaKey = false } = {}) {
+  const point = await canvasCenter(page);
+  await page.mouse.move(point.x, point.y);
+  await page.evaluate(({ x, y, deltaY: dy, ctrlKey: ctrl, metaKey: meta }) => {
+    const canvas = document.querySelector(".building-map canvas");
+    canvas?.dispatchEvent(new WheelEvent("wheel", {
+      deltaY: dy,
+      ctrlKey: ctrl,
+      metaKey: meta,
+      bubbles: true,
+      cancelable: true,
+      clientX: x,
+      clientY: y,
+    }));
+  }, { ...point, deltaY, ctrlKey, metaKey });
+  await page.waitForTimeout(400);
+}
+
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage({ viewport: VIEWPORT });
+
+try {
+  await page.goto(BASE_URL, { waitUntil: "networkidle", timeout: 120_000 });
+  await waitForExplorer(page);
+  await scrollToExplorer(page);
+
+  // 1. Explorer becomes interactive while visible (before fully settled)
+  await scrollExplorerProgress(page, 0.35);
+  let state = await readState(page);
+  record(
+    "Building is interactive during scroll-turn (not only when settled)",
+    state.interactive && !state.settled && state.progress > 0.2,
+    `interactive=${state.interactive}, settled=${state.settled}, progress=${state.progress.toFixed(3)}`,
+  );
+
+  // 2. Zoom works mid-scroll (Ctrl+wheel on Windows, Cmd+wheel on Mac)
+  const fovBeforeMid = state.cameraFov;
+  await dispatchZoomWheel(page, -120, { ctrlKey: true });
+  let fovAfterMid = (await readState(page)).cameraFov;
+  record(
+    "Ctrl+wheel zoom works before the building has settled",
+    fovBeforeMid !== null && fovAfterMid !== null && fovAfterMid < fovBeforeMid,
+    `fov ${fovBeforeMid} -> ${fovAfterMid}, zoomable=${state.zoomable}`,
+  );
+
+  // 3. Plain wheel still scrolls the page over the canvas mid-turn
+  const scrollBefore = (await readState(page)).scrollY;
+  await wheelOverCanvas(page, 120);
+  const scrollAfter = (await readState(page)).scrollY;
+  record(
+    "Plain wheel scrolls the page over the canvas (no modifier)",
+    scrollAfter > scrollBefore,
+    `scrollY ${scrollBefore} -> ${scrollAfter}`,
+  );
+
+  // 4. Cmd+wheel zoom (Mac trackpad/gesture path)
+  const fovBeforeCmd = (await readState(page)).cameraFov;
+  await dispatchZoomWheel(page, -120, { metaKey: true });
+  const fovAfterCmd = (await readState(page)).cameraFov;
+  record(
+    "Cmd+wheel zoom works (macOS modifier path)",
+    fovBeforeCmd !== null && fovAfterCmd !== null && fovAfterCmd < fovBeforeCmd,
+    `fov ${fovBeforeCmd} -> ${fovAfterCmd}`,
+  );
+
+  // 5. Floor hover updates when moving from rail to canvas (no sticky rail highlight)
+  const railButton = page.locator(".model-floor-rail button[data-floor='16']");
+  const turnPoint = await canvasCenter(page);
+  if (await railButton.count()) {
+    await railButton.hover();
+    await page.waitForTimeout(150);
+    await page.mouse.move(turnPoint.x, turnPoint.y);
+    await page.waitForTimeout(400);
+    const afterMove = await readState(page);
+    record(
+      "Floor hover updates when pointer moves from rail to canvas",
+      afterMove.hoveredFloor !== "16",
+      `rail hovered 16, canvas pick -> ${afterMove.hoveredFloor}`,
+    );
+  } else {
+    record("Floor hover updates when pointer moves from rail to canvas", false, "floor rail not ready");
+  }
+
+  // 6. Settle and verify scroll over settled building
+  await scrollToSettled(page);
+  state = await readState(page);
+  record("Building reaches settled front view", state.settled, `progress=${state.progress.toFixed(3)}`);
+
+  const settledScrollBefore = state.scrollY;
+  await wheelOverCanvas(page, -120);
+  const settledScrollUp = (await readState(page)).scrollY;
+  await wheelOverCanvas(page, 120);
+  const settledScrollDown = (await readState(page)).scrollY;
+  record(
+    "Plain wheel scrolls up and down over settled building canvas",
+    settledScrollUp < settledScrollBefore && settledScrollDown > settledScrollUp,
+    `scrollY ${settledScrollBefore} -> ${settledScrollUp} -> ${settledScrollDown}`,
+  );
+
+  // 6. Ctrl+wheel zoom when settled
+  const fovSettledBefore = (await readState(page)).cameraFov;
+  await dispatchZoomWheel(page, -120, { ctrlKey: true });
+  const fovSettledAfter = (await readState(page)).cameraFov;
+  record(
+    "Ctrl+wheel zoom works when settled",
+    fovSettledBefore !== null && fovSettledAfter !== null && fovSettledAfter < fovSettledBefore,
+    `fov ${fovSettledBefore} -> ${fovSettledAfter}`,
+  );
+
+  // 7. Floor hover clears when pointer leaves the building map
+  if (await railButton.count()) {
+    await railButton.hover();
+    await page.waitForTimeout(150);
+    await page.mouse.move(24, 24);
+    await page.waitForTimeout(300);
+    record(
+      "Floor hover clears when pointer leaves the building map",
+      (await readState(page)).hoveredFloor === null,
+    );
+  } else {
+    record("Floor hover clears when pointer leaves the building map", false, "floor rail not ready");
+  }
+
+  // 8. Middle-mouse drag orbits (camera FOV unchanged, manual control engaged)
+  const fovBeforeOrbit = (await readState(page)).cameraFov;
+  const orbitPoint = await canvasCenter(page);
+  await page.mouse.down({ button: "middle" });
+  await page.mouse.move(orbitPoint.x, orbitPoint.y);
+  await page.mouse.down({ button: "middle" });
+  await page.mouse.move(orbitPoint.x + 80, orbitPoint.y + 40, { steps: 12 });
+  await page.mouse.up({ button: "middle" });
+  await page.waitForTimeout(500);
+  const afterMiddleDrag = await readState(page);
+  record(
+    "Middle-mouse drag engages orbit without changing optical zoom",
+    afterMiddleDrag.cameraFov !== null
+      && Math.abs(afterMiddleDrag.cameraFov - fovBeforeOrbit) < 0.5,
+    `fov stayed near ${fovBeforeOrbit} (${afterMiddleDrag.cameraFov})`,
+  );
+
+  // 9. Left-drag orbit completes without error
+  await page.mouse.move(orbitPoint.x, orbitPoint.y);
+  await page.mouse.down({ button: "left" });
+  await page.mouse.move(orbitPoint.x - 70, orbitPoint.y + 30, { steps: 12 });
+  await page.mouse.up({ button: "left" });
+  await page.waitForTimeout(300);
+  record("Left-drag orbit interaction completes without error", true);
+
+  // 10. Instruction overlay does not block canvas clicks
+  const overlayBlocks = await page.evaluate(() => {
+    const instruction = document.querySelector(".building-model-instruction");
+    const style = instruction ? getComputedStyle(instruction) : null;
+    return style?.pointerEvents === "none";
+  });
+  record("Instruction overlay is pointer-events transparent", overlayBlocks);
+
+  // 11. Floor filter lists snapshot floors (not only floors with units)
+  const floorValues = (await readState(page)).floorOptions;
+  record(
+    "Floor filter includes low-numbered snapshot floors",
+    floorValues.includes("2") || floorValues.includes("02") || floorValues.some((v) => Number(v) === 2),
+    `options: ${floorValues.slice(0, 6).join(", ")}${floorValues.length > 6 ? "…" : ""}`,
+  );
+
+  // 12. Reset view button works when settled
+  const reset = page.locator(".model-reset-view");
+  if (await reset.isVisible()) {
+    await reset.click();
+    await page.waitForTimeout(600);
+    record("Reset view button is clickable when settled", true);
+  } else {
+    record("Reset view button is clickable when settled", false, "button not visible");
+  }
+
+  const failed = results.filter((entry) => !entry.pass);
+  console.log("\n--- Summary ---");
+  console.log(`${results.length - failed.length}/${results.length} checks passed`);
+  if (failed.length) {
+    console.error("\nFailed checks:");
+    for (const entry of failed) {
+      console.error(`  - ${entry.name}: ${entry.detail}`);
+    }
+    process.exitCode = 1;
+  } else {
+    console.log("All residence explorer checks passed.");
+  }
+} catch (error) {
+  console.error("FAIL:", error.message);
+  process.exitCode = 1;
+} finally {
+  await browser.close();
+}

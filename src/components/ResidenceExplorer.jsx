@@ -76,6 +76,7 @@ const DEFAULT_FILTERS = {
 function useScrollStage(sectionRef) {
   const [settled, setSettled] = useState(false);
   const [interactive, setInteractive] = useState(false);
+  const [zoomable, setZoomable] = useState(false);
   const [filterActive, setFilterActive] = useState(false);
   const progressRef = useRef(0);
 
@@ -96,6 +97,9 @@ function useScrollStage(sectionRef) {
       const isSettled = reducedMotion.matches || progress >= EXPLORER_SETTLE_PROGRESS;
       const isInteractive = reducedMotion.matches
         || (bounds.top < window.innerHeight && bounds.bottom > 0);
+      const isZoomable = reducedMotion.matches
+        || progress > 0.001
+        || isInteractive;
       const filterTravel = height * EXPLORER_SETTLE_PROGRESS;
       const filterProgress = reducedMotion.matches
         ? 1
@@ -107,6 +111,7 @@ function useScrollStage(sectionRef) {
       section.style.setProperty("--filter-progress", filterProgress.toFixed(4));
       setSettled((current) => (current === isSettled ? current : isSettled));
       setInteractive((current) => (current === isInteractive ? current : isInteractive));
+      setZoomable((current) => (current === isZoomable ? current : isZoomable));
       setFilterActive((current) => (current === isFilterActive ? current : isFilterActive));
     };
 
@@ -138,7 +143,7 @@ function useScrollStage(sectionRef) {
     };
   }, [sectionRef]);
 
-  return { filterActive, interactive, settled, progressRef };
+  return { filterActive, interactive, settled, zoomable, progressRef };
 }
 
 function useDialogA11y(open, onClose, dialogRef) {
@@ -597,7 +602,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   const [canMountModel, setCanMountModel] = useState(() => (
     typeof window === "undefined" || !("IntersectionObserver" in window)
   ));
-  const { filterActive, interactive, settled, progressRef } = useScrollStage(sectionRef);
+  const { filterActive, interactive, settled, zoomable, progressRef } = useScrollStage(sectionRef);
 
   useEffect(() => {
     let active = true;
@@ -702,6 +707,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
       ref={sectionRef}
       data-settled={settled}
       data-interactive={interactive}
+      data-zoomable={zoomable}
       aria-labelledby="residence-explorer-title"
     >
       <div className="explorer-sticky">
@@ -747,6 +753,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
                   onSelectFloor={setSelectedFloor}
                   highlightedFloor={filterHighlightedFloor}
                   interactive={interactive}
+                  zoomable={zoomable}
                   settled={settled}
                   progressRef={progressRef}
                 />

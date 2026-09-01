@@ -517,11 +517,30 @@ function CameraRig({ apiRef, fov, interactive, manualCameraRef, onCameraReady, p
 
   useEffect(() => {
     const controls = controlsRef.current;
-    if (!controls?._camera) return;
+    if (!controls?._camera) return undefined;
     controls.pitchRange = CAMERA_PITCH_RANGE;
     controls.yawRange = CAMERA_YAW_RANGE;
     controls.zoomRange = CAMERA_ZOOM_RANGE;
     syncControls();
+
+    const input = controls._desktopInput;
+    if (!input) return undefined;
+    const originalRead = input.read.bind(input);
+    input.read = () => {
+      const frame = originalRead();
+      const { button } = frame;
+      // PlayCanvas treats middle mouse as a pan modifier. With panning disabled
+      // that zeroes orbit rotation, so remap a lone middle press to left orbit.
+      if (button[1] && !button[0]) {
+        button[0] = 1;
+        button[1] = 0;
+      }
+      return frame;
+    };
+
+    return () => {
+      input.read = originalRead;
+    };
   }, [syncControls]);
 
   useEffect(() => {
@@ -932,7 +951,7 @@ function StaticFallback({ snapshot, highlightedFloor, onSelectFloor }) {
   );
 }
 
-export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, settled, interactive = settled, progressRef }) {
+export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, settled, interactive = settled, zoomable = interactive, progressRef }) {
   const [hoveredFloor, setHoveredFloor] = useState(null);
   const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
@@ -1100,25 +1119,28 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   useEffect(() => () => invalidateHoverPick(), [invalidateHoverPick]);
 
   const handleOpticalZoom = useCallback((delta, immediate = false) => {
-    if (!interactive) return;
+    if (!zoomable) return;
     adjustFovTarget(delta, immediate);
-  }, [adjustFovTarget, interactive]);
+  }, [adjustFovTarget, zoomable]);
 
   useEffect(() => {
     const model = modelRef.current;
     if (!model) return undefined;
 
     const handleWheel = (event) => {
-      // Floor rail, reset button and other controls keep native wheel behaviour.
-      if (!event.target?.closest?.("canvas")) return;
+      const onMap = event.target?.closest?.(".building-map");
+      if (!onMap) return;
 
-      if (interactive && (event.ctrlKey || event.metaKey)) {
+      if (zoomable && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
         event.stopPropagation();
         handleOpticalZoom(normalizeWheelDelta(event).deltaY * WHEEL_ZOOM_DEGREES_PER_PIXEL);
         scheduleHoverSync();
         return;
       }
+
+      // Floor rail, reset button and other controls keep native wheel behaviour.
+      if (!event.target?.closest?.("canvas")) return;
 
       // PlayCanvas' input source calls preventDefault on every canvas wheel
       // event. Stop it in the capture phase so the browser keeps its native page
@@ -1129,7 +1151,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
     model.addEventListener("wheel", handleWheel, { passive: false, capture: true });
     return () => model.removeEventListener("wheel", handleWheel, { capture: true });
-  }, [handleOpticalZoom, interactive, scheduleHoverSync]);
+  }, [handleOpticalZoom, scheduleHoverSync, zoomable]);
 
   useEffect(() => {
     if (!interactive) return undefined;
@@ -1154,6 +1176,11 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       }
     }
     if (!interactive || !event.target.closest?.("canvas")) return;
+    if (event.button === 1) {
+      event.preventDefault();
+      manualCameraRef.current = true;
+      cameraRigRef.current?.setScrollLocked(false);
+    }
     pointerStartRef.current = {
       x: event.clientX,
       y: event.clientY,
@@ -1168,6 +1195,10 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const handleModelPointerMove = useCallback((event) => {
     if (!interactive) return;
     lastPointerClientRef.current = { x: event.clientX, y: event.clientY };
+    if ((event.buttons & 4) === 4) {
+      manualCameraRef.current = true;
+      cameraRigRef.current?.setScrollLocked(false);
+    }
     if (event.pointerType === "touch" && touchPointersRef.current.has(event.pointerId)) {
       touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
       if (touchPointersRef.current.size === 2) {
@@ -1306,6 +1337,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       ref={modelRef}
       className={`building-map building-model building-splat ${settled ? "is-settled" : "is-turning"} ${interactive ? "is-interactive" : ""}`}
       data-load-state={deviceLost ? "restoring" : loadState.status}
+      data-camera-fov={cameraFov.toFixed(3)}
       data-hovered-floor={hoveredFloor ?? undefined}
       data-filtered-floor={highlightedFloor ?? undefined}
       aria-busy={loadState.status === "loading" || deviceLost}
@@ -1315,6 +1347,9 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       onPointerCancel={handleModelPointerCancel}
       onPointerLeave={handleModelPointerLeave}
       onClick={handleModelClick}
+      onAuxClick={(event) => {
+        if (event.button === 1) event.preventDefault();
+      }}
     >
       {canRenderSplat ? (
         <WebGLErrorBoundary fallback={fallback} onError={handleRenderError}>
@@ -1430,13 +1465,13 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
             <>
               <span className="model-instruction-desktop">
                 {settled
-                  ? "DRAG TO ROTATE · CTRL + WHEEL TO ZOOM · SELECT A FLOOR"
-                  : "SCROLL TO TURN · DRAG TO ORBIT · SELECT A FLOOR"}
+                  ? "DRAG OR MIDDLE-DRAG TO ROTATE · CTRL/CMD + WHEEL TO ZOOM · SELECT A FLOOR"
+                  : "SCROLL TO TURN · DRAG OR MIDDLE-DRAG TO ORBIT · CTRL/CMD + WHEEL TO ZOOM"}
               </span>
               <span className="model-instruction-mobile">
                 {settled
                   ? "DRAG TO ROTATE · PINCH TO ZOOM · TAP A FLOOR"
-                  : "SCROLL TO TURN · DRAG TO ORBIT · TAP A FLOOR"}
+                  : "SCROLL TO TURN · DRAG TO ORBIT · PINCH TO ZOOM"}
               </span>
             </>
           ) : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}

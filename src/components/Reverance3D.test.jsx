@@ -45,6 +45,38 @@ describe("Reverance official 3D reconstruction", () => {
     expect(onSelectFloor).toHaveBeenCalledWith(4);
   });
 
+  it("zooms from anywhere on the building map with ctrl or cmd + wheel", () => {
+    const { container } = render(
+      <Reverance3D
+        snapshot={snapshot}
+        onSelectFloor={vi.fn()}
+        settled={false}
+        interactive
+        zoomable
+        progressRef={{ current: 0.35 }}
+      />,
+    );
+
+    const map = container.querySelector(".building-map");
+    const rail = container.querySelector(".model-floor-rail");
+    expect(map).toBeTruthy();
+
+    const event = new WheelEvent("wheel", {
+      deltaY: -120,
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    const stopPropagation = vi.spyOn(event, "stopPropagation");
+    const preventDefault = vi.spyOn(event, "preventDefault");
+
+    Object.defineProperty(event, "target", { value: rail || map, configurable: true });
+    map?.dispatchEvent(event);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(stopPropagation).toHaveBeenCalled();
+  });
+
   it("blocks canvas wheel handlers without preventing native scroll", () => {
     const { container } = render(
       <Reverance3D
