@@ -67,9 +67,7 @@ const RENDER_SCALE_MOBILE_MAX = 1.5;
 const RENDER_MAX_DIMENSION = 1440;
 const MOBILE_RENDER_WIDTH = 480;
 const CANVAS_STYLE = { width: "100%", height: "100%" };
-const SPLAT_DEVICE_TYPES = typeof navigator !== "undefined" && "gpu" in navigator
-  ? [DEVICETYPE_WEBGPU, DEVICETYPE_WEBGL2]
-  : [DEVICETYPE_WEBGL2];
+const SPLAT_DEVICE_TYPES = [DEVICETYPE_WEBGL2, DEVICETYPE_WEBGPU];
 const GRAPHICS_OPTIONS = {
   alpha: false,
   antialias: false,
@@ -326,6 +324,7 @@ function VisibilityGovernor() {
 
 function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) {
   const entityRef = useRef(null);
+  const lastScrollPoseRef = useRef({ progress: Number.NaN, reducedMotion: null });
   const initialPose = useMemo(
     () => getCameraPathPose(progressRef.current, CAMERA_START, CAMERA_END, CAMERA_TARGET, reducedMotion),
     [progressRef, reducedMotion],
@@ -351,8 +350,13 @@ function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) 
 
   useAppEvent("update", () => {
     if (settled) return;
+    const progress = progressRef.current;
+    const lastScrollPose = lastScrollPoseRef.current;
+    if (progress === lastScrollPose.progress && reducedMotion === lastScrollPose.reducedMotion) return;
+    lastScrollPose.progress = progress;
+    lastScrollPose.reducedMotion = reducedMotion;
     const target = getCameraPathPose(
-      progressRef.current,
+      progress,
       CAMERA_START,
       CAMERA_END,
       CAMERA_TARGET,
@@ -379,7 +383,7 @@ function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) 
           rotateSpeed={0.12}
           zoomSpeed={0}
           moveDamping={0.96}
-          rotateDamping={0.97}
+          rotateDamping={0.9}
           zoomDamping={0.965}
           focusDamping={0.93}
         />
@@ -568,6 +572,7 @@ function FloorHighlight({ floorNumber, splatReady }) {
   }, [app, floorNumber]);
 
   useAppEvent("update", () => {
+    if (floorNumber === null || floorNumber === undefined) return;
     const camera = app.root.findByName("Official Reverance orbit camera")?.camera;
     if (!camera) return;
 
