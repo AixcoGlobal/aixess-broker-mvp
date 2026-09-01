@@ -626,10 +626,6 @@
   touch-action: pan-y;
 }
 
-.building-splat.is-settled .building-splat-canvas {
-  touch-action: none;
-}
-
 .model-loading-splat {
   position: absolute;
   z-index: 9;

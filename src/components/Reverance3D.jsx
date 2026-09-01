@@ -809,6 +809,8 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     if (!model) return undefined;
     const handleWheel = (event) => {
       if (!settled || !event.target.closest?.("canvas")) return;
+      const wantsZoom = event.ctrlKey || event.metaKey;
+      if (!wantsZoom) return;
       event.preventDefault();
       handleOpticalZoom(event.deltaY * 0.012);
     };
@@ -1065,7 +1067,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         <strong>
           {settled ? (
             <>
-              <span className="model-instruction-desktop">DRAG TO ROTATE · WHEEL TO ZOOM · SELECT A FLOOR</span>
+              <span className="model-instruction-desktop">DRAG TO ROTATE · CTRL + WHEEL TO ZOOM · SELECT A FLOOR</span>
               <span className="model-instruction-mobile">DRAG TO ROTATE · PINCH TO ZOOM · TAP A FLOOR</span>
             </>
           ) : interactive ? "HOVER OR SELECT A FLOOR · SCROLL TO SETTLE FRONT VIEW" : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}
