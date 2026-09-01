@@ -75,6 +75,38 @@ describe("Reverance official 3D reconstruction", () => {
     expect(canvasWheel).not.toHaveBeenCalled();
   });
 
+  it("enables modified-wheel zoom before the scroll animation has settled", () => {
+    const { container } = render(
+      <Reverance3D
+        snapshot={snapshot}
+        onSelectFloor={vi.fn()}
+        settled={false}
+        interactive
+        progressRef={{ current: 0.35 }}
+      />,
+    );
+
+    const map = container.querySelector(".building-map");
+    const canvas = document.createElement("canvas");
+    map?.appendChild(canvas);
+    const rect = canvas.getBoundingClientRect();
+    const event = new WheelEvent("wheel", {
+      deltaY: -120,
+      clientX: rect.left + rect.width * 0.5,
+      clientY: rect.top + rect.height * 0.5,
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    const stopPropagation = vi.spyOn(event, "stopPropagation");
+    const preventDefault = vi.spyOn(event, "preventDefault");
+
+    canvas.dispatchEvent(event);
+
+    expect(stopPropagation).toHaveBeenCalled();
+    expect(preventDefault).toHaveBeenCalled();
+  });
+
   it("supports keyboard selection in the static fallback", () => {
     const onSelectFloor = vi.fn();
     render(

@@ -322,25 +322,32 @@ function VisibilityGovernor() {
   return null;
 }
 
-function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) {
+function CameraRig({ controlsActive, fov, interactive, manualCameraRef, onCameraReady, progressRef, reducedMotion, settled }) {
   const entityRef = useRef(null);
+  const controlsRef = useRef(null);
   const lastScrollPoseRef = useRef({ progress: Number.NaN, reducedMotion: null });
   const initialPose = useMemo(
     () => getCameraPathPose(progressRef.current, CAMERA_START, CAMERA_END, CAMERA_TARGET, reducedMotion),
     [progressRef, reducedMotion],
   );
 
-  const placeCamera = useCallback((position) => {
+  const placeCamera = useCallback((position, syncControls = false) => {
     const entity = entityRef.current;
     if (!entity) return;
     entity.setPosition(...position);
     entity.lookAt(...CAMERA_TARGET, ...CAMERA_UP);
+    if (syncControls && controlsRef.current?.reset) {
+      // CameraControls keeps its own pose even while disabled. Keep that pose on
+      // the exact scroll camera so the first manual drag cannot snap backward.
+      controlsRef.current._pose?.look(new Vec3(...position), CAMERA_FOCUS);
+      controlsRef.current.reset(CAMERA_FOCUS, new Vec3(...position));
+    }
   }, []);
 
   useEffect(() => {
-    if (!settled) return;
-    placeCamera(CAMERA_END);
-  }, [placeCamera, settled]);
+    if (!settled || manualCameraRef.current) return;
+    placeCamera(CAMERA_END, true);
+  }, [manualCameraRef, placeCamera, settled]);
 
   useEffect(() => {
     if (!entityRef.current) return undefined;
@@ -349,7 +356,7 @@ function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) 
   }, [onCameraReady]);
 
   useAppEvent("update", () => {
-    if (settled) return;
+    if (settled || manualCameraRef.current) return;
     const progress = progressRef.current;
     const lastScrollPose = lastScrollPoseRef.current;
     if (progress === lastScrollPose.progress && reducedMotion === lastScrollPose.reducedMotion) return;
@@ -364,15 +371,17 @@ function CameraRig({ fov, onCameraReady, progressRef, reducedMotion, settled }) 
     ).position;
     // A trailing camera tween outlives the scroll event and makes WebGL's async
     // splat sorter display stale intermediate orders. Track the scroll pose exactly.
-    placeCamera(target);
+    placeCamera(target, true);
   });
 
   return (
     <Entity ref={entityRef} name="Official Reverance orbit camera" position={initialPose.position}>
       <Camera clearColor="#9aabb7" fov={fov} nearClip={1} farClip={500} />
-      {settled && (
+      {interactive && (
         <Script
+          ref={controlsRef}
           script={CameraControls}
+          enabled={controlsActive}
           enableOrbit
           enableFly={false}
           enablePan={false}
@@ -608,10 +617,12 @@ function FloorHighlight({ floorNumber, splatReady }) {
 
 function SplatScene({
   cameraEntityRef,
+  controlsActive,
   hoveredFloor,
   highlightedFloor,
   fov,
   interactive,
+  manualCameraRef,
   onCameraReady,
   onStateChange,
   pickerRef,
@@ -623,7 +634,10 @@ function SplatScene({
   return (
     <>
       <CameraRig
+        controlsActive={controlsActive}
         fov={fov}
+        interactive={interactive}
+        manualCameraRef={manualCameraRef}
         onCameraReady={onCameraReady}
         progressRef={progressRef}
         reducedMotion={reducedMotion}
@@ -697,7 +711,9 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
   const [cameraFov, setCameraFov] = useState(CAMERA_FOV);
+  const [manualControlsActive, setManualControlsActive] = useState(false);
   const cameraEntityRef = useRef(null);
+  const manualCameraRef = useRef(false);
   const pickerRef = useRef(null);
   const modelRef = useRef(null);
   const pointerStartRef = useRef(null);
@@ -795,6 +811,8 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
   useEffect(() => {
     if (interactive) return;
+    manualCameraRef.current = false;
+    setManualControlsActive(false);
     invalidateHoverPick();
     setHoveredFloor(null);
     setHoverPoint(null);
@@ -803,12 +821,12 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   useEffect(() => () => invalidateHoverPick(), [invalidateHoverPick]);
 
   const handleOpticalZoom = useCallback((delta) => {
-    if (!settled || !Number.isFinite(delta)) return;
+    if (!interactive || !Number.isFinite(delta)) return;
     setCameraFov((current) => Math.min(CAMERA_FOV, Math.max(
       CAMERA_MIN_FOV,
       current + delta,
     )));
-  }, [settled]);
+  }, [interactive]);
 
   useEffect(() => {
     const model = modelRef.current;
@@ -820,7 +838,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
       const onCanvas = Boolean(event.target?.closest?.("canvas"));
 
-      if (settled && onCanvas && (event.ctrlKey || event.metaKey)) {
+      if (interactive && onCanvas && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
         event.stopPropagation();
         handleOpticalZoom(event.deltaY * 0.012);
@@ -838,7 +856,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
     window.addEventListener("wheel", handleWheel, { passive: false, capture: true });
     return () => window.removeEventListener("wheel", handleWheel, { capture: true });
-  }, [handleOpticalZoom, settled]);
+  }, [handleOpticalZoom, interactive]);
 
   const handleModelPointerMove = useCallback((event) => {
     if (!interactive) return;
@@ -848,6 +866,8 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         const [first, second] = [...touchPointersRef.current.values()];
         const distance = Math.hypot(second.x - first.x, second.y - first.y);
         if (pinchDistanceRef.current && distance > 0) {
+          manualCameraRef.current = true;
+          setManualControlsActive(true);
           handleOpticalZoom(Math.log(pinchDistanceRef.current / distance) * 10);
         }
         pinchDistanceRef.current = distance;
@@ -857,6 +877,8 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     if (pointerStart && (event.buttons > 0 || event.pointerType === "touch")) {
       if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 6) {
         draggedRef.current = true;
+        manualCameraRef.current = true;
+        setManualControlsActive(true);
       }
       invalidateHoverPick();
       setHoveredFloor(null);
@@ -926,15 +948,27 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     setHoveredFloor(null);
     setHoverPoint(null);
     setCameraFov(CAMERA_FOV);
+    manualCameraRef.current = false;
+    setManualControlsActive(false);
+    const resetPosition = settled
+      ? CAMERA_END
+      : getCameraPathPose(
+        progressRef.current,
+        CAMERA_START,
+        CAMERA_END,
+        CAMERA_TARGET,
+        reducedMotion,
+      ).position;
     const cameraEntity = cameraEntityRef.current;
     const controls = cameraEntity?.script?.cameraControls;
     if (controls?.reset) {
-      controls.reset(CAMERA_FOCUS, new Vec3(...CAMERA_END));
+      controls.enabled = settled;
+      controls.reset(CAMERA_FOCUS, new Vec3(...resetPosition));
       return;
     }
-    cameraEntity?.setPosition(...CAMERA_END);
+    cameraEntity?.setPosition(...resetPosition);
     cameraEntity?.lookAt(...CAMERA_TARGET, ...CAMERA_UP);
-  }, []);
+  }, [progressRef, reducedMotion, settled]);
 
   const fallback = <StaticFallback snapshot={snapshot} highlightedFloor={effectiveHighlightedFloor} onSelectFloor={onSelectFloor} />;
 
@@ -946,7 +980,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       data-hovered-floor={hoveredFloor ?? undefined}
       data-filtered-floor={highlightedFloor ?? undefined}
       aria-busy={loadState.status === "loading"}
-      onPointerDown={(event) => {
+      onPointerDownCapture={(event) => {
         if (event.pointerType === "touch") {
           touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
           if (touchPointersRef.current.size === 2) {
@@ -955,6 +989,9 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
           }
         }
         if (interactive && event.target.closest?.("canvas")) {
+          const controls = cameraEntityRef.current?.script?.cameraControls;
+          if (controls) controls.enabled = true;
+          setManualControlsActive(true);
           pointerStartRef.current = { x: event.clientX, y: event.clientY };
           draggedRef.current = false;
           suppressClickRef.current = false;
@@ -965,6 +1002,24 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         touchPointersRef.current.delete(event.pointerId);
         pinchDistanceRef.current = null;
         suppressClickRef.current = draggedRef.current;
+        if (!draggedRef.current && !manualCameraRef.current) {
+          setManualControlsActive(false);
+          const controls = cameraEntityRef.current?.script?.cameraControls;
+          if (controls) controls.enabled = settled;
+          if (!settled) {
+            const resetPosition = getCameraPathPose(
+              progressRef.current,
+              CAMERA_START,
+              CAMERA_END,
+              CAMERA_TARGET,
+              reducedMotion,
+            ).position;
+            controls?._pose?.look(new Vec3(...resetPosition), CAMERA_FOCUS);
+            controls?.reset?.(CAMERA_FOCUS, new Vec3(...resetPosition));
+            cameraEntityRef.current?.setPosition(...resetPosition);
+            cameraEntityRef.current?.lookAt(...CAMERA_TARGET, ...CAMERA_UP);
+          }
+        }
         pointerStartRef.current = null;
         draggedRef.current = false;
       }}
@@ -974,14 +1029,17 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         pointerStartRef.current = null;
         draggedRef.current = false;
         suppressClickRef.current = false;
+        if (!manualCameraRef.current) setManualControlsActive(false);
         hoverRequestRef.current += 1;
       }}
       onPointerLeave={() => {
         touchPointersRef.current.clear();
         pinchDistanceRef.current = null;
         pointerStartRef.current = null;
+        const wasDragged = draggedRef.current;
         draggedRef.current = false;
         suppressClickRef.current = false;
+        if (!wasDragged && !manualCameraRef.current) setManualControlsActive(false);
         hoverRequestRef.current += 1;
         setHoveredFloor(null);
         setHoverPoint(null);
@@ -1002,9 +1060,11 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
             <RenderQuality />
             <SplatScene
               cameraEntityRef={cameraEntityRef}
+              controlsActive={settled || manualControlsActive}
               fov={cameraFov}
               highlightedFloor={highlightedFloor}
               interactive={interactive}
+              manualCameraRef={manualCameraRef}
               hoveredFloor={hoveredFloor}
               onCameraReady={handleCameraReady}
               onStateChange={reportState}
@@ -1028,9 +1088,9 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       {canRenderSplat && loadState.status === "ready" && (
         <>
           <button
-            className={`model-reset-view ${settled ? "is-visible" : ""}`}
+            className={`model-reset-view ${interactive ? "is-visible" : ""}`}
             type="button"
-            tabIndex={settled ? 0 : -1}
+            tabIndex={interactive ? 0 : -1}
             onClick={handleResetView}
           >
             RESET VIEW
@@ -1087,12 +1147,12 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       <div className="building-model-instruction" aria-live="polite">
         <span className="model-instruction-index">{settled ? "LIVE 3D" : interactive ? "INTERACTIVE" : "SCROLL"}</span>
         <strong>
-          {settled ? (
+          {interactive ? (
             <>
               <span className="model-instruction-desktop">DRAG TO ROTATE · CTRL + WHEEL TO ZOOM · SELECT A FLOOR</span>
               <span className="model-instruction-mobile">DRAG TO ROTATE · PINCH TO ZOOM · TAP A FLOOR</span>
             </>
-          ) : interactive ? "HOVER OR SELECT A FLOOR · SCROLL TO SETTLE FRONT VIEW" : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}
+          ) : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}
         </strong>
       </div>
       <span className="building-model-badge" aria-hidden="true">
