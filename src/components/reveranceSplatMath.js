@@ -9,6 +9,13 @@ const DEFAULT_FLOOR_LAYOUT = Object.freeze({
 
 export const REVERANCE_SPLAT_FLOOR_LAYOUT = DEFAULT_FLOOR_LAYOUT;
 
+/**
+ * Normalized explorer scroll progress at which the automatic side-to-front
+ * camera settles into the front view and the filter panel reaches its final
+ * position. Shared so the camera path, panel travel and settle state agree.
+ */
+export const EXPLORER_SETTLE_PROGRESS = 0.965;
+
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
 }
@@ -96,6 +103,24 @@ export function getCameraPathPose(
     position: focusPoint.map((value, index) => value + direction[index] * radius),
     target: [...focusPoint],
   };
+}
+
+/**
+ * Camera pose driven by raw explorer scroll progress. The scroll stage settles
+ * at `settleProgress` (< 1), so the path is re-normalized to reach the end pose
+ * exactly on that frame; otherwise the orbit takeover would visibly snap.
+ */
+export function getScrollCameraPathPose(
+  progress,
+  startPosition,
+  endPosition,
+  focusPoint,
+  reducedMotion = false,
+  settleProgress = EXPLORER_SETTLE_PROGRESS,
+) {
+  const safeProgress = Number.isFinite(progress) ? progress : 0;
+  const normalized = settleProgress > 0 ? safeProgress / settleProgress : safeProgress;
+  return getCameraPathPose(normalized, startPosition, endPosition, focusPoint, reducedMotion);
 }
 
 export function createFloorVolumes(floors, layout = {}) {

@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  EXPLORER_SETTLE_PROGRESS,
   createFloorVolumes,
   getCanvasScreenPoint,
   getCameraPathPose,
   getFloorTooltipPosition,
   getKeyboardFloorTarget,
+  getScrollCameraPathPose,
   getSplatPose,
 } from "./reveranceSplatMath";
 
@@ -40,6 +42,18 @@ describe("Reverance calibrated camera path", () => {
     expect(getCameraPathPose(-2, side, front, focus).position).toEqual(side);
     expect(getCameraPathPose(2, side, front, focus).position).toEqual(front);
     expect(getCameraPathPose(0, side, front, focus, true).position).toEqual(front);
+  });
+
+  it("finishes the scroll-driven path exactly on the settle frame", () => {
+    expect(EXPLORER_SETTLE_PROGRESS).toBeGreaterThan(0);
+    expect(EXPLORER_SETTLE_PROGRESS).toBeLessThan(1);
+    expect(getScrollCameraPathPose(0, side, front, focus).position).toEqual(side);
+    expect(getScrollCameraPathPose(EXPLORER_SETTLE_PROGRESS, side, front, focus).position).toEqual(front);
+    expect(getScrollCameraPathPose(1, side, front, focus).position).toEqual(front);
+    const halfway = getScrollCameraPathPose(EXPLORER_SETTLE_PROGRESS / 2, side, front, focus).position;
+    expect(halfway).toEqual(getCameraPathPose(0.5, side, front, focus).position);
+    expect(getScrollCameraPathPose(Number.NaN, side, front, focus).position).toEqual(side);
+    expect(getScrollCameraPathPose(0, side, front, focus, true).position).toEqual(front);
   });
 });
 

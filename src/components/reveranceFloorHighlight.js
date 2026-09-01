@@ -190,49 +190,87 @@ export function intersectRayFloorVolume(rayOrigin, rayDir, worldToLocal, halfSiz
   return tmin >= 0 ? tmin : tmax;
 }
 
+/**
+ * Maximum CSS-pixel distance from the nearest projected floor band at which a
+ * pointer that misses every floor volume still resolves to that floor. This
+ * keeps thin slab edges forgiving without lighting a floor up from open sky.
+ */
+export const REVERANCE_FLOOR_PICK_TOLERANCE_PX = 14;
+
+const pickCenter = new Vec3();
+const pickUpper = new Vec3();
+const pickLower = new Vec3();
+const pickLeft = new Vec3();
+const pickRight = new Vec3();
+const pickScreenCenter = new Vec3();
+const pickScreenUpper = new Vec3();
+const pickScreenLower = new Vec3();
+const pickScreenLeft = new Vec3();
+const pickScreenRight = new Vec3();
+const pickNear = new Vec3();
+const pickFar = new Vec3();
+const pickRayDir = new Vec3();
+const pickHitPoint = new Vec3();
+const pickLocalPoint = new Vec3();
+
 export function pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canvasHeight) {
   const camera = cameraEntity?.camera;
   if (!camera || canvasWidth <= 0 || canvasHeight <= 0) return null;
+  if (!Number.isFinite(cssX) || !Number.isFinite(cssY)) return null;
 
-  const screenCenter = new Vec3();
-  const screenUpper = new Vec3();
-  const screenLower = new Vec3();
-  const screenLeft = new Vec3();
-  const screenRight = new Vec3();
+  const cameraPosition = cameraEntity.getPosition();
+  const cameraForward = cameraEntity.forward;
+  const isInFrontOfCamera = (point) => (
+    (point.x - cameraPosition.x) * cameraForward.x
+    + (point.y - cameraPosition.y) * cameraForward.y
+    + (point.z - cameraPosition.z) * cameraForward.z
+  ) > camera.nearClip;
+
   let bandFloor = null;
   let bandScore = Infinity;
   let nearestFloor = null;
-  let nearestDistance = Infinity;
+  let nearestBandDistance = Infinity;
 
   for (const volume of REVERANCE_FLOOR_VOLUMES) {
     const floorToWorld = getFloorWorldTransform(volume);
-    const center = floorToWorld.transformPoint(new Vec3(0, 0, 0));
-    camera.worldToScreen(center, screenCenter);
+    floorToWorld.transformPoint(pickCenter.set(0, 0, 0), pickCenter);
+    floorToWorld.transformPoint(pickUpper.set(0, REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0), pickUpper);
+    floorToWorld.transformPoint(pickLower.set(0, -REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0), pickLower);
+    floorToWorld.transformPoint(pickLeft.set(-REVERANCE_FLOOR_PICK_HALF_SIZE[0], 0, 0), pickLeft);
+    floorToWorld.transformPoint(pickRight.set(REVERANCE_FLOOR_PICK_HALF_SIZE[0], 0, 0), pickRight);
 
-    const dx = cssX - screenCenter.x;
-    const dy = cssY - screenCenter.y;
-    const distance = Math.hypot(dx, dy);
-    if (distance < nearestDistance) {
-      nearestDistance = distance;
-      nearestFloor = volume.number;
+    // Points behind (or on) the near plane project to nonsense; never let them form a band.
+    if (
+      !isInFrontOfCamera(pickCenter)
+      || !isInFrontOfCamera(pickUpper)
+      || !isInFrontOfCamera(pickLower)
+      || !isInFrontOfCamera(pickLeft)
+      || !isInFrontOfCamera(pickRight)
+    ) {
+      continue;
     }
 
-    const upper = floorToWorld.transformPoint(new Vec3(0, REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0));
-    const lower = floorToWorld.transformPoint(new Vec3(0, -REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0));
-    const left = floorToWorld.transformPoint(new Vec3(-REVERANCE_FLOOR_PICK_HALF_SIZE[0], 0, 0));
-    const right = floorToWorld.transformPoint(new Vec3(REVERANCE_FLOOR_PICK_HALF_SIZE[0], 0, 0));
-    camera.worldToScreen(upper, screenUpper);
-    camera.worldToScreen(lower, screenLower);
-    camera.worldToScreen(left, screenLeft);
-    camera.worldToScreen(right, screenRight);
+    camera.worldToScreen(pickCenter, pickScreenCenter);
+    camera.worldToScreen(pickUpper, pickScreenUpper);
+    camera.worldToScreen(pickLower, pickScreenLower);
+    camera.worldToScreen(pickLeft, pickScreenLeft);
+    camera.worldToScreen(pickRight, pickScreenRight);
 
-    const top = Math.min(screenUpper.y, screenLower.y);
-    const bottom = Math.max(screenUpper.y, screenLower.y);
-    const minX = Math.min(screenLeft.x, screenRight.x);
-    const maxX = Math.max(screenLeft.x, screenRight.x);
-    if (cssY < top || cssY > bottom || cssX < minX || cssX > maxX) continue;
+    const top = Math.min(pickScreenUpper.y, pickScreenLower.y);
+    const bottom = Math.max(pickScreenUpper.y, pickScreenLower.y);
+    const minX = Math.min(pickScreenLeft.x, pickScreenRight.x);
+    const maxX = Math.max(pickScreenLeft.x, pickScreenRight.x);
 
-    const score = Math.abs(cssY - screenCenter.y) + Math.abs(cssX - screenCenter.x) * 0.35;
+    const outsideX = Math.max(minX - cssX, 0, cssX - maxX);
+    const outsideY = Math.max(top - cssY, 0, cssY - bottom);
+    const bandDistance = Math.hypot(outsideX, outsideY);
+    if (bandDistance < nearestBandDistance) {
+      nearestBandDistance = bandDistance;
+      nearestFloor = volume.number;
+    }
+    if (bandDistance > 0) continue;
+
+    const score = Math.abs(cssY - pickScreenCenter.y) + Math.abs(cssX - pickScreenCenter.x) * 0.35;
     if (score < bandScore) {
       bandScore = score;
       bandFloor = volume.number;
@@ -241,37 +279,57 @@ export function pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canva
 
   if (bandFloor !== null) return bandFloor;
 
-  const near = new Vec3();
-  const far = new Vec3();
-  camera.screenToWorld(cssX, cssY, camera.nearClip, near);
-  camera.screenToWorld(cssX, cssY, camera.farClip, far);
-  const rayDir = new Vec3().sub2(far, near);
-  const dirLength = rayDir.length();
-  if (dirLength <= Number.EPSILON) return nearestFloor;
-  rayDir.mulScalar(1 / dirLength);
+  const tolerantFloor = nearestBandDistance <= REVERANCE_FLOOR_PICK_TOLERANCE_PX ? nearestFloor : null;
+
+  camera.screenToWorld(cssX, cssY, camera.nearClip, pickNear);
+  camera.screenToWorld(cssX, cssY, camera.farClip, pickFar);
+  pickRayDir.sub2(pickFar, pickNear);
+  const dirLength = pickRayDir.length();
+  if (dirLength <= Number.EPSILON) return tolerantFloor;
+  pickRayDir.mulScalar(1 / dirLength);
 
   let rayFloor = null;
   let rayScore = Infinity;
   for (const volume of REVERANCE_FLOOR_VOLUMES) {
     const worldToLocal = getWorldToFloorTransform(volume);
     const distance = intersectRayFloorVolume(
-      near,
-      rayDir,
+      pickNear,
+      pickRayDir,
       worldToLocal,
       REVERANCE_FLOOR_PICK_HALF_SIZE,
     );
     if (distance === null) continue;
 
-    const hitPoint = new Vec3().add2(
-      near,
-      new Vec3(rayDir.x * distance, rayDir.y * distance, rayDir.z * distance),
+    pickHitPoint.set(
+      pickNear.x + pickRayDir.x * distance,
+      pickNear.y + pickRayDir.y * distance,
+      pickNear.z + pickRayDir.z * distance,
     );
-    const centerScore = Math.abs(worldToLocal.transformPoint(hitPoint).y);
+    const centerScore = Math.abs(worldToLocal.transformPoint(pickHitPoint, pickLocalPoint).y);
     if (centerScore < rayScore) {
       rayScore = centerScore;
       rayFloor = volume.number;
     }
   }
 
-  return rayFloor ?? nearestFloor;
+  return rayFloor ?? tolerantFloor;
+}
+
+/**
+ * Resolves which calibrated storey strictly contains a world-space point, or
+ * `null` when the point lies outside every floor volume or exactly on a slab.
+ */
+export function getFloorAtWorldPoint(worldPoint) {
+  const local = new Vec3();
+  for (const volume of REVERANCE_FLOOR_VOLUMES) {
+    getWorldToFloorTransform(volume).transformPoint(worldPoint, local);
+    if (
+      Math.abs(local.x) < REVERANCE_FLOOR_PICK_HALF_SIZE[0]
+      && Math.abs(local.y) < REVERANCE_FLOOR_PICK_HALF_SIZE[1]
+      && Math.abs(local.z) < REVERANCE_FLOOR_PICK_HALF_SIZE[2]
+    ) {
+      return volume.number;
+    }
+  }
+  return null;
 }

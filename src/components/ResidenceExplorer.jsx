@@ -15,6 +15,7 @@ import {
   mergeFloorUnits,
   normalizeStatus,
 } from "../data/reveranceApi";
+import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
 import "./ResidenceExplorer.css";
 
 const Reverance3D = lazy(() => import("./Reverance3D").then((module) => ({
@@ -64,7 +65,6 @@ function clamp(value, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-const EXPLORER_SETTLE_PROGRESS = 0.965;
 const DEFAULT_FILTERS = {
   floor: "all",
   bedrooms: "all",
@@ -104,7 +104,6 @@ function useScrollStage(sectionRef) {
 
       progressRef.current = progress;
       section.style.setProperty("--explorer-progress", progress.toFixed(4));
-      section.style.setProperty("--copy-shift", "0rem");
       section.style.setProperty("--filter-progress", filterProgress.toFixed(4));
       setSettled((current) => (current === isSettled ? current : isSettled));
       setInteractive((current) => (current === isInteractive ? current : isInteractive));
@@ -115,14 +114,25 @@ function useScrollStage(sectionRef) {
       if (!frame) frame = window.requestAnimationFrame(render);
     };
 
+    // Scroll events dispatch before the animation-frame callbacks of the same
+    // frame, so measuring synchronously here lets the WebGL camera consume the
+    // fresh progress in that very frame instead of trailing one frame behind.
+    const handleScroll = () => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      render();
+    };
+
     schedule();
-    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", schedule);
     reducedMotion.addEventListener?.("change", schedule);
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", schedule);
       reducedMotion.removeEventListener?.("change", schedule);
     };
@@ -633,8 +643,8 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
     };
   }, [inventory]);
   const floors = useMemo(
-    () => [...new Set(inventory.map((unit) => unit.floor))].sort((a, b) => a - b),
-    [inventory],
+    () => (snapshot ? snapshot.floors.map((floor) => floor.number).sort((a, b) => a - b) : []),
+    [snapshot],
   );
   const bedroomOptions = useMemo(
     () => [...new Set(inventory.map((unit) => Number(unit.bedrooms)).filter(Number.isFinite))].sort((a, b) => a - b),
@@ -707,7 +717,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
 
             <div className="explorer-metrics" aria-label="Residence availability summary">
               <div><strong>{summary.available}</strong><span>AVAILABLE<br />RESIDENCES</span></div>
-              <div><strong>15</strong><span>SELECTABLE<br />FLOORS</span></div>
+              <div><strong>{snapshot?.floors.length || 0}</strong><span>SELECTABLE<br />FLOORS</span></div>
             </div>
             <AvailabilityLegend />
             <p className="explorer-footnote">A BLOCK · FLOORS 02–16 · BATUMI</p>

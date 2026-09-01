@@ -21,6 +21,7 @@ import {
   FILTER_LINEAR,
   GSPLATDATA_LARGE,
   Mat4,
+  Pose,
   RESOLUTION_FIXED,
   StandardMaterial,
   TYPE_FLOAT32,
@@ -28,11 +29,11 @@ import {
   Vec3,
 } from "playcanvas";
 import { getFloorSummary } from "../data/reveranceApi";
-import { isPointWithinRect } from "../utils/pageScroll";
+import { normalizeWheelDelta } from "../utils/pageScroll";
 import {
-  getCameraPathPose,
   getFloorTooltipPosition,
   getKeyboardFloorTarget,
+  getScrollCameraPathPose,
 } from "./reveranceSplatMath";
 import {
   REVERANCE_FLOOR_HIGHLIGHT_CANDIDATE_EPSILON,
@@ -43,7 +44,6 @@ import {
   REVERANCE_SPLAT_ROTATION,
   getFloorVisualYOffset,
   getHighlightWorldToFloorTransform,
-  getWorldToFloorTransform,
   pickFloorFromScreen,
 } from "./reveranceFloorHighlight";
 
@@ -54,14 +54,19 @@ const CAMERA_MIN_FOV = 31;
 const CAMERA_TARGET = [-0.10454206208274158, 0.0008068618049380962, 0.10121364916726469];
 const CAMERA_START = [2.504352717259611, 0.014715904099223222, 2.7438049729703717];
 const CAMERA_END = [2.571008603437904, -0.010401810476404838, -2.4755136248454392];
-const CAMERA_UP = [-0.000569128058664063, 0.9999881472011365, -0.004835447289666561];
 const CAMERA_FOCUS = new Vec3(...CAMERA_TARGET);
-const CAMERA_PITCH_RANGE = new Vec2(-0.08, 0.08);
+// The calibrated side-to-front path pitches between -0.215° and +0.173°. The
+// orbit range must contain the whole path, otherwise CameraControls clamps the
+// pose the moment it takes over and the settle visibly snaps.
+const CAMERA_PITCH_RANGE = new Vec2(-0.25, 0.25);
 const CAMERA_YAW_RANGE = new Vec2(-360, 360);
 const CAMERA_ZOOM_RANGE = new Vec2(3.7123, 3.7165);
 const DISTANT_ENVIRONMENT_RADIUS = 20;
-const HOVER_PICK_INTERVAL_SCROLL_MS = 64;
-const HOVER_PICK_INTERVAL_SETTLED_MS = 32;
+const DRAG_THRESHOLD_PX = 6;
+const WHEEL_ZOOM_DEGREES_PER_PIXEL = 0.012;
+const PINCH_ZOOM_DEGREES_PER_LOG_UNIT = 10;
+const FOV_TWEEN_RATE = 16;
+const FOV_TWEEN_EPSILON = 0.01;
 const RENDER_SCALE_MAX = 2;
 const RENDER_SCALE_MOBILE_MAX = 1.5;
 const RENDER_MAX_DIMENSION = 1440;
@@ -84,10 +89,6 @@ const FLOOR_HIGHLIGHT_HALF_SIZE = new Float32Array(
     REVERANCE_FLOOR_SIZE[2] * 0.5,
   ],
 );
-const FLOOR_PICK_VOLUMES = REVERANCE_FLOOR_VOLUMES.map((volume) => ({
-  number: volume.number,
-  worldToLocal: getWorldToFloorTransform(volume),
-}));
 const FLOOR_HIGHLIGHT_GLSL = `
 uniform mat4 uFloorWorldToLocal;
 uniform vec3 uFloorHalfSize;
@@ -188,6 +189,53 @@ fn modifySplatColor(gaussianUV: vec2f, color: ptr<function, vec4f>) {
 }
 `;
 
+const scratchPose = new Pose();
+const scratchPosition = new Vec3();
+
+/**
+ * PlayCanvas' stock CameraControls wraps the orbit target yaw with `% 360`
+ * while the damped current yaw lags behind it. Crossing ±360° therefore makes
+ * the camera whip almost a full turn the other way. Keeping both poses inside
+ * (-180°, 180°] before every update means the wrap can never trigger.
+ */
+class ReveranceCameraControls extends CameraControls {
+  static scriptName = "reveranceCameraControls";
+
+  /**
+   * While the scroll-driven side-to-front path owns the camera, skip writing a
+   * pose. CameraControls.update() always overwrites the entity, which otherwise
+   * fights the scroll camera and makes the turn hitch.
+   */
+  scrollLocked = true;
+
+  drainInput() {
+    this._desktopInput?.read?.();
+    this._orbitMobileInput?.read?.();
+    this._flyMobileInput?.read?.();
+    this._gamepadInput?.read?.();
+  }
+
+  update(dt) {
+    if (this.scrollLocked) {
+      this.drainInput();
+      return;
+    }
+    const orbit = this._orbitController;
+    const target = orbit?._targetRootPose?.angles;
+    const current = orbit?._rootPose?.angles;
+    if (target && current && Math.abs(target.y) > 180) {
+      const shift = target.y > 0 ? -360 : 360;
+      target.y += shift;
+      current.y += shift;
+    }
+    super.update(dt);
+  }
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
 function floorName(number) {
   return `Floor ${String(number).padStart(2, "0")}`;
 }
@@ -201,8 +249,14 @@ function getAdaptiveRenderScale(width, height) {
   return Math.min(Math.max(dpr, 1), mobileCap, capScale);
 }
 
-function getHoverPickInterval(settled) {
-  return settled ? HOVER_PICK_INTERVAL_SETTLED_MS : HOVER_PICK_INTERVAL_SCROLL_MS;
+function getScrollCameraPosition(progress, reducedMotion) {
+  return getScrollCameraPathPose(
+    progress,
+    CAMERA_START,
+    CAMERA_END,
+    CAMERA_TARGET,
+    reducedMotion,
+  ).position;
 }
 
 function installFloorHighlightShaders(app) {
@@ -243,6 +297,66 @@ function useReducedMotion() {
   return reducedMotion;
 }
 
+/**
+ * Smoothly eases the optical zoom toward its target so wheel notches glide
+ * instead of stepping. Pinch input writes the value immediately because the
+ * fingers already define the exact zoom the user expects.
+ */
+function useCameraFov() {
+  const [fov, setFov] = useState(CAMERA_FOV);
+  const fovRef = useRef(CAMERA_FOV);
+  const targetRef = useRef(CAMERA_FOV);
+  const frameRef = useRef(0);
+  const lastTimeRef = useRef(0);
+
+  const step = useCallback((time) => {
+    frameRef.current = 0;
+    const dt = clamp((time - lastTimeRef.current) / 1000, 0.001, 0.1);
+    lastTimeRef.current = time;
+    const target = targetRef.current;
+    const current = fovRef.current;
+    const alpha = 1 - Math.exp(-dt * FOV_TWEEN_RATE);
+    let next = current + (target - current) * alpha;
+    if (Math.abs(target - next) < FOV_TWEEN_EPSILON) {
+      next = target;
+    } else {
+      frameRef.current = window.requestAnimationFrame(step);
+    }
+    fovRef.current = next;
+    setFov(next);
+  }, []);
+
+  const setTarget = useCallback((value, immediate = false) => {
+    if (!Number.isFinite(value)) return;
+    const clamped = clamp(value, CAMERA_MIN_FOV, CAMERA_FOV);
+    targetRef.current = clamped;
+    if (immediate) {
+      if (frameRef.current) {
+        window.cancelAnimationFrame(frameRef.current);
+        frameRef.current = 0;
+      }
+      fovRef.current = clamped;
+      setFov(clamped);
+      return;
+    }
+    if (!frameRef.current) {
+      lastTimeRef.current = window.performance?.now?.() ?? Date.now();
+      frameRef.current = window.requestAnimationFrame(step);
+    }
+  }, [step]);
+
+  const adjustTarget = useCallback((delta, immediate = false) => {
+    if (!Number.isFinite(delta)) return;
+    setTarget(targetRef.current + delta, immediate);
+  }, [setTarget]);
+
+  useEffect(() => () => {
+    if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+  }, []);
+
+  return { fov, setTarget, adjustTarget };
+}
+
 function RenderQuality() {
   const app = useApp();
 
@@ -268,6 +382,7 @@ function RenderQuality() {
         Math.round(bounds.width * scale),
         Math.round(bounds.height * scale),
       );
+      app.renderNextFrame = true;
     };
     const scheduleResize = () => {
       if (!resizeFrame) resizeFrame = window.requestAnimationFrame(resize);
@@ -322,32 +437,105 @@ function VisibilityGovernor() {
   return null;
 }
 
-function CameraRig({ controlsActive, fov, interactive, manualCameraRef, onCameraReady, progressRef, reducedMotion, settled }) {
+function DeviceLossGuard({ onDeviceLost, onDeviceRestored }) {
+  const app = useApp();
+
+  useEffect(() => {
+    const device = app.graphicsDevice;
+    if (!device?.on) return undefined;
+    const handleLost = () => onDeviceLost();
+    const handleRestored = () => {
+      app.renderNextFrame = true;
+      onDeviceRestored();
+    };
+    device.on("devicelost", handleLost);
+    device.on("devicerestored", handleRestored);
+    return () => {
+      device.off("devicelost", handleLost);
+      device.off("devicerestored", handleRestored);
+    };
+  }, [app, onDeviceLost, onDeviceRestored]);
+
+  return null;
+}
+
+function CameraRig({ apiRef, fov, interactive, manualCameraRef, onCameraReady, progressRef, reducedMotion, settled }) {
   const entityRef = useRef(null);
   const controlsRef = useRef(null);
+  const stageRef = useRef({ settled, reducedMotion });
+  stageRef.current.settled = settled;
+  stageRef.current.reducedMotion = reducedMotion;
   const lastScrollPoseRef = useRef({ progress: Number.NaN, reducedMotion: null });
   const initialPose = useMemo(
-    () => getCameraPathPose(progressRef.current, CAMERA_START, CAMERA_END, CAMERA_TARGET, reducedMotion),
+    () => ({ position: getScrollCameraPosition(progressRef.current, reducedMotion) }),
     [progressRef, reducedMotion],
   );
 
-  const placeCamera = useCallback((position, syncControls = false) => {
-    const entity = entityRef.current;
-    if (!entity) return;
-    entity.setPosition(...position);
-    entity.lookAt(...CAMERA_TARGET, ...CAMERA_UP);
-    if (syncControls && controlsRef.current?.reset) {
-      // CameraControls keeps its own pose even while disabled. Keep that pose on
-      // the exact scroll camera so the first manual drag cannot snap backward.
-      controlsRef.current._pose?.look(new Vec3(...position), CAMERA_FOCUS);
-      controlsRef.current.reset(CAMERA_FOCUS, new Vec3(...position));
-    }
+  // Re-attaching the active controller at the camera's current pose is the
+  // public way to tell CameraControls "this is where the camera is now". It
+  // also cancels any damped motion still in flight.
+  const syncControls = useCallback(() => {
+    const controls = controlsRef.current;
+    if (!controls?._camera) return;
+    controls.focusPoint = CAMERA_FOCUS;
   }, []);
 
+  const setScrollLocked = useCallback((locked) => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+    const next = Boolean(locked);
+    if (controls.scrollLocked === next) return;
+    controls.scrollLocked = next;
+    if (next) {
+      controls.drainInput?.();
+      return;
+    }
+    syncControls();
+  }, [syncControls]);
+
+  const placeCamera = useCallback((position, syncToControls) => {
+    const entity = entityRef.current;
+    if (!entity) return;
+    scratchPosition.set(position[0], position[1], position[2]);
+    // Derive the orientation exactly like CameraControls does so the orbit
+    // takeover never introduces a roll or pitch discontinuity.
+    scratchPose.look(scratchPosition, CAMERA_FOCUS);
+    entity.setPosition(scratchPose.position);
+    entity.setEulerAngles(scratchPose.angles);
+    if (syncToControls) syncControls();
+  }, [syncControls]);
+
+  // Returns the camera to the pose the current scroll position dictates. Once
+  // settled there is no scroll pose to follow, so the orbit camera is left alone.
+  const snapToScroll = useCallback(() => {
+    const { settled: isSettled, reducedMotion: reduced } = stageRef.current;
+    lastScrollPoseRef.current.progress = Number.NaN;
+    if (isSettled) return;
+    setScrollLocked(true);
+    placeCamera(getScrollCameraPosition(progressRef.current, reduced), false);
+  }, [placeCamera, progressRef, setScrollLocked]);
+
   useEffect(() => {
-    if (!settled || manualCameraRef.current) return;
+    const controls = controlsRef.current;
+    if (!controls?._camera) return;
+    controls.pitchRange = CAMERA_PITCH_RANGE;
+    controls.yawRange = CAMERA_YAW_RANGE;
+    controls.zoomRange = CAMERA_ZOOM_RANGE;
+    syncControls();
+  }, [syncControls]);
+
+  useEffect(() => {
+    if (!settled) {
+      lastScrollPoseRef.current.progress = Number.NaN;
+      return;
+    }
+    if (manualCameraRef.current) {
+      setScrollLocked(false);
+      return;
+    }
+    setScrollLocked(false);
     placeCamera(CAMERA_END, true);
-  }, [manualCameraRef, placeCamera, settled]);
+  }, [manualCameraRef, placeCamera, setScrollLocked, settled]);
 
   useEffect(() => {
     if (!entityRef.current) return undefined;
@@ -355,48 +543,71 @@ function CameraRig({ controlsActive, fov, interactive, manualCameraRef, onCamera
     return () => onCameraReady(null);
   }, [onCameraReady]);
 
-  useAppEvent("update", () => {
-    if (settled || manualCameraRef.current) return;
-    const progress = progressRef.current;
+  useEffect(() => {
+    apiRef.current = {
+      syncControls,
+      snapToScroll,
+      setScrollLocked,
+      resetView() {
+        const { settled: isSettled } = stageRef.current;
+        if (!isSettled) {
+          snapToScroll();
+          return;
+        }
+        lastScrollPoseRef.current.progress = Number.NaN;
+        setScrollLocked(false);
+        const controls = controlsRef.current;
+        if (controls?.enabled && controls._camera) {
+          // Glide back to the settled front view instead of snapping.
+          controls.reset(CAMERA_FOCUS, scratchPosition.set(...CAMERA_END));
+          return;
+        }
+        placeCamera(CAMERA_END, true);
+      },
+    };
+    return () => {
+      apiRef.current = null;
+    };
+  }, [apiRef, placeCamera, setScrollLocked, snapToScroll, syncControls]);
+
+  const handleUpdate = useCallback(() => {
+    const { settled: isSettled, reducedMotion: reduced } = stageRef.current;
     const lastScrollPose = lastScrollPoseRef.current;
-    if (progress === lastScrollPose.progress && reducedMotion === lastScrollPose.reducedMotion) return;
+    const manual = manualCameraRef.current;
+    setScrollLocked(!isSettled && !manual);
+    if (isSettled) return;
+    if (manual) {
+      lastScrollPose.progress = Number.NaN;
+      return;
+    }
+    const progress = progressRef.current;
+    if (progress === lastScrollPose.progress && reduced === lastScrollPose.reducedMotion) return;
     lastScrollPose.progress = progress;
-    lastScrollPose.reducedMotion = reducedMotion;
-    const target = getCameraPathPose(
-      progress,
-      CAMERA_START,
-      CAMERA_END,
-      CAMERA_TARGET,
-      reducedMotion,
-    ).position;
-    // A trailing camera tween outlives the scroll event and makes WebGL's async
-    // splat sorter display stale intermediate orders. Track the scroll pose exactly.
-    placeCamera(target, true);
-  });
+    lastScrollPose.reducedMotion = reduced;
+    // Bind the camera directly to scroll progress. A trailing tween would let
+    // WebGL's asynchronous splat sorter display stale intermediate orders.
+    placeCamera(getScrollCameraPosition(progress, reduced), false);
+  }, [manualCameraRef, placeCamera, progressRef, setScrollLocked]);
+
+  useAppEvent("update", handleUpdate);
 
   return (
     <Entity ref={entityRef} name="Official Reverance orbit camera" position={initialPose.position}>
       <Camera clearColor="#9aabb7" fov={fov} nearClip={1} farClip={500} />
-      {interactive && (
-        <Script
-          ref={controlsRef}
-          script={CameraControls}
-          enabled={controlsActive}
-          enableOrbit
-          enableFly={false}
-          enablePan={false}
-          focusPoint={CAMERA_FOCUS}
-          pitchRange={CAMERA_PITCH_RANGE}
-          yawRange={CAMERA_YAW_RANGE}
-          zoomRange={CAMERA_ZOOM_RANGE}
-          rotateSpeed={0.12}
-          zoomSpeed={0}
-          moveDamping={0.96}
-          rotateDamping={0.9}
-          zoomDamping={0.965}
-          focusDamping={0.93}
-        />
-      )}
+      <Script
+        ref={controlsRef}
+        script={ReveranceCameraControls}
+        enabled={interactive}
+        enableOrbit
+        enableFly={false}
+        enablePan={false}
+        rotateSpeed={0.12}
+        zoomSpeed={0}
+        moveDamping={0.96}
+        rotateDamping={0.9}
+        zoomDamping={0.965}
+        focusDamping={0.93}
+      />
     </Entity>
   );
 }
@@ -460,22 +671,6 @@ function SplatAsset({ onStateChange }) {
   return <GSplat asset={asset} castShadows={false} unified />;
 }
 
-
-export function getFloorAtWorldPoint(worldPoint) {
-  const localPoint = new Vec3();
-  for (const volume of FLOOR_PICK_VOLUMES) {
-    volume.worldToLocal.transformPoint(worldPoint, localPoint);
-    if (
-      Math.abs(localPoint.x) < FLOOR_HIGHLIGHT_HALF_SIZE[0]
-      && Math.abs(localPoint.y) < FLOOR_HIGHLIGHT_HALF_SIZE[1]
-      && Math.abs(localPoint.z) < FLOOR_HIGHLIGHT_HALF_SIZE[2]
-    ) {
-      return volume.number;
-    }
-  }
-  return null;
-}
-
 function FloorPicker({ cameraEntityRef, pickerRef }) {
   const app = useApp();
 
@@ -500,15 +695,22 @@ function FloorPicker({ cameraEntityRef, pickerRef }) {
   return null;
 }
 
-function FloorHighlight({ floorNumber, splatReady }) {
+function FloorHighlight({ cameraEntityRef, floorNumber, splatReady }) {
   const app = useApp();
-  const viewProjection = useRef(new Mat4());
-  const inverseViewProjection = useRef(new Mat4());
-  const floorFromClip = useRef(new Mat4());
-  const floorWorldToLocal = useRef(new Mat4());
-  const worldToClipW = useRef(new Float32Array(4));
-  const pixelToLocalY = useRef(new Float32Array(2));
-  const lastUniformSignature = useRef("");
+  const floorNumberRef = useRef(floorNumber);
+  floorNumberRef.current = floorNumber;
+  const scratchRef = useRef(null);
+  if (!scratchRef.current) {
+    scratchRef.current = {
+      viewProjection: new Mat4(),
+      inverseViewProjection: new Mat4(),
+      floorFromClip: new Mat4(),
+      floorWorldToLocal: new Mat4(),
+      worldToClipW: new Float32Array(4),
+      pixelToLocalY: new Float32Array(2),
+      lastUniforms: new Float64Array(6).fill(Number.NaN),
+    };
+  }
   const patchedMaterials = useRef(new WeakSet());
 
   const patchMaterial = useCallback((material) => {
@@ -559,71 +761,93 @@ function FloorHighlight({ floorNumber, splatReady }) {
   }, [app, patchMaterial, splatReady]);
 
   useEffect(() => {
-    lastUniformSignature.current = "";
+    const scratch = scratchRef.current;
+    scratch.lastUniforms.fill(Number.NaN);
     const material = app.scene.gsplat.material;
     const volume = REVERANCE_FLOOR_VOLUMES.find((candidate) => candidate.number === floorNumber);
-    const transform = new Mat4();
+    const transform = scratch.floorWorldToLocal;
     if (volume) {
       transform.copy(getHighlightWorldToFloorTransform(volume));
+    } else {
+      transform.setIdentity();
     }
-    floorWorldToLocal.current.copy(transform);
 
     material.setParameter("uFloorWorldToLocal", transform.data);
     material.setParameter("uFloorHalfSize", FLOOR_HIGHLIGHT_HALF_SIZE);
     material.setParameter("uFloorHighlightEnabled", volume ? 1 : 0);
-    material.setParameter("uFloorWorldToClipW", worldToClipW.current);
-    material.setParameter("uFloorPixelToLocalY", pixelToLocalY.current);
+    material.setParameter("uFloorWorldToClipW", scratch.worldToClipW);
+    material.setParameter("uFloorPixelToLocalY", scratch.pixelToLocalY);
     material.setParameter("uFloorVisualYOffset", volume ? getFloorVisualYOffset(volume.number) : 0);
     material.setParameter("uDistantEnvironmentRadius", DISTANT_ENVIRONMENT_RADIUS);
-    material.update();
-    app.scene.gsplat.dirty = true;
     app.renderNextFrame = true;
   }, [app, floorNumber]);
 
-  useAppEvent("update", () => {
-    if (floorNumber === null || floorNumber === undefined) return;
-    const camera = app.root.findByName("Official Reverance orbit camera")?.camera;
+  // Runs on `prerender`, after every `update` handler has finished moving the
+  // camera, so the slab clip always matches the pose that is about to render.
+  const handlePrerender = useCallback(() => {
+    if (floorNumberRef.current === null || floorNumberRef.current === undefined) return;
+    const camera = cameraEntityRef.current?.camera;
     if (!camera) return;
 
-    const projection = camera.projectionMatrix;
-    const view = camera.viewMatrix;
-    const vp = viewProjection.current.mul2(projection, view);
-    const invVp = inverseViewProjection.current.copy(vp).invert();
-    const fromClip = floorFromClip.current.mul2(floorWorldToLocal.current, invVp);
+    const scratch = scratchRef.current;
+    const vp = scratch.viewProjection.mul2(camera.projectionMatrix, camera.viewMatrix);
+    const invVp = scratch.inverseViewProjection.copy(vp).invert();
+    const fromClip = scratch.floorFromClip.mul2(scratch.floorWorldToLocal, invVp);
     const vpData = vp.data;
     const fromClipData = fromClip.data;
     const width = Math.max(1, app.graphicsDevice.width);
     const height = Math.max(1, app.graphicsDevice.height);
+    const worldToClipW = scratch.worldToClipW;
+    const pixelToLocalY = scratch.pixelToLocalY;
+    const last = scratch.lastUniforms;
 
-    worldToClipW.current[0] = vpData[3];
-    worldToClipW.current[1] = vpData[7];
-    worldToClipW.current[2] = vpData[11];
-    worldToClipW.current[3] = vpData[15];
-    pixelToLocalY.current[0] = (2 * fromClipData[1]) / width;
-    pixelToLocalY.current[1] = (2 * fromClipData[5]) / height;
+    const nextPixelToLocalX = (2 * fromClipData[1]) / width;
+    const nextPixelToLocalY = (2 * fromClipData[5]) / height;
+    if (
+      last[0] === vpData[3]
+      && last[1] === vpData[7]
+      && last[2] === vpData[11]
+      && last[3] === vpData[15]
+      && last[4] === nextPixelToLocalX
+      && last[5] === nextPixelToLocalY
+    ) {
+      return;
+    }
+    last[0] = vpData[3];
+    last[1] = vpData[7];
+    last[2] = vpData[11];
+    last[3] = vpData[15];
+    last[4] = nextPixelToLocalX;
+    last[5] = nextPixelToLocalY;
 
-    const signature = `${vpData[3].toFixed(6)}|${vpData[7].toFixed(6)}|${vpData[11].toFixed(6)}|${vpData[15].toFixed(6)}|${pixelToLocalY.current[0].toFixed(8)}|${pixelToLocalY.current[1].toFixed(8)}`;
-    if (signature === lastUniformSignature.current) return;
-    lastUniformSignature.current = signature;
+    worldToClipW[0] = vpData[3];
+    worldToClipW[1] = vpData[7];
+    worldToClipW[2] = vpData[11];
+    worldToClipW[3] = vpData[15];
+    pixelToLocalY[0] = nextPixelToLocalX;
+    pixelToLocalY[1] = nextPixelToLocalY;
 
     const material = app.scene.gsplat.material;
-    material.setParameter("uFloorWorldToClipW", worldToClipW.current);
-    material.setParameter("uFloorPixelToLocalY", pixelToLocalY.current);
-    app.renderNextFrame = true;
-  });
+    material.setParameter("uFloorWorldToClipW", worldToClipW);
+    material.setParameter("uFloorPixelToLocalY", pixelToLocalY);
+  }, [app, cameraEntityRef]);
+
+  useAppEvent("prerender", handlePrerender);
 
   return null;
 }
 
 function SplatScene({
   cameraEntityRef,
-  controlsActive,
+  cameraRigRef,
   hoveredFloor,
   highlightedFloor,
   fov,
   interactive,
   manualCameraRef,
   onCameraReady,
+  onDeviceLost,
+  onDeviceRestored,
   onStateChange,
   pickerRef,
   progressRef,
@@ -634,7 +858,7 @@ function SplatScene({
   return (
     <>
       <CameraRig
-        controlsActive={controlsActive}
+        apiRef={cameraRigRef}
         fov={fov}
         interactive={interactive}
         manualCameraRef={manualCameraRef}
@@ -649,10 +873,12 @@ function SplatScene({
       </Entity>
       <FloorPicker cameraEntityRef={cameraEntityRef} pickerRef={pickerRef} />
       <FloorHighlight
+        cameraEntityRef={cameraEntityRef}
         floorNumber={interactive ? hoveredFloor ?? highlightedFloor : null}
         splatReady={splatReady}
       />
       <VisibilityGovernor />
+      <DeviceLossGuard onDeviceLost={onDeviceLost} onDeviceRestored={onDeviceRestored} />
     </>
   );
 }
@@ -710,9 +936,10 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const [hoveredFloor, setHoveredFloor] = useState(null);
   const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
-  const [cameraFov, setCameraFov] = useState(CAMERA_FOV);
-  const [manualControlsActive, setManualControlsActive] = useState(false);
+  const [deviceLost, setDeviceLost] = useState(false);
+  const { fov: cameraFov, setTarget: setFovTarget, adjustTarget: adjustFovTarget } = useCameraFov();
   const cameraEntityRef = useRef(null);
+  const cameraRigRef = useRef(null);
   const manualCameraRef = useRef(false);
   const pickerRef = useRef(null);
   const modelRef = useRef(null);
@@ -721,8 +948,9 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const pinchDistanceRef = useRef(null);
   const hoverRequestRef = useRef(0);
   const hoverFrameRef = useRef(0);
-  const lastHoverPickTimeRef = useRef(0);
+  const hoverSyncFrameRef = useRef(0);
   const latestHoverRef = useRef(null);
+  const lastPointerClientRef = useRef(null);
   const draggedRef = useRef(false);
   const suppressClickRef = useRef(false);
   const railRef = useRef(null);
@@ -739,6 +967,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   );
   const hoveredFloorSummary = hoveredFloorData ? getFloorSummary(hoveredFloorData) : null;
   const effectiveHighlightedFloor = hoveredFloor ?? highlightedFloor;
+  const isReady = loadState.status === "ready" && !deviceLost;
 
   const reportState = useCallback((nextState) => setLoadState(nextState), []);
   const handleCameraReady = useCallback((entity) => {
@@ -751,6 +980,8 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       error: error?.message || "The 3D renderer could not start.",
     });
   }, []);
+  const handleDeviceLost = useCallback(() => setDeviceLost(true), []);
+  const handleDeviceRestored = useCallback(() => setDeviceLost(false), []);
 
   const handleFloorKeyDown = useCallback((event, currentFloor) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -765,11 +996,16 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   }, [onSelectFloor, snapshot.floors]);
 
   const pickFloorAtPoint = useCallback((canvas, cssX, cssY) => {
-    if (!interactive || loadState.status !== "ready" || !canvas || !pickerRef.current?.pick) return null;
+    if (!interactive || !isReady || !canvas || !pickerRef.current?.pick) return null;
     const rect = canvas.getBoundingClientRect();
     if (cssX < 0 || cssY < 0 || cssX > rect.width || cssY > rect.height) return null;
     return pickerRef.current.pick(cssX, cssY);
-  }, [interactive, loadState.status]);
+  }, [interactive, isReady]);
+
+  const clearHover = useCallback(() => {
+    setHoveredFloor(null);
+    setHoverPoint(null);
+  }, []);
 
   const invalidateHoverPick = useCallback(() => {
     hoverRequestRef.current += 1;
@@ -780,86 +1016,158 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     }
   }, []);
 
+  // Coalesce pointer moves into one pick per animation frame.
   const scheduleHoverPick = useCallback((payload) => {
     latestHoverRef.current = payload;
     if (hoverFrameRef.current) return;
-    const run = () => {
+    hoverFrameRef.current = window.requestAnimationFrame(() => {
       hoverFrameRef.current = 0;
       const next = latestHoverRef.current;
       latestHoverRef.current = null;
-      if (!next) return;
-      const now = window.performance?.now?.() ?? Date.now();
-      const elapsed = now - lastHoverPickTimeRef.current;
-      const pickInterval = getHoverPickInterval(settled);
-      if (elapsed < pickInterval) {
-        latestHoverRef.current = next;
-        hoverFrameRef.current = window.requestAnimationFrame(run);
-        return;
-      }
-      lastHoverPickTimeRef.current = now;
+      if (!next || next.request !== hoverRequestRef.current) return;
       const floor = pickFloorAtPoint(next.canvas, next.x, next.y);
-      if (next.request !== hoverRequestRef.current) return;
       setHoveredFloor(floor);
       if (floor === null) {
         setHoverPoint(null);
         return;
       }
       setHoverPoint(getFloorTooltipPosition(next.pointer, next.tooltipSize));
-    };
-    hoverFrameRef.current = window.requestAnimationFrame(run);
-  }, [pickFloorAtPoint, settled]);
+    });
+  }, [pickFloorAtPoint]);
+
+  const syncHoverToPointer = useCallback(() => {
+    const pointer = lastPointerClientRef.current;
+    if (!interactive) {
+      clearHover();
+      return;
+    }
+    if (!pointer) {
+      clearHover();
+      return;
+    }
+
+    const railButton = document.elementFromPoint(pointer.x, pointer.y)?.closest?.(".model-floor-rail button[data-floor]");
+    if (railButton?.dataset.floor) {
+      invalidateHoverPick();
+      setHoveredFloor(Number(railButton.dataset.floor));
+      setHoverPoint(null);
+      return;
+    }
+
+    const model = modelRef.current;
+    const canvas = model?.querySelector("canvas");
+    if (!canvas) {
+      invalidateHoverPick();
+      clearHover();
+      return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    if (pointer.x < rect.left || pointer.y < rect.top || pointer.x > rect.right || pointer.y > rect.bottom) {
+      invalidateHoverPick();
+      clearHover();
+      return;
+    }
+
+    const localPointer = { x: pointer.x - rect.left, y: pointer.y - rect.top };
+    const request = ++hoverRequestRef.current;
+    scheduleHoverPick({
+      canvas,
+      x: localPointer.x,
+      y: localPointer.y,
+      pointer: localPointer,
+      request,
+      tooltipSize: { width: rect.width, height: rect.height },
+    });
+  }, [clearHover, interactive, invalidateHoverPick, scheduleHoverPick]);
+
+  const scheduleHoverSync = useCallback(() => {
+    if (hoverSyncFrameRef.current) return;
+    hoverSyncFrameRef.current = window.requestAnimationFrame(() => {
+      hoverSyncFrameRef.current = 0;
+      syncHoverToPointer();
+    });
+  }, [syncHoverToPointer]);
 
   useEffect(() => {
     if (interactive) return;
     manualCameraRef.current = false;
-    setManualControlsActive(false);
+    setFovTarget(CAMERA_FOV, true);
     invalidateHoverPick();
-    setHoveredFloor(null);
-    setHoverPoint(null);
-  }, [interactive, invalidateHoverPick]);
+    clearHover();
+  }, [clearHover, interactive, invalidateHoverPick, setFovTarget]);
 
   useEffect(() => () => invalidateHoverPick(), [invalidateHoverPick]);
 
-  const handleOpticalZoom = useCallback((delta) => {
-    if (!interactive || !Number.isFinite(delta)) return;
-    setCameraFov((current) => Math.min(CAMERA_FOV, Math.max(
-      CAMERA_MIN_FOV,
-      current + delta,
-    )));
-  }, [interactive]);
+  const handleOpticalZoom = useCallback((delta, immediate = false) => {
+    if (!interactive) return;
+    adjustFovTarget(delta, immediate);
+  }, [adjustFovTarget, interactive]);
 
   useEffect(() => {
     const model = modelRef.current;
     if (!model) return undefined;
 
     const handleWheel = (event) => {
-      const rect = model.getBoundingClientRect();
-      if (!isPointWithinRect(event.clientX, event.clientY, rect)) return;
+      // Floor rail, reset button and other controls keep native wheel behaviour.
+      if (!event.target?.closest?.("canvas")) return;
 
-      const onCanvas = Boolean(event.target?.closest?.("canvas"));
-
-      if (interactive && onCanvas && (event.ctrlKey || event.metaKey)) {
+      if (interactive && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
         event.stopPropagation();
-        handleOpticalZoom(event.deltaY * 0.012);
+        handleOpticalZoom(normalizeWheelDelta(event).deltaY * WHEEL_ZOOM_DEGREES_PER_PIXEL);
+        scheduleHoverSync();
         return;
       }
 
-      // PlayCanvas CameraControls always preventDefaults wheel on the canvas.
-      // Floor rail and other controls outside the canvas can use native scrolling.
-      if (!onCanvas) return;
-
-      // Block PlayCanvas from swallowing the wheel event, but keep the browser's
-      // native page scroll so momentum and direction stay correct at every position.
+      // PlayCanvas' input source calls preventDefault on every canvas wheel
+      // event. Stop it in the capture phase so the browser keeps its native page
+      // scroll, momentum and direction handling.
       event.stopPropagation();
+      scheduleHoverSync();
     };
 
-    window.addEventListener("wheel", handleWheel, { passive: false, capture: true });
-    return () => window.removeEventListener("wheel", handleWheel, { capture: true });
-  }, [handleOpticalZoom, interactive]);
+    model.addEventListener("wheel", handleWheel, { passive: false, capture: true });
+    return () => model.removeEventListener("wheel", handleWheel, { capture: true });
+  }, [handleOpticalZoom, interactive, scheduleHoverSync]);
+
+  useEffect(() => {
+    if (!interactive) return undefined;
+    const handleScroll = () => scheduleHoverSync();
+    window.addEventListener("scroll", handleScroll, { passive: true, capture: true });
+    return () => window.removeEventListener("scroll", handleScroll, { capture: true });
+  }, [interactive, scheduleHoverSync]);
+
+  useEffect(() => () => {
+    if (hoverSyncFrameRef.current) {
+      window.cancelAnimationFrame(hoverSyncFrameRef.current);
+      hoverSyncFrameRef.current = 0;
+    }
+  }, []);
+
+  const handleModelPointerDown = useCallback((event) => {
+    if (event.pointerType === "touch") {
+      touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (touchPointersRef.current.size === 2) {
+        const [first, second] = [...touchPointersRef.current.values()];
+        pinchDistanceRef.current = Math.hypot(second.x - first.x, second.y - first.y);
+      }
+    }
+    if (!interactive || !event.target.closest?.("canvas")) return;
+    pointerStartRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      manualBefore: manualCameraRef.current,
+    };
+    draggedRef.current = false;
+    suppressClickRef.current = false;
+    // Grabbing the model stops any damped motion still in flight.
+    cameraRigRef.current?.syncControls();
+  }, [interactive]);
 
   const handleModelPointerMove = useCallback((event) => {
     if (!interactive) return;
+    lastPointerClientRef.current = { x: event.clientX, y: event.clientY };
     if (event.pointerType === "touch" && touchPointersRef.current.has(event.pointerId)) {
       touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
       if (touchPointersRef.current.size === 2) {
@@ -867,37 +1175,35 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         const distance = Math.hypot(second.x - first.x, second.y - first.y);
         if (pinchDistanceRef.current && distance > 0) {
           manualCameraRef.current = true;
-          setManualControlsActive(true);
-          handleOpticalZoom(Math.log(pinchDistanceRef.current / distance) * 10);
+          cameraRigRef.current?.setScrollLocked(false);
+          handleOpticalZoom(
+            Math.log(pinchDistanceRef.current / distance) * PINCH_ZOOM_DEGREES_PER_LOG_UNIT,
+            true,
+          );
         }
         pinchDistanceRef.current = distance;
       }
     }
     const pointerStart = pointerStartRef.current;
     if (pointerStart && (event.buttons > 0 || event.pointerType === "touch")) {
-      if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 6) {
+      if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > DRAG_THRESHOLD_PX) {
         draggedRef.current = true;
         manualCameraRef.current = true;
-        setManualControlsActive(true);
+        cameraRigRef.current?.setScrollLocked(false);
       }
       invalidateHoverPick();
-      setHoveredFloor(null);
-      setHoverPoint(null);
+      clearHover();
       return;
     }
     if (event.pointerType === "touch") {
       invalidateHoverPick();
-      setHoveredFloor(null);
-      setHoverPoint(null);
+      clearHover();
       return;
     }
     if (draggedRef.current) return;
     if (!event.target.closest?.("canvas")) {
       invalidateHoverPick();
-      if (!event.target.closest?.(".model-floor-rail button")) {
-        setHoveredFloor(null);
-        setHoverPoint(null);
-      }
+      if (!event.target.closest?.(".model-floor-rail button")) clearHover();
       return;
     }
     const canvas = event.currentTarget.querySelector("canvas");
@@ -905,16 +1211,59 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     if (!canvas || !rect) return;
     const pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top };
     const request = ++hoverRequestRef.current;
-    const tooltipSize = { width: rect.width, height: rect.height };
     scheduleHoverPick({
       canvas,
       x: pointer.x,
       y: pointer.y,
       pointer,
       request,
-      tooltipSize,
+      tooltipSize: { width: rect.width, height: rect.height },
     });
-  }, [handleOpticalZoom, interactive, invalidateHoverPick, scheduleHoverPick]);
+  }, [clearHover, handleOpticalZoom, interactive, invalidateHoverPick, scheduleHoverPick]);
+
+  const handleModelPointerUp = useCallback((event) => {
+    touchPointersRef.current.delete(event.pointerId);
+    pinchDistanceRef.current = null;
+    const dragged = draggedRef.current;
+    const hadPointerStart = pointerStartRef.current !== null;
+    suppressClickRef.current = dragged;
+    pointerStartRef.current = null;
+    draggedRef.current = false;
+    // A click without a drag must leave the scroll-bound camera untouched, so
+    // undo the sub-threshold orbit nudge CameraControls already applied.
+    if (hadPointerStart && !dragged && !manualCameraRef.current) {
+      cameraRigRef.current?.snapToScroll();
+    }
+  }, []);
+
+  // The browser cancels the pointer when it claims a touch as a page scroll.
+  // Any pointer moves that slipped through before that were a swipe, not an
+  // orbit, so hand the camera back to the scroll binding.
+  const handleModelPointerCancel = useCallback((event) => {
+    touchPointersRef.current.delete(event.pointerId);
+    pinchDistanceRef.current = null;
+    const pointerStart = pointerStartRef.current;
+    pointerStartRef.current = null;
+    draggedRef.current = false;
+    suppressClickRef.current = false;
+    if (pointerStart && !pointerStart.manualBefore) {
+      manualCameraRef.current = false;
+      cameraRigRef.current?.snapToScroll();
+    }
+    invalidateHoverPick();
+    clearHover();
+  }, [clearHover, invalidateHoverPick]);
+
+  const handleModelPointerLeave = useCallback(() => {
+    lastPointerClientRef.current = null;
+    touchPointersRef.current.clear();
+    pinchDistanceRef.current = null;
+    pointerStartRef.current = null;
+    draggedRef.current = false;
+    suppressClickRef.current = false;
+    invalidateHoverPick();
+    clearHover();
+  }, [clearHover, invalidateHoverPick]);
 
   const handleModelClick = useCallback((event) => {
     if (!interactive) return;
@@ -922,9 +1271,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     pointerStartRef.current = null;
     draggedRef.current = false;
     suppressClickRef.current = false;
-    if (!event.target.closest?.("canvas")) {
-      return;
-    }
+    if (!event.target.closest?.("canvas")) return;
     if (dragged) return;
     const canvas = event.currentTarget.querySelector("canvas");
     if (!canvas) return;
@@ -935,40 +1282,22 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       event.clientY - rect.top,
     );
     if (floorPick === null) return;
-    hoverRequestRef.current += 1;
+    invalidateHoverPick();
     setHoverPoint(null);
     onSelectFloor(floorPick);
-  }, [interactive, onSelectFloor, pickFloorAtPoint]);
+  }, [interactive, invalidateHoverPick, onSelectFloor, pickFloorAtPoint]);
 
   const handleResetView = useCallback((event) => {
     event.stopPropagation();
     pointerStartRef.current = null;
     draggedRef.current = false;
     suppressClickRef.current = false;
-    setHoveredFloor(null);
-    setHoverPoint(null);
-    setCameraFov(CAMERA_FOV);
+    invalidateHoverPick();
+    clearHover();
+    setFovTarget(CAMERA_FOV);
     manualCameraRef.current = false;
-    setManualControlsActive(false);
-    const resetPosition = settled
-      ? CAMERA_END
-      : getCameraPathPose(
-        progressRef.current,
-        CAMERA_START,
-        CAMERA_END,
-        CAMERA_TARGET,
-        reducedMotion,
-      ).position;
-    const cameraEntity = cameraEntityRef.current;
-    const controls = cameraEntity?.script?.cameraControls;
-    if (controls?.reset) {
-      controls.enabled = settled;
-      controls.reset(CAMERA_FOCUS, new Vec3(...resetPosition));
-      return;
-    }
-    cameraEntity?.setPosition(...resetPosition);
-    cameraEntity?.lookAt(...CAMERA_TARGET, ...CAMERA_UP);
-  }, [progressRef, reducedMotion, settled]);
+    cameraRigRef.current?.resetView();
+  }, [clearHover, invalidateHoverPick, setFovTarget]);
 
   const fallback = <StaticFallback snapshot={snapshot} highlightedFloor={effectiveHighlightedFloor} onSelectFloor={onSelectFloor} />;
 
@@ -976,74 +1305,15 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     <div
       ref={modelRef}
       className={`building-map building-model building-splat ${settled ? "is-settled" : "is-turning"} ${interactive ? "is-interactive" : ""}`}
-      data-load-state={loadState.status}
+      data-load-state={deviceLost ? "restoring" : loadState.status}
       data-hovered-floor={hoveredFloor ?? undefined}
       data-filtered-floor={highlightedFloor ?? undefined}
-      aria-busy={loadState.status === "loading"}
-      onPointerDownCapture={(event) => {
-        if (event.pointerType === "touch") {
-          touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
-          if (touchPointersRef.current.size === 2) {
-            const [first, second] = [...touchPointersRef.current.values()];
-            pinchDistanceRef.current = Math.hypot(second.x - first.x, second.y - first.y);
-          }
-        }
-        if (interactive && event.target.closest?.("canvas")) {
-          const controls = cameraEntityRef.current?.script?.cameraControls;
-          if (controls) controls.enabled = true;
-          setManualControlsActive(true);
-          pointerStartRef.current = { x: event.clientX, y: event.clientY };
-          draggedRef.current = false;
-          suppressClickRef.current = false;
-        }
-      }}
+      aria-busy={loadState.status === "loading" || deviceLost}
+      onPointerDownCapture={handleModelPointerDown}
       onPointerMove={handleModelPointerMove}
-      onPointerUp={(event) => {
-        touchPointersRef.current.delete(event.pointerId);
-        pinchDistanceRef.current = null;
-        suppressClickRef.current = draggedRef.current;
-        if (!draggedRef.current && !manualCameraRef.current) {
-          setManualControlsActive(false);
-          const controls = cameraEntityRef.current?.script?.cameraControls;
-          if (controls) controls.enabled = settled;
-          if (!settled) {
-            const resetPosition = getCameraPathPose(
-              progressRef.current,
-              CAMERA_START,
-              CAMERA_END,
-              CAMERA_TARGET,
-              reducedMotion,
-            ).position;
-            controls?._pose?.look(new Vec3(...resetPosition), CAMERA_FOCUS);
-            controls?.reset?.(CAMERA_FOCUS, new Vec3(...resetPosition));
-            cameraEntityRef.current?.setPosition(...resetPosition);
-            cameraEntityRef.current?.lookAt(...CAMERA_TARGET, ...CAMERA_UP);
-          }
-        }
-        pointerStartRef.current = null;
-        draggedRef.current = false;
-      }}
-      onPointerCancel={(event) => {
-        touchPointersRef.current.delete(event.pointerId);
-        pinchDistanceRef.current = null;
-        pointerStartRef.current = null;
-        draggedRef.current = false;
-        suppressClickRef.current = false;
-        if (!manualCameraRef.current) setManualControlsActive(false);
-        hoverRequestRef.current += 1;
-      }}
-      onPointerLeave={() => {
-        touchPointersRef.current.clear();
-        pinchDistanceRef.current = null;
-        pointerStartRef.current = null;
-        const wasDragged = draggedRef.current;
-        draggedRef.current = false;
-        suppressClickRef.current = false;
-        if (!wasDragged && !manualCameraRef.current) setManualControlsActive(false);
-        hoverRequestRef.current += 1;
-        setHoveredFloor(null);
-        setHoverPoint(null);
-      }}
+      onPointerUp={handleModelPointerUp}
+      onPointerCancel={handleModelPointerCancel}
+      onPointerLeave={handleModelPointerLeave}
       onClick={handleModelClick}
     >
       {canRenderSplat ? (
@@ -1060,13 +1330,15 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
             <RenderQuality />
             <SplatScene
               cameraEntityRef={cameraEntityRef}
-              controlsActive={settled || manualControlsActive}
+              cameraRigRef={cameraRigRef}
               fov={cameraFov}
               highlightedFloor={highlightedFloor}
               interactive={interactive}
               manualCameraRef={manualCameraRef}
               hoveredFloor={hoveredFloor}
               onCameraReady={handleCameraReady}
+              onDeviceLost={handleDeviceLost}
+              onDeviceRestored={handleDeviceRestored}
               onStateChange={reportState}
               pickerRef={pickerRef}
               progressRef={progressRef}
@@ -1081,6 +1353,11 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       {canRenderSplat && loadState.status === "loading" && (
         <div className="model-loading model-loading-splat" role="status" aria-live="polite">
           <span />RECONSTRUCTING OFFICIAL VIEW · {Math.round(loadState.progress * 100)}%
+        </div>
+      )}
+      {canRenderSplat && loadState.status === "ready" && deviceLost && (
+        <div className="model-loading model-loading-splat" role="status" aria-live="polite">
+          <span />RESTORING 3D VIEW
         </div>
       )}
       {canRenderSplat && loadState.status === "error" && fallback}
@@ -1107,11 +1384,13 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
                   tabIndex={interactive ? 0 : -1}
                   aria-label={`${floorName(floor.number)}, ${summary.available} available residences`}
                   onMouseEnter={() => {
+                    invalidateHoverPick();
                     setHoveredFloor(floor.number);
                     setHoverPoint(null);
                   }}
                   onMouseLeave={() => setHoveredFloor(null)}
                   onFocus={() => {
+                    invalidateHoverPick();
                     setHoveredFloor(floor.number);
                     setHoverPoint(null);
                   }}
@@ -1149,8 +1428,16 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         <strong>
           {interactive ? (
             <>
-              <span className="model-instruction-desktop">DRAG TO ROTATE · CTRL + WHEEL TO ZOOM · SELECT A FLOOR</span>
-              <span className="model-instruction-mobile">DRAG TO ROTATE · PINCH TO ZOOM · TAP A FLOOR</span>
+              <span className="model-instruction-desktop">
+                {settled
+                  ? "DRAG TO ROTATE · CTRL + WHEEL TO ZOOM · SELECT A FLOOR"
+                  : "SCROLL TO TURN · DRAG TO ORBIT · SELECT A FLOOR"}
+              </span>
+              <span className="model-instruction-mobile">
+                {settled
+                  ? "DRAG TO ROTATE · PINCH TO ZOOM · TAP A FLOOR"
+                  : "SCROLL TO TURN · DRAG TO ORBIT · TAP A FLOOR"}
+              </span>
             </>
           ) : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}
         </strong>

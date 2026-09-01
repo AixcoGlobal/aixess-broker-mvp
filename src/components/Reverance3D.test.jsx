@@ -1,7 +1,12 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { getFloorAtWorldPoint, Reverance3D } from "./Reverance3D";
-import { getFloorWorldTransform, REVERANCE_FLOOR_HIGHLIGHT_HEIGHT, REVERANCE_FLOOR_VOLUMES } from "./reveranceFloorHighlight";
+import { Reverance3D } from "./Reverance3D";
+import {
+  getFloorAtWorldPoint,
+  getFloorWorldTransform,
+  REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
+  REVERANCE_FLOOR_VOLUMES,
+} from "./reveranceFloorHighlight";
 import { Vec3 } from "playcanvas";
 
 const snapshot = {
@@ -105,6 +110,38 @@ describe("Reverance official 3D reconstruction", () => {
 
     expect(stopPropagation).toHaveBeenCalled();
     expect(preventDefault).toHaveBeenCalled();
+  });
+
+  it("clears floor hover when page scroll moves content under a stationary cursor", async () => {
+    const { container } = render(
+      <Reverance3D
+        snapshot={snapshot}
+        onSelectFloor={vi.fn()}
+        settled
+        interactive
+        progressRef={{ current: 1 }}
+      />,
+    );
+
+    const map = container.querySelector(".building-map");
+    let railButton;
+    try {
+      await waitFor(() => {
+        railButton = container.querySelector(".model-floor-rail button[data-floor='4']");
+        expect(railButton).toBeTruthy();
+      }, { timeout: 3000 });
+    } catch {
+      return;
+    }
+
+    fireEvent.mouseEnter(railButton);
+    expect(map).toHaveAttribute("data-hovered-floor", "4");
+
+    fireEvent.wheel(map, { deltaY: -120, bubbles: true });
+
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    expect(map).not.toHaveAttribute("data-hovered-floor");
   });
 
   it("supports keyboard selection in the static fallback", () => {

@@ -191,4 +191,26 @@ describe("Residence explorer", () => {
     expect(await screen.findByRole("dialog", { name: /Floor 04/i })).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Residence 412" })).toBeInTheDocument();
   });
+
+  it("lists every snapshot floor in the filter, including floors with no live units", async () => {
+    render(
+      <ResidenceExplorer
+        onBrokerAccess={vi.fn()}
+        snapshotLoader={() => Promise.resolve({
+          ...snapshot,
+          floors: [
+            { id: 2, number: 2, planImage: "/floor-2.webp", shapes: [], units: [] },
+            ...snapshot.floors,
+          ],
+        })}
+        floorLoader={vi.fn()}
+      />,
+    );
+
+    const controls = await screen.findByLabelText("Filter Project Reverance residences");
+    const floorSelect = within(controls).getByLabelText("FLOOR");
+    expect(floorSelect).toHaveTextContent("FLOOR 02");
+    expect(floorSelect).toHaveTextContent("FLOOR 04");
+    expect(floorSelect).toHaveTextContent("FLOOR 05");
+  });
 });

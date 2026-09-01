@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  ASPECT_MANUAL,
+  Camera,
   Entity,
   Mat4,
   Vec3,
   Vec4,
 } from "playcanvas";
 import {
+  getFloorAtWorldPoint,
   getFloorFragmentHighlightMask,
   getFloorFragmentLocalY,
   getFloorHighlightProjection,
@@ -13,8 +16,10 @@ import {
   getFloorVisualYOffset,
   getHighlightWorldToFloorTransform,
   intersectRayFloorVolume,
+  pickFloorFromScreen,
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
   REVERANCE_FLOOR_PICK_HALF_SIZE,
+  REVERANCE_FLOOR_PICK_TOLERANCE_PX,
   REVERANCE_FLOOR_SIZE,
   REVERANCE_FLOOR_VISUAL_Y_OFFSET,
   REVERANCE_FLOOR_VISUAL_Y_OFFSET_BOTTOM,
@@ -60,6 +65,46 @@ function getViewProjection(yawDegrees) {
   const projection = new Mat4().setPerspective(41.09622780396063, 1, 1, 500, false);
   const view = camera.getWorldTransform().clone().invert();
   return new Mat4().mul2(projection, view);
+}
+
+/**
+ * Builds a camera entity whose `camera` mirrors the CameraComponent API that
+ * pickFloorFromScreen relies on (client-pixel worldToScreen / screenToWorld),
+ * without needing a graphics device.
+ */
+function createPickingCamera(yawDegrees) {
+  const offset = CAMERA_FRONT.clone().sub(CAMERA_TARGET);
+  const radians = yawDegrees * Math.PI / 180;
+  const cosine = Math.cos(radians);
+  const sine = Math.sin(radians);
+  const entity = new Entity();
+  entity.setPosition(
+    CAMERA_TARGET.x + offset.x * cosine + offset.z * sine,
+    CAMERA_TARGET.y + offset.y,
+    CAMERA_TARGET.z - offset.x * sine + offset.z * cosine,
+  );
+  entity.lookAt(CAMERA_TARGET, CAMERA_UP);
+
+  const camera = new Camera(null);
+  camera.aspectRatioMode = ASPECT_MANUAL;
+  camera.aspectRatio = 1;
+  camera.fov = 41.09622780396063;
+  camera.nearClip = 1;
+  camera.farClip = 500;
+  camera.node = entity;
+  entity.camera = {
+    nearClip: camera.nearClip,
+    farClip: camera.farClip,
+    worldToScreen: (point, out) => camera.worldToScreen(point, VIEWPORT_SIZE, VIEWPORT_SIZE, out),
+    screenToWorld: (x, y, z, out) => camera.screenToWorld(x, y, z, VIEWPORT_SIZE, VIEWPORT_SIZE, out),
+  };
+  return entity;
+}
+
+function projectFloorPoint(cameraEntity, floorNumber, localPoint) {
+  const volume = REVERANCE_FLOOR_VOLUMES.find(({ number }) => number === floorNumber);
+  const world = getFloorWorldTransform(volume).transformPoint(localPoint);
+  return cameraEntity.camera.worldToScreen(world, new Vec3());
 }
 
 function expectVectorClose(actual, expected, precision = 5) {
@@ -245,6 +290,123 @@ describe("Reverance production floor highlight transform", () => {
       expectReconstruction(pixelOffset);
     });
     expectReconstruction([13, 9], true);
+  });
+
+  it("strictly contains world points inside a storey and rejects its slab lines", () => {
+    const floor = REVERANCE_FLOOR_VOLUMES.find(({ number }) => number === 7);
+    const transform = getFloorWorldTransform(floor);
+
+    expect(getFloorAtWorldPoint(transform.transformPoint(new Vec3(0, 0, 0)))).toBe(7);
+    expect(getFloorAtWorldPoint(transform.transformPoint(new Vec3(0.53, 0, 0)))).toBeNull();
+    expect(getFloorAtWorldPoint(
+      transform.transformPoint(new Vec3(0, REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5, 0)),
+    )).toBeNull();
+  });
+
+  describe.each([
+    ["front", 0],
+    ["left oblique", -55],
+    ["right oblique", 55],
+  ])("screen picking from the %s camera", (_name, yawDegrees) => {
+    const cameraEntity = createPickingCamera(yawDegrees);
+
+    it("picks the storey under the pointer", () => {
+      [16, 11, 5, 2].forEach((floorNumber) => {
+        const center = projectFloorPoint(cameraEntity, floorNumber, new Vec3(0, 0, 0));
+        expect(pickFloorFromScreen(cameraEntity, center.x, center.y, VIEWPORT_SIZE, VIEWPORT_SIZE))
+          .toBe(floorNumber);
+      });
+    });
+
+    it("never lights a floor from open sky above the roof", () => {
+      const roofLine = projectFloorPoint(
+        cameraEntity,
+        16,
+        new Vec3(0, REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0),
+      );
+      const skyY = roofLine.y - REVERANCE_FLOOR_PICK_TOLERANCE_PX * 4;
+      expect(skyY).toBeGreaterThan(0);
+      [0.5, 0.2, 0.8].forEach((fraction) => {
+        expect(pickFloorFromScreen(
+          cameraEntity,
+          VIEWPORT_SIZE * fraction,
+          skyY,
+          VIEWPORT_SIZE,
+          VIEWPORT_SIZE,
+        )).toBeNull();
+      });
+      expect(pickFloorFromScreen(cameraEntity, VIEWPORT_SIZE * 0.5, 4, VIEWPORT_SIZE, VIEWPORT_SIZE))
+        .toBeNull();
+    });
+
+    it("ignores pointers beside the building", () => {
+      const center = projectFloorPoint(cameraEntity, 9, new Vec3(0, 0, 0));
+      // The oblique cameras frame the building so tightly that a corner can
+      // leave the viewport, so measure the true projected silhouette instead of
+      // assuming the canvas edges are empty.
+      let silhouetteMinX = Infinity;
+      let silhouetteMaxX = -Infinity;
+      REVERANCE_FLOOR_VOLUMES.forEach(({ number }) => {
+        [-1, 1].forEach((signX) => {
+          [-1, 1].forEach((signZ) => {
+            [-1, 1].forEach((signY) => {
+              const corner = projectFloorPoint(cameraEntity, number, new Vec3(
+                signX * REVERANCE_FLOOR_PICK_HALF_SIZE[0],
+                signY * REVERANCE_FLOOR_PICK_HALF_SIZE[1],
+                signZ * REVERANCE_FLOOR_PICK_HALF_SIZE[2],
+              ));
+              silhouetteMinX = Math.min(silhouetteMinX, corner.x);
+              silhouetteMaxX = Math.max(silhouetteMaxX, corner.x);
+            });
+          });
+        });
+      });
+      const margin = REVERANCE_FLOOR_PICK_TOLERANCE_PX * 3;
+      expect(pickFloorFromScreen(
+        cameraEntity,
+        silhouetteMinX - margin,
+        center.y,
+        VIEWPORT_SIZE,
+        VIEWPORT_SIZE,
+      )).toBeNull();
+      expect(pickFloorFromScreen(
+        cameraEntity,
+        silhouetteMaxX + margin,
+        center.y,
+        VIEWPORT_SIZE,
+        VIEWPORT_SIZE,
+      )).toBeNull();
+    });
+
+    it("resolves the storey whose volume the pointer ray actually enters near the silhouette edge", () => {
+      // A pointer just inside the projected silhouette must resolve to a floor
+      // via the ray cast even when it misses the narrower centre-line band.
+      const center = projectFloorPoint(cameraEntity, 9, new Vec3(0, 0, 0));
+      const nearCorner = projectFloorPoint(cameraEntity, 9, new Vec3(
+        REVERANCE_FLOOR_PICK_HALF_SIZE[0],
+        0,
+        REVERANCE_FLOOR_PICK_HALF_SIZE[2],
+      ));
+      const farCorner = projectFloorPoint(cameraEntity, 9, new Vec3(
+        -REVERANCE_FLOOR_PICK_HALF_SIZE[0],
+        0,
+        -REVERANCE_FLOOR_PICK_HALF_SIZE[2],
+      ));
+      const insideX = center.x + (nearCorner.x - center.x) * 0.9;
+      const picked = pickFloorFromScreen(cameraEntity, insideX, center.y, VIEWPORT_SIZE, VIEWPORT_SIZE);
+      expect(picked).not.toBeNull();
+      expect(Math.abs(picked - 9)).toBeLessThanOrEqual(1);
+      const farInsideX = center.x + (farCorner.x - center.x) * 0.9;
+      const farPicked = pickFloorFromScreen(cameraEntity, farInsideX, center.y, VIEWPORT_SIZE, VIEWPORT_SIZE);
+      expect(farPicked).not.toBeNull();
+      expect(Math.abs(farPicked - 9)).toBeLessThanOrEqual(1);
+    });
+
+    it("rejects invalid pointer coordinates", () => {
+      expect(pickFloorFromScreen(cameraEntity, Number.NaN, 10, VIEWPORT_SIZE, VIEWPORT_SIZE)).toBeNull();
+      expect(pickFloorFromScreen(cameraEntity, 10, 10, 0, VIEWPORT_SIZE)).toBeNull();
+      expect(pickFloorFromScreen(null, 10, 10, VIEWPORT_SIZE, VIEWPORT_SIZE)).toBeNull();
+    });
   });
 
   it("resolves the nearest floor along a front-view ray through floor 11", () => {
