@@ -808,11 +808,21 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     const model = modelRef.current;
     if (!model) return undefined;
     const handleWheel = (event) => {
-      if (!settled || !event.target.closest?.("canvas")) return;
-      const wantsZoom = event.ctrlKey || event.metaKey;
-      if (!wantsZoom) return;
+      if (!event.target.closest?.("canvas")) return;
+      if (settled && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        handleOpticalZoom(event.deltaY * 0.012);
+        return;
+      }
+      // WebGL canvases do not reliably bubble wheel scrolling to the page.
       event.preventDefault();
-      handleOpticalZoom(event.deltaY * 0.012);
+      const scrollRoot = document.scrollingElement;
+      if (scrollRoot) {
+        scrollRoot.scrollTop += event.deltaY;
+        scrollRoot.scrollLeft += event.deltaX;
+      } else {
+        window.scrollBy({ top: event.deltaY, left: event.deltaX });
+      }
     };
     model.addEventListener("wheel", handleWheel, { passive: false });
     return () => model.removeEventListener("wheel", handleWheel);
