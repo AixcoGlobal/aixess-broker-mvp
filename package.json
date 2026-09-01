@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run --maxWorkers=1",
     "test:watch": "vitest",
-    "test:sites": "node --test tests/sites-worker.test.mjs"
+    "test:sites": "node --test tests/sites-worker.test.mjs",
+    "verify:scroll": "node scripts/verify-building-scroll.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -25,6 +26,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.6",
     "jsdom": "^29.1.1",
+    "playwright": "^1.62.1",
     "vitest": "^4.1.11"
   }
 }

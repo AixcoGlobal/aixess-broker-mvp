@@ -28,6 +28,7 @@ import {
   Vec3,
 } from "playcanvas";
 import { getFloorSummary } from "../data/reveranceApi";
+import { isPointWithinRect } from "../utils/pageScroll";
 import {
   getCameraPathPose,
   getFloorTooltipPosition,
@@ -807,25 +808,31 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   useEffect(() => {
     const model = modelRef.current;
     if (!model) return undefined;
+
     const handleWheel = (event) => {
-      if (!event.target.closest?.("canvas")) return;
-      if (settled && (event.ctrlKey || event.metaKey)) {
+      const rect = model.getBoundingClientRect();
+      if (!isPointWithinRect(event.clientX, event.clientY, rect)) return;
+
+      const onCanvas = Boolean(event.target?.closest?.("canvas"));
+
+      if (settled && onCanvas && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
+        event.stopPropagation();
         handleOpticalZoom(event.deltaY * 0.012);
         return;
       }
-      // WebGL canvases do not reliably bubble wheel scrolling to the page.
-      event.preventDefault();
-      const scrollRoot = document.scrollingElement;
-      if (scrollRoot) {
-        scrollRoot.scrollTop += event.deltaY;
-        scrollRoot.scrollLeft += event.deltaX;
-      } else {
-        window.scrollBy({ top: event.deltaY, left: event.deltaX });
-      }
+
+      // PlayCanvas CameraControls always preventDefaults wheel on the canvas.
+      // Floor rail and other controls outside the canvas can use native scrolling.
+      if (!onCanvas) return;
+
+      // Block PlayCanvas from swallowing the wheel event, but keep the browser's
+      // native page scroll so momentum and direction stay correct at every position.
+      event.stopPropagation();
     };
-    model.addEventListener("wheel", handleWheel, { passive: false });
-    return () => model.removeEventListener("wheel", handleWheel);
+
+    window.addEventListener("wheel", handleWheel, { passive: false, capture: true });
+    return () => window.removeEventListener("wheel", handleWheel, { capture: true });
   }, [handleOpticalZoom, settled]);
 
   const handleModelPointerMove = useCallback((event) => {

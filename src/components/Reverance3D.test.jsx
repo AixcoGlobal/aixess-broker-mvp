@@ -40,6 +40,41 @@ describe("Reverance official 3D reconstruction", () => {
     expect(onSelectFloor).toHaveBeenCalledWith(4);
   });
 
+  it("blocks canvas wheel handlers without preventing native scroll", () => {
+    const { container } = render(
+      <Reverance3D
+        snapshot={snapshot}
+        onSelectFloor={vi.fn()}
+        settled
+        interactive
+        progressRef={{ current: 1 }}
+      />,
+    );
+
+    const map = container.querySelector(".building-map");
+    const canvas = document.createElement("canvas");
+    map?.appendChild(canvas);
+    const canvasWheel = vi.fn();
+    canvas.addEventListener("wheel", canvasWheel);
+    const rect = canvas.getBoundingClientRect();
+
+    const event = new WheelEvent("wheel", {
+      deltaY: -120,
+      clientX: rect.left + rect.width * 0.5,
+      clientY: rect.top + rect.height * 0.5,
+      bubbles: true,
+      cancelable: true,
+    });
+    const stopPropagation = vi.spyOn(event, "stopPropagation");
+    const preventDefault = vi.spyOn(event, "preventDefault");
+
+    canvas.dispatchEvent(event);
+
+    expect(stopPropagation).toHaveBeenCalled();
+    expect(preventDefault).not.toHaveBeenCalled();
+    expect(canvasWheel).not.toHaveBeenCalled();
+  });
+
   it("supports keyboard selection in the static fallback", () => {
     const onSelectFloor = vi.fn();
     render(
