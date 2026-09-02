@@ -574,7 +574,9 @@
 }
 
 .mobile-explorer-topbar,
-.mobile-residence-sheet {
+.mobile-residence-sheet,
+.mobile-residence-dock,
+.mobile-residence-drawer {
   display: none;
 }
 
@@ -1976,7 +1978,7 @@
   .model-floor-rail {
     top: max(6.4rem, calc(env(safe-area-inset-top) + 4.8rem));
     right: auto;
-    bottom: calc(clamp(14rem, 34svh, 21.5rem) + 0.45rem);
+    bottom: calc(5.15rem + max(0.5rem, env(safe-area-inset-bottom)));
     left: 0.7rem;
     display: grid;
     width: 3.3rem;
@@ -2288,12 +2290,304 @@
 
   .mobile-floor-plan-cta:disabled { opacity: 0.48; cursor: default; }
   .mobile-floor-plan-cta svg { width: 1.25rem; }
+
+  /* Keep the model unobstructed by default. Inventory becomes an intentional
+     drawer only after the broker asks to explore it. */
+  .mobile-residence-dock {
+    position: absolute;
+    z-index: 17;
+    right: 0.7rem;
+    bottom: max(0.7rem, env(safe-area-inset-bottom));
+    left: 0.7rem;
+    display: grid;
+    min-height: 4.15rem;
+    grid-template-columns: minmax(0, 1fr) minmax(7.4rem, auto) auto;
+    align-items: stretch;
+    gap: 0.42rem;
+    padding: 0.4rem;
+    border: 1px solid rgba(238, 244, 247, 0.24);
+    border-radius: 1.05rem;
+    background: rgba(5, 14, 25, 0.88);
+    box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.34);
+    color: #f4f3ef;
+    font: inherit;
+    text-align: left;
+    backdrop-filter: blur(0.95rem);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+
+  .mobile-residence-dock:focus-visible {
+    outline: 2px solid #f16510;
+    outline-offset: 3px;
+  }
+
+  .mobile-residence-dock.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(0.7rem);
+  }
+
+  .mobile-dock-summary,
+  .mobile-dock-scope,
+  .mobile-dock-open {
+    min-width: 0;
+  }
+
+  .mobile-dock-summary {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    padding: 0.1rem 0.35rem 0.1rem 0.45rem;
+  }
+
+  .mobile-dock-summary small,
+  .mobile-dock-summary em,
+  .mobile-dock-scope span {
+    color: rgba(244, 243, 239, 0.66);
+    font-size: 0.5rem;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.1;
+  }
+
+  .mobile-dock-summary small { align-self: end; }
+  .mobile-dock-summary strong {
+    align-self: end;
+    color: #fff;
+    font-size: 1.52rem;
+    font-weight: 800;
+    letter-spacing: -0.08em;
+    line-height: 0.82;
+  }
+
+  .mobile-dock-summary em {
+    grid-column: 1 / -1;
+    align-self: start;
+    color: #65bd8e;
+    font-size: 0.43rem;
+  }
+
+  .mobile-dock-scope {
+    display: grid;
+    align-content: center;
+    gap: 0.18rem;
+    padding: 0 0.58rem;
+    border-right: 1px solid rgba(238, 244, 247, 0.18);
+    border-left: 1px solid rgba(238, 244, 247, 0.18);
+  }
+
+  .mobile-dock-scope b {
+    overflow: hidden;
+    color: #fff;
+    font-size: 0.59rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-dock-scope span {
+    overflow: hidden;
+    font-size: 0.43rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-dock-open {
+    display: flex;
+    min-width: 4.65rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.28rem;
+    padding: 0 0.5rem;
+    border-radius: 0.72rem;
+    background: #f16510;
+    color: #fff;
+    font-size: 0.54rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .mobile-dock-open svg {
+    width: 0.85rem;
+    transform: rotate(-90deg);
+  }
+
+  .mobile-residence-drawer {
+    position: absolute;
+    z-index: 19;
+    right: 0.6rem;
+    bottom: calc(max(0.7rem, env(safe-area-inset-bottom)) + 0.2rem);
+    left: 0.6rem;
+    display: flex;
+    height: min(64svh, 32rem);
+    max-height: calc(100% - 5.5rem);
+    flex-direction: column;
+    padding: 0.42rem 0.7rem max(0.7rem, env(safe-area-inset-bottom));
+    border: 1px solid rgba(33, 48, 55, 0.2);
+    border-radius: 1.3rem;
+    background: rgba(246, 247, 243, 0.97);
+    color: #182026;
+    box-shadow: 0 1.6rem 3.8rem rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    overscroll-behavior: contain;
+    backdrop-filter: blur(1rem);
+  }
+
+  .mobile-residence-drawer.is-filters-open {
+    height: min(80svh, 40rem);
+  }
+
+  .mobile-drawer-handle {
+    width: 3.15rem;
+    height: 0.28rem;
+    flex: 0 0 auto;
+    align-self: center;
+    margin: 0.28rem 0 0.58rem;
+    border-radius: 99px;
+    background: #c3c8c8;
+  }
+
+  .mobile-drawer-heading {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0 0.12rem 0.55rem;
+    border-bottom: 1px solid rgba(26, 32, 36, 0.18);
+  }
+
+  .mobile-drawer-heading > div:first-child {
+    display: flex;
+    align-items: baseline;
+    gap: 0.42rem;
+    min-width: 0;
+  }
+
+  .mobile-drawer-heading .mobile-sheet-kicker {
+    overflow: hidden;
+    color: #f16510;
+    font-size: 0.53rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-drawer-heading strong {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.08em;
+    line-height: 0.8;
+  }
+
+  .mobile-drawer-heading small {
+    color: rgba(24, 32, 38, 0.56);
+    font-size: 0.48rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+
+  .mobile-drawer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.72rem;
+  }
+
+  .mobile-drawer-actions > button:first-child {
+    min-height: 1.7rem;
+    padding: 0.2rem 0;
+    border: 0;
+    border-bottom: 1px solid #182026;
+    background: transparent;
+    color: #182026;
+    font: inherit;
+    font-size: 0.52rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+
+  .mobile-drawer-close {
+    display: grid;
+    width: 1.95rem;
+    height: 1.95rem;
+    place-items: center;
+    border: 1px solid rgba(24, 32, 38, 0.22);
+    border-radius: 50%;
+    background: transparent;
+    color: #182026;
+  }
+
+  .mobile-drawer-close svg { width: 1rem; height: 1rem; }
+
+  .mobile-drawer-heading button:focus-visible,
+  .mobile-sheet-tools button:focus-visible,
+  .mobile-filter-buttons button:focus-visible,
+  .mobile-floor-plan-cta:focus-visible {
+    outline: 2px solid #f16510;
+    outline-offset: 2px;
+  }
+
+  .mobile-residence-drawer .mobile-room-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0.55rem 0 0.5rem;
+  }
+
+  .mobile-residence-drawer .mobile-sheet-tools,
+  .mobile-residence-drawer .mobile-floor-plan-cta {
+    flex: 0 0 auto;
+  }
+
+  .mobile-residence-drawer .mobile-filter-popover {
+    flex: 0 0 auto;
+    max-height: 14rem;
+    overflow-y: auto;
+  }
 }
 
 @media (max-width: 380px) and (orientation: portrait) {
-  .mobile-residence-sheet {
-    height: clamp(14rem, 34svh, 21.5rem);
+  .mobile-residence-dock {
+    right: 0.5rem;
+    bottom: max(0.5rem, env(safe-area-inset-bottom));
+    left: 0.5rem;
+    min-height: 3.65rem;
+    grid-template-columns: minmax(0, 1fr) minmax(5.8rem, auto) auto;
+    gap: 0.3rem;
+    padding: 0.32rem;
+    border-radius: 0.9rem;
   }
+
+  .mobile-dock-summary { padding-left: 0.32rem; }
+  .mobile-dock-summary strong { font-size: 1.3rem; }
+  .mobile-dock-summary small,
+  .mobile-dock-summary em,
+  .mobile-dock-scope span { font-size: 0.4rem; }
+  .mobile-dock-scope { padding-inline: 0.4rem; }
+  .mobile-dock-scope b { font-size: 0.51rem; }
+  .mobile-dock-open { min-width: 4rem; padding-inline: 0.32rem; font-size: 0.47rem; }
+
+  .mobile-residence-drawer {
+    right: 0.4rem;
+    bottom: calc(max(0.5rem, env(safe-area-inset-bottom)) + 0.15rem);
+    left: 0.4rem;
+    height: min(68svh, 25rem);
+    max-height: calc(100% - 4.8rem);
+    padding-inline: 0.52rem;
+  }
+
+  .mobile-residence-drawer.is-filters-open { height: min(84svh, 32rem); }
+
+  .mobile-drawer-handle { margin-block: 0.2rem 0.42rem; }
+  .mobile-drawer-heading { padding-bottom: 0.4rem; }
+  .mobile-drawer-heading .mobile-sheet-kicker { font-size: 0.47rem; }
+  .mobile-drawer-heading strong { font-size: 1.4rem; }
+  .mobile-drawer-heading small { font-size: 0.42rem; }
+  .mobile-drawer-actions { gap: 0.45rem; }
+  .mobile-drawer-close { width: 1.72rem; height: 1.72rem; }
 
   .mobile-sheet-handle {
     height: 0.24rem;
