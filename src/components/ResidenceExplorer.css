@@ -1148,7 +1148,10 @@
 .unit-hotspot.is-available polygon { fill: rgba(63, 154, 88, 0.28); stroke: #2f7a44; }
 .unit-hotspot.is-reserved polygon { fill: rgba(178, 139, 67, 0.3); stroke: #856526; }
 .unit-hotspot.is-sold polygon,
-.unit-hotspot.is-unavailable polygon { fill: #9a9692; stroke: #5f5c58; }
+.unit-hotspot.is-unavailable polygon {
+  fill: rgba(20, 48, 78, 0.34);
+  stroke: rgba(48, 89, 126, 0.9);
+}
 
 .unit-hotspot.is-available:hover polygon,
 .unit-hotspot.is-available:focus polygon,
@@ -1172,8 +1175,8 @@
 .unit-hotspot.is-unavailable:hover polygon,
 .unit-hotspot.is-unavailable:focus polygon,
 .unit-hotspot.is-unavailable.is-active polygon {
-  fill: var(--sold);
-  stroke: #454340;
+  fill: rgba(20, 58, 96, 0.56);
+  stroke: #2f6c9e;
   stroke-width: 0.28;
 }
 
@@ -1497,9 +1500,9 @@
 @media (max-width: 700px) {
   .residence-explorer { height: 220svh; min-height: 92rem; }
   .explorer-sticky {
-    /* The copy block shrinks on short phones so the 1:1 building below it
-       always fits inside the viewport instead of being clipped. */
-    --explorer-copy-height: min(23.5rem, 56svh);
+    /* Reserve enough room for the complete filter before the square model. */
+    --explorer-copy-height: clamp(26rem, 53svh, 29rem);
+    --explorer-filter-travel: min(23.5rem, var(--explorer-copy-height));
     display: grid;
     min-height: 0;
     grid-template-columns: 1fr;
@@ -1518,7 +1521,9 @@
   }
   .residence-filter-panel {
     overflow-y: auto;
+    overflow-x: hidden;
     overscroll-behavior: contain;
+    transform: translateY(calc((1 - var(--filter-progress)) * var(--explorer-filter-travel)));
   }
   .explorer-copy::after { display: none; }
   .explorer-copy h2 { font-size: clamp(2.85rem, 12.8vw, 4.2rem); line-height: 0.9; }
@@ -1558,11 +1563,11 @@
   }
   .residence-filter-result > span:first-child,
   .residence-filter-result > span:nth-child(2) { white-space: nowrap; }
-  .explorer-stage { padding: 0 0.8rem 3.2rem; }
+  .explorer-stage { padding: 0.55rem 0.8rem 1rem; }
   .building-map,
   .explorer-loading,
   .explorer-error {
-    width: min(100%, max(11rem, calc(100svh - var(--explorer-copy-height) - 3.7rem)));
+    width: min(100%, max(8.5rem, calc(100svh - var(--explorer-copy-height) - 1.8rem)));
   }
   .building-model-instruction { right: 0.65rem; bottom: 0.65rem; left: 0.65rem; min-height: 2.3rem; }
   .building-model-instruction strong { min-width: 0; max-width: none; }
@@ -1669,7 +1674,7 @@
   }
 
   .explorer-copy h2 {
-    font-size: clamp(2.25rem, 7.4vw, 4rem);
+    font-size: clamp(1.85rem, 5.6vw, 3.1rem);
   }
 
   .explorer-description {
@@ -1700,11 +1705,17 @@
   .residence-filter-reset { font-size: 0.5rem; }
 
   .residence-filter-panel h2 {
-    font-size: clamp(2rem, 6.2vw, 3.4rem);
+    font-size: clamp(1.85rem, 5.6vw, 3.1rem);
   }
 
   .residence-filter-controls {
     margin-top: 0.6rem;
+  }
+
+  .residence-status-field button {
+    padding-inline: 0.2rem;
+    font-size: 0.48rem;
+    letter-spacing: 0;
   }
 
   .residence-filter-results {
