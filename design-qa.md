@@ -1,105 +1,49 @@
-**Comparison target**
+# Design QA · Mobile option 3
 
-- Landing-page visual truth: `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-4b026ff3-ef29-4b10-85de-ca848e2f1139.png` (approved black, silver, and orange AiXESS direction).
-- Residence Explorer visual truth: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/frame-001.png` through `frame-100.png`, captured from Otium's official Project Reverance orbit at `https://otium.ge/ka/project/7`.
-- Canonical settled source: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/frame-097.png` (1920 x 1080 px).
-- All-angle source-to-render evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/references/reverance-360/splat-reconstruction/evaluation/full-scene-fallback-glare-repaired/orbit-97-contact-sheet.jpg` and `official-source-vs-sog-contact-sheet.jpg`.
-- Browser-rendered implementation: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/implementation-final-desktop-front.png` (1121 x 752 px), `implementation-final-mobile-320.png` (320 x 700 px), and `implementation-final-mobile-floor-11.png` (320 x 700 px).
-- Artifact/hover repair evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/artifact-hover-fixed.png` and the side-by-side `artifact-hover-comparison.jpg`.
-- Full-floor highlight source: `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-b4ecb87f-c490-4079-a285-af8cf266b631.png` (495 x 532 px).
-- Full-floor highlight implementation: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/floor-highlight-front-fixed.png` (592 x 592 px) and the normalized side-by-side `floor-highlight-before-after.jpg` (990 x 568 px).
-- Adjacent-floor bleed source: `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-dbb2a553-4adc-43de-8d78-60da8e19fe21.png` (440 x 95 px).
-- Depth-aware floor isolation evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/floor11-reference-vs-depth-aware-zoom.png`, `floor11-direct-hover.png`, `floor11-oblique-highlight.png`, `floor11-rear-highlight.png`, and `webgpu-floor11-highlight.png`.
-- Exact floor-bay source: `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-a0076947-4d1e-44eb-9854-f05412ab1e43.png` (362 x 102 px), where one floor is the façade bay between two consecutive horizontal slab lines.
-- Exact floor-bay evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/floor-slab-reference-vs-phase-fixed.png`, `floor-phase-front-matrix.png`, and `floor11-phase-shift-oblique.png`.
-- Early interaction evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/partial-scroll-floor11-interactive.png` (explorer progress 0.1295, `data-settled=false`, model ready).
-- High-resolution and scroll-stability evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/02-high-resolution-partial.png`, `03-high-resolution-front.png`, and the `stable-frame-*` / `highlight-stable-*` sequences. The 590 x 590 CSS stage renders to an 1180 x 1180 backing buffer.
-- Apartment-filter interaction source: `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-e1a90f60-2bc0-450b-afa8-097b6f9d8095.png`, with width correction source `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-60fb439c-6b10-4793-af72-875328fd43fb.png`.
-- Apartment-filter implementation evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/residence-filter-start.png`, `residence-filter-transition.png`, `residence-filter-complete.png`, and the normalized side-by-side `residence-filter-width-comparison.jpg`.
-- Premium width correction evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/residence-filter-premium-wide.jpg`, `residence-filter-premium-floor10.jpg`, and the normalized before/after `residence-filter-premium-comparison.jpg`.
-- Balanced filter correction evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/residence-filter-balanced.jpg` and `residence-filter-balanced-floor10.jpg`.
-- Continuous-scroll source: `C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-5aee2304-5eda-472e-bda8-5e99f227cee5.png`; fixed-state evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/residence-filter-continuous-section-top.jpg`, `residence-filter-continuous-partial.jpg`, `residence-filter-continuous-finish.jpg`, and the normalized side-by-side `residence-filter-continuous-comparison.jpg`.
-- Artifact and horizon evidence: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/final-orbit-contact-sheet.jpg`, `final-turning-horizon.png`, and `final-mobile-horizon-highlight.png`.
-- Combined full-view comparison: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/design-comparison-full-front.jpg` (2242 x 752 px).
-- Combined focused building comparison: `C:/Users/Administrator/Documents/ChatGPT/AIXESS/qa/design-comparison-building-crop.jpg` (1248 x 624 px).
-- Desktop viewport: 1121 x 752 CSS px at device scale factor 1. The official 1920 x 1080 source was normalized to 1121 x 631 px and vertically centered beside the same-width browser capture for the full comparison.
-- Focused normalization: the source's centered 1080 x 1080 crop was downsampled to 624 x 624 px and compared with the browser's 624 x 624 px WebGL stage crop.
-- Mobile viewport: 320 x 700 CSS px at device scale factor 1.
-- Full-floor normalization: the implementation was resized to 532 x 532 px and center-cropped to 495 x 532 px before being paired with the user screenshot. Both halves show Floor 13 hovered at the settled front elevation.
-- State: scroll animation settled at official frame-097 front elevation. Additional evidence covers frame-073 side entry, intermediate rotation, the calibrated horizontal orbit, rear elevation, bounded zoom, reset, direct 3D floor picking, keyboard floor selection, the Floor 11 modal, and direct Floor 13 hover across the complete A-block footprint.
+## Source visual truth
 
-**Full-view comparison evidence**
+- Source: `C:/Users/Administrator/.codex/generated_images/01a03365-ed72-7e52-80c9-3dfd6b8927f3/exec-3e843c83-b409-44f3-adb0-907674bdb84f.png`
+- Source pixels: 854 × 2048 (generated mobile concept; no device chrome included).
+- Intended state: full-height Project Reverance building hero, left floor rail, top floor chip, and light thumb-first residence sheet with three rooms, filters, reset, and a floor-plan CTA.
 
-- The implementation preserves the approved AiXESS language: Gilroy typography, square geometry, black field, brushed-silver section, restrained orange accents, and dense uppercase broker UI.
-- The Residence Explorer is a real continuously rendered WebGL scene reconstructed from the official orbit. The frame-073 side camera and frame-097 settled camera use Otium's calibrated positions and field of view, so the scroll transition follows the source orbit rather than approximating it with raster cross-fades.
-- The official roof portal, both 16-storey towers, glazed and planted balcony grid, pale rear elevations, central garden, real trees, road, surrounding landscape, and skyline remain continuous through all 97 supported angles.
-- At 320 x 700, the copy, metrics, model, reset action, horizontal floor rail, and interaction instructions remain visible and usable with zero page-level horizontal overflow.
+## Implementation evidence
 
-**Focused region comparison evidence**
+- URL: `http://localhost:5173/?qa=mobile-option-3`
+- Browser: Codex In-app Browser, browser-rendered tab.
+- Primary capture: 390 × 844 CSS px, portrait, deviceScaleFactor 1; same content region and interaction state as the source concept, with the default filter state and no floor highlighted.
+- Additional captures: 375 × 667 and 320 × 568 portrait; 1440 × 900 desktop.
+- Browser console: 0 errors, 0 warnings.
+- Primary interactions tested: pointer hover over the visible WebGL facade shows the floor tooltip and orange floor state; the mobile floor chip changes the live result set; room row selection highlights its exact floor; filter drawer opens; area/bedroom/availability controls update matches; reset clears the floor highlight; `VIEW FLOOR PLAN` opens Floor 04 / Residence 411; modal closes with its existing close control.
 
-- `design-comparison-building-crop.jpg` verifies the front façade, crown spacing, tower depth, balcony rhythm, base, and landscape against the same official front state at equal 624 px square presentation size.
-- `official-source-vs-sog-contact-sheet.jpg` verifies six canonical source/render pairs, while `orbit-97-contact-sheet.jpg` verifies continuity and absence of crop explosions, floating façade planes, pasted-on trees, roof substitutions, or missing garden/context around the entire supported orbit.
-- A separate 1600 x 900 retrain was visually and quantitatively evaluated. Although it appeared slightly sharper, it was 19.49% larger and less faithful on every canonical A-tower mask (mean PSNR delta -3.140 dB), so the closer 8,496,041-byte baseline was retained.
-- `floor-highlight-before-after.jpg` verifies that the former narrow center band now spans the full visible A-block storey from the left façade through the right return. The highlight remains confined to Floor 13 with no tint on Floors 12 or 14.
-- `floor11-reference-vs-depth-aware-zoom.png` directly compares the reported two-storey bleed with the corrected close-up. The production shader now reconstructs floor-local Y for every Gaussian fragment, so the tint ends at the selected slab boundary even when a large Gaussian footprint crosses into the adjacent storey.
-- `floor-slab-reference-vs-phase-fixed.png` pairs the user's two-line floor definition with the corrected Floor 11 crop. The selector is phase-aligned to the midpoint of the visible bay, so the orange tint starts and ends on the two consecutive slab edges instead of centering on a divider. `floor-phase-front-matrix.png` repeats the check on upper, middle, and lower storeys; `floor11-phase-shift-oblique.png` confirms the same boundary alignment across the façade return.
-- `final-orbit-contact-sheet.jpg` covers ten 36-degree orbit increments. The accepted towers, roof portals, courtyard, and planting remain unchanged; detached near-camera foliage is absent, and the official mountain/city horizon remains recognizable through the full turn.
-- `partial-scroll-floor11-interactive.png` captures the explorer before the scroll reaches its endpoint: the 3D model is ready, the floor rail is available, the interaction badge reads `INTERACTIVE`, and Floor 11 opens its production modal from the rail while `data-settled` remains false.
+## Full-view comparison evidence
 
-**Required fidelity surfaces**
+The source and browser capture were reviewed as the same 390 × 844 portrait composition. The implementation preserves the source hierarchy: the building remains the dominant full-height visual, AiXESS chrome stays above it, the floor rail is readable at the left edge, and the rounded light residence sheet anchors the lower viewport. The real Reverance WebGL model and official snapshot data intentionally replace the source concept's generated building and fabricated room photography.
 
-- Fonts and typography: Gilroy assets load locally; display, body, metrics, floor labels, and modal copy retain the approved weight, line-height, wrapping, and uppercase hierarchy across desktop and mobile.
-- Spacing and layout rhythm: the two-column desktop composition, square model stage, bottom motion caption, and compact mobile stack remain aligned without clipping or stretched proportions.
-- Colors and visual tokens: black, warm silver, white, and AiXESS orange remain mapped to the approved design. The final model overlay was reduced so Otium's original sky, façade, vegetation, and warm lighting are not artificially darkened.
-- Image quality and asset fidelity: the supplied AiXESS logo and official Otium imagery are used directly. The building is not CSS art, a custom SVG, a hand-modeled approximation, or a raster turntable.
-- Copy and content: broker-facing copy is concise and coherent; project name, A Block, Batumi, floors 02-16, availability metrics, and completion information are consistent throughout the journey.
+## Focused comparison evidence
 
-**Findings**
+- Top chrome: logo and dark outlined floor chip are aligned to opposite edges with safe-area-aware padding.
+- Floor rail: vertical, scrollable rail is left-anchored above the sheet; active/hover states stay orange and the model remains unhighlighted until a real interaction.
+- Residence sheet: rounded handle, count/reset header, three status-coded room cards, compact filter toolbar, expandable filter drawer, and orange CTA all remain readable without horizontal overflow.
 
-- No actionable P0, P1, or P2 issues remain.
-- P3 / source constraint: Otium exposes a raster orbit rather than owner CAD/BIM or a native mesh. Gaussian reconstruction introduces minor fine-detail softness at very close zoom, but preserves the official appearance and provides true parallax and continuous WebGL rotation within the validated level camera ring.
-- P3 / dependency lifecycle: PlayCanvas emits one upstream deprecation warning for the explicit unified splat renderer flag. The flag is required by the current React adapter for correct SOG rendering; there are no runtime errors and no visible or functional impact.
+## Findings
 
-**Comparison history**
+- No actionable P0/P1/P2 differences remain.
+- P3: live unit thumbnails are the official Otium-provided `image3d`/`image2d` assets, so their visual crop varies by residence rather than matching the generated concept's staged interior photos.
+- P3: the 320px viewport necessarily scrolls the long floor rail; this keeps every official floor selectable without shrinking labels below a usable size.
 
-- Iteration 1 - P1 image/geometry fidelity: the earlier manual GLB differed in roof profile, façade materials, vegetation, garden treatment, and rear geometry. Fixed by replacing it with a full-scene Gaussian reconstruction trained from the official Otium orbit. Post-fix evidence: the six-view and 97-view source/render contact sheets.
-- Iteration 2 - P2 orbit stability: early reconstruction attempts produced seam/crop artifacts and unstable glare outside selected views. Fixed through full-scene training, deterministic removal of the isolated glare cluster, and validation of every official orbit frame. Post-fix evidence: `orbit-97-contact-sheet.jpg` and the five all-angle chunk sheets in the same evaluation directory.
-- Iteration 3 - P2 responsive controls: the vertical floor rail collapsed at 320 px and competed with the reset action. Fixed by switching to a horizontally scrollable mobile rail, compact badge copy, and mobile-specific interaction guidance. Post-fix evidence: `implementation-final-mobile-320.png` with `scrollWidth` equal to the 320 px viewport.
-- Iteration 4 - P2 accessibility: floor-rail Enter/Space selection was not explicit after custom arrow-key navigation. Fixed in `Reverance3D.jsx`; Enter now opens Floor 11 and focus returns after modal close. Post-fix evidence: `implementation-final-mobile-floor-11.png` and browser keyboard verification.
-- Iteration 5 - P2 loading performance: the 3D engine and 8.5 MB scene began loading during the first paint. Fixed by code-splitting `Reverance3D` and mounting it only as the explorer approaches the viewport. Post-fix evidence: initial page load has zero WebGL canvases; navigating to Residences mounts the canvas and reaches the ready state.
-- Iteration 6 - P2 color fidelity: the technical-stage vignette noticeably darkened the official façade and vegetation. Fixed by reducing the model overlay to a subtle lower-edge gradient. Post-fix evidence: the revised full-view and equal-size focused comparison files listed above.
-- Iteration 7 - P1 orbit artifacts: the previous dolly range exposed unsupported near-camera splats as detached leaves, car fragments, sky streaks, and a gray foreground smear. Fixed without changing the 8.5 MB building asset by locking interaction to Otium's solved 3.7123-3.7165 camera ring, replacing dolly with 31-41.096-degree optical zoom, disabling pan, and moving the near plane to 1.0. Numerical depth checks retain at least 1.364 world units of building/landscape safety margin. Post-fix evidence: `artifact-hover-comparison.jpg` and the ten-view final orbit sheet.
-- Iteration 8 - P1 floor feedback: canvas hover previously changed only a tiny rail row and could be cleared by bubbled pointer movement. Fixed with a texture-preserving GSplat shader that tints only the actual Gaussians inside the complete calibrated floor volume, a pointer-adjacent floor/availability label, a stronger synchronized rail state, touch-safe behavior, and stale-state cleanup. Direct canvas hover, rail hover, reset/instruction transitions, and modal selection were verified in-browser.
-- Iteration 9 - P1 incomplete floor mask: the prior oriented volume covered only the center of each storey, leaving the left façade and most of the building depth untinted. Fixed by measuring A Block across the production SOG, recentering the volume, and expanding its width/depth to the complete footprint while preserving the storey height. Picking and the GSplat shader now consume the same transform. Post-fix evidence: `floor-highlight-before-after.jpg`, a full-width direct-hover sweep on Floor 13, top/middle/bottom floor checks, adjacent-floor isolation tests, and a direct Floor 13 click opening the correct modal.
-- Iteration 10 - P1 distant-scene quality: the accepted SOG's far-camera shell produced blurred mountains and could expose unsupported foliage during interaction. Fixed by alpha-culling only splats beyond the 20-unit local-scene envelope and rendering a calibrated 3072 x 1536 distant sphere reprojected from all 97 official Otium frames. The building, roof, garden, and local volumetric planting asset and checksum remain unchanged. Post-fix evidence: the full 360-degree orbit sheet and turning/mobile horizon captures.
-- Iteration 11 - P1 adjacent-floor highlight bleed and slab-line phase: center-selected Gaussians could have footprints several times taller than a storey, so tinting the whole Gaussian colored the floor below. Fixed with a depth-aware fragment shader that inverts the projected Gaussian ellipse, reconstructs each fragment's floor-local Y at its own clip depth, and clips the tint at the calibrated floor boundaries. A second comparison against the user's marked slab lines exposed a half-storey phase error: the volume was centered on a divider. All shared picking/highlight transforms were shifted downward by exactly half the measured 0.0807528-storey pitch, while the tint height remains one full pitch. Each selectable floor is now the bay between consecutive slab edges, adjacent bands meet only at a zero-mask boundary, and numbering remains unchanged. The solution was verified at front, close zoom, oblique, rear, upper/middle/lower floors, WebGL2, and WebGPU; direct canvas selection still opens the correct Floor 11 modal.
-- Iteration 12 - P2 partial-scroll interaction gate: the single `settled` flag hid the floor rail, hover feedback, and selection until the scroll animation reached 96.5% progress. Fixed by tracking section visibility separately from camera settling. Once the explorer intersects the viewport and the SOG is ready, floor hover, rail selection, and the Floor 11 modal are active immediately; the side-to-front camera choreography continues uninterrupted, and orbit/zoom controls remain reserved for the settled handoff. Browser verification covered progress 0.1295 with `data-settled=false`, `data-interactive=true`, all 15 rail buttons pointer-enabled, and a successful Floor 11 modal open.
-- Iteration 13 - P1 scroll flicker and render softness: the pre-settle camera kept easing for many frames after each wheel event while WebGL's asynchronous splat sorter applied intermediate orders, creating visible temporal flicker. Fixed by locking the camera to the current scroll pose, preferring WebGPU with WebGL2 fallback, switching orbit sorting to the radial mode intended for rotating views, enabling splat anti-alias compensation, using the large-precision work buffer, preserving sub-pixel splats down to 0.75 px, and rendering the canvas at a capped 2x backing resolution. A 12-frame stress capture reduced post-scroll model-region movement from 83.21% changed samples during the old trailing tween to 0.26% after the new pose had landed; the final two frames differed by only 0.01 mean RGB levels. Floor 11 remained fully highlighted during the same scroll test, and the settled modal flow still opened and closed correctly.
-- Iteration 14 - P1 incomplete broker-selection flow: the explorer introduced the inventory but offered no building-linked apartment filtering. Added production snapshot filtering by floor, 32-69 m² area, bedroom count, and availability; a focused or leading result now tints its exact full storey, and selection opens the existing floor modal with that residence already active. The data does not provide trustworthy apartment-to-window coordinates, so the implementation deliberately uses exact floor bands instead of inventing façade positions. Automated coverage verifies all four filter dimensions, building linkage, and residence handoff.
-- Iteration 15 - P2 transition and filter density: the first filter pass cross-faded into a narrow 32-35vw column, which made the controls feel compressed and did not read as scrolling. Replaced opacity interpolation with two full-height panels that move as one continuous vertical track (both remain at opacity 1 throughout), widened the desktop copy column to 44-46vw, expanded the filter surfaces to 34rem, and constrained the model to its remaining grid width. Browser QA at 1280 x 720 confirms a gapless physical handoff, a fully legible wide filter, synchronized Floor 04 and Floor 10 highlights, and successful residence-modal selection.
-- Iteration 16 - P1 delayed panel response: the vertical transition still had a 44%-of-section dead zone before either panel moved. Removed the threshold and now derive filter progress directly from the pinned section's negative top offset divided by viewport height. The first physical 120 px wheel input moves the 720 px panel by 104.184 px after the section's 15.8 px entry offset, with no opacity change and no waiting period; one viewport completes the handoff.
-- Iteration 17 - P1 width, legibility, and choreography mismatch: the filter remained capped at 34rem inside a 44-50vw copy column, used 8-10px labels, and completed its travel long before the building settled. Removed the inner width caps, expanded the 1280px desktop copy column from 563px to 704px and the functional filter surface from 482px to 656px, raised control and inventory typography to readable 11-14px sizes, added aligned Residence/Floor/Area inventory headings, reduced border and scrollbar noise, and made more inventory rows visible. Filter travel now starts at progress 0 and is `clamp(buildingProgress / 0.965)`, so it reaches its exact resting position on the same frame that `data-settled` becomes true. The before/after comparison shows a 36% wider functional filter surface without page overflow; the building remains continuously interactive and floor-linked.
-- Iteration 18 - P1 overextended filter composition: the 56vw correction made the filter controls span 656px at 1280px and squeezed the building into the secondary role. Rebalanced the explorer to an even 50/50 split, increased the panel's breathing room, and capped every filter surface at 38rem. At the 1280px reference viewport the copy column is now 640px, the functional filter is 576px, and the model receives 606px, preserving the readable typography and exact scroll/building synchronization without the stretched form appearance.
-- Iteration 19 - P1 late-starting copy transition: the left panel did not move during the 720px interval where the explorer entered the viewport, leaving the full introduction apparently frozen even after substantial page travel. The filter track now starts on the first visible pixel and progresses linearly across the complete 2,063px entry-to-settle interval. At the 1280 x 720 reference viewport it is already 34.9% through its travel when the explorer reaches the sticky top, continues without a plateau, and reaches 100% on the same frame the building settles at progress 0.965.
+## Comparison history
 
-**Primary interactions and technical checks**
+1. Initial mobile pass: at narrow portrait widths the third room card could be clipped by the toolbar. Fixed by giving the room list an explicit flex region and adding a compact ≤380px card treatment.
+2. Hover regression check: a mobile room card could select itself when the pointer happened to rest over it after reload. Removed mouse-enter selection while preserving tap and keyboard selection; first-load state now has no selected card or highlighted floor.
+3. Final pass: 390 × 844, 375 × 667, and 320 × 568 captures show no page-width overflow, no card/toolbar overlap, a visible CTA, the expected building-to-sheet balance, and working facade hover.
 
-- Scroll-driven side-to-front rotation with reduced-motion handling.
-- Post-settle horizontal orbit, artifact-safe bounded zoom, and deterministic reset.
-- Direct ray-based floor selection from front and rear views, plus 15 accessible floor controls available as soon as the explorer is visible and arrow/Home/End/Enter/Space keyboard behavior.
-- Floor-plan modal, previous/next floor controls, live availability refresh, verified local snapshot fallback, filtering, residence details, close/Escape, and focus trapping/restoration.
-- Loading, empty/filter, network fallback, image fallback, WebGL failure fallback, and reduced-motion states retained.
-- Desktop and 320 px mobile browser checks completed with no horizontal overflow and no current runtime console errors. WebGPU is preferred when available, with WebGL2 retained as the production fallback.
-- Automated checks: 34 unit/integration tests pass; 4 Sites worker/package tests pass; production build passes; production dependency audit reports 0 vulnerabilities.
+## Implementation checklist
 
-**Implementation checklist**
-
-- [x] Official Otium building and landscape reconstructed as continuous WebGL.
-- [x] Exact supported camera ring and scroll choreography applied.
-- [x] Direct floor picking and broker inventory modal verified.
-- [x] Desktop and 320 px responsive states visually inspected.
-- [x] Keyboard, focus, reduced motion, loading, error, and fallback states verified.
-- [x] Heavy WebGL/SOG payload deferred until the explorer approaches the viewport.
-- [x] Tests, production build, Sites packaging, and dependency audit pass.
+- [x] Full-height portrait model stage with native WebGL interaction preserved.
+- [x] Left floor rail and top floor chip.
+- [x] Thumb-first live room selector with available/reserved/sold treatments.
+- [x] Functional mobile filters, reset, room selection, and floor-plan modal CTA.
+- [x] Responsive checks at 320px, 375px, 390px, landscape fallback, and desktop.
+- [x] `npm test` (68/68), `npm run build`, `npm run test:sites` (4/4), `npm run verify:explorer` (14/14), and `npm run verify:scroll` passed.
 
 final result: passed

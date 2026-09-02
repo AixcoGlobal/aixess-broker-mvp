@@ -798,6 +798,11 @@ function FloorHighlight({ cameraEntityRef, floorNumber, splatReady }) {
     material.setParameter("uFloorPixelToLocalY", scratch.pixelToLocalY);
     material.setParameter("uFloorVisualYOffset", volume ? getFloorVisualYOffset(volume.number) : 0);
     material.setParameter("uDistantEnvironmentRadius", DISTANT_ENVIRONMENT_RADIUS);
+    // Unified GSplats render with an internal material that only copies the
+    // public scene material while it is dirty. setParameter() alone does not
+    // mark it dirty, so the scalar enabled flag otherwise stays at its initial
+    // zero value even though picking and the tooltip continue to update.
+    material.update();
     app.renderNextFrame = true;
   }, [app, floorNumber]);
 

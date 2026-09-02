@@ -3,8 +3,11 @@ import {
   ArrowLeft,
   ArrowRight,
   Buildings,
+  CaretDown,
   CheckCircle,
   HouseLine,
+  SlidersHorizontal,
+  StackSimple,
   X,
 } from "@phosphor-icons/react";
 import {
@@ -261,6 +264,135 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess }) {
         {normalizeStatus(unit.status) === "available" ? "REQUEST THIS RESIDENCE" : `${getStatusLabel(unit.status).toUpperCase()} RESIDENCE`}
       </button>
     </section>
+  );
+}
+
+function MobileResidenceSheet({
+  areaBounds,
+  bedrooms,
+  filters,
+  floors,
+  matchingUnits,
+  onChange,
+  onOpenResidence,
+  onPreviewResidence,
+  onReset,
+  previewResidence,
+}) {
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const selectedUnitId = previewResidence?.id;
+  const visibleUnits = matchingUnits.slice(0, 3);
+  const activeFloor = filters.floor === "all" ? "ALL FLOORS" : `FLOOR ${String(filters.floor).padStart(2, "0")}`;
+  const activeBedrooms = filters.bedrooms === "all"
+    ? "ALL BEDROOMS"
+    : filters.bedrooms === "0" ? "STUDIO" : `${filters.bedrooms} BEDROOM${filters.bedrooms === "1" ? "" : "S"}`;
+
+  const openSelectedFloorPlan = () => {
+    const unit = matchingUnits.find((candidate) => String(candidate.id) === String(selectedUnitId)) || matchingUnits[0];
+    if (unit) onOpenResidence(unit);
+  };
+
+  return (
+    <>
+      <div className="mobile-explorer-topbar">
+        <img src="/assets/aixess-logo-white-cropped.png" alt="AiXESS" />
+        <label className="mobile-floor-chip">
+          <span>FLOOR</span>
+          <select value={filters.floor} onChange={(event) => onChange("floor", event.target.value)} aria-label="Select floor">
+            <option value="all">ALL</option>
+            {floors.map((floor) => <option key={floor} value={floor}>{String(floor).padStart(2, "0")}</option>)}
+          </select>
+          <CaretDown aria-hidden="true" />
+        </label>
+      </div>
+
+      <section className={`mobile-residence-sheet ${filtersOpen ? "is-filters-open" : ""}`} aria-label="Mobile residence selector">
+        <span className="mobile-sheet-handle" aria-hidden="true" />
+        <div className="mobile-sheet-heading">
+          <div>
+            <span className="mobile-sheet-kicker">RESIDENCES</span>
+            <strong>{matchingUnits.length}</strong>
+          </div>
+          <button type="button" onClick={onReset}>RESET</button>
+        </div>
+
+        <div className="mobile-room-list" aria-live="polite">
+          {visibleUnits.length ? visibleUnits.map((unit) => {
+            const status = normalizeStatus(unit.status);
+            const active = String(selectedUnitId) === String(unit.id);
+            const previewImage = unit.image3d || unit.image2d;
+            return (
+              <button
+                className={`mobile-room-card is-${status} ${active ? "is-active" : ""}`}
+                type="button"
+                key={`${unit.floor}-${unit.id}`}
+                aria-pressed={active}
+                onFocus={() => onPreviewResidence(unit)}
+                onClick={() => onPreviewResidence(unit)}
+              >
+                <span className="mobile-room-thumb">
+                  {previewImage && <img src={previewImage} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />}
+                  <i className={`status-swatch is-${status}`} />
+                </span>
+                <span className="mobile-room-copy">
+                  <strong>#{unit.name}</strong>
+                  <span><StackSimple aria-hidden="true" /> F{String(unit.floor).padStart(2, "0")}</span>
+                  <span>{unit.totalArea.toFixed(1)} m²</span>
+                </span>
+                <span className="mobile-room-meta">
+                  <small>{getStatusLabel(status)}</small>
+                  <ArrowRight aria-hidden="true" />
+                </span>
+              </button>
+            );
+          }) : (
+            <p className="mobile-room-empty">No residences match these filters.</p>
+          )}
+        </div>
+
+        <div className="mobile-sheet-tools">
+          <button className={filtersOpen ? "is-active" : ""} type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen}>
+            <SlidersHorizontal aria-hidden="true" /> FILTER
+          </button>
+          <span>{filters.minArea}–{filters.maxArea} m²</span>
+          <span>{activeBedrooms}</span>
+          <span>{activeFloor}</span>
+        </div>
+
+        {filtersOpen && (
+          <div className="mobile-filter-popover">
+            <div>
+              <span>BEDROOMS</span>
+              <div className="mobile-filter-buttons">
+                <button className={filters.bedrooms === "all" ? "is-active" : ""} type="button" onClick={() => onChange("bedrooms", "all")}>ALL</button>
+                {bedrooms.map((bedroom) => (
+                  <button className={filters.bedrooms === String(bedroom) ? "is-active" : ""} key={bedroom} type="button" onClick={() => onChange("bedrooms", String(bedroom))}>
+                    {bedroom === 0 ? "STUDIO" : bedroom}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <span>AVAILABILITY</span>
+              <div className="mobile-filter-buttons">
+                {["available", "reserved", "all"].map((status) => (
+                  <button className={filters.status === status ? "is-active" : ""} key={status} type="button" onClick={() => onChange("status", status)}>{status.toUpperCase()}</button>
+                ))}
+              </div>
+            </div>
+            <div className="mobile-filter-range">
+              <span>AREA · {filters.minArea}–{filters.maxArea} M²</span>
+              <input type="range" min={areaBounds.min} max={areaBounds.max} value={filters.minArea} aria-label="Minimum area" onChange={(event) => onChange("minArea", Math.min(Number(event.target.value), filters.maxArea))} />
+              <input type="range" min={areaBounds.min} max={areaBounds.max} value={filters.maxArea} aria-label="Maximum area" onChange={(event) => onChange("maxArea", Math.max(Number(event.target.value), filters.minArea))} />
+            </div>
+          </div>
+        )}
+
+        <button className="mobile-floor-plan-cta" type="button" onClick={openSelectedFloorPlan} disabled={!matchingUnits.length}>
+          VIEW FLOOR PLAN <ArrowRight aria-hidden="true" />
+        </button>
+      </section>
+    </>
   );
 }
 
@@ -677,7 +809,9 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
     () => matchingUnits.find((unit) => String(unit.id) === String(previewUnitId)) || matchingUnits[0] || null,
     [matchingUnits, previewUnitId],
   );
-  const filterHighlightedFloor = filterActive && filtersTouched ? previewResidence?.floor ?? null : null;
+  const filterHighlightedFloor = filterActive && (filtersTouched || previewUnitId !== null)
+    ? previewResidence?.floor ?? null
+    : null;
 
   const updateFilter = useCallback((name, value) => {
     setFilters((current) => ({ ...current, [name]: value }));
@@ -772,6 +906,21 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
             )}
           </div>
         </div>
+
+        {snapshot && (
+          <MobileResidenceSheet
+            areaBounds={areaBounds}
+            bedrooms={bedroomOptions}
+            filters={filters}
+            floors={floors}
+            matchingUnits={matchingUnits}
+            onChange={updateFilter}
+            onOpenResidence={openResidence}
+            onPreviewResidence={(unit) => setPreviewUnitId(unit.id)}
+            onReset={resetFilters}
+            previewResidence={previewUnitId === null ? null : previewResidence}
+          />
+        )}
 
         <div className="explorer-motion-caption" aria-hidden="true">
           <span>01 · SIDE PROFILE</span>

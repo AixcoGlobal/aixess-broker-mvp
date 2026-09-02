@@ -95,6 +95,57 @@ async function readState(page) {
   });
 }
 
+async function measureOrangeTintDifference(page, beforeBuffer, afterBuffer) {
+  return page.evaluate(async ({ beforeBase64, afterBase64 }) => {
+    const decode = async (base64) => {
+      const response = await fetch(`data:image/png;base64,${base64}`);
+      return createImageBitmap(await response.blob());
+    };
+    const [beforeImage, afterImage] = await Promise.all([
+      decode(beforeBase64),
+      decode(afterBase64),
+    ]);
+    const width = Math.min(beforeImage.width, afterImage.width);
+    const height = Math.min(beforeImage.height, afterImage.height);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    context.drawImage(beforeImage, 0, 0, width, height);
+    const before = context.getImageData(0, 0, width, height).data;
+    context.clearRect(0, 0, width, height);
+    context.drawImage(afterImage, 0, 0, width, height);
+    const after = context.getImageData(0, 0, width, height).data;
+    beforeImage.close();
+    afterImage.close();
+
+    let orangeTintPixels = 0;
+    let changedPixels = 0;
+    for (let index = 0; index < before.length; index += 4) {
+      const redShift = after[index] - before[index];
+      const greenShift = after[index + 1] - before[index + 1];
+      const blueShift = after[index + 2] - before[index + 2];
+      if (Math.abs(redShift) + Math.abs(greenShift) + Math.abs(blueShift) > 24) {
+        changedPixels += 1;
+      }
+      if (
+        redShift > 18
+        && redShift - greenShift > 16
+        && redShift - blueShift > 8
+        && after[index] > after[index + 1] * 1.25
+        && after[index] > after[index + 2] * 1.25
+      ) {
+        orangeTintPixels += 1;
+      }
+    }
+
+    return { orangeTintPixels, changedPixels, width, height };
+  }, {
+    beforeBase64: beforeBuffer.toString("base64"),
+    afterBase64: afterBuffer.toString("base64"),
+  });
+}
+
 async function wheelOverCanvas(page, deltaY, { ctrlKey = false, metaKey = false } = {}) {
   const point = await canvasCenter(page);
   await page.mouse.move(point.x, point.y);
@@ -229,7 +280,30 @@ try {
     record("Floor hover clears when pointer leaves the building map", false, "floor rail not ready");
   }
 
-  // 8. Middle-mouse drag orbits (camera FOV unchanged, manual control engaged)
+  // 8. The hover state must change the rendered SOG pixels, not only the rail and tooltip.
+  if (await railButton.count()) {
+    await page.mouse.move(24, 24);
+    await page.waitForTimeout(300);
+    const canvas = page.locator(".building-map canvas");
+    const beforeTint = await canvas.screenshot();
+    await railButton.hover();
+    await page.waitForFunction(
+      () => document.querySelector(".building-map")?.dataset.hoveredFloor === "16",
+    );
+    await page.waitForTimeout(300);
+    const afterTint = await canvas.screenshot();
+    const tintDifference = await measureOrangeTintDifference(page, beforeTint, afterTint);
+    record(
+      "Hovered floor visibly receives the orange SOG tint",
+      tintDifference.orangeTintPixels > 300,
+      `${tintDifference.orangeTintPixels} orange pixels; ${tintDifference.changedPixels} total changed`,
+    );
+    await page.mouse.move(24, 24);
+  } else {
+    record("Hovered floor visibly receives the orange SOG tint", false, "floor rail not ready");
+  }
+
+  // 9. Middle-mouse drag orbits (camera FOV unchanged, manual control engaged)
   const fovBeforeOrbit = (await readState(page)).cameraFov;
   const orbitPoint = await canvasCenter(page);
   await page.mouse.down({ button: "middle" });
@@ -246,7 +320,7 @@ try {
     `fov stayed near ${fovBeforeOrbit} (${afterMiddleDrag.cameraFov})`,
   );
 
-  // 9. Left-drag orbit completes without error
+  // 10. Left-drag orbit completes without error
   await page.mouse.move(orbitPoint.x, orbitPoint.y);
   await page.mouse.down({ button: "left" });
   await page.mouse.move(orbitPoint.x - 70, orbitPoint.y + 30, { steps: 12 });
@@ -254,7 +328,7 @@ try {
   await page.waitForTimeout(300);
   record("Left-drag orbit interaction completes without error", true);
 
-  // 10. Instruction overlay does not block canvas clicks
+  // 11. Instruction overlay does not block canvas clicks
   const overlayBlocks = await page.evaluate(() => {
     const instruction = document.querySelector(".building-model-instruction");
     const style = instruction ? getComputedStyle(instruction) : null;
@@ -262,7 +336,7 @@ try {
   });
   record("Instruction overlay is pointer-events transparent", overlayBlocks);
 
-  // 11. Floor filter lists snapshot floors (not only floors with units)
+  // 12. Floor filter lists snapshot floors (not only floors with units)
   const floorValues = (await readState(page)).floorOptions;
   record(
     "Floor filter includes low-numbered snapshot floors",
@@ -270,7 +344,7 @@ try {
     `options: ${floorValues.slice(0, 6).join(", ")}${floorValues.length > 6 ? "…" : ""}`,
   );
 
-  // 12. Reset view button works when settled
+  // 13. Reset view button works when settled
   const reset = page.locator(".model-reset-view");
   if (await reset.isVisible()) {
     await reset.click();
