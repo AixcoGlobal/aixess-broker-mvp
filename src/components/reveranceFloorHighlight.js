@@ -43,11 +43,10 @@ export const REVERANCE_FLOOR_VOLUMES = Object.freeze([
 
 // The official SOG contains the paired A/B towers in one coordinate space.
 // A's calibrated bands are retained as the public default for compatibility;
-// B uses the measured separation between the two tower masses.
-// B is diagonally offset from A in the official SOG. Keeping both horizontal
-// axes here is important: a side-only shift intersects the neighbouring
-// façade when the camera orbits and makes the floor tint look smeared.
-export const REVERANCE_BLOCK_B_OFFSET = Object.freeze([-1.22, 0, -0.23]);
+// B uses the measured horizontal separation between the two tower masses.
+// Keeping this as a world-space offset keeps the highlight aligned with the
+// complete B façade through the calibrated orbit instead of tinting its side.
+export const REVERANCE_BLOCK_B_OFFSET = Object.freeze([-0.83, 0, 0]);
 const offsetVolume = (volume, offset) => Object.freeze({
   number: volume.number,
   position: Object.freeze(volume.position.map((value, index) => value + offset[index])),
