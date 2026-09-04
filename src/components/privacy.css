@@ -1,6 +1,6 @@
 .privacy-footer { display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 28px;padding:24px;color:#c7c5c2;background:#111211;border-top:1px solid #343634;font-size:13px; }
 .privacy-footer a,.privacy-footer button { color:inherit;font:inherit;text-decoration:underline;text-underline-offset:4px;background:none;border:0;padding:8px 0;cursor:pointer; }
-.cookie-notice { position:fixed;z-index:10000;top:50%;left:50%;transform:translate(-50%,-50%);width:min(450px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;background:#f3f2ed;color:#172126;padding:24px;box-shadow:0 8px 40px #0005;border:1px solid #b8bbb6; }
+.cookie-notice { position:fixed;z-index:10000;bottom:max(16px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(450px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;background:#f3f2ed;color:#172126;padding:24px;box-shadow:0 8px 40px #0005;border:1px solid #b8bbb6; }
 .cookie-notice h2 { font-size:23px;line-height:1.2;margin:0 0 12px;letter-spacing:-.02em; }
 .cookie-notice p { font-size:14px;line-height:1.55;margin:0 0 18px; }
 .cookie-notice a { color:inherit;text-decoration:underline; }

@@ -9,13 +9,13 @@ const styles = readFileSync("src/components/privacy.css", "utf8");
 beforeEach(() => { localStorage.clear(); sessionStorage.clear(); });
 function mount() { return render(<LanguageProvider><style>{styles}</style><PrivacyControls page="home" /></LanguageProvider>); }
 
-it("centers the notice on both axes and keeps short-screen overflow accessible", () => {
+it("centers the notice along the bottom and keeps short-screen overflow accessible", () => {
   mount();
   const style = getComputedStyle(screen.getByRole("region", { name: "Your privacy, your choice." }));
   expect(style.position).toBe("fixed");
-  expect(style.top).toBe("50%");
+  expect(styles).toMatch(/\.cookie-notice\s*\{[^}]*bottom:\s*max\(16px/);
   expect(style.left).toBe("50%");
-  expect(style.transform).toMatch(/translate\(-50%,\s*-50%\)/);
+  expect(style.transform).toBe("translateX(-50%)");
   expect(style.maxHeight).toBe("calc(100dvh - 32px)");
   expect(style.overflow).toBe("auto");
 });
