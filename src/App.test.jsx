@@ -12,6 +12,20 @@ afterEach(() => {
 });
 
 describe("AIXESS navigation pages", () => {
+  it("routes broker login and registration to the matching Workwise flows", () => {
+    window.history.replaceState({}, "", "/");
+    render(<App />);
+
+    expect(screen.getAllByRole("link", { name: "REGISTER" })[0]).toHaveAttribute(
+      "href",
+      "https://workw.com/realestate/aixco/broker-signup?lang=en",
+    );
+    expect(screen.getAllByRole("link", { name: "LOGIN" })[0]).toHaveAttribute(
+      "href",
+      "https://workw.com/realestate/aixco/broker-login?lang=en",
+    );
+  });
+
   it("renders the selected page from its shareable hash route", () => {
     render(<App />);
 

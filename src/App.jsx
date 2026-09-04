@@ -16,6 +16,11 @@ const navItems = [
 
 const validRoutes = new Set(navItems.map(({ key }) => key));
 
+const WORKWISE_BROKER_URLS = {
+  login: "https://workw.com/realestate/aixco/broker-login?lang=en",
+  register: "https://workw.com/realestate/aixco/broker-signup?lang=en",
+};
+
 function routeFromLocation() {
   if (typeof window === "undefined") return "home";
   const route = window.location.hash.replace(/^#/, "").trim().toLowerCase();
@@ -61,8 +66,8 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
       </nav>
 
       <div className="header-actions">
-        <button className="button button-primary register-button" type="button" onClick={() => onOpenModal("register")}>REGISTER</button>
-        <button className="button button-ghost login-button" type="button" onClick={() => onOpenModal("login")}>LOGIN</button>
+        <a className="button button-primary register-button" href={WORKWISE_BROKER_URLS.register}>REGISTER</a>
+        <a className="button button-ghost login-button" href={WORKWISE_BROKER_URLS.login}>LOGIN</a>
       </div>
 
       <button
@@ -87,8 +92,8 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
             {label}
           </button>
         ))}
-        <button className="mobile-register" type="button" onClick={() => onOpenModal("register")}>REGISTER</button>
-        <button type="button" onClick={() => onOpenModal("login")}>LOGIN</button>
+        <a className="mobile-register" href={WORKWISE_BROKER_URLS.register}>REGISTER</a>
+        <a className="mobile-login" href={WORKWISE_BROKER_URLS.login}>LOGIN</a>
       </div>
     </header>
   );
@@ -524,6 +529,10 @@ export function App() {
 
   const openModal = (type) => {
     setMenuOpen(false);
+    if (type === "register" || type === "login") {
+      window.location.assign(WORKWISE_BROKER_URLS[type]);
+      return;
+    }
     setActiveModal(type);
   };
 

@@ -711,10 +711,15 @@ input:focus-visible {
     visibility: visible;
   }
 
-  .mobile-nav button {
+  .mobile-nav button,
+  .mobile-nav a {
+    display: flex;
+    align-items: center;
     min-height: 3.5rem;
     border-bottom: 1px solid rgba(239, 239, 236, 0.18);
+    color: inherit;
     text-align: left;
+    text-decoration: none;
   }
 
   .mobile-nav .mobile-register {

@@ -32,6 +32,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - The selected mobile explorer direction is option 3: a full-height Reverance hero, left floor rail, top floor chip, and light rounded thumb-first room sheet with live status cards, compact filters, reset, and floor-plan CTA.
 - On portrait mobile, keep that hero unobstructed by default: use a slim floating residence dock and open inventory, filters, and the floor-plan action in an intentional drawer only when requested.
 - Keep the floor navigation menu visually clean: hide scrollbar chrome while retaining native wheel, touch, and keyboard scrolling when a short viewport requires overflow.
+- Broker login and registration actions must route to the matching English Workwise broker flows (`broker-login` and `broker-signup`) used by AIXCO.Global.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
 
