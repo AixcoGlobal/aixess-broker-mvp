@@ -320,7 +320,7 @@ describe("Reverance production floor highlight transform", () => {
   });
 
   it("keeps the B-block volumes on the measured separation of the paired SOG", () => {
-    expect(REVERANCE_BLOCK_B_OFFSET).toEqual([-0.83, 0, 0]);
+    expect(REVERANCE_BLOCK_B_OFFSET).toEqual([-0.83, 0, 0.7]);
     const a = REVERANCE_BLOCK_FLOOR_VOLUMES.ReveranceA.find(({ number }) => number === 8);
     const b = REVERANCE_BLOCK_FLOOR_VOLUMES.ReveranceB.find(({ number }) => number === 8);
     b.position.forEach((value, index) => {

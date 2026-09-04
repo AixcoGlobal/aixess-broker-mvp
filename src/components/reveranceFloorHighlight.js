@@ -46,7 +46,7 @@ export const REVERANCE_FLOOR_VOLUMES = Object.freeze([
 // B uses the measured horizontal separation between the two tower masses.
 // Keeping this as a world-space offset keeps the highlight aligned with the
 // complete B façade through the calibrated orbit instead of tinting its side.
-export const REVERANCE_BLOCK_B_OFFSET = Object.freeze([-0.83, 0, 0]);
+export const REVERANCE_BLOCK_B_OFFSET = Object.freeze([-0.83, 0, 0.7]);
 const offsetVolume = (volume, offset) => Object.freeze({
   number: volume.number,
   position: Object.freeze(volume.position.map((value, index) => value + offset[index])),
