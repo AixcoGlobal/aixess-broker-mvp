@@ -37,6 +37,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - Broker login and registration actions must route to the matching English Workwise broker flows (`broker-login` and `broker-signup`) used by AIXCO.Global.
 - Admin reporting must use durable, real events and saved enquiries, with server-side admin authorization. Clearly distinguish outbound Workwise clicks from completed logins/registrations; never manufacture conversion data. Optional analytics require visitor consent, with equally prominent accept/reject controls and a way to withdraw it. Do not capture passwords, form contents, session replay, or high-frequency model hover events.
 - Use a dedicated AiXESS-branded email/password login for admins, not ChatGPT as the dashboard login. Keep admin signup closed, credentials server-side, sessions revocable, and recovery protected. Site-wide sharing remains a separate explicit owner decision.
+- Keep the cookie consent popup centered horizontally and vertically in the viewport, with mobile margins and scrollable content on short screens; do not anchor it to the left.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
 
