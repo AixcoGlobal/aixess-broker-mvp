@@ -5,6 +5,7 @@ import { App } from "./App";
 beforeEach(() => {
   window.history.replaceState({}, "", "/#why-aixess");
   window.scrollTo = () => {};
+  window.localStorage.removeItem("aixess-language");
 });
 
 afterEach(() => {
@@ -61,5 +62,17 @@ describe("AIXESS navigation pages", () => {
 
     expect(screen.getByRole("heading", { name: /one building/i })).toBeInTheDocument();
     expect(screen.getByText(/official 3d reconstruction/i)).toBeInTheDocument();
+  });
+
+  it("switches the complete interface language and persists the selection", () => {
+    render(<App />);
+
+    fireEvent.click(screen.getAllByRole("button", { name: /change language: en/i })[0]);
+    fireEvent.click(screen.getAllByRole("option", { name: /Deutsch/i })[0]);
+
+    expect(document.documentElement.lang).toBe("de");
+    expect(window.localStorage.getItem("aixess-language")).toBe("de");
+    expect(screen.getAllByRole("button", { name: "WARUM AIXESS" })).toHaveLength(2);
+    expect(screen.getByRole("heading", { name: /klarerer weg/i })).toBeInTheDocument();
   });
 });

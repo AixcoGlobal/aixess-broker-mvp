@@ -12,12 +12,12 @@ import {
 } from "@phosphor-icons/react";
 import {
   getFloorSummary,
-  getStatusLabel,
   loadLiveFloor,
   loadResidenceSnapshot,
   mergeFloorUnits,
   normalizeStatus,
 } from "../data/reveranceApi";
+import { useLanguage } from "../i18n.jsx";
 import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
 import "./ResidenceExplorer.css";
 
@@ -29,8 +29,8 @@ function pointsToString(points) {
   return (points || []).map((point) => `${point.x},${point.y}`).join(" ");
 }
 
-function floorLabel(number) {
-  return `Floor ${String(number).padStart(2, "0")}`;
+function floorLabel(number, t = (key) => key) {
+  return `${t("floorLabelPrefix")} ${String(number).padStart(2, "0")}`;
 }
 
 function unitAreaValue(unit) {
@@ -216,16 +216,18 @@ function useDialogA11y(open, onClose, dialogRef) {
 }
 
 function AvailabilityLegend({ dark = false }) {
+  const { t } = useLanguage();
   return (
-    <div className={`availability-legend ${dark ? "is-dark" : ""}`} aria-label="Residence status legend">
-      <span><i className="status-swatch is-available" />Available</span>
-      <span><i className="status-swatch is-reserved" />Reserved</span>
-      <span><i className="status-swatch is-sold" />Sold</span>
+    <div className={`availability-legend ${dark ? "is-dark" : ""}`} aria-label={t("residenceStatusLegend")}>
+      <span><i className="status-swatch is-available" />{t("available")}</span>
+      <span><i className="status-swatch is-reserved" />{t("reserved")}</span>
+      <span><i className="status-swatch is-sold" />{t("sold")}</span>
     </div>
   );
 }
 
 function FloorNavigationSelect({ floors, value, onChange }) {
+  const { t } = useLanguage();
   const rootRef = useRef(null);
   const triggerRef = useRef(null);
   const optionRefs = useRef([]);
@@ -325,7 +327,7 @@ function FloorNavigationSelect({ floors, value, onChange }) {
         }}
         onKeyDown={handleTriggerKeyDown}
       >
-        <span>{floorLabel(value)}</span>
+        <span>{floorLabel(value, t)}</span>
         <CaretDown aria-hidden="true" />
       </button>
       {open && (
@@ -333,7 +335,7 @@ function FloorNavigationSelect({ floors, value, onChange }) {
           id={`floor-navigation-menu-${value}`}
           className="floor-navigation-menu"
           role="listbox"
-          aria-label="Select floor"
+          aria-label={t("selectFloor")}
           onKeyDown={handleMenuKeyDown}
         >
           {floors.map((floor, index) => (
@@ -347,7 +349,7 @@ function FloorNavigationSelect({ floors, value, onChange }) {
               onMouseEnter={() => setActiveIndex(index)}
               onClick={() => chooseFloor(floor)}
             >
-              {floorLabel(floor.number)}
+              {floorLabel(floor.number, t)}
             </button>
           ))}
         </div>
@@ -357,11 +359,12 @@ function FloorNavigationSelect({ floors, value, onChange }) {
 }
 
 function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPlanImage, onOpenPreview }) {
+  const { t } = useLanguage();
   const [imageFailed, setImageFailed] = useState(false);
   const planSource = unit.image2d || fallbackPlanImage;
   const previewSource = imageMode === "3d" ? unit.image3d : planSource;
-  const previewLabel = imageMode === "3d" ? "3D VIEW" : "2D PLAN";
-  const previewAlt = `${previewLabel} of residence ${unit.name}`;
+  const previewLabel = imageMode === "3d" ? t("threeDView") : t("twoDPlan");
+  const previewAlt = `${previewLabel} · ${t("residence")} ${unit.name}`;
 
   useEffect(() => setImageFailed(false), [previewSource]);
 
@@ -369,39 +372,39 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
     <section className="unit-detail" aria-labelledby="selected-unit-title">
       <div className="unit-detail-heading">
         <div>
-          <p className={`unit-status is-${normalizeStatus(unit.status)}`}>
-            <span />{getStatusLabel(unit.status)}
+            <p className={`unit-status is-${normalizeStatus(unit.status)}`}>
+            <span />{t(normalizeStatus(unit.status))}
           </p>
-          <h3 id="selected-unit-title">Residence {unit.name}</h3>
+          <h3 id="selected-unit-title">{t("residenceTitle")} {unit.name}</h3>
         </div>
         <strong>{unitAreaLabel(unit)}</strong>
       </div>
 
       <dl className="unit-facts">
-        <div><dt>Floor</dt><dd>{unit.floor || "—"}</dd></div>
-        <div><dt>Rooms</dt><dd>{unit.rooms || "—"}</dd></div>
-        <div><dt>Bedrooms</dt><dd>{unit.bedrooms || "—"}</dd></div>
-        <div><dt>Price</dt><dd>{unit.price ? String(unit.price) : "On request"}</dd></div>
+        <div><dt>{t("floor")}</dt><dd>{unit.floor || "—"}</dd></div>
+        <div><dt>{t("rooms")}</dt><dd>{unit.rooms || "—"}</dd></div>
+        <div><dt>{t("bedrooms")}</dt><dd>{unit.bedrooms || "—"}</dd></div>
+        <div><dt>{t("price")}</dt><dd>{unit.price ? String(unit.price) : t("onRequest")}</dd></div>
       </dl>
 
       {(planSource || unit.image3d) && (
         <div className="unit-preview-wrap">
-          <div className="unit-preview-tabs" aria-label="Residence image view">
-            <button className={imageMode === "2d" ? "is-active" : ""} type="button" onClick={() => setImageMode("2d")} disabled={!planSource}>2D PLAN</button>
-            <button className={imageMode === "3d" ? "is-active" : ""} type="button" onClick={() => setImageMode("3d")} disabled={!unit.image3d}>3D VIEW</button>
+          <div className="unit-preview-tabs" aria-label={t("residenceImageView")}>
+            <button className={imageMode === "2d" ? "is-active" : ""} type="button" onClick={() => setImageMode("2d")} disabled={!planSource}>{t("twoDPlan")}</button>
+            <button className={imageMode === "3d" ? "is-active" : ""} type="button" onClick={() => setImageMode("3d")} disabled={!unit.image3d}>{t("threeDView")}</button>
           </div>
           {previewSource && !imageFailed ? (
             <button
               className="unit-preview-button"
               type="button"
-              onClick={() => onOpenPreview?.({ src: previewSource, alt: previewAlt, label: `${previewLabel} · RESIDENCE ${unit.name}` })}
-              aria-label={`Open ${previewLabel} of residence ${unit.name} full screen`}
+              onClick={() => onOpenPreview?.({ src: previewSource, alt: previewAlt, label: `${previewLabel} · ${t("residence")} ${unit.name}` })}
+              aria-label={t("openFullViewAria", { view: previewLabel, name: unit.name })}
             >
               <img className="unit-preview" src={previewSource} alt={previewAlt} onError={() => setImageFailed(true)} />
-              <span className="unit-preview-open-hint"><span>OPEN FULL VIEW</span><ArrowRight aria-hidden="true" /></span>
+              <span className="unit-preview-open-hint"><span>{t("openFullView")}</span><ArrowRight aria-hidden="true" /></span>
             </button>
           ) : (
-            <div className="unit-preview-fallback">Preview temporarily unavailable</div>
+            <div className="unit-preview-fallback">{t("previewUnavailable")}</div>
           )}
         </div>
       )}
@@ -415,7 +418,7 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
       )}
 
       <button className="button button-primary unit-enquiry" type="button" onClick={onBrokerAccess} disabled={normalizeStatus(unit.status) !== "available"}>
-        {normalizeStatus(unit.status) === "available" ? "REQUEST THIS RESIDENCE" : `${getStatusLabel(unit.status).toUpperCase()} RESIDENCE`}
+        {normalizeStatus(unit.status) === "available" ? t("requestResidence") : `${t(normalizeStatus(unit.status)).toUpperCase()} ${t("residence")}`}
       </button>
     </section>
   );
@@ -433,14 +436,15 @@ function MobileResidenceSheet({
   onReset,
   previewResidence,
 }) {
+  const { t } = useLanguage();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const selectedUnitId = previewResidence?.id;
   const visibleUnits = matchingUnits.slice(0, 6);
-  const activeFloor = filters.floor === "all" ? "ALL FLOORS" : `FLOOR ${String(filters.floor).padStart(2, "0")}`;
+  const activeFloor = filters.floor === "all" ? t("allFloors") : floorLabel(filters.floor, t);
   const activeBedrooms = filters.bedrooms === "all"
-    ? "ALL BEDROOMS"
-    : filters.bedrooms === "0" ? "STUDIO" : `${filters.bedrooms} BEDROOM${filters.bedrooms === "1" ? "" : "S"}`;
+    ? `${t("all")} ${t("bedrooms")}`
+    : filters.bedrooms === "0" ? t("studio") : `${filters.bedrooms} ${t("bedrooms")}`;
 
   const openDrawer = (showFilters = false) => {
     setDrawerOpen(true);
@@ -465,9 +469,9 @@ function MobileResidenceSheet({
       <div className="mobile-explorer-topbar">
         <img src="/assets/aixess-logo-white-cropped.png" alt="AiXESS" />
         <label className="mobile-floor-chip">
-          <span>FLOOR</span>
-          <select value={filters.floor} onChange={(event) => onChange("floor", event.target.value)} aria-label="Select floor">
-            <option value="all">ALL</option>
+          <span>{t("floor")}</span>
+          <select value={filters.floor} onChange={(event) => onChange("floor", event.target.value)} aria-label={t("selectFloor")}>
+            <option value="all">{t("all")}</option>
             {floors.map((floor) => <option key={floor} value={floor}>{String(floor).padStart(2, "0")}</option>)}
           </select>
           <CaretDown aria-hidden="true" />
@@ -481,34 +485,34 @@ function MobileResidenceSheet({
           event.currentTarget.blur();
           openDrawer(false);
         }}
-        aria-label={`Open residence selector, ${matchingUnits.length} matches`}
+        aria-label={`${t("explore")} ${t("residenceSelector")}, ${matchingUnits.length} ${matchingUnits.length === 1 ? t("match") : t("matches")}`}
         aria-hidden={drawerOpen}
         tabIndex={drawerOpen ? -1 : 0}
       >
         <span className="mobile-dock-summary">
-          <small>RESIDENCES</small>
+          <small>{t("residences")}</small>
           <strong>{matchingUnits.length}</strong>
-          <em>{matchingUnits.length ? "LIVE AVAILABILITY" : "NO MATCHES"}</em>
+          <em>{matchingUnits.length ? t("liveAvailabilityShort") : t("noMatchesShort")}</em>
         </span>
         <span className="mobile-dock-scope">
           <b>{activeFloor}</b>
           <span>{activeBedrooms}</span>
         </span>
-        <span className="mobile-dock-open">EXPLORE <CaretDown aria-hidden="true" /></span>
+        <span className="mobile-dock-open">{t("explore")} <CaretDown aria-hidden="true" /></span>
       </button>
 
       {drawerOpen && (
-        <section className={`mobile-residence-drawer ${filtersOpen ? "is-filters-open" : ""}`} aria-label="Mobile residence selector">
+        <section className={`mobile-residence-drawer ${filtersOpen ? "is-filters-open" : ""}`} aria-label={t("mobileSelector")}>
           <div className="mobile-drawer-handle" aria-hidden="true" />
           <div className="mobile-drawer-heading">
             <div>
-              <span className="mobile-sheet-kicker">RESIDENCE SELECTOR</span>
+              <span className="mobile-sheet-kicker">{t("residenceSelector")}</span>
               <strong>{matchingUnits.length}</strong>
-              <small>MATCHES</small>
+              <small>{t("matches")}</small>
             </div>
             <div className="mobile-drawer-actions">
-              <button type="button" onClick={onReset}>RESET</button>
-              <button className="mobile-drawer-close" type="button" onClick={closeDrawer} aria-label="Close residence selector"><X aria-hidden="true" /></button>
+              <button type="button" onClick={onReset}>{t("reset")}</button>
+              <button className="mobile-drawer-close" type="button" onClick={closeDrawer} aria-label={t("closeResidenceSelector")}><X aria-hidden="true" /></button>
             </div>
           </div>
 
@@ -532,23 +536,23 @@ function MobileResidenceSheet({
                   </span>
                   <span className="mobile-room-copy">
                     <strong>#{unit.name}</strong>
-                    <span><StackSimple aria-hidden="true" /> F{String(unit.floor).padStart(2, "0")}</span>
+                    <span><StackSimple aria-hidden="true" /> {floorLabel(unit.floor, t)}</span>
                     <span>{unitAreaLabel(unit)}</span>
                   </span>
                   <span className="mobile-room-meta">
-                    <small>{getStatusLabel(status)}</small>
+                    <small>{t(status)}</small>
                     <ArrowRight aria-hidden="true" />
                   </span>
                 </button>
               );
             }) : (
-              <p className="mobile-room-empty">No residences match these filters.</p>
+              <p className="mobile-room-empty">{t("residenceMatchesFilters")}</p>
             )}
           </div>
 
           <div className="mobile-sheet-tools">
             <button className={filtersOpen ? "is-active" : ""} type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen}>
-              <SlidersHorizontal aria-hidden="true" /> FILTER
+              <SlidersHorizontal aria-hidden="true" /> {t("filter" )}
             </button>
             <span>{filters.minArea}–{filters.maxArea} m²</span>
             <span>{activeBedrooms}</span>
@@ -558,34 +562,34 @@ function MobileResidenceSheet({
           {filtersOpen && (
             <div className="mobile-filter-popover">
               <div>
-                <span>BEDROOMS</span>
+                <span>{t("bedrooms")}</span>
                 <div className="mobile-filter-buttons">
-                  <button className={filters.bedrooms === "all" ? "is-active" : ""} type="button" onClick={() => onChange("bedrooms", "all")}>ALL</button>
+                  <button className={filters.bedrooms === "all" ? "is-active" : ""} type="button" onClick={() => onChange("bedrooms", "all")}>{t("all")}</button>
                   {bedrooms.map((bedroom) => (
                     <button className={filters.bedrooms === String(bedroom) ? "is-active" : ""} key={bedroom} type="button" onClick={() => onChange("bedrooms", String(bedroom))}>
-                      {bedroom === 0 ? "STUDIO" : bedroom}
+                      {bedroom === 0 ? t("studio") : bedroom}
                     </button>
                   ))}
                 </div>
               </div>
               <div>
-                <span>AVAILABILITY</span>
+                <span>{t("availability")}</span>
                 <div className="mobile-filter-buttons">
                   {["available", "reserved", "sold", "all"].map((status) => (
-                    <button className={`${filters.status === status ? "is-active" : ""} ${status === "sold" ? "is-sold" : ""}`} key={status} type="button" onClick={() => onChange("status", status)}>{status.toUpperCase()}</button>
+                    <button className={`${filters.status === status ? "is-active" : ""} ${status === "sold" ? "is-sold" : ""}`} key={status} type="button" onClick={() => onChange("status", status)}>{t(status)}</button>
                   ))}
                 </div>
               </div>
               <div className="mobile-filter-range">
-                <span>AREA · {filters.minArea}–{filters.maxArea} M²</span>
-                <input type="range" min={areaBounds.min} max={areaBounds.max} value={filters.minArea} aria-label="Minimum area" onChange={(event) => onChange("minArea", Math.min(Number(event.target.value), filters.maxArea))} />
-                <input type="range" min={areaBounds.min} max={areaBounds.max} value={filters.maxArea} aria-label="Maximum area" onChange={(event) => onChange("maxArea", Math.max(Number(event.target.value), filters.minArea))} />
+                <span>{t("areaRange", { min: filters.minArea, max: filters.maxArea })}</span>
+                <input type="range" min={areaBounds.min} max={areaBounds.max} value={filters.minArea} aria-label={t("minimumArea")} onChange={(event) => onChange("minArea", Math.min(Number(event.target.value), filters.maxArea))} />
+                <input type="range" min={areaBounds.min} max={areaBounds.max} value={filters.maxArea} aria-label={t("maximumArea")} onChange={(event) => onChange("maxArea", Math.max(Number(event.target.value), filters.minArea))} />
               </div>
             </div>
           )}
 
           <button className="mobile-floor-plan-cta" type="button" onClick={openSelectedFloorPlan} disabled={!matchingUnits.length}>
-            VIEW FLOOR PLAN <ArrowRight aria-hidden="true" />
+            {t("viewFloorPlan")} <ArrowRight aria-hidden="true" />
           </button>
         </section>
       )}
@@ -594,6 +598,7 @@ function MobileResidenceSheet({
 }
 
 function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeFloor, onBrokerAccess, floorLoader }) {
+  const { t } = useLanguage();
   const dialogRef = useRef(null);
   const requestId = useRef(0);
   const floor = snapshot.floors.find((item) => item.number === floorNumber);
@@ -669,28 +674,28 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
       >
         <header className="floor-modal-header">
           <div>
-            <p>PROJECT REVERANCE · A BLOCK</p>
-            <h2 id="floor-modal-title">{floorLabel(floor.number)}</h2>
+            <p>{t("projectReveranceBlock")}</p>
+            <h2 id="floor-modal-title">{floorLabel(floor.number, t)}</h2>
           </div>
           <div className="floor-navigation">
-            <button type="button" onClick={() => previousFloor && onChangeFloor(previousFloor.number)} disabled={!previousFloor} aria-label="Previous floor">
+            <button type="button" onClick={() => previousFloor && onChangeFloor(previousFloor.number)} disabled={!previousFloor} aria-label={t("previousFloor")}>
               <ArrowLeft aria-hidden="true" />
             </button>
             <FloorNavigationSelect floors={snapshot.floors} value={floor.number} onChange={onChangeFloor} />
-            <button type="button" onClick={() => nextFloor && onChangeFloor(nextFloor.number)} disabled={!nextFloor} aria-label="Next floor">
+            <button type="button" onClick={() => nextFloor && onChangeFloor(nextFloor.number)} disabled={!nextFloor} aria-label={t("nextFloor")}>
               <ArrowRight aria-hidden="true" />
             </button>
           </div>
-          <button className="floor-modal-close" data-autofocus type="button" onClick={onClose} aria-label="Close residence explorer">
+          <button className="floor-modal-close" data-autofocus type="button" onClick={onClose} aria-label={t("closeResidenceExplorer")}>
             <X aria-hidden="true" />
           </button>
         </header>
 
         <div className="floor-modal-content">
-          <section className="floor-plan-pane" aria-label={`${floorLabel(floor.number)} plan`}>
+          <section className="floor-plan-pane" aria-label={`${floorLabel(floor.number, t)} plan`}>
             <div className="floor-plan-stage">
-              <img src={floor.planImage} alt={`Architectural plan for ${floorLabel(floor.number)}`} />
-              <svg className="unit-hotspots" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Select a residence">
+              <img src={floor.planImage} alt={`Architectural plan for ${floorLabel(floor.number, t)}`} />
+              <svg className="unit-hotspots" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label={t("selectResidencePlan")}>
                 {slots.filter(({ shape }) => shape).map(({ shape, unit }) => {
                   const status = normalizeStatus(unit.status);
                   const active = selectedUnit && String(selectedUnit.name) === String(unit.name);
@@ -700,7 +705,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
                       key={shape.id}
                       role="button"
                       tabIndex="0"
-                      aria-label={`Residence ${unit.name}, ${getStatusLabel(status)}${unit.totalArea ? `, ${unit.totalArea} square metres` : ""}`}
+                      aria-label={`${t("residence")} ${unit.name}, ${t(status)}${unit.totalArea ? `, ${unit.totalArea} ${t("squareMetres")}` : ""}`}
                       onClick={() => selectUnit(unit)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -710,33 +715,33 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
                       }}
                     >
                       <polygon points={pointsToString(shape.points)} />
-                      <title>Residence {unit.name} · {getStatusLabel(status)}</title>
+                      <title>{t("residence")} {unit.name} · {t(status)}</title>
                     </g>
                   );
                 })}
               </svg>
               {!selectedUnit && (
-                <div className="floor-plan-prompt"><HouseLine aria-hidden="true" />Select a residence on the plan</div>
+                <div className="floor-plan-prompt"><HouseLine aria-hidden="true" />{t("selectResidencePrompt")}</div>
               )}
             </div>
             <div className="floor-plan-footer">
               <AvailabilityLegend dark />
               <span className={`sync-state is-${syncState}`}>
                 <CheckCircle weight="fill" aria-hidden="true" />
-                {syncState === "refreshing" ? "Checking live availability" : syncState === "live" ? "Live availability" : "Verified snapshot"}
+                {syncState === "refreshing" ? t("checkingAvailability") : syncState === "live" ? t("liveAvailability") : t("verifiedSnapshot")}
               </span>
             </div>
           </section>
 
-          <aside className="inventory-pane" aria-label="Floor residences">
+          <aside className="inventory-pane" aria-label={t("floorResidences")}>
             <div className="inventory-heading">
-              <div><p>RESIDENCES</p><strong>{slots.length}</strong></div>
-              <div className="inventory-filters" aria-label="Filter residences">
+              <div><p>{t("residences")}</p><strong>{slots.length}</strong></div>
+              <div className="inventory-filters" aria-label={t("filterResidences")}>
                 {[
-                  ["all", "All"],
-                  ["available", "Available"],
-                  ["reserved", "Reserved"],
-                  ["sold", "Sold"],
+                  ["all", t("allFilter")],
+                  ["available", t("availableFilter")],
+                  ["reserved", t("reservedFilter")],
+                  ["sold", t("soldFilter")],
                 ].map(([value, label]) => (
                   <button className={`${filter === value ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" onClick={() => setFilter(value)}>{label}</button>
                 ))}
@@ -755,8 +760,8 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
             ) : (
               <div className="inventory-intro">
                 <Buildings aria-hidden="true" />
-                <h3>Choose a residence.</h3>
-                <p>Select a highlighted apartment on the floor plan or use the inventory list below.</p>
+                <h3>{t("chooseResidence")}</h3>
+                <p>{t("chooseResidenceCopy")}</p>
               </div>
             )}
 
@@ -768,12 +773,12 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
                   <button className={`unit-row is-${status} ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
                     <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
                     <span>{unitAreaLabel(unit)}</span>
-                    <span>{getStatusLabel(status)}</span>
+                    <span>{t(status)}</span>
                     <ArrowRight aria-hidden="true" />
                   </button>
                 );
               }) : (
-                <p className="inventory-empty">No residences match this filter.</p>
+                <p className="inventory-empty">{t("noResidencesFilter")}</p>
               )}
             </div>
           </aside>
@@ -785,7 +790,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
               className="floor-plan-lightbox"
               role="dialog"
               aria-modal="true"
-              aria-label={`Expanded ${lightbox.label}`}
+              aria-label={t("expandedPreviewAria", { label: lightbox.label })}
               onMouseDown={(event) => event.stopPropagation()}
               onKeyDown={(event) => {
                 if (event.key === "Escape") {
@@ -800,7 +805,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
                 type="button"
                 ref={lightboxCloseRef}
                 onClick={() => setLightbox(null)}
-                aria-label="Close enlarged preview"
+                aria-label={t("closeEnlargedPreview")}
               >
                 <X aria-hidden="true" />
               </button>
@@ -809,7 +814,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
               </div>
               <p className="floor-plan-lightbox-caption">
                 <strong>{lightbox.label}</strong>
-                <span>CLICK OUTSIDE OR PRESS ESC TO CLOSE</span>
+                <span>{t("clickOutsideToClose")}</span>
               </p>
             </section>
           </div>
@@ -832,6 +837,7 @@ function ResidenceFilter({
   previewResidence,
   onReset,
 }) {
+  const { t } = useLanguage();
   const formatArea = (value) => `${Number(value).toFixed(0)} m²`;
   const areaRange = Math.max(areaBounds.max - areaBounds.min, 1);
   const minAreaProgress = ((filters.minArea - areaBounds.min) / areaRange) * 100;
@@ -844,30 +850,30 @@ function ResidenceFilter({
       inert={!active}
     >
       <div className="residence-filter-heading">
-        <p className="section-eyebrow">FIND A RESIDENCE</p>
+        <p className="section-eyebrow">{t("findResidence")}</p>
         <div className="residence-filter-heading-actions">
-          <span>{matchingUnits.length} MATCH{matchingUnits.length === 1 ? "" : "ES"}</span>
-          <button className="residence-filter-reset" type="button" onClick={onReset}>RESET FILTERS</button>
+          <span>{matchingUnits.length} {matchingUnits.length === 1 ? t("match") : t("matches")}</span>
+          <button className="residence-filter-reset" type="button" onClick={onReset}>{t("resetFilters")}</button>
         </div>
       </div>
-      <h2>FILTER THE<br />OPPORTUNITY.</h2>
-      <p className="residence-filter-intro">Refine the live inventory. Every selection is reflected directly on the building.</p>
+      <h2>{t("filterOpportunity")}<br />{t("opportunity")}</h2>
+      <p className="residence-filter-intro">{t("filterIntro")}</p>
 
-      <div className="residence-filter-controls" aria-label="Filter Project Reverance residences">
+      <div className="residence-filter-controls" aria-label={t("filterResidences")}>
         <label className="residence-select-field">
-          <span>FLOOR</span>
+          <span>{t("floor")}</span>
           <select value={filters.floor} onChange={(event) => onChange("floor", event.target.value)}>
-            <option value="all">ALL FLOORS</option>
+            <option value="all">{t("allFloors")}</option>
             {floors.map((floor) => (
-              <option key={floor} value={floor}>{floorLabel(floor).toUpperCase()}</option>
+              <option key={floor} value={floor}>{floorLabel(floor, t).toUpperCase()}</option>
             ))}
           </select>
         </label>
 
         <fieldset className="residence-choice-field">
-          <legend>BEDROOMS</legend>
+          <legend>{t("bedrooms")}</legend>
           <div>
-            <button className={filters.bedrooms === "all" ? "is-active" : ""} type="button" onClick={() => onChange("bedrooms", "all")}>ALL</button>
+            <button className={filters.bedrooms === "all" ? "is-active" : ""} type="button" onClick={() => onChange("bedrooms", "all")}>{t("all")}</button>
             {bedrooms.map((bedroom) => (
               <button
                 className={filters.bedrooms === String(bedroom) ? "is-active" : ""}
@@ -875,17 +881,17 @@ function ResidenceFilter({
                 type="button"
                 onClick={() => onChange("bedrooms", String(bedroom))}
               >
-                {bedroom === 0 ? "STUDIO" : bedroom}
+                {bedroom === 0 ? t("studio") : bedroom}
               </button>
             ))}
           </div>
         </fieldset>
 
         <fieldset className="residence-area-field">
-          <legend>AREA</legend>
+          <legend>{t("area")}</legend>
           <div className="residence-area-readout">
             <output>{formatArea(filters.minArea)}</output>
-            <span>TO</span>
+            <span>{t("to")}</span>
             <output>{formatArea(filters.maxArea)}</output>
           </div>
           <div className="residence-area-ranges">
@@ -896,7 +902,7 @@ function ResidenceFilter({
               step="1"
               value={filters.minArea}
               style={{ "--range-progress": `${minAreaProgress}%` }}
-              aria-label="Minimum area"
+              aria-label={t("minimumArea")}
               onChange={(event) => onChange("minArea", Math.min(Number(event.target.value), filters.maxArea))}
             />
             <input
@@ -906,20 +912,20 @@ function ResidenceFilter({
               step="1"
               value={filters.maxArea}
               style={{ "--range-progress": `${maxAreaProgress}%` }}
-              aria-label="Maximum area"
+              aria-label={t("maximumArea")}
               onChange={(event) => onChange("maxArea", Math.max(Number(event.target.value), filters.minArea))}
             />
           </div>
         </fieldset>
 
         <fieldset className="residence-choice-field residence-status-field">
-          <legend>AVAILABILITY</legend>
+          <legend>{t("availability")}</legend>
           <div>
             {[
-              ["available", "AVAILABLE"],
-              ["reserved", "RESERVED"],
-              ["sold", "SOLD"],
-              ["all", "ALL"],
+              ["available", t("available")],
+              ["reserved", t("reserved")],
+              ["sold", t("sold")],
+              ["all", t("all")],
             ].map(([value, label]) => (
               <button className={`${filters.status === value ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" onClick={() => onChange("status", value)}>{label}</button>
             ))}
@@ -931,9 +937,9 @@ function ResidenceFilter({
         {matchingUnits.length ? (
           <>
             <div className="residence-filter-results-head" aria-hidden="true">
-              <span>RESIDENCE</span>
-              <span>FLOOR</span>
-              <span>AREA</span>
+              <span>{t("residence")}</span>
+              <span>{t("floor")}</span>
+              <span>{t("area")}</span>
               <span />
             </div>
             {matchingUnits.map((unit) => {
@@ -945,13 +951,13 @@ function ResidenceFilter({
                   className={`residence-filter-result is-${status} ${isActive ? "is-active" : ""}`}
                   key={`${unit.floor}-${unit.id}`}
                   type="button"
-                  aria-label={`Residence ${unit.name}, floor ${unit.floor}, ${area === null ? "area unavailable" : `${area.toFixed(1)} square metres`}, ${getStatusLabel(status)}`}
+                  aria-label={`${t("residence")} ${unit.name}, ${t("floor")} ${unit.floor}, ${area === null ? t("areaUnavailable") : `${area.toFixed(1)} ${t("squareMetres")}`}, ${t(status)}`}
                   onMouseEnter={() => onPreviewResidence(unit)}
                   onFocus={() => onPreviewResidence(unit)}
                   onClick={() => onOpenResidence(unit)}
                 >
                   <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
-                  <span>F{String(unit.floor).padStart(2, "0")}</span>
+                  <span>{floorLabel(unit.floor, t).replace(/^\w+\s/i, "F")}</span>
                   <strong>{unitAreaLabel(unit)}</strong>
                   <ArrowRight aria-hidden="true" />
                 </button>
@@ -960,8 +966,8 @@ function ResidenceFilter({
           </>
         ) : (
           <div className="residence-filter-empty">
-            <strong>NO MATCHES</strong>
-            <p>Adjust the area, floor, or availability filters.</p>
+            <strong>{t("noMatches")}</strong>
+            <p>{t("adjustFilters")}</p>
           </div>
         )}
       </div>
@@ -970,6 +976,7 @@ function ResidenceFilter({
 }
 
 export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResidenceSnapshot, floorLoader = loadLiveFloor }) {
+  const { t } = useLanguage();
   const sectionRef = useRef(null);
   const modelHostRef = useRef(null);
   const [snapshot, setSnapshot] = useState(null);
@@ -1100,18 +1107,18 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
 
         <div className="explorer-copy">
           <div className="explorer-copy-panel explorer-intro-panel" aria-hidden={filterActive} inert={filterActive}>
-            <p className="section-eyebrow">RESIDENCE EXPLORER</p>
-            <h2 id="residence-explorer-title">SELECT THE<br />OPPORTUNITY.</h2>
+            <p className="section-eyebrow">{t("residenceExplorer")}</p>
+            <h2 id="residence-explorer-title">{t("selectOpportunity")}<br />{t("opportunity")}</h2>
             <p className="explorer-description">
-              Move from elevation to floor plan to individual residence—with live availability built for faster broker decisions.
+              {t("explorerDescription")}
             </p>
 
-            <div className="explorer-metrics" aria-label="Residence availability summary">
-              <div><strong>{summary.available}</strong><span>AVAILABLE<br />RESIDENCES</span></div>
-              <div><strong>{snapshot?.floors.length || 0}</strong><span>SELECTABLE<br />FLOORS</span></div>
+            <div className="explorer-metrics" aria-label={t("availabilitySummary")}>
+              <div><strong>{summary.available}</strong><span>{t("availableResidences")}</span></div>
+              <div><strong>{snapshot?.floors.length || 0}</strong><span>{t("selectableFloors")}</span></div>
             </div>
             <AvailabilityLegend />
-            <p className="explorer-footnote">A BLOCK · FLOORS 02–16 · BATUMI</p>
+            <p className="explorer-footnote">{t("blockFloorsBatumi")}</p>
           </div>
 
           <ResidenceFilter
@@ -1132,7 +1139,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
         <div className="explorer-stage">
           <div className="explorer-model-host" ref={modelHostRef}>
             {snapshot ? canMountModel ? (
-              <Suspense fallback={<div className="explorer-loading" role="status"><span />Preparing the interactive building…</div>}>
+              <Suspense fallback={<div className="explorer-loading" role="status"><span />{t("preparingBuilding")}</div>}>
                 <Reverance3D
                   snapshot={snapshot}
                   onSelectFloor={setSelectedFloor}
@@ -1144,16 +1151,16 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
                 />
               </Suspense>
             ) : (
-              <div className="explorer-loading" role="status"><span />Preparing the interactive building…</div>
+              <div className="explorer-loading" role="status"><span />{t("preparingBuilding")}</div>
             ) : loadError ? (
               <div className="explorer-error" role="alert">
                 <Buildings aria-hidden="true" />
-                <h3>Residence explorer unavailable.</h3>
-                <p>The project data could not be loaded. Try again without leaving the page.</p>
-                <button className="button button-primary" type="button" onClick={() => setRetryKey((key) => key + 1)}>TRY AGAIN</button>
+                <h3>{t("explorerUnavailable")}</h3>
+                <p>{t("explorerUnavailableCopy")}</p>
+                <button className="button button-primary" type="button" onClick={() => setRetryKey((key) => key + 1)}>{t("tryAgain")}</button>
               </div>
             ) : (
-              <div className="explorer-loading" role="status"><span />Loading the residence explorer…</div>
+              <div className="explorer-loading" role="status"><span />{t("loadingExplorer")}</div>
             )}
           </div>
         </div>
@@ -1174,9 +1181,9 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
         )}
 
         <div className="explorer-motion-caption" aria-hidden="true">
-          <span>01 · SIDE PROFILE</span>
-          <span>02 · LIVE 3D ROTATION</span>
-          <span>03 · EXPLORE FLOOR</span>
+          <span>{t("sideProfile")}</span>
+          <span>{t("live3DRotation")}</span>
+          <span>{t("exploreFloor")}</span>
         </div>
       </div>
 

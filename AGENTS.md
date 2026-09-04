@@ -31,6 +31,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - Residence detail plan artwork must be an obvious, keyboard-accessible full-view trigger on desktop and mobile; opening it uses a dismissible lightbox without leaving the floor modal.
 - The selected mobile explorer direction is option 3: a full-height Reverance hero, left floor rail, top floor chip, and light rounded thumb-first room sheet with live status cards, compact filters, reset, and floor-plan CTA.
 - On portrait mobile, keep that hero unobstructed by default: use a slim floating residence dock and open inventory, filters, and the floor-plan action in an intentional drawer only when requested.
+- Use the AIXCO language set EN/DE/PL/SL/RU with native-language labels; keep translations bundled and deterministic so switching is instant and layout-stable.
 - Keep the floor navigation menu visually clean: hide scrollbar chrome while retaining native wheel, touch, and keyboard scrolling when a short viewport requires overflow.
 - Broker login and registration actions must route to the matching English Workwise broker flows (`broker-login` and `broker-signup`) used by AIXCO.Global.
 
