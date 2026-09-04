@@ -1,5 +1,9 @@
+import { analyticsApi } from "./analytics.js";
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
+    const api = await analyticsApi(request, env, ctx);
+    if (api) return api;
     const response = await env.ASSETS.fetch(request);
     const acceptsHtml = request.headers.get("accept")?.includes("text/html");
 

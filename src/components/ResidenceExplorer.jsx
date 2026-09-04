@@ -18,6 +18,7 @@ import {
   normalizeStatus,
 } from "../data/reveranceApi";
 import { useLanguage } from "../i18n.jsx";
+import { track } from "../analytics.js";
 import { FittedHeading } from "./FittedHeading.jsx";
 import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
 import "./ResidenceExplorer.css";
@@ -398,7 +399,7 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
             <button
               className="unit-preview-button"
               type="button"
-              onClick={() => onOpenPreview?.({ src: previewSource, alt: previewAlt, label: `${previewLabel} · ${t("residence")} ${unit.name}` })}
+              onClick={() => { track("plan_open", { unit: String(unit.name) }); onOpenPreview?.({ src: previewSource, alt: previewAlt, label: `${previewLabel} · ${t("residence")} ${unit.name}` }); }}
               aria-label={t("openFullViewAria", { view: previewLabel, name: unit.name })}
             >
               <img className="unit-preview" src={previewSource} alt={previewAlt} onError={() => setImageFailed(true)} />
@@ -657,6 +658,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
   const nextFloor = snapshot.floors[currentIndex + 1];
 
   const selectUnit = useCallback((unit) => {
+    track("residence_open", { unit: String(unit.name) });
     setSelectedUnitName(String(unit.name));
     setImageMode(unit.image2d ? "2d" : unit.image3d ? "3d" : "2d");
   }, []);
@@ -987,6 +989,9 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   const [previewUnitId, setPreviewUnitId] = useState(null);
   const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS }));
   const [filtersTouched, setFiltersTouched] = useState(false);
+  const filterTrackingTimer = useRef(null);
+  useEffect(() => () => clearTimeout(filterTrackingTimer.current), []);
+  useEffect(() => { if (selectedFloor !== null) track("floor_open", { floor: selectedFloor }); }, [selectedFloor]);
   const [retryKey, setRetryKey] = useState(0);
   const [canMountModel, setCanMountModel] = useState(() => (
     typeof window === "undefined" || !("IntersectionObserver" in window)
@@ -1073,12 +1078,16 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
     : null;
 
   const updateFilter = useCallback((name, value) => {
+    clearTimeout(filterTrackingTimer.current);
+    filterTrackingTimer.current = setTimeout(() => track("filter_change", { filter: name }), 600);
     setFilters((current) => ({ ...current, [name]: value }));
     setPreviewUnitId(null);
     setFiltersTouched(true);
   }, []);
 
   const resetFilters = useCallback(() => {
+    clearTimeout(filterTrackingTimer.current);
+    track("filter_reset");
     setFilters({
       ...DEFAULT_FILTERS,
       minArea: areaBounds.min,
@@ -1089,6 +1098,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   }, [areaBounds.max, areaBounds.min]);
 
   const openResidence = useCallback((unit) => {
+    track("residence_open", { unit: String(unit.name), floor: unit.floor });
     setSelectedUnitName(String(unit.name));
     setSelectedFloor(unit.floor);
   }, []);

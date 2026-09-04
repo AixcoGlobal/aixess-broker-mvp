@@ -35,6 +35,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - Treat every locale as a complete layout: fit the three hero lines to their actual translated glyph widths, allow accented and Cyrillic letters full line height, keep all navigation actions in bounds, and verify pages, explorer controls, and modal states at phone, tablet, laptop, and desktop sizes before publishing localization changes.
 - Keep the floor navigation menu visually clean: hide scrollbar chrome while retaining native wheel, touch, and keyboard scrolling when a short viewport requires overflow.
 - Broker login and registration actions must route to the matching English Workwise broker flows (`broker-login` and `broker-signup`) used by AIXCO.Global.
+- Admin reporting must use durable, real events and saved enquiries, with server-side admin authorization. Clearly distinguish outbound Workwise clicks from completed logins/registrations; never manufacture conversion data. Optional analytics require visitor consent, with equally prominent accept/reject controls and a way to withdraw it. Do not capture passwords, form contents, session replay, or high-frequency model hover events.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
 

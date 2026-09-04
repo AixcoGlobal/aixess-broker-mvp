@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { localAnalytics } from "./scripts/local-analytics.mjs";
 
 export default defineConfig({
   build: {
@@ -20,5 +21,5 @@ export default defineConfig({
     include: ["src/**/*.test.{js,jsx}"],
     setupFiles: ["./tests/setup.js"],
   },
-  plugins: [react()],
+  plugins: [react(), localAnalytics()],
 });

@@ -2,6 +2,11 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage } from "./i18n.jsx";
 import { FittedHeading } from "./components/FittedHeading.jsx";
+import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
+import { PRIVACY_COPY } from "./privacy-copy.js";
+import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
+
+const AdminDashboard = lazy(() => import("./components/AdminDashboard.jsx"));
 
 const ResidenceExplorer = lazy(() => import("./components/ResidenceExplorer").then((module) => ({
   default: module.ResidenceExplorer,
@@ -17,7 +22,7 @@ const navItems = [
   { key: "resources", labelKey: "resources" },
 ];
 
-const validRoutes = new Set(navItems.map(({ key }) => key));
+const validRoutes = new Set([...navItems.map(({ key }) => key), "admin", "privacy"]);
 
 const WORKWISE_BROKER_PATHS = {
   login: "/realestate/aixco/broker-login",
@@ -123,6 +128,7 @@ function LanguageSwitcher({ languageOpen, setLanguageOpen }) {
   }, [languageOpen, setLanguageOpen]);
 
   const chooseLanguage = (code) => {
+    track("language_change");
     setLocale(code);
     setLanguageOpen(false);
   };
@@ -162,8 +168,12 @@ function LanguageSwitcher({ languageOpen, setLanguageOpen }) {
 }
 
 function Modal({ type, onClose, onSwitch }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const privacy = PRIVACY_COPY[locale];
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
+  const [requestId] = useState(() => crypto.randomUUID());
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -217,9 +227,23 @@ function Modal({ type, onClose, onSwitch }) {
 
             <form
               className="access-form"
-              onSubmit={(event) => {
+              onSubmit={async (event) => {
                 event.preventDefault();
-                setSubmitted(true);
+                if (submitting) return;
+                const form = new FormData(event.currentTarget);
+                setSubmitting(true);
+                setSubmitError(false);
+                try {
+                  const response = await fetch("/api/leads", {
+                    signal: AbortSignal.timeout(15000),
+                    method: "POST", headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ id: requestId, name: form.get("name"), email: form.get("email"), website: form.get("website"), locale, privacyAccepted: form.get("privacy") === "on" }),
+                  });
+                  if (!response.ok || !(await response.json()).saved) throw new Error("Not saved");
+                  setSubmitted(true);
+                  track("lead_submitted");
+                } catch { setSubmitError(true); }
+                finally { setSubmitting(false); }
               }}
             >
               {type !== "login" && (
@@ -244,7 +268,10 @@ function Modal({ type, onClose, onSwitch }) {
                   <input name="password" type="password" autoComplete="current-password" required placeholder="••••••••" />
                 </label>
               )}
-              <button className="button button-primary modal-submit" type="submit">{content.submit}</button>
+              <label className="form-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
+              <label className="privacy-acknowledgement"><input name="privacy" type="checkbox" required /><span>{privacy.acknowledgement} <a href="#privacy" target="_blank" rel="noopener">{privacy.policy}</a></span></label>
+              {submitError && <p className="form-submit-error" role="alert">{privacy.failed}</p>}
+              <button className="button button-primary modal-submit" type="submit" disabled={submitting}>{submitting ? privacy.sending : content.submit}</button>
             </form>
 
             {type === "login" && (
@@ -600,15 +627,18 @@ function AppContent() {
   const openModal = (type) => {
     setMenuOpen(false);
     if (type === "register" || type === "login") {
+      track(type === "login" ? "portal_login_click" : "portal_register_click");
       window.location.assign(workwiseBrokerUrl(type, locale));
       return;
     }
+    track("materials_open");
     setActiveModal(type);
   };
 
   const navigatePage = (page) => {
     setMenuOpen(false);
     const nextPage = validRoutes.has(page) ? page : "home";
+    track("navigation", { destination: nextPage });
     if (nextPage === currentPage) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -632,6 +662,21 @@ function AppContent() {
     };
   }, []);
 
+  useEffect(() => {
+    const pageView = () => track("page_view");
+    pageView();
+    window.addEventListener("aixess:consent", pageView);
+    return () => window.removeEventListener("aixess:consent", pageView);
+  }, [currentPage]);
+
+  useEffect(() => {
+    const visibility = () => { if (document.visibilityState === "hidden") flushAnalytics(); };
+    document.addEventListener("click", trackOutboundLink);
+    document.addEventListener("visibilitychange", visibility);
+    window.addEventListener("pagehide", flushAnalytics);
+    return () => { document.removeEventListener("click", trackOutboundLink); document.removeEventListener("visibilitychange", visibility); window.removeEventListener("pagehide", flushAnalytics); };
+  }, []);
+
   return (
     <main className="site-shell">
       {currentPage === "home" && <HomePage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
@@ -639,6 +684,9 @@ function AppContent() {
       {currentPage === "residences" && <ResidencesPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "broker-access" && <BrokerAccessPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "resources" && <ResourcesPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
+      {currentPage === "privacy" && <PrivacyPage />}
+      {currentPage === "admin" && <Suspense fallback={<p role="status">Loading admin…</p>}><AdminDashboard /></Suspense>}
+      <PrivacyControls page={currentPage} />
 
       {activeModal && (
         <Modal key={activeModal} type={activeModal} onClose={() => setActiveModal(null)} onSwitch={setActiveModal} />

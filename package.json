@@ -10,6 +10,7 @@
     "test": "vitest run --maxWorkers=1",
     "test:watch": "vitest",
     "test:sites": "node --test tests/sites-worker.test.mjs",
+    "test:analytics": "node --test tests/analytics-worker.test.mjs",
     "verify:scroll": "node scripts/verify-building-scroll.mjs",
     "verify:explorer": "node scripts/verify-residence-explorer.mjs"
   },
@@ -26,6 +27,9 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.6",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
+    "esbuild": "^0.28.2",
     "jsdom": "^29.1.1",
     "playwright": "^1.62.1",
     "vitest": "^4.1.11"
