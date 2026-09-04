@@ -9,6 +9,7 @@ import {
 } from "playcanvas";
 import {
   getFloorAtWorldPoint,
+  getBlockFloorAtWorldPoint,
   getFloorFragmentHighlightMask,
   getFloorFragmentLocalY,
   getFloorHighlightProjection,
@@ -25,6 +26,8 @@ import {
   REVERANCE_FLOOR_VISUAL_Y_OFFSET_BOTTOM,
   REVERANCE_FLOOR_VISUAL_Y_OFFSET_TOP,
   REVERANCE_FLOOR_VOLUMES,
+  REVERANCE_BLOCK_FLOOR_VOLUMES,
+  pickBlockFloorFromScreen,
   getWorldToFloorTransform,
 } from "./reveranceFloorHighlight";
 
@@ -103,6 +106,12 @@ function createPickingCamera(yawDegrees) {
 
 function projectFloorPoint(cameraEntity, floorNumber, localPoint) {
   const volume = REVERANCE_FLOOR_VOLUMES.find(({ number }) => number === floorNumber);
+  const world = getFloorWorldTransform(volume).transformPoint(localPoint);
+  return cameraEntity.camera.worldToScreen(world, new Vec3());
+}
+
+function projectBlockFloorPoint(cameraEntity, blockId, floorNumber, localPoint) {
+  const volume = REVERANCE_BLOCK_FLOOR_VOLUMES[blockId].find(({ number }) => number === floorNumber);
   const world = getFloorWorldTransform(volume).transformPoint(localPoint);
   return cameraEntity.camera.worldToScreen(world, new Vec3());
 }
@@ -301,6 +310,30 @@ describe("Reverance production floor highlight transform", () => {
     expect(getFloorAtWorldPoint(
       transform.transformPoint(new Vec3(0, REVERANCE_FLOOR_HIGHLIGHT_HEIGHT * 0.5, 0)),
     )).toBeNull();
+  });
+
+  it.each(Object.keys(REVERANCE_BLOCK_FLOOR_VOLUMES))("resolves a world point in block %s without confusing the paired tower", (blockId) => {
+    const volume = REVERANCE_BLOCK_FLOOR_VOLUMES[blockId].find(({ number }) => number === 7);
+    const worldCenter = getFloorWorldTransform(volume).transformPoint(Vec3.ZERO);
+    expect(getBlockFloorAtWorldPoint(worldCenter)).toEqual({ blockId, floor: 7 });
+  });
+
+  it.each([
+    ["front", 0],
+    ["left oblique", -55],
+    ["right oblique", 55],
+  ])("picks the correct tower and storey from the %s camera", (_name, yawDegrees) => {
+    const cameraEntity = createPickingCamera(yawDegrees);
+    [16, 11, 5, 2].forEach((floorNumber) => {
+      const center = projectBlockFloorPoint(cameraEntity, "ReveranceB", floorNumber, new Vec3(0, 0, 0));
+      expect(pickBlockFloorFromScreen(
+        cameraEntity,
+        center.x,
+        center.y,
+        VIEWPORT_SIZE,
+        VIEWPORT_SIZE,
+      )).toEqual({ blockId: "ReveranceB", floor: floorNumber });
+    });
   });
 
   describe.each([

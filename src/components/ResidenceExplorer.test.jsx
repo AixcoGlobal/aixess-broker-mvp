@@ -43,6 +43,31 @@ const snapshot = {
   ],
 };
 
+const multiBlockSnapshot = {
+  ...snapshot,
+  blockName: "A + B Blocks",
+  inventoryComplete: true,
+  blocks: [
+    { id: "ReveranceA", code: "A", name: "A Block", floors: snapshot.floors },
+    {
+      id: "ReveranceB",
+      code: "B",
+      name: "B Block",
+      floors: snapshot.floors.map((floor) => ({
+        ...floor,
+        id: `B-${floor.id}`,
+        shapes: floor.shapes.map((shape) => ({ ...shape, id: `B-${shape.id}` })),
+        units: floor.units.map((unit) => ({
+          ...unit,
+          id: `B-${unit.id}`,
+          block: "B",
+          blockId: "ReveranceB",
+        })),
+      })),
+    },
+  ],
+};
+
 beforeEach(() => {
   window.matchMedia = vi.fn().mockReturnValue({
     matches: true,
@@ -247,5 +272,30 @@ describe("Residence explorer", () => {
     expect(floorSelect).toHaveTextContent("FLOOR 02");
     expect(floorSelect).toHaveTextContent("FLOOR 04");
     expect(floorSelect).toHaveTextContent("FLOOR 05");
+  });
+
+  it("keeps the second block filterable and opens a residence against its own floor data", async () => {
+    const user = userEvent.setup();
+    const floorLoader = vi.fn().mockResolvedValue([]);
+    render(
+      <ResidenceExplorer
+        onBrokerAccess={vi.fn()}
+        snapshotLoader={() => Promise.resolve(multiBlockSnapshot)}
+        floorLoader={floorLoader}
+      />,
+    );
+
+    const controls = await screen.findByLabelText("Filter Project Reverance residences");
+    const buildingSelect = within(controls).getByLabelText("BUILDING");
+    expect(buildingSelect).toHaveValue("all");
+    await user.selectOptions(buildingSelect, "ReveranceB");
+
+    const result = screen.getByRole("button", { name: /Residence 411, floor 4/i });
+    expect(result).toHaveTextContent("B · #411");
+    await user.click(result);
+
+    const dialog = await screen.findByRole("dialog", { name: /Floor 04/i });
+    expect(within(dialog).getByText("B Block")).toBeInTheDocument();
+    expect(floorLoader).toHaveBeenCalledWith("ReveranceB", 4);
   });
 });

@@ -41,6 +41,23 @@ export const REVERANCE_FLOOR_VOLUMES = Object.freeze([
   [16, 0.34594821662981495, 0.32081943125502793, -0.4690345299800027],
 ].map(([number, x, y, z]) => Object.freeze({ number, position: Object.freeze([x, y, z]) })));
 
+// The official SOG contains the paired A/B towers in one coordinate space.
+// A's calibrated bands are retained as the public default for compatibility;
+// B uses the measured horizontal separation between the two tower masses.
+const REVERANCE_BLOCK_B_OFFSET = Object.freeze([-1.12, 0, 0]);
+const offsetVolume = (volume, offset) => Object.freeze({
+  number: volume.number,
+  position: Object.freeze(volume.position.map((value, index) => value + offset[index])),
+});
+export const REVERANCE_BLOCK_FLOOR_VOLUMES = Object.freeze({
+  ReveranceA: REVERANCE_FLOOR_VOLUMES,
+  ReveranceB: Object.freeze(REVERANCE_FLOOR_VOLUMES.map((volume) => offsetVolume(volume, REVERANCE_BLOCK_B_OFFSET))),
+});
+
+export function getFloorVolumesForBlock(blockId = "ReveranceA") {
+  return REVERANCE_BLOCK_FLOOR_VOLUMES[blockId] || REVERANCE_FLOOR_VOLUMES;
+}
+
 const FLOOR_ROTATION_QUATERNION = new Quat().setFromEulerAngles(...REVERANCE_FLOOR_ROTATION);
 const FIRST_HIGHLIGHT_FLOOR = REVERANCE_FLOOR_VOLUMES[0].number;
 const LAST_HIGHLIGHT_FLOOR = REVERANCE_FLOOR_VOLUMES[REVERANCE_FLOOR_VOLUMES.length - 1].number;
@@ -213,7 +230,7 @@ const pickRayDir = new Vec3();
 const pickHitPoint = new Vec3();
 const pickLocalPoint = new Vec3();
 
-export function pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canvasHeight) {
+export function pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canvasHeight, volumes = REVERANCE_FLOOR_VOLUMES) {
   const camera = cameraEntity?.camera;
   if (!camera || canvasWidth <= 0 || canvasHeight <= 0) return null;
   if (!Number.isFinite(cssX) || !Number.isFinite(cssY)) return null;
@@ -231,7 +248,7 @@ export function pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canva
   let nearestFloor = null;
   let nearestBandDistance = Infinity;
 
-  for (const volume of REVERANCE_FLOOR_VOLUMES) {
+  for (const volume of volumes) {
     const floorToWorld = getFloorWorldTransform(volume);
     floorToWorld.transformPoint(pickCenter.set(0, 0, 0), pickCenter);
     floorToWorld.transformPoint(pickUpper.set(0, REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0), pickUpper);
@@ -290,7 +307,7 @@ export function pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canva
 
   let rayFloor = null;
   let rayScore = Infinity;
-  for (const volume of REVERANCE_FLOOR_VOLUMES) {
+  for (const volume of volumes) {
     const worldToLocal = getWorldToFloorTransform(volume);
     const distance = intersectRayFloorVolume(
       pickNear,
@@ -316,12 +333,113 @@ export function pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canva
 }
 
 /**
+ * Picks a storey from either official tower. The legacy picker above remains
+ * floor-number-only for callers that only render the A block.
+ */
+export function pickBlockFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canvasHeight) {
+  const camera = cameraEntity?.camera;
+  if (!camera || canvasWidth <= 0 || canvasHeight <= 0) return null;
+  if (!Number.isFinite(cssX) || !Number.isFinite(cssY)) return null;
+
+  // The projected rectangles of the two towers can overlap at oblique
+  // angles. Ask the calibrated picker for each tower, then choose the nearest
+  // projected candidate instead of letting object iteration order decide.
+  const candidates = [];
+  for (const [blockId, volumes] of Object.entries(REVERANCE_BLOCK_FLOOR_VOLUMES)) {
+    const floor = pickFloorFromScreen(cameraEntity, cssX, cssY, canvasWidth, canvasHeight, volumes);
+    if (floor === null) continue;
+    const volume = volumes.find((candidate) => candidate.number === floor);
+    const floorToWorld = getFloorWorldTransform(volume);
+    floorToWorld.transformPoint(pickCenter.set(0, 0, 0), pickCenter);
+    floorToWorld.transformPoint(pickUpper.set(0, REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0), pickUpper);
+    floorToWorld.transformPoint(pickLower.set(0, -REVERANCE_FLOOR_PICK_HALF_SIZE[1], 0), pickLower);
+    floorToWorld.transformPoint(pickLeft.set(-REVERANCE_FLOOR_PICK_HALF_SIZE[0], 0, 0), pickLeft);
+    floorToWorld.transformPoint(pickRight.set(REVERANCE_FLOOR_PICK_HALF_SIZE[0], 0, 0), pickRight);
+    camera.worldToScreen(pickUpper, pickScreenUpper);
+    camera.worldToScreen(pickLower, pickScreenLower);
+    camera.worldToScreen(pickLeft, pickScreenLeft);
+    camera.worldToScreen(pickRight, pickScreenRight);
+    camera.worldToScreen(pickCenter, pickScreenCenter);
+    const top = Math.min(pickScreenUpper.y, pickScreenLower.y);
+    const bottom = Math.max(pickScreenUpper.y, pickScreenLower.y);
+    const minX = Math.min(pickScreenLeft.x, pickScreenRight.x);
+    const maxX = Math.max(pickScreenLeft.x, pickScreenRight.x);
+    const outsideX = Math.max(minX - cssX, 0, cssX - maxX);
+    const outsideY = Math.max(top - cssY, 0, cssY - bottom);
+    candidates.push({
+      blockId,
+      floor,
+      bandDistance: Math.hypot(outsideX, outsideY),
+      centerDistance: Math.hypot(cssX - pickScreenCenter.x, cssY - pickScreenCenter.y),
+    });
+  }
+  if (!candidates.length) return null;
+  let validatedCandidates = candidates;
+  if (candidates.some(({ bandDistance }) => bandDistance > 0)) {
+    camera.screenToWorld(cssX, cssY, camera.nearClip, pickNear);
+    camera.screenToWorld(cssX, cssY, camera.farClip, pickFar);
+    pickRayDir.sub2(pickFar, pickNear);
+    const dirLength = pickRayDir.length();
+    const hitFloors = new Set();
+    if (dirLength > Number.EPSILON) {
+      pickRayDir.mulScalar(1 / dirLength);
+      for (const [blockId, volumes] of Object.entries(REVERANCE_BLOCK_FLOOR_VOLUMES)) {
+        for (const volume of volumes) {
+          if (intersectRayFloorVolume(
+            pickNear,
+            pickRayDir,
+            getWorldToFloorTransform(volume),
+            REVERANCE_FLOOR_PICK_HALF_SIZE,
+          ) !== null) hitFloors.add(`${blockId}:${volume.number}`);
+        }
+      }
+    }
+    validatedCandidates = candidates.filter(({ blockId, floor, bandDistance }) => (
+      bandDistance <= 0 || hitFloors.has(`${blockId}:${floor}`)
+    ));
+    if (!validatedCandidates.length) return null;
+  }
+  const inside = validatedCandidates.filter(({ bandDistance }) => bandDistance <= 0);
+  const pool = inside.length ? inside : validatedCandidates;
+  pool.sort((a, b) => a.centerDistance - b.centerDistance || a.bandDistance - b.bandDistance);
+
+  // If two projected candidates are exactly tied (the usual case in the
+  // visual gap between the towers), use the ray only to validate that the
+  // pointer actually enters a block volume. A gap hit must remain unselected;
+  // this prevents a neighboring tower from lighting up through empty space.
+  const nearestDistance = pool[0].centerDistance;
+  const tied = pool.filter(({ centerDistance }) => Math.abs(centerDistance - nearestDistance) < 1e-6);
+  if (tied.length > 1) {
+    camera.screenToWorld(cssX, cssY, camera.nearClip, pickNear);
+    camera.screenToWorld(cssX, cssY, camera.farClip, pickFar);
+    pickRayDir.sub2(pickFar, pickNear);
+    const dirLength = pickRayDir.length();
+    const hitBlocks = new Set();
+    if (dirLength > Number.EPSILON) {
+      pickRayDir.mulScalar(1 / dirLength);
+      for (const [blockId, volumes] of Object.entries(REVERANCE_BLOCK_FLOOR_VOLUMES)) {
+        if (volumes.some((volume) => intersectRayFloorVolume(
+          pickNear,
+          pickRayDir,
+          getWorldToFloorTransform(volume),
+          REVERANCE_FLOOR_PICK_HALF_SIZE,
+        ) !== null)) hitBlocks.add(blockId);
+      }
+    }
+    const tiedHits = tied.filter(({ blockId }) => hitBlocks.has(blockId));
+    if (tiedHits.length === 1) return { blockId: tiedHits[0].blockId, floor: tiedHits[0].floor };
+    if (tiedHits.length === 0) return null;
+  }
+  return { blockId: pool[0].blockId, floor: pool[0].floor };
+}
+
+/**
  * Resolves which calibrated storey strictly contains a world-space point, or
  * `null` when the point lies outside every floor volume or exactly on a slab.
  */
-export function getFloorAtWorldPoint(worldPoint) {
+export function getFloorAtWorldPoint(worldPoint, volumes = REVERANCE_FLOOR_VOLUMES) {
   const local = new Vec3();
-  for (const volume of REVERANCE_FLOOR_VOLUMES) {
+  for (const volume of volumes) {
     getWorldToFloorTransform(volume).transformPoint(worldPoint, local);
     if (
       Math.abs(local.x) < REVERANCE_FLOOR_PICK_HALF_SIZE[0]
@@ -330,6 +448,14 @@ export function getFloorAtWorldPoint(worldPoint) {
     ) {
       return volume.number;
     }
+  }
+  return null;
+}
+
+export function getBlockFloorAtWorldPoint(worldPoint) {
+  for (const [blockId, volumes] of Object.entries(REVERANCE_BLOCK_FLOOR_VOLUMES)) {
+    const floor = getFloorAtWorldPoint(worldPoint, volumes);
+    if (floor !== null) return { blockId, floor };
   }
   return null;
 }

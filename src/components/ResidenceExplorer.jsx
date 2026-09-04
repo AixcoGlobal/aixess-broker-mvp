@@ -51,14 +51,14 @@ function unitSort(a, b) {
   return String(a.name).localeCompare(String(b.name), undefined, { numeric: true });
 }
 
-function getUnitSlots(floor, units) {
+function getUnitSlots(floor, units, defaultStatus = "sold") {
   const unitsByName = new Map(units.map((unit) => [String(unit.name), unit]));
   const slots = floor.shapes.map((shape) => ({
     shape,
     unit: unitsByName.get(String(shape.target)) || {
-      id: `sold-${shape.target}`,
+      id: `${defaultStatus}-${shape.target}`,
       name: String(shape.target),
-      status: "sold",
+      status: defaultStatus,
       floor: floor.number,
       rooms: null,
       bedrooms: null,
@@ -78,11 +78,32 @@ function getUnitSlots(floor, units) {
   return slots.sort((a, b) => unitSort(a.unit, b.unit));
 }
 
+function getSnapshotBlocks(snapshot) {
+  if (Array.isArray(snapshot?.blocks) && snapshot.blocks.length) return snapshot.blocks;
+  if (!snapshot) return [];
+  return [{
+    id: snapshot.blockId || "ReveranceA",
+    code: "A",
+    name: snapshot.blockName || "A Block",
+    floors: snapshot.floors || [],
+  }];
+}
+
+function getSnapshotBlock(snapshot, blockId) {
+  const blocks = getSnapshotBlocks(snapshot);
+  return blocks.find((block) => block.id === blockId) || blocks[0] || null;
+}
+
+function getSnapshotSlots(snapshot, floor) {
+  return getUnitSlots(floor, floor?.units || [], snapshot?.inventoryComplete ? "unavailable" : "sold");
+}
+
 function clamp(value, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
 const DEFAULT_FILTERS = {
+  block: "all",
   floor: "all",
   bedrooms: "all",
   minArea: 0,
@@ -429,6 +450,7 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
 function MobileResidenceSheet({
   areaBounds,
   bedrooms,
+  blocks,
   filters,
   floors,
   matchingUnits,
@@ -447,6 +469,9 @@ function MobileResidenceSheet({
   const activeBedrooms = filters.bedrooms === "all"
     ? t("allBedrooms")
     : filters.bedrooms === "0" ? t("studio") : `${t("bedrooms")}: ${filters.bedrooms}`;
+  const activeBlock = filters.block === "all"
+    ? t("allBlocks")
+    : blocks.find((block) => block.id === filters.block)?.name || filters.block;
 
   const openDrawer = (showFilters = false) => {
     setDrawerOpen(true);
@@ -559,10 +584,22 @@ function MobileResidenceSheet({
             <span>{filters.minArea}–{filters.maxArea} m²</span>
             <span>{activeBedrooms}</span>
             <span>{activeFloor}</span>
+            <span>{activeBlock}</span>
           </div>
 
           {filtersOpen && (
             <div className="mobile-filter-popover">
+              {blocks.length > 1 && (
+                <div>
+                  <span>{t("building")}</span>
+                  <div className="mobile-filter-buttons">
+                    <button className={filters.block === "all" ? "is-active" : ""} type="button" onClick={() => onChange("block", "all")}>{t("allBlocks")}</button>
+                    {blocks.map((block) => (
+                      <button className={filters.block === block.id ? "is-active" : ""} type="button" key={block.id} onClick={() => onChange("block", block.id)}>{block.name}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div>
                 <span>{t("bedrooms")}</span>
                 <div className="mobile-filter-buttons">
@@ -599,11 +636,13 @@ function MobileResidenceSheet({
   );
 }
 
-function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeFloor, onBrokerAccess, floorLoader }) {
+function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, onChangeFloor, onBrokerAccess, floorLoader }) {
   const { t, locale } = useLanguage();
   const dialogRef = useRef(null);
   const requestId = useRef(0);
-  const floor = snapshot.floors.find((item) => item.number === floorNumber);
+  const block = getSnapshotBlock(snapshot, blockId);
+  const floors = block?.floors || [];
+  const floor = floors.find((item) => item.number === floorNumber);
   const [units, setUnits] = useState(floor?.units || []);
   const [selectedUnitName, setSelectedUnitName] = useState(null);
   const [filter, setFilter] = useState("all");
@@ -619,7 +658,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
     const currentRequest = requestId.current + 1;
     requestId.current = currentRequest;
     setUnits(floor.units || []);
-    const initialUnit = getUnitSlots(floor, floor.units || [])
+    const initialUnit = getSnapshotSlots(snapshot, floor)
       .find(({ unit }) => String(unit.name) === String(initialUnitName))?.unit;
     setSelectedUnitName(initialUnit ? String(initialUnit.name) : null);
     setFilter("all");
@@ -627,7 +666,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
     setLightbox(null);
     setSyncState("refreshing");
 
-    floorLoader(snapshot.blockId, floor.number)
+    floorLoader(block?.id || snapshot.blockId, floor.number)
       .then((liveUnits) => {
         if (requestId.current !== currentRequest) return;
         setUnits(mergeFloorUnits(floor.units, liveUnits));
@@ -641,21 +680,21 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
     return () => {
       if (requestId.current === currentRequest) requestId.current += 1;
     };
-  }, [floor, floorLoader, initialUnitName, snapshot.blockId]);
+  }, [block?.id, floor, floorLoader, initialUnitName, snapshot.blockId, snapshot]);
 
   useEffect(() => {
     if (lightbox) lightboxCloseRef.current?.focus();
   }, [lightbox]);
 
-  const slots = useMemo(() => (floor ? getUnitSlots(floor, units) : []), [floor, units]);
+  const slots = useMemo(() => (floor ? getUnitSlots(floor, units, snapshot.inventoryComplete ? "unavailable" : "sold") : []), [floor, snapshot.inventoryComplete, units]);
   const selectedSlot = slots.find(({ unit }) => String(unit.name) === String(selectedUnitName));
   const selectedUnit = selectedSlot?.unit || null;
   const visibleSlots = filter === "all"
     ? slots
     : slots.filter(({ unit }) => normalizeStatus(unit.status) === filter);
-  const currentIndex = snapshot.floors.findIndex((item) => item.number === floorNumber);
-  const previousFloor = snapshot.floors[currentIndex - 1];
-  const nextFloor = snapshot.floors[currentIndex + 1];
+  const currentIndex = floors.findIndex((item) => item.number === floorNumber);
+  const previousFloor = floors[currentIndex - 1];
+  const nextFloor = floors[currentIndex + 1];
 
   const selectUnit = useCallback((unit) => {
     track("residence_open", { unit: String(unit.name) });
@@ -677,14 +716,14 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
       >
         <header className="floor-modal-header">
           <div>
-            <p>{t("projectReveranceBlock")}</p>
+            <p>{block?.name || t("projectReveranceBlock")}</p>
             <h2 id="floor-modal-title">{floorLabel(floor.number, t)}</h2>
           </div>
           <div className="floor-navigation">
             <button type="button" onClick={() => previousFloor && onChangeFloor(previousFloor.number)} disabled={!previousFloor} aria-label={t("previousFloor")}>
               <ArrowLeft aria-hidden="true" />
             </button>
-            <FloorNavigationSelect floors={snapshot.floors} value={floor.number} onChange={onChangeFloor} />
+            <FloorNavigationSelect floors={floors} value={floor.number} onChange={onChangeFloor} />
             <button type="button" onClick={() => nextFloor && onChangeFloor(nextFloor.number)} disabled={!nextFloor} aria-label={t("nextFloor")}>
               <ArrowRight aria-hidden="true" />
             </button>
@@ -831,6 +870,7 @@ function ResidenceFilter({
   active,
   areaBounds,
   bedrooms,
+  blocks,
   filters,
   floors,
   matchingUnits,
@@ -863,6 +903,15 @@ function ResidenceFilter({
       <p className="residence-filter-intro">{t("filterIntro")}</p>
 
       <div className="residence-filter-controls" aria-label={t("filterResidences")}>
+        {blocks.length > 1 && (
+          <label className="residence-select-field residence-block-field">
+            <span>{t("building")}</span>
+            <select value={filters.block} onChange={(event) => onChange("block", event.target.value)}>
+              <option value="all">{t("allBlocks")}</option>
+              {blocks.map((block) => <option key={block.id} value={block.id}>{block.name.toUpperCase()}</option>)}
+            </select>
+          </label>
+        )}
         <label className="residence-select-field">
           <span>{t("floor")}</span>
           <select value={filters.floor} onChange={(event) => onChange("floor", event.target.value)}>
@@ -959,7 +1008,7 @@ function ResidenceFilter({
                   onFocus={() => onPreviewResidence(unit)}
                   onClick={() => onOpenResidence(unit)}
                 >
-                  <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
+                  <span><i className={`status-swatch is-${status}`} />{unit.block ? `${unit.block} · ` : ""}#{unit.name}</span>
                   <span>F{String(unit.floor).padStart(2, "0")}</span>
                   <strong>{unitAreaLabel(unit, locale)}</strong>
                   <ArrowRight aria-hidden="true" />
@@ -984,6 +1033,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   const modelHostRef = useRef(null);
   const [snapshot, setSnapshot] = useState(null);
   const [loadError, setLoadError] = useState(null);
+  const [selectedBlockId, setSelectedBlockId] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [selectedUnitName, setSelectedUnitName] = useState(null);
   const [previewUnitId, setPreviewUnitId] = useState(null);
@@ -997,6 +1047,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
     typeof window === "undefined" || !("IntersectionObserver" in window)
   ));
   const { filterActive, interactive, settled, zoomable, progressRef } = useScrollStage(sectionRef);
+  const blocks = useMemo(() => getSnapshotBlocks(snapshot), [snapshot]);
 
   useEffect(() => {
     let active = true;
@@ -1021,19 +1072,28 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
 
   const summary = useMemo(() => {
     if (!snapshot) return { available: 0, total: 0 };
-    return snapshot.floors.reduce((totals, floor) => {
+    return blocks.flatMap((block) => block.floors || []).reduce((totals, floor) => {
       const floorSummary = getFloorSummary(floor);
       totals.available += floorSummary.available;
       totals.total += floorSummary.total;
       return totals;
     }, { available: 0, total: 0 });
-  }, [snapshot]);
+  }, [blocks, snapshot]);
 
   const inventory = useMemo(() => (
     snapshot
-      ? snapshot.floors.flatMap((floor) => getUnitSlots(floor, floor.units || []).map(({ unit }) => ({ ...unit, floor: floor.number })))
+      ? blocks.flatMap((block) => (block.floors || []).flatMap((floor) => getUnitSlots(
+        floor,
+        floor.units || [],
+        snapshot.inventoryComplete ? "unavailable" : "sold",
+      ).map(({ unit }) => ({
+        ...unit,
+        block: unit.block || block.code,
+        blockId: unit.blockId || block.id,
+        floor: floor.number,
+      }))))
       : []
-  ), [snapshot]);
+  ), [blocks, snapshot]);
   const areaBounds = useMemo(() => {
     const areas = inventory.map(unitAreaValue).filter((area) => area !== null);
     return {
@@ -1042,8 +1102,8 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
     };
   }, [inventory]);
   const floors = useMemo(
-    () => (snapshot ? snapshot.floors.map((floor) => floor.number).sort((a, b) => a - b) : []),
-    [snapshot],
+    () => [...new Set(blocks.flatMap((block) => (block.floors || []).map((floor) => floor.number)))].sort((a, b) => a - b),
+    [blocks],
   );
   const bedroomOptions = useMemo(
     () => [...new Set(inventory.map((unit) => Number(unit.bedrooms)).filter(Number.isFinite))].sort((a, b) => a - b),
@@ -1064,7 +1124,8 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
     const rawBedrooms = unit.bedrooms;
     const bedrooms = Number(rawBedrooms);
     const hasBedrooms = rawBedrooms !== null && rawBedrooms !== undefined && rawBedrooms !== "" && Number.isFinite(bedrooms);
-    return (filters.floor === "all" || unit.floor === Number(filters.floor))
+    return (filters.block === "all" || unit.blockId === filters.block)
+      && (filters.floor === "all" || unit.floor === Number(filters.floor))
       && (filters.bedrooms === "all" || (hasBedrooms && bedrooms === Number(filters.bedrooms)))
       && (area === null || (area >= filters.minArea && area <= filters.maxArea))
       && (filters.status === "all" || normalizeStatus(unit.status) === filters.status);
@@ -1075,6 +1136,9 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   );
   const filterHighlightedFloor = filterActive && (filtersTouched || previewUnitId !== null)
     ? previewResidence?.floor ?? null
+    : null;
+  const filterHighlightedBlock = filterActive && (filtersTouched || previewUnitId !== null)
+    ? previewResidence?.blockId ?? null
     : null;
 
   const updateFilter = useCallback((name, value) => {
@@ -1098,9 +1162,16 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   }, [areaBounds.max, areaBounds.min]);
 
   const openResidence = useCallback((unit) => {
-    track("residence_open", { unit: String(unit.name), floor: unit.floor });
+    track("residence_open", { unit: String(unit.name), floor: unit.floor, block: unit.block || unit.blockId });
     setSelectedUnitName(String(unit.name));
+    setSelectedBlockId(unit.blockId || null);
     setSelectedFloor(unit.floor);
+  }, []);
+
+  const handleModelFloorSelect = useCallback((floorNumber, blockId = null) => {
+    setSelectedBlockId(blockId || null);
+    setSelectedUnitName(null);
+    setSelectedFloor(floorNumber);
   }, []);
 
   return (
@@ -1126,7 +1197,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
 
             <div className="explorer-metrics" aria-label={t("availabilitySummary")}>
               <div><strong>{summary.available}</strong><span>{t("availableResidences")}</span></div>
-              <div><strong>{snapshot?.floors.length || 0}</strong><span>{t("selectableFloors")}</span></div>
+              <div><strong>{floors.length}</strong><span>{t("selectableFloors")}</span></div>
             </div>
             <AvailabilityLegend />
             <p className="explorer-footnote">{t("blockFloorsBatumi")}</p>
@@ -1136,6 +1207,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
             active={filterActive}
             areaBounds={areaBounds}
             bedrooms={bedroomOptions}
+            blocks={blocks}
             filters={filters}
             floors={floors}
             matchingUnits={matchingUnits}
@@ -1153,8 +1225,9 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
               <Suspense fallback={<div className="explorer-loading" role="status"><span />{t("preparingBuilding")}</div>}>
                 <Reverance3D
                   snapshot={snapshot}
-                  onSelectFloor={setSelectedFloor}
+                  onSelectFloor={handleModelFloorSelect}
                   highlightedFloor={filterHighlightedFloor}
+                  highlightedBlock={filterHighlightedBlock}
                   interactive={interactive}
                   zoomable={zoomable}
                   settled={settled}
@@ -1180,6 +1253,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
           <MobileResidenceSheet
             areaBounds={areaBounds}
             bedrooms={bedroomOptions}
+            blocks={blocks}
             filters={filters}
             floors={floors}
             matchingUnits={matchingUnits}
@@ -1201,9 +1275,11 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
       {snapshot && selectedFloor !== null && (
         <FloorModal
           snapshot={snapshot}
+          blockId={selectedBlockId}
           floorNumber={selectedFloor}
           initialUnitName={selectedUnitName}
           onClose={() => {
+            setSelectedBlockId(null);
             setSelectedFloor(null);
             setSelectedUnitName(null);
           }}
@@ -1212,6 +1288,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
             setSelectedUnitName(null);
           }}
           onBrokerAccess={() => {
+            setSelectedBlockId(null);
             setSelectedFloor(null);
             setSelectedUnitName(null);
             onBrokerAccess();

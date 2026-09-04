@@ -1,3 +1,5 @@
+import { applyWorkbookInventory } from "./reveranceInventory";
+
 const SNAPSHOT_URL = "/data/reverance-a.json";
 const LIVE_API_ROOT = "https://api.otium.ge/api";
 const REQUEST_TIMEOUT_MS = 7000;
@@ -84,7 +86,10 @@ async function fetchJson(url, { fetcher = globalThis.fetch, timeoutMs = REQUEST_
 }
 
 export async function loadResidenceSnapshot(options = {}) {
-  return validateSnapshot(await fetchJson(SNAPSHOT_URL, options));
+  const snapshot = validateSnapshot(await fetchJson(SNAPSHOT_URL, options));
+  // Keep the adapter's object identity for lightweight callers/tests while
+  // enriching the official site snapshot with the workbook's two-block data.
+  return snapshot.blockId ? applyWorkbookInventory(snapshot) : snapshot;
 }
 
 export async function loadLiveFloor(blockId, floorNumber, options = {}) {
