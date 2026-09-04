@@ -1,14 +1,27 @@
 # Admin analytics
 
-The Sites-hosted app uses Cloudflare D1 for events and enquiries. Open `/#admin` and sign in with the approved ChatGPT account. The server requires both Sites' verified user ID and an allowlisted email. Keep the production `AUTH_PROVIDER=sites`; never expose this worker behind a proxy that forwards untrusted identity headers.
+The Sites-hosted app uses Cloudflare D1 for events, enquiries and dedicated AiXESS admin accounts. Open `/#admin` and sign in with your admin email and password. The server requires a valid opaque session cookie and an allowlisted account. ChatGPT identity alone does not grant dashboard access.
 
 Runtime settings (Sites environment variables, not VITE-prefixed client variables):
 
-- `AUTH_PROVIDER`: `sites`.
+- `AUTH_PROVIDER`: retained for the local development setup adapter, never for production dashboard authorization or account setup.
 - `ADMIN_EMAILS`: explicit comma-separated admin emails; an empty list denies everyone.
 - `RATE_LIMIT_SALT`: a random secret used for short-lived abuse-prevention hashes.
+- `ADMIN_OWNER_EMAIL`: email provisioned by the protected first-owner setup.
+- `ADMIN_SETUP_TOKEN_HASH`: SHA-256 of a random 256-bit private setup key. Never put the raw key in source or the database.
+- `ADMIN_SETUP_EXPIRES_AT`: setup-link expiry in Unix milliseconds. Once the owner account exists, every setup link is disabled regardless of expiry.
 
-The first admin is the verified site owner. Other admins require explicit approval and their own authenticated accounts. Site sharing and app admin authorization are separate controls.
+The first admin is the configured site owner. There is no public signup or arbitrary email provisioning. Production setup requires the private expiring setup key; platform identity headers cannot provision an account. The key is passed in a request header, not a query parameter, and is removed from the browser URL immediately. Other admin accounts require a separate explicitly approved provisioning workflow; changing the email allowlist alone does not create an account. Site sharing and app authorization are separate controls.
+
+## Login and recovery
+
+Passwords are salted and hashed with `@noble/hashes` scrypt using N=32768, r=8, p=3 and a 32-byte derived key. This uses the [OWASP 32 MiB scrypt configuration](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html). The Worker bounds concurrent KDF memory rather than reducing hashing strength. Setup/recovery require 15–128-character passwords; passwords are never logged or included in analytics.
+
+Successful logins issue an opaque 256-bit `__Host-aixess_admin` cookie with HttpOnly, Secure, SameSite=Strict and Path=/. Only its SHA-256 hash is stored in D1. Sessions have an eight-hour absolute limit and a 30-minute authenticated-request inactivity limit. Background dashboard requests while visible count as activity. Logout revokes the current session; recovery increments the credential version and revokes every old session. Every admin API validates the session and current email allowlist. State-changing requests also require an exact same-origin Origin header.
+
+Failed attempts are limited by salted hourly network and account keys. Login failures use the same response for unknown accounts and wrong passwords. A server-side memory guard rejects concurrent KDF operations with a retry response.
+
+Setup shows a private single-use recovery code. Save it in a password manager. The Forgot password flow requires the admin email and this code; it does not pretend to send email. Recovery rotates the code and displays the replacement once. If both password and recovery code are lost, a separately authorised operator recovery is necessary; there is no automatic ChatGPT dashboard bypass.
 
 ## Metrics and limitations
 
@@ -29,7 +42,7 @@ The privacy notice describes these defaults, hosting and Workwise boundaries. AI
 
 ## Local development and verification
 
-The Vite development server uses `.data/analytics.sqlite`, which is gitignored. Set `LOCAL_ADMIN_EMAIL` in the server process for explicit loopback-only development access. Remote development requests cannot inject admin identity headers. No production authentication bypass is bundled.
+The Vite development server uses `.data/analytics.sqlite`, which is gitignored. Set `LOCAL_ADMIN_EMAIL` in the server process for loopback-only first-owner setup. It no longer grants dashboard access without a password. Remote development requests cannot inject admin identity headers. Local HTTP uses a separate development cookie name; production always requires the Secure host-only cookie.
 
 Run `npm run test:analytics`, `npm test`, `npm run build`, and `npm run test:sites`. Generated Drizzle migrations ship under `dist/.openai/drizzle`. Never rewrite an applied migration.
 

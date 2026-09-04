@@ -69,11 +69,12 @@ export async function analyticsApi(request, env, ctx = {}) {
   const url = new URL(request.url);
   const isAdmin = url.pathname.startsWith("/api/admin/");
   if (!["/api/events", "/api/leads"].includes(url.pathname) && !isAdmin) return null;
-  const identity = isAdmin ? adminIdentity(request, env) : null;
-  if (isAdmin && !identity) return reply({ error: "Admin access required. Sign in with an approved account." }, 403);
   if (request.method !== "GET" && request.headers.get("origin") !== url.origin) return reply({ error: "Origin not allowed" }, 403);
   try {
     const db = dbFor(env);
+    if (url.pathname.startsWith("/api/admin/auth/")) return await adminAuthApi(request, env, { bodyJson, rateLimit, ownerIdentity: adminIdentity });
+    const identity = isAdmin ? await sessionAdmin(request, env) : null;
+    if (isAdmin && !identity) return reply({ error: "Sign in to your AiXESS admin account." }, 401);
     if (url.pathname === "/api/events" && request.method === "POST") {
       const body = await bodyJson(request);
       if (body.consent !== true || !Array.isArray(body.events) || !body.events.length || body.events.length > 20) return reply({ error: "Invalid events" }, 400);
@@ -139,8 +140,10 @@ export async function analyticsApi(request, env, ctx = {}) {
     }
     return reply({ error: "Not found" }, 404);
   } catch (error) {
+    if (error.status === 429) return reply({ error: "Please retry in a moment." }, 429);
     if (error instanceof SyntaxError || error.message === "Invalid request") return reply({ error: "Invalid request" }, 400);
     console.error("Analytics API unavailable");
     return reply({ error: "Service temporarily unavailable. Please try again." }, 503);
   }
 }
+import { adminAuthApi, sessionAdmin } from "./admin-auth.js";

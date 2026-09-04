@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { analyticsApi, normalizeEvent } from "../worker/analytics.js";
 import { sqliteBinding } from "../scripts/local-analytics.mjs";
+import { tokenHash } from "../worker/admin-auth.js";
 
 const origin = "https://example.test";
 const approved = { "oai-authenticated-user-id": "verified-site-user", "oai-authenticated-user-email": "owner@example.test" };
@@ -11,22 +12,28 @@ function setup(t) {
   const DB = sqliteBinding();
   t.after(() => DB.close());
   const env = { DB, AUTH_PROVIDER: "sites", ADMIN_EMAILS: "owner@example.test", RATE_LIMIT_SALT: "unit-test-only" };
-  return { DB, env, request: (path, body, options = {}) => analyticsApi(new Request(`${origin}${path}`, { method: body === undefined ? "GET" : "POST", headers: { origin, "content-type": "application/json", ...options.headers }, ...(body !== undefined ? { body: JSON.stringify(body) } : {}), ...options, headers: { origin, "content-type": "application/json", ...options.headers } }), env) };
+  return { DB, env, authorize: async () => {
+    const token = "f".repeat(64); const now = Date.now();
+    await DB.prepare("INSERT INTO admin_users VALUES ('owner', 'owner@example.test', 'test-fixture', 'test-fixture', 1, ?, ?)").bind(now, now).run();
+    await DB.prepare("INSERT INTO admin_sessions VALUES (?, 'owner', 1, ?, ?, ?)").bind(await tokenHash(token), now, now, now + 3600000).run();
+    return { cookie: `__Host-aixess_admin=${token}` };
+  }, request: (path, body, options = {}) => analyticsApi(new Request(`${origin}${path}`, { method: body === undefined ? "GET" : "POST", ...(body !== undefined ? { body: JSON.stringify(body) } : {}), ...options, headers: { origin, "content-type": "application/json", ...options.headers } }), env) };
 }
 
 test("admin APIs deny anonymous, non-admin and unverified email-only requests", async (t) => {
   const { request } = setup(t);
   for (const headers of [{}, { ...approved, "oai-authenticated-user-email": "visitor@example.test" }, { "oai-authenticated-user-email": approved["oai-authenticated-user-email"] }]) {
-    for (const path of ["session", "overview", "leads"]) assert.equal((await request(`/api/admin/${path}`, undefined, { headers })).status, 403);
+    for (const path of ["session", "overview", "leads"]) assert.equal((await request(`/api/admin/${path}`, undefined, { headers })).status, 401);
   }
 });
 
-test("admin access fails closed with missing allowlist or provider configuration", async (t) => {
-  const { env, request } = setup(t);
+test("password sessions require the allowlist but are independent of ChatGPT", async (t) => {
+  const { env, request, authorize } = setup(t);
+  const headers = await authorize();
   env.ADMIN_EMAILS = "";
-  assert.equal((await request("/api/admin/session", undefined, { headers: approved })).status, 403);
+  assert.equal((await request("/api/admin/session", undefined, { headers })).status, 401);
   env.ADMIN_EMAILS = "owner@example.test"; env.AUTH_PROVIDER = "unknown";
-  assert.equal((await request("/api/admin/session", undefined, { headers: approved })).status, 403);
+  assert.equal((await request("/api/admin/session", undefined, { headers })).status, 200);
 });
 
 test("events require opt-in and reject foreign-origin requests", async (t) => {
@@ -81,7 +88,7 @@ test("lead endpoint applies an hourly abuse limit", async (t) => {
 });
 
 test("aggregations reconcile actual events, sessions, demand and saved leads", async (t) => {
-  const { request } = setup(t); const session = crypto.randomUUID();
+  const { request, authorize } = setup(t); const approved = await authorize(); const session = crypto.randomUUID();
   const values = [event("page_view", session), event("portal_login_click", session), event("lead_submitted", session), { ...event("floor_open", session), detail: { floor: 9 } }, { ...event("residence_open", session), detail: { unit: "901" } }];
   await request("/api/events", { consent: true, events: values }); await request("/api/leads", lead());
   const response = await request("/api/admin/overview?days=7", undefined, { headers: approved });
@@ -93,9 +100,9 @@ test("aggregations reconcile actual events, sessions, demand and saved leads", a
 });
 
 test("lead status changes and deletion require admin access and same-origin writes", async (t) => {
-  const { request } = setup(t); const body = lead(); await request("/api/leads", body);
+  const { request, authorize } = setup(t); const approved = await authorize(); const body = lead(); await request("/api/leads", body);
   const path = `/api/admin/leads/${body.id}`;
-  assert.equal((await request(path, { status: "qualified" }, { method: "PATCH" })).status, 403);
+  assert.equal((await request(path, { status: "qualified" }, { method: "PATCH" })).status, 401);
   assert.equal((await request(path, { status: "qualified" }, { method: "PATCH", headers: { ...approved, origin: "https://evil.test" } })).status, 403);
   assert.equal((await request(path, { status: "invalid" }, { method: "PATCH", headers: approved })).status, 400);
   assert.equal((await request(path, { status: "qualified" }, { method: "PATCH", headers: approved })).status, 200);

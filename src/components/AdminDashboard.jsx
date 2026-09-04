@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import "./admin.css";
+import AdminLogin from "./AdminLogin.jsx";
 
 const labels = { page_view: "Page views", navigation: "Navigation clicks", portal_login_click: "Workwise login clicks", portal_register_click: "Workwise registration clicks", materials_open: "Materials form opens", lead_submitted: "Consented lead submissions", floor_open: "Floor opens", residence_open: "Residence selections", plan_open: "Plan enlargements", filter_change: "Filter changes", filter_reset: "Filter resets", language_change: "Language changes", contact_click: "Contact clicks", resource_click: "Resource clicks" };
 const format = (value) => new Intl.NumberFormat("en").format(value || 0);
@@ -40,13 +41,15 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     let current = true;
+    let authorised = true;
     setLoading(true);
     async function load() {
+      if (!current || !authorised) return;
       try {
         const session = await api("/api/admin/session");
         const [metrics, contacts] = await Promise.all([api(`/api/admin/overview?days=${days}`), api(`/api/admin/leads?status=${status}&page=${page}`)]);
         if (current) { setIdentity(session); setOverview(metrics); setLeads(contacts); setError(null); }
-      } catch (failure) { if (current) { setError(failure); if (failure.status === 403) { setIdentity(null); setOverview(null); setLeads({ rows: [], total: 0 }); } } }
+      } catch (failure) { if (current) { setError(failure); if (failure.status === 401 || failure.status === 403) { authorised = false; setIdentity(null); setOverview(null); setLeads({ rows: [], total: 0 }); } } }
       finally { if (current) setLoading(false); }
     }
     load();
@@ -59,16 +62,21 @@ export default function AdminDashboard() {
     try {
       await api(`/api/admin/leads/${id}`, { method: remove ? "DELETE" : "PATCH", headers: { "content-type": "application/json" }, ...(!remove ? { body: JSON.stringify({ status: nextStatus }) } : {}) });
       setDeleteId(null); setRefreshKey((value) => value + 1);
-    } catch (failure) { setError(failure); }
+    } catch (failure) { setError(failure); if (failure.status === 401 || failure.status === 403) { setIdentity(null); setOverview(null); setLeads({ rows: [], total: 0 }); setRefreshKey((value) => value + 1); } }
     finally { setBusyLead(null); }
   }, []);
 
   const counts = Object.fromEntries((overview?.events || []).map((event) => [event.type, event.count]));
+  const signOut = async () => {
+    try { await api("/api/admin/auth/logout", { method: "POST" }); setIdentity(null); setOverview(null); setLeads({ rows: [], total: 0 }); setError(Object.assign(new Error("Sign in to continue."), { status: 401 })); setRefreshKey((value) => value + 1); }
+    catch (failure) { setError(failure); }
+  };
+  if (!identity && (error?.status === 401 || error?.status === 403)) return <AdminLogin onSignedIn={() => { setError(null); setLoading(true); setRefreshKey((value) => value + 1); }} />;
   return <div className="admin-app">
-    <header className="admin-header"><a href="#home" className="admin-logo"><img src="/assets/aixess-logo-white-cropped.png" alt="AiXESS" /></a><span>INTELLIGENCE / ADMIN</span><a href="#home">Back to website ↗</a></header>
+    <header className="admin-header"><a href="#home" className="admin-logo"><img src="/assets/aixess-logo-white-cropped.png" alt="AiXESS" /></a><span>INTELLIGENCE / ADMIN</span><a href="#home">Back to website ↗</a>{identity && <button type="button" onClick={signOut}>Log out</button>}</header>
     <div className="admin-content">
       <div className="admin-title-row"><div><p className="admin-eyebrow">PROJECT REVERANCE</p><h1>From interest<br /><span>to opportunity.</span></h1><p className="admin-muted">Website activity, residence demand and your enquiry pipeline.</p></div>{identity && <div className="admin-period"><label htmlFor="admin-period">Reporting window</label><select id="admin-period" value={days} onChange={(event) => setDays(Number(event.target.value))}>{[7, 30, 90].map((value) => <option key={value} value={value}>Last {value} days</option>)}</select><button onClick={() => setRefreshKey((value) => value + 1)} disabled={loading}>{loading ? "Refreshing…" : "Refresh data ↻"}</button></div>}</div>
-      {error && <div className="admin-message" role="alert"><strong>{error.status === 403 ? "Restricted admin access" : "Could not refresh data"}</strong><p>{error.message}</p>{error.status === 403 ? <a className="admin-primary" href="/signin-with-chatgpt?return_to=%2F%23admin" target="_top">Sign in with ChatGPT</a> : <button onClick={() => setRefreshKey((value) => value + 1)}>Try again</button>}<p className="admin-muted">Access is checked on the server against the approved admin email list.</p></div>}
+      {error && <div className="admin-message" role="alert"><strong>Could not refresh data</strong><p>{error.message}</p><button onClick={() => setRefreshKey((value) => value + 1)}>Try again</button></div>}
       {loading && !overview && !error && <p role="status">Checking secure access…</p>}
       {overview && identity && <>
         <div className="admin-freshness"><span className="admin-live-dot" />{error ? "Showing last successful data" : `Connected to ${identity.source}`} · Updated {new Date(overview.updatedAt).toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC<span>{identity.email}</span></div>

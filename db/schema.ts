@@ -10,3 +10,14 @@ export const leads = sqliteTable("leads", {
 export const requestLimits = sqliteTable("request_limits", {
   key: text("key").primaryKey(), count: integer("count").notNull(), expiresAt: integer("expires_at").notNull(),
 }, (table) => [index("limits_expiry").on(table.expiresAt)]);
+
+export const adminUsers = sqliteTable("admin_users", {
+  id: text("id").primaryKey(), email: text("email").notNull().unique(), passwordHash: text("password_hash").notNull(),
+  recoveryHash: text("recovery_hash").notNull(), credentialVersion: integer("credential_version").notNull(),
+  createdAt: integer("created_at").notNull(), passwordChangedAt: integer("password_changed_at").notNull(),
+});
+export const adminSessions = sqliteTable("admin_sessions", {
+  tokenHash: text("token_hash").primaryKey(), userId: text("user_id").notNull().references(() => adminUsers.id, { onDelete: "cascade" }),
+  credentialVersion: integer("credential_version").notNull(), createdAt: integer("created_at").notNull(),
+  lastSeenAt: integer("last_seen_at").notNull(), expiresAt: integer("expires_at").notNull(),
+}, (table) => [index("admin_sessions_user").on(table.userId), index("admin_sessions_expiry").on(table.expiresAt)]);

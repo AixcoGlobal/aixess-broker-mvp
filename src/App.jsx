@@ -35,7 +35,7 @@ function workwiseBrokerUrl(type, locale = "en") {
 
 function routeFromLocation() {
   if (typeof window === "undefined") return "home";
-  const route = window.location.hash.replace(/^#/, "").trim().toLowerCase();
+  const route = window.location.hash.replace(/^#/, "").split("?")[0].trim().toLowerCase();
   return validRoutes.has(route) ? route : "home";
 }
 

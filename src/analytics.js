@@ -32,7 +32,7 @@ export function flushAnalytics() {
 }
 export function track(type, detail = {}) {
   if (consentChoice() !== "accepted") return;
-  const page = window.location.hash.slice(1) || "home";
+  const page = window.location.hash.slice(1).split("?")[0] || "home";
   if (["admin", "privacy"].includes(page)) return;
   const session = sessionId();
   if (!session) return;

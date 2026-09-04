@@ -10,11 +10,12 @@
     "test": "vitest run --maxWorkers=1",
     "test:watch": "vitest",
     "test:sites": "node --test tests/sites-worker.test.mjs",
-    "test:analytics": "node --test tests/analytics-worker.test.mjs",
+    "test:analytics": "node --test tests/analytics-worker.test.mjs tests/admin-auth.test.mjs",
     "verify:scroll": "node scripts/verify-building-scroll.mjs",
     "verify:explorer": "node scripts/verify-residence-explorer.mjs"
   },
   "dependencies": {
+    "@noble/hashes": "^2.4.0",
     "@phosphor-icons/react": "^2.1.10",
     "@playcanvas/react": "0.11.5",
     "@vitejs/plugin-react": "5.0.4",
