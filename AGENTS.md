@@ -32,6 +32,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - The selected mobile explorer direction is option 3: a full-height Reverance hero, left floor rail, top floor chip, and light rounded thumb-first room sheet with live status cards, compact filters, reset, and floor-plan CTA.
 - On portrait mobile, keep that hero unobstructed by default: use a slim floating residence dock and open inventory, filters, and the floor-plan action in an intentional drawer only when requested.
 - Use the AIXCO language set EN/DE/PL/SL/RU with native-language labels; keep translations bundled and deterministic so switching is instant and layout-stable.
+- Treat every locale as a complete layout: fit the three hero lines to their actual translated glyph widths, allow accented and Cyrillic letters full line height, keep all navigation actions in bounds, and verify pages, explorer controls, and modal states at phone, tablet, laptop, and desktop sizes before publishing localization changes.
 - Keep the floor navigation menu visually clean: hide scrollbar chrome while retaining native wheel, touch, and keyboard scrolling when a short viewport requires overflow.
 - Broker login and registration actions must route to the matching English Workwise broker flows (`broker-login` and `broker-signup`) used by AIXCO.Global.
 

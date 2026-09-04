@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage } from "./i18n.jsx";
+import { FittedHeading } from "./components/FittedHeading.jsx";
 
 const ResidenceExplorer = lazy(() => import("./components/ResidenceExplorer").then((module) => ({
   default: module.ResidenceExplorer,
@@ -342,7 +343,7 @@ function WhyAixessPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
         <section className="page-section split-section" aria-labelledby="aixess-philosophy">
           <div>
             <p className="section-eyebrow">{t("ourPhilosophy")}</p>
-            <h2 id="aixess-philosophy">{t("internationalReach")}<br />{t("localConviction")}</h2>
+            <FittedHeading id="aixess-philosophy"><span>{t("internationalReach")}</span><span>{t("localConviction")}</span></FittedHeading>
           </div>
           <div className="section-prose">
             <p>{t("philosophyCopy")}</p>
@@ -357,7 +358,7 @@ function WhyAixessPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
         <section className="page-section journey-section" aria-labelledby="aixess-journey">
           <div className="section-heading-row">
             <p className="section-eyebrow">{t("howWeWork")}</p>
-            <h2 id="aixess-journey">{t("decisionPath")}<br />{t("forMomentum")}</h2>
+            <FittedHeading id="aixess-journey"><span>{t("decisionPath")}</span><span>{t("forMomentum")}</span></FittedHeading>
           </div>
           <div className="journey-grid">
             {[
@@ -399,7 +400,7 @@ function BrokerAccessPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onO
         <section className="page-section broker-process" aria-labelledby="broker-process-title">
           <div className="section-heading-row">
             <p className="section-eyebrow">{t("brokerProcess")}</p>
-            <h2 id="broker-process-title">{t("lessChasing")}<br />{t("moreClosing")}</h2>
+            <FittedHeading id="broker-process-title"><span>{t("lessChasing")}</span><span>{t("moreClosing")}</span></FittedHeading>
           </div>
           <div className="process-list">
             {[
@@ -420,7 +421,7 @@ function BrokerAccessPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onO
         <section className="broker-callout" aria-label={t("projectReveranceBlock")}>
           <div>
             <p className="section-eyebrow">{t("projectReveranceBatumi")}</p>
-            <h2>{t("selectedResidencesProposition")}<br />{t("sharperProposition")}</h2>
+            <FittedHeading><span>{t("selectedResidencesProposition")}</span><span>{t("sharperProposition")}</span></FittedHeading>
           </div>
           <dl className="broker-facts">
             <div><dt>{t("access")}</dt><dd>{t("floors1314")}</dd></div>
@@ -459,7 +460,7 @@ function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
         <section className="page-section resource-section" aria-labelledby="resource-library">
           <div className="section-heading-row">
             <p className="section-eyebrow">{t("library")}</p>
-            <h2 id="resource-library">{t("everythingOne")}<br />{t("place")}</h2>
+            <FittedHeading id="resource-library"><span>{t("everythingOnePlace")}</span><span>{t("place")}</span></FittedHeading>
           </div>
           <div className="resource-grid">
             {resources.map(([number, titleKey, copyKey, tagKey]) => (
@@ -476,7 +477,7 @@ function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
         <section className="page-section faq-section" aria-labelledby="resource-faq">
           <div className="section-heading-row">
             <p className="section-eyebrow">{t("quickAnswers")}</p>
-            <h2 id="resource-faq">{t("detailsClientsAsk")}<br />{t("clientsAskFirst")}</h2>
+            <FittedHeading id="resource-faq"><span>{t("detailsClientsAsk")}</span><span>{t("clientsAskFirst")}</span></FittedHeading>
           </div>
           <div className="faq-list">
             {[
@@ -529,11 +530,11 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
         </div>
 
         <div className="hero-copy">
-          <h1>
+          <FittedHeading as="h1">
             <span>{t("moveThe")}</span>
             <span>{t("deal")}</span>
             <span>{t("forward")}<span className="headline-period">.</span></span>
-          </h1>
+          </FittedHeading>
           <span className="accent-rule" aria-hidden="true" />
           <p className="hero-subtitle">{t("heroSubtitle")}</p>
           <div className="hero-meta" aria-label={t("currentProjectDetails")}>
@@ -558,7 +559,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
       <section className="access-section" id="why-aixess">
         <div className="access-copy">
           <p className="section-eyebrow">{t("brokerNetwork")}</p>
-          <h2>{t("yourAccess")}<br />{t("startsHere")}</h2>
+          <FittedHeading><span>{t("yourAccess")}</span><span>{t("startsHere")}</span></FittedHeading>
         </div>
 
         <div className="access-actions">

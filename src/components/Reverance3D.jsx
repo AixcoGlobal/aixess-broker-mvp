@@ -11,6 +11,7 @@ import { Application, Entity } from "@playcanvas/react";
 import { Camera, GSplat, Render, Script } from "@playcanvas/react/components";
 import { useApp, useAppEvent, useSplat, useTexture } from "@playcanvas/react/hooks";
 import { CameraControls } from "playcanvas/scripts/esm/camera-controls.mjs";
+import { useLanguage } from "../i18n.jsx";
 import {
   DEVICETYPE_WEBGL2,
   DEVICETYPE_WEBGPU,
@@ -236,8 +237,8 @@ function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-function floorName(number) {
-  return `Floor ${String(number).padStart(2, "0")}`;
+function floorName(number, t) {
+  return `${t("floorLabelPrefix")} ${String(number).padStart(2, "0")}`;
 }
 
 function getAdaptiveRenderScale(width, height) {
@@ -928,11 +929,12 @@ class WebGLErrorBoundary extends Component {
 }
 
 function StaticFallback({ snapshot, highlightedFloor, onSelectFloor }) {
+  const { t } = useLanguage();
   const floorsByNumber = new Map(snapshot.floors.map((floor) => [String(floor.number), floor]));
   return (
     <div className="model-static-fallback">
-      <img src={snapshot.buildingImage} alt="Project Reverance A Block front elevation" />
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Select a floor">
+      <img src={snapshot.buildingImage} alt={t("buildingElevationAlt")} />
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-label={t("selectFloor")}>
         {snapshot.buildingShapes.map((shape) => {
           const floor = floorsByNumber.get(String(shape.target));
           const summary = getFloorSummary(floor);
@@ -942,7 +944,7 @@ function StaticFallback({ snapshot, highlightedFloor, onSelectFloor }) {
               key={shape.id}
               tabIndex="0"
               role="button"
-              aria-label={`${floorName(shape.target)}, ${summary.available} available residences`}
+              aria-label={t("floorAvailability", { floor: floorName(shape.target, t), count: summary.available })}
               points={(shape.points || []).map((point) => `${point.x},${point.y}`).join(" ")}
               onClick={() => onSelectFloor(Number(shape.target))}
               onKeyDown={(event) => {
@@ -957,6 +959,7 @@ function StaticFallback({ snapshot, highlightedFloor, onSelectFloor }) {
 }
 
 export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, settled, interactive = settled, zoomable = interactive, progressRef }) {
+  const { t } = useLanguage();
   const [hoveredFloor, setHoveredFloor] = useState(null);
   const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
@@ -1392,12 +1395,12 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
       {canRenderSplat && loadState.status === "loading" && (
         <div className="model-loading model-loading-splat" role="status" aria-live="polite">
-          <span />RECONSTRUCTING OFFICIAL VIEW · {Math.round(loadState.progress * 100)}%
+          <span />{t("reconstructingView")} · {Math.round(loadState.progress * 100)}%
         </div>
       )}
       {canRenderSplat && loadState.status === "ready" && deviceLost && (
         <div className="model-loading model-loading-splat" role="status" aria-live="polite">
-          <span />RESTORING 3D VIEW
+          <span />{t("restoringView")}
         </div>
       )}
       {canRenderSplat && loadState.status === "error" && fallback}
@@ -1410,9 +1413,9 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
             tabIndex={interactive ? 0 : -1}
             onClick={handleResetView}
           >
-            RESET VIEW
+            {t("resetView")}
           </button>
-          <div ref={railRef} className={`model-floor-rail ${interactive ? "is-visible" : ""}`} aria-label="Select building floor">
+          <div ref={railRef} className={`model-floor-rail ${interactive ? "is-visible" : ""}`} aria-label={t("selectBuildingFloor")}>
             {orderedFloors.map((floor) => {
               const summary = getFloorSummary(floor);
               return (
@@ -1422,7 +1425,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
                   data-floor={floor.number}
                   className={`${hoveredFloor === floor.number ? "is-active" : ""} ${hoveredFloor === null && highlightedFloor === floor.number ? "is-filter-match" : ""}`}
                   tabIndex={interactive ? 0 : -1}
-                  aria-label={`${floorName(floor.number)}, ${summary.available} available residences`}
+                  aria-label={t("floorAvailability", { floor: floorName(floor.number, t), count: summary.available })}
                   onMouseEnter={() => {
                     invalidateHoverPick();
                     setHoveredFloor(floor.number);
@@ -1451,40 +1454,36 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
               aria-hidden="true"
             >
               <strong>{String(hoveredFloor).padStart(2, "0")}</strong>
-              <span>FLOOR</span>
-              <small>{hoveredFloorSummary.available} AVAILABLE</small>
+              <span>{t("floor")}</span>
+              <small>{hoveredFloorSummary.available} {t("available")}</small>
             </div>
           )}
           <span className="model-floor-status" role="status" aria-live="polite" aria-atomic="true">
             {hoveredFloorSummary
-              ? `${floorName(hoveredFloor)} highlighted, ${hoveredFloorSummary.available} available ${hoveredFloorSummary.available === 1 ? "residence" : "residences"}.`
+              ? t("floorHighlighted", { floor: floorName(hoveredFloor, t), count: hoveredFloorSummary.available })
               : ""}
           </span>
         </>
       )}
 
       <div className="building-model-instruction" aria-live="polite">
-        <span className="model-instruction-index">{settled ? "LIVE 3D" : interactive ? "INTERACTIVE" : "SCROLL"}</span>
+        <span className="model-instruction-index">{t(settled ? "live3D" : interactive ? "interactive" : "scroll")}</span>
         <strong>
           {interactive ? (
             <>
               <span className="model-instruction-desktop">
-                {settled
-                  ? "DRAG OR MIDDLE-DRAG TO ROTATE · CTRL/CMD + WHEEL TO ZOOM · SELECT A FLOOR"
-                  : "SCROLL TO TURN · DRAG OR MIDDLE-DRAG TO ORBIT · CTRL/CMD + WHEEL TO ZOOM"}
+                {t(settled ? "desktopModelInstructions" : "desktopScrollInstructions")}
               </span>
               <span className="model-instruction-mobile">
-                {settled
-                  ? "DRAG TO ROTATE · PINCH TO ZOOM · TAP A FLOOR"
-                  : "SCROLL TO TURN · DRAG TO ORBIT · PINCH TO ZOOM"}
+                {t(settled ? "mobileModelInstructions" : "mobileScrollInstructions")}
               </span>
             </>
-          ) : "TURNING FROM SIDE PROFILE TO FRONT VIEW"}
+          ) : t("turningBuilding")}
         </strong>
       </div>
       <span className="building-model-badge" aria-hidden="true">
-        <span className="model-badge-desktop">OFFICIAL PROJECT RECONSTRUCTION · A BLOCK</span>
-        <span className="model-badge-mobile">PROJECT REVERANCE · A BLOCK</span>
+        <span className="model-badge-desktop">{t("officialReconstruction")}</span>
+        <span className="model-badge-mobile">{t("projectReveranceBlock")}</span>
       </span>
     </div>
   );

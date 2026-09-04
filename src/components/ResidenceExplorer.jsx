@@ -18,6 +18,7 @@ import {
   normalizeStatus,
 } from "../data/reveranceApi";
 import { useLanguage } from "../i18n.jsx";
+import { FittedHeading } from "./FittedHeading.jsx";
 import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
 import "./ResidenceExplorer.css";
 
@@ -40,9 +41,9 @@ function unitAreaValue(unit) {
   return Number.isFinite(area) ? area : null;
 }
 
-function unitAreaLabel(unit) {
+function unitAreaLabel(unit, locale) {
   const area = unitAreaValue(unit);
-  return area === null ? "—" : `${area.toFixed(1)} m²`;
+  return area === null ? "—" : `${area.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m²`;
 }
 
 function unitSort(a, b) {
@@ -359,7 +360,7 @@ function FloorNavigationSelect({ floors, value, onChange }) {
 }
 
 function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPlanImage, onOpenPreview }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [imageFailed, setImageFailed] = useState(false);
   const planSource = unit.image2d || fallbackPlanImage;
   const previewSource = imageMode === "3d" ? unit.image3d : planSource;
@@ -377,7 +378,7 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
           </p>
           <h3 id="selected-unit-title">{t("residenceTitle")} {unit.name}</h3>
         </div>
-        <strong>{unitAreaLabel(unit)}</strong>
+        <strong>{unitAreaLabel(unit, locale)}</strong>
       </div>
 
       <dl className="unit-facts">
@@ -412,13 +413,13 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
       {unit.areas.length > 0 && (
         <div className="unit-area-list">
           {unit.areas.map((area) => (
-            <span key={area.id}><b>{area.label}</b>{area.size.toFixed(1)} m²</span>
+            <span key={area.id}><b>{t(`room_${area.type || "other"}`)}</b>{area.size.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m²</span>
           ))}
         </div>
       )}
 
       <button className="button button-primary unit-enquiry" type="button" onClick={onBrokerAccess} disabled={normalizeStatus(unit.status) !== "available"}>
-        {normalizeStatus(unit.status) === "available" ? t("requestResidence") : `${t(normalizeStatus(unit.status)).toUpperCase()} ${t("residence")}`}
+        {t({ available: "requestResidence", sold: "soldResidence", reserved: "reservedResidence" }[normalizeStatus(unit.status)] || "unavailable")}
       </button>
     </section>
   );
@@ -436,15 +437,15 @@ function MobileResidenceSheet({
   onReset,
   previewResidence,
 }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const selectedUnitId = previewResidence?.id;
   const visibleUnits = matchingUnits.slice(0, 6);
   const activeFloor = filters.floor === "all" ? t("allFloors") : floorLabel(filters.floor, t);
   const activeBedrooms = filters.bedrooms === "all"
-    ? `${t("all")} ${t("bedrooms")}`
-    : filters.bedrooms === "0" ? t("studio") : `${filters.bedrooms} ${t("bedrooms")}`;
+    ? t("allBedrooms")
+    : filters.bedrooms === "0" ? t("studio") : `${t("bedrooms")}: ${filters.bedrooms}`;
 
   const openDrawer = (showFilters = false) => {
     setDrawerOpen(true);
@@ -537,7 +538,7 @@ function MobileResidenceSheet({
                   <span className="mobile-room-copy">
                     <strong>#{unit.name}</strong>
                     <span><StackSimple aria-hidden="true" /> {floorLabel(unit.floor, t)}</span>
-                    <span>{unitAreaLabel(unit)}</span>
+                    <span>{unitAreaLabel(unit, locale)}</span>
                   </span>
                   <span className="mobile-room-meta">
                     <small>{t(status)}</small>
@@ -598,7 +599,7 @@ function MobileResidenceSheet({
 }
 
 function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeFloor, onBrokerAccess, floorLoader }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const dialogRef = useRef(null);
   const requestId = useRef(0);
   const floor = snapshot.floors.find((item) => item.number === floorNumber);
@@ -692,9 +693,9 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
         </header>
 
         <div className="floor-modal-content">
-          <section className="floor-plan-pane" aria-label={`${floorLabel(floor.number, t)} plan`}>
+          <section className="floor-plan-pane" aria-label={t("floorPlanAlt", { floor: floorLabel(floor.number, t) })}>
             <div className="floor-plan-stage">
-              <img src={floor.planImage} alt={`Architectural plan for ${floorLabel(floor.number, t)}`} />
+              <img src={floor.planImage} alt={t("floorPlanAlt", { floor: floorLabel(floor.number, t) })} />
               <svg className="unit-hotspots" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label={t("selectResidencePlan")}>
                 {slots.filter(({ shape }) => shape).map(({ shape, unit }) => {
                   const status = normalizeStatus(unit.status);
@@ -772,7 +773,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
                 return (
                   <button className={`unit-row is-${status} ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
                     <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
-                    <span>{unitAreaLabel(unit)}</span>
+                    <span>{unitAreaLabel(unit, locale)}</span>
                     <span>{t(status)}</span>
                     <ArrowRight aria-hidden="true" />
                   </button>
@@ -837,7 +838,7 @@ function ResidenceFilter({
   previewResidence,
   onReset,
 }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const formatArea = (value) => `${Number(value).toFixed(0)} m²`;
   const areaRange = Math.max(areaBounds.max - areaBounds.min, 1);
   const minAreaProgress = ((filters.minArea - areaBounds.min) / areaRange) * 100;
@@ -856,7 +857,7 @@ function ResidenceFilter({
           <button className="residence-filter-reset" type="button" onClick={onReset}>{t("resetFilters")}</button>
         </div>
       </div>
-      <h2>{t("filterOpportunity")}<br />{t("opportunity")}</h2>
+      <FittedHeading><span>{t("filterOpportunity")}</span><span>{t("opportunity")}</span></FittedHeading>
       <p className="residence-filter-intro">{t("filterIntro")}</p>
 
       <div className="residence-filter-controls" aria-label={t("filterResidences")}>
@@ -957,8 +958,8 @@ function ResidenceFilter({
                   onClick={() => onOpenResidence(unit)}
                 >
                   <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
-                  <span>{floorLabel(unit.floor, t).replace(/^\w+\s/i, "F")}</span>
-                  <strong>{unitAreaLabel(unit)}</strong>
+                  <span>F{String(unit.floor).padStart(2, "0")}</span>
+                  <strong>{unitAreaLabel(unit, locale)}</strong>
                   <ArrowRight aria-hidden="true" />
                 </button>
               );
@@ -1108,7 +1109,7 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
         <div className="explorer-copy">
           <div className="explorer-copy-panel explorer-intro-panel" aria-hidden={filterActive} inert={filterActive}>
             <p className="section-eyebrow">{t("residenceExplorer")}</p>
-            <h2 id="residence-explorer-title">{t("selectOpportunity")}<br />{t("opportunity")}</h2>
+            <FittedHeading id="residence-explorer-title"><span>{t("selectOpportunity")}</span><span>{t("opportunity")}</span></FittedHeading>
             <p className="explorer-description">
               {t("explorerDescription")}
             </p>
