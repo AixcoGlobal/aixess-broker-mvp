@@ -225,6 +225,137 @@ function AvailabilityLegend({ dark = false }) {
   );
 }
 
+function FloorNavigationSelect({ floors, value, onChange }) {
+  const rootRef = useRef(null);
+  const triggerRef = useRef(null);
+  const optionRefs = useRef([]);
+  const openFromKeyboardRef = useRef(false);
+  const selectedIndex = Math.max(0, floors.findIndex((item) => item.number === value));
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(selectedIndex);
+
+  useEffect(() => {
+    setActiveIndex(selectedIndex);
+  }, [selectedIndex]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    const handleKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || !openFromKeyboardRef.current) return;
+    optionRefs.current[activeIndex]?.focus();
+    openFromKeyboardRef.current = false;
+  }, [activeIndex, open]);
+
+  const chooseFloor = (floor) => {
+    setOpen(false);
+    onChange(floor.number);
+    triggerRef.current?.focus();
+  };
+
+  const moveActive = (event, direction) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setActiveIndex((current) => (current + direction + floors.length) % floors.length);
+  };
+
+  const handleTriggerKeyDown = (event) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openFromKeyboardRef.current = true;
+      setActiveIndex(selectedIndex);
+      setOpen(true);
+    }
+  };
+
+  const handleMenuKeyDown = (event) => {
+    if (event.key === "ArrowDown") return moveActive(event, 1);
+    if (event.key === "ArrowUp") return moveActive(event, -1);
+    if (event.key === "Home") {
+      event.preventDefault();
+      event.stopPropagation();
+      setActiveIndex(0);
+      return;
+    }
+    if (event.key === "End") {
+      event.preventDefault();
+      event.stopPropagation();
+      setActiveIndex(floors.length - 1);
+      return;
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      event.stopPropagation();
+      chooseFloor(floors[activeIndex]);
+    }
+  };
+
+  return (
+    <div className="floor-navigation-select" ref={rootRef}>
+      <button
+        ref={triggerRef}
+        className="floor-navigation-trigger"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={`floor-navigation-menu-${value}`}
+        onClick={() => {
+          openFromKeyboardRef.current = false;
+          setActiveIndex(selectedIndex);
+          setOpen((current) => !current);
+        }}
+        onKeyDown={handleTriggerKeyDown}
+      >
+        <span>{floorLabel(value)}</span>
+        <CaretDown aria-hidden="true" />
+      </button>
+      {open && (
+        <div
+          id={`floor-navigation-menu-${value}`}
+          className="floor-navigation-menu"
+          role="listbox"
+          aria-label="Select floor"
+          onKeyDown={handleMenuKeyDown}
+        >
+          {floors.map((floor, index) => (
+            <button
+              ref={(element) => { optionRefs.current[index] = element; }}
+              className="floor-navigation-option"
+              type="button"
+              role="option"
+              aria-selected={floor.number === value}
+              key={floor.number}
+              onMouseEnter={() => setActiveIndex(index)}
+              onClick={() => chooseFloor(floor)}
+            >
+              {floorLabel(floor.number)}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPlanImage, onOpenPreview }) {
   const [imageFailed, setImageFailed] = useState(false);
   const planSource = unit.image2d || fallbackPlanImage;
@@ -545,12 +676,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
             <button type="button" onClick={() => previousFloor && onChangeFloor(previousFloor.number)} disabled={!previousFloor} aria-label="Previous floor">
               <ArrowLeft aria-hidden="true" />
             </button>
-            <div className="floor-navigation-select">
-              <select value={floor.number} onChange={(event) => onChangeFloor(Number(event.target.value))} aria-label="Select floor">
-                {snapshot.floors.map((item) => <option key={item.number} value={item.number}>{floorLabel(item.number)}</option>)}
-              </select>
-              <CaretDown aria-hidden="true" />
-            </div>
+            <FloorNavigationSelect floors={snapshot.floors} value={floor.number} onChange={onChangeFloor} />
             <button type="button" onClick={() => nextFloor && onChangeFloor(nextFloor.number)} disabled={!nextFloor} aria-label="Next floor">
               <ArrowRight aria-hidden="true" />
             </button>

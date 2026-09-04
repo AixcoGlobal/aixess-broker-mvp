@@ -109,6 +109,23 @@ describe("Residence explorer", () => {
     expect(screen.getByRole("dialog", { name: /Expanded 2D PLAN · RESIDENCE 501/i })).toBeInTheDocument();
   });
 
+  it("opens the floor menu in the modal and changes floors without a native select popup", async () => {
+    const user = userEvent.setup();
+    render(<ResidenceExplorer onBrokerAccess={vi.fn()} snapshotLoader={() => Promise.resolve(snapshot)} floorLoader={() => Promise.resolve([])} />);
+
+    await user.click(await screen.findByRole("button", { name: /Floor 04/i }));
+    const modal = await screen.findByRole("dialog", { name: /Floor 04/i });
+    const trigger = within(modal).getByRole("button", { name: "Floor 04" });
+    await user.click(trigger);
+
+    const menu = screen.getByRole("listbox", { name: "Select floor" });
+    expect(within(menu).getByRole("option", { name: "Floor 05" })).toBeInTheDocument();
+    await user.click(within(menu).getByRole("option", { name: "Floor 05" }));
+
+    expect(await screen.findByRole("heading", { name: "Floor 05" })).toBeInTheDocument();
+    expect(screen.queryByRole("listbox", { name: "Select floor" })).not.toBeInTheDocument();
+  });
+
   it("hands an available residence into the broker access journey", async () => {
     const user = userEvent.setup();
     const onBrokerAccess = vi.fn();
