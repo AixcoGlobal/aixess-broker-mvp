@@ -33,6 +33,18 @@ function floorLabel(number) {
   return `Floor ${String(number).padStart(2, "0")}`;
 }
 
+function unitAreaValue(unit) {
+  const rawArea = unit?.totalArea;
+  if (rawArea === null || rawArea === undefined || rawArea === "") return null;
+  const area = Number(rawArea);
+  return Number.isFinite(area) ? area : null;
+}
+
+function unitAreaLabel(unit) {
+  const area = unitAreaValue(unit);
+  return area === null ? "—" : `${area.toFixed(1)} m²`;
+}
+
 function unitSort(a, b) {
   return String(a.name).localeCompare(String(b.name), undefined, { numeric: true });
 }
@@ -46,9 +58,9 @@ function getUnitSlots(floor, units) {
       name: String(shape.target),
       status: "sold",
       floor: floor.number,
-      rooms: 0,
-      bedrooms: 0,
-      totalArea: 0,
+      rooms: null,
+      bedrooms: null,
+      totalArea: null,
       areas: [],
       image2d: null,
       image3d: null,
@@ -213,9 +225,12 @@ function AvailabilityLegend({ dark = false }) {
   );
 }
 
-function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess }) {
+function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPlanImage, onOpenPreview }) {
   const [imageFailed, setImageFailed] = useState(false);
-  const previewSource = imageMode === "3d" ? unit.image3d : unit.image2d;
+  const planSource = unit.image2d || fallbackPlanImage;
+  const previewSource = imageMode === "3d" ? unit.image3d : planSource;
+  const previewLabel = imageMode === "3d" ? "3D VIEW" : "2D PLAN";
+  const previewAlt = `${previewLabel} of residence ${unit.name}`;
 
   useEffect(() => setImageFailed(false), [previewSource]);
 
@@ -228,7 +243,7 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess }) {
           </p>
           <h3 id="selected-unit-title">Residence {unit.name}</h3>
         </div>
-        <strong>{unit.totalArea ? `${unit.totalArea.toFixed(1)} m²` : "—"}</strong>
+        <strong>{unitAreaLabel(unit)}</strong>
       </div>
 
       <dl className="unit-facts">
@@ -238,14 +253,22 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess }) {
         <div><dt>Price</dt><dd>{unit.price ? String(unit.price) : "On request"}</dd></div>
       </dl>
 
-      {(unit.image2d || unit.image3d) && (
+      {(planSource || unit.image3d) && (
         <div className="unit-preview-wrap">
           <div className="unit-preview-tabs" aria-label="Residence image view">
-            <button className={imageMode === "2d" ? "is-active" : ""} type="button" onClick={() => setImageMode("2d")} disabled={!unit.image2d}>2D PLAN</button>
+            <button className={imageMode === "2d" ? "is-active" : ""} type="button" onClick={() => setImageMode("2d")} disabled={!planSource}>2D PLAN</button>
             <button className={imageMode === "3d" ? "is-active" : ""} type="button" onClick={() => setImageMode("3d")} disabled={!unit.image3d}>3D VIEW</button>
           </div>
           {previewSource && !imageFailed ? (
-            <img className="unit-preview" src={previewSource} alt={`${imageMode.toUpperCase()} view of residence ${unit.name}`} onError={() => setImageFailed(true)} />
+            <button
+              className="unit-preview-button"
+              type="button"
+              onClick={() => onOpenPreview?.({ src: previewSource, alt: previewAlt, label: `${previewLabel} · RESIDENCE ${unit.name}` })}
+              aria-label={`Open ${previewLabel} of residence ${unit.name} full screen`}
+            >
+              <img className="unit-preview" src={previewSource} alt={previewAlt} onError={() => setImageFailed(true)} />
+              <span className="unit-preview-open-hint"><span>OPEN FULL VIEW</span><ArrowRight aria-hidden="true" /></span>
+            </button>
           ) : (
             <div className="unit-preview-fallback">Preview temporarily unavailable</div>
           )}
@@ -379,7 +402,7 @@ function MobileResidenceSheet({
                   <span className="mobile-room-copy">
                     <strong>#{unit.name}</strong>
                     <span><StackSimple aria-hidden="true" /> F{String(unit.floor).padStart(2, "0")}</span>
-                    <span>{unit.totalArea.toFixed(1)} m²</span>
+                    <span>{unitAreaLabel(unit)}</span>
                   </span>
                   <span className="mobile-room-meta">
                     <small>{getStatusLabel(status)}</small>
@@ -417,8 +440,8 @@ function MobileResidenceSheet({
               <div>
                 <span>AVAILABILITY</span>
                 <div className="mobile-filter-buttons">
-                  {["available", "reserved", "all"].map((status) => (
-                    <button className={filters.status === status ? "is-active" : ""} key={status} type="button" onClick={() => onChange("status", status)}>{status.toUpperCase()}</button>
+                  {["available", "reserved", "sold", "all"].map((status) => (
+                    <button className={`${filters.status === status ? "is-active" : ""} ${status === "sold" ? "is-sold" : ""}`} key={status} type="button" onClick={() => onChange("status", status)}>{status.toUpperCase()}</button>
                   ))}
                 </div>
               </div>
@@ -447,6 +470,8 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
   const [selectedUnitName, setSelectedUnitName] = useState(null);
   const [filter, setFilter] = useState("all");
   const [imageMode, setImageMode] = useState("2d");
+  const [lightbox, setLightbox] = useState(null);
+  const lightboxCloseRef = useRef(null);
   const [syncState, setSyncState] = useState("refreshing");
 
   useDialogA11y(true, onClose, dialogRef);
@@ -456,10 +481,12 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
     const currentRequest = requestId.current + 1;
     requestId.current = currentRequest;
     setUnits(floor.units || []);
-    const initialUnit = (floor.units || []).find((unit) => String(unit.name) === String(initialUnitName));
+    const initialUnit = getUnitSlots(floor, floor.units || [])
+      .find(({ unit }) => String(unit.name) === String(initialUnitName))?.unit;
     setSelectedUnitName(initialUnit ? String(initialUnit.name) : null);
     setFilter("all");
-    setImageMode(initialUnit?.image2d ? "2d" : "3d");
+    setImageMode(initialUnit?.image2d ? "2d" : initialUnit?.image3d ? "3d" : "2d");
+    setLightbox(null);
     setSyncState("refreshing");
 
     floorLoader(snapshot.blockId, floor.number)
@@ -478,6 +505,10 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
     };
   }, [floor, floorLoader, initialUnitName, snapshot.blockId]);
 
+  useEffect(() => {
+    if (lightbox) lightboxCloseRef.current?.focus();
+  }, [lightbox]);
+
   const slots = useMemo(() => (floor ? getUnitSlots(floor, units) : []), [floor, units]);
   const selectedSlot = slots.find(({ unit }) => String(unit.name) === String(selectedUnitName));
   const selectedUnit = selectedSlot?.unit || null;
@@ -490,7 +521,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
 
   const selectUnit = useCallback((unit) => {
     setSelectedUnitName(String(unit.name));
-    setImageMode(unit.image2d ? "2d" : "3d");
+    setImageMode(unit.image2d ? "2d" : unit.image3d ? "3d" : "2d");
   }, []);
 
   if (!floor) return null;
@@ -514,9 +545,12 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
             <button type="button" onClick={() => previousFloor && onChangeFloor(previousFloor.number)} disabled={!previousFloor} aria-label="Previous floor">
               <ArrowLeft aria-hidden="true" />
             </button>
-            <select value={floor.number} onChange={(event) => onChangeFloor(Number(event.target.value))} aria-label="Select floor">
-              {snapshot.floors.map((item) => <option key={item.number} value={item.number}>{floorLabel(item.number)}</option>)}
-            </select>
+            <div className="floor-navigation-select">
+              <select value={floor.number} onChange={(event) => onChangeFloor(Number(event.target.value))} aria-label="Select floor">
+                {snapshot.floors.map((item) => <option key={item.number} value={item.number}>{floorLabel(item.number)}</option>)}
+              </select>
+              <CaretDown aria-hidden="true" />
+            </div>
             <button type="button" onClick={() => nextFloor && onChangeFloor(nextFloor.number)} disabled={!nextFloor} aria-label="Next floor">
               <ArrowRight aria-hidden="true" />
             </button>
@@ -576,14 +610,22 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
                   ["all", "All"],
                   ["available", "Available"],
                   ["reserved", "Reserved"],
+                  ["sold", "Sold"],
                 ].map(([value, label]) => (
-                  <button className={filter === value ? "is-active" : ""} key={value} type="button" onClick={() => setFilter(value)}>{label}</button>
+                  <button className={`${filter === value ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" onClick={() => setFilter(value)}>{label}</button>
                 ))}
               </div>
             </div>
 
             {selectedUnit ? (
-              <UnitDetail unit={selectedUnit} imageMode={imageMode} setImageMode={setImageMode} onBrokerAccess={onBrokerAccess} />
+              <UnitDetail
+                unit={selectedUnit}
+                imageMode={imageMode}
+                setImageMode={setImageMode}
+                onBrokerAccess={onBrokerAccess}
+                fallbackPlanImage={floor.planImage}
+                onOpenPreview={setLightbox}
+              />
             ) : (
               <div className="inventory-intro">
                 <Buildings aria-hidden="true" />
@@ -599,7 +641,7 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
                 return (
                   <button className={`unit-row is-${status} ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
                     <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
-                    <span>{unit.totalArea ? `${unit.totalArea.toFixed(1)} m²` : "—"}</span>
+                    <span>{unitAreaLabel(unit)}</span>
                     <span>{getStatusLabel(status)}</span>
                     <ArrowRight aria-hidden="true" />
                   </button>
@@ -610,6 +652,42 @@ function FloorModal({ snapshot, floorNumber, initialUnitName, onClose, onChangeF
             </div>
           </aside>
         </div>
+
+        {lightbox && (
+          <div className="floor-plan-lightbox-backdrop" role="presentation" onMouseDown={() => setLightbox(null)}>
+            <section
+              className="floor-plan-lightbox"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Expanded ${lightbox.label}`}
+              onMouseDown={(event) => event.stopPropagation()}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setLightbox(null);
+                }
+              }}
+            >
+              <button
+                className="floor-plan-lightbox-close"
+                type="button"
+                ref={lightboxCloseRef}
+                onClick={() => setLightbox(null)}
+                aria-label="Close enlarged preview"
+              >
+                <X aria-hidden="true" />
+              </button>
+              <div className="floor-plan-lightbox-image">
+                <img src={lightbox.src} alt={lightbox.alt} />
+              </div>
+              <p className="floor-plan-lightbox-caption">
+                <strong>{lightbox.label}</strong>
+                <span>CLICK OUTSIDE OR PRESS ESC TO CLOSE</span>
+              </p>
+            </section>
+          </div>
+        )}
       </section>
     </div>
   );
@@ -714,9 +792,10 @@ function ResidenceFilter({
             {[
               ["available", "AVAILABLE"],
               ["reserved", "RESERVED"],
+              ["sold", "SOLD"],
               ["all", "ALL"],
             ].map(([value, label]) => (
-              <button className={filters.status === value ? "is-active" : ""} key={value} type="button" onClick={() => onChange("status", value)}>{label}</button>
+              <button className={`${filters.status === value ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" onClick={() => onChange("status", value)}>{label}</button>
             ))}
           </div>
         </fieldset>
@@ -733,20 +812,21 @@ function ResidenceFilter({
             </div>
             {matchingUnits.map((unit) => {
               const status = normalizeStatus(unit.status);
+              const area = unitAreaValue(unit);
               const isActive = String(previewResidence?.id) === String(unit.id);
               return (
                 <button
                   className={`residence-filter-result is-${status} ${isActive ? "is-active" : ""}`}
                   key={`${unit.floor}-${unit.id}`}
                   type="button"
-                  aria-label={`Residence ${unit.name}, floor ${unit.floor}, ${unit.totalArea.toFixed(1)} square metres, ${getStatusLabel(status)}`}
+                  aria-label={`Residence ${unit.name}, floor ${unit.floor}, ${area === null ? "area unavailable" : `${area.toFixed(1)} square metres`}, ${getStatusLabel(status)}`}
                   onMouseEnter={() => onPreviewResidence(unit)}
                   onFocus={() => onPreviewResidence(unit)}
                   onClick={() => onOpenResidence(unit)}
                 >
                   <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
                   <span>F{String(unit.floor).padStart(2, "0")}</span>
-                  <strong>{unit.totalArea.toFixed(1)} m²</strong>
+                  <strong>{unitAreaLabel(unit)}</strong>
                   <ArrowRight aria-hidden="true" />
                 </button>
               );
@@ -812,11 +892,11 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
 
   const inventory = useMemo(() => (
     snapshot
-      ? snapshot.floors.flatMap((floor) => floor.units.map((unit) => ({ ...unit, floor: floor.number })))
+      ? snapshot.floors.flatMap((floor) => getUnitSlots(floor, floor.units || []).map(({ unit }) => ({ ...unit, floor: floor.number })))
       : []
   ), [snapshot]);
   const areaBounds = useMemo(() => {
-    const areas = inventory.map((unit) => Number(unit.totalArea)).filter(Number.isFinite);
+    const areas = inventory.map(unitAreaValue).filter((area) => area !== null);
     return {
       min: areas.length ? Math.floor(Math.min(...areas)) : 0,
       max: areas.length ? Math.ceil(Math.max(...areas)) : 100,
@@ -841,11 +921,13 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
   }, [areaBounds.max, areaBounds.min, inventory.length]);
 
   const matchingUnits = useMemo(() => inventory.filter((unit) => {
-    const area = Number(unit.totalArea);
+    const area = unitAreaValue(unit);
+    const rawBedrooms = unit.bedrooms;
+    const bedrooms = Number(rawBedrooms);
+    const hasBedrooms = rawBedrooms !== null && rawBedrooms !== undefined && rawBedrooms !== "" && Number.isFinite(bedrooms);
     return (filters.floor === "all" || unit.floor === Number(filters.floor))
-      && (filters.bedrooms === "all" || Number(unit.bedrooms) === Number(filters.bedrooms))
-      && area >= filters.minArea
-      && area <= filters.maxArea
+      && (filters.bedrooms === "all" || (hasBedrooms && bedrooms === Number(filters.bedrooms)))
+      && (area === null || (area >= filters.minArea && area <= filters.maxArea))
       && (filters.status === "all" || normalizeStatus(unit.status) === filters.status);
   }), [filters, inventory]);
   const previewResidence = useMemo(

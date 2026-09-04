@@ -72,6 +72,12 @@ describe("Residence explorer", () => {
     expect(screen.getAllByText("51.2 m²").length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: /Reserved residence/i })).toBeDisabled();
 
+    await user.click(screen.getByRole("button", { name: /Open 2D PLAN of residence 411 full screen/i }));
+    expect(screen.getByRole("dialog", { name: /Expanded 2D PLAN · RESIDENCE 411/i })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog", { name: /Expanded 2D PLAN · RESIDENCE 411/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: /Floor 04/i })).toBeInTheDocument();
+
     fireEvent.keyDown(window, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   }, 30000);
@@ -93,6 +99,14 @@ describe("Residence explorer", () => {
     expect(await screen.findByRole("heading", { name: "Floor 05" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Residence 501, Sold/i })).toHaveClass("is-sold");
     expect(within(list).getByRole("button", { name: /#501/i })).toHaveClass("is-sold");
+
+    await user.click(within(list).getByRole("button", { name: "Sold" }));
+    const soldRow = within(list).getByRole("button", { name: /#501/i });
+    expect(soldRow).toHaveClass("is-sold");
+    await user.click(soldRow);
+    expect(await screen.findByRole("heading", { name: "Residence 501" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /Open 2D PLAN of residence 501 full screen/i }));
+    expect(screen.getByRole("dialog", { name: /Expanded 2D PLAN · RESIDENCE 501/i })).toBeInTheDocument();
   });
 
   it("hands an available residence into the broker access journey", async () => {
@@ -171,6 +185,10 @@ describe("Residence explorer", () => {
     expect(screen.getByText("1 MATCH")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Residence 411, floor 4/i })).toBeInTheDocument();
     expect(container.querySelector(".model-static-fallback polygon.is-filter-match")).toBeNull();
+
+    await user.click(within(controls).getByRole("button", { name: "SOLD" }));
+    expect(screen.getByRole("button", { name: /Residence 501, floor 5, area unavailable, Sold/i })).toHaveClass("is-sold");
+    await user.click(screen.getByRole("button", { name: /Reset filters/i }));
 
     await user.selectOptions(within(controls).getByLabelText("FLOOR"), "4");
     expect(container.querySelector(".model-static-fallback polygon.is-filter-match")).toHaveAttribute("aria-label", expect.stringMatching(/Floor 04/i));
