@@ -1096,7 +1096,8 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       return;
     }
 
-    const railButton = document.elementFromPoint(pointer.x, pointer.y)?.closest?.(".model-floor-rail button[data-floor]");
+    const pointerTarget = document.elementFromPoint(pointer.x, pointer.y);
+    const railButton = pointerTarget?.closest?.(".model-floor-rail button[data-floor]");
     if (railButton?.dataset.floor) {
       invalidateHoverPick();
       setHoveredFloor(Number(railButton.dataset.floor));
@@ -1107,7 +1108,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
     const model = modelRef.current;
     const canvas = model?.querySelector("canvas");
-    if (!canvas) {
+    if (!canvas || pointerTarget !== canvas) {
       invalidateHoverPick();
       clearHover();
       return;
@@ -1455,6 +1456,8 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
                   className={activeBlock?.id === block.id ? "is-active" : ""}
                   aria-pressed={activeBlock?.id === block.id}
                   onClick={() => {
+                    invalidateHoverPick();
+                    lastPointerClientRef.current = null;
                     setActiveBlockId(block.id);
                     setHoveredFloor(null);
                     setHoveredBlock(null);

@@ -10,7 +10,11 @@ async function verifyBothBlocks(page) {
   });
   let tested=0;
   for(const block of expected) {
+    // A pending canvas hover must not undo an explicit building choice.
+    await page.locator('.building-map canvas').hover();
     await page.locator('.model-block-switcher').getByRole('button',{name:block.code,exact:true}).click();
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    if(await page.locator('.model-block-switcher').getByRole('button',{name:block.code,exact:true}).getAttribute('aria-pressed')!=='true') throw new Error('Stale hover changed the selected block');
     for(const floor of block.floors) {
       await page.locator('.model-floor-rail button[data-floor="'+floor.number+'"]').click();
       await page.locator('.floor-modal').waitFor();
