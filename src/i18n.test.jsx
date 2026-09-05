@@ -8,6 +8,12 @@ const { ENGLISH, TRANSLATIONS } = new Function(`${definitions.replaceAll("...ENG
 const variables = (text) => [...text.matchAll(/\{\{(\w+)\}\}/g)].map((match) => match[1]).sort();
 
 describe("translation coverage", () => {
+  it("interpolates the selected building in every model badge", () => {
+    for (const labels of [ENGLISH, ...Object.values(TRANSLATIONS)]) {
+      expect(variables(labels.officialReconstruction)).toEqual(["block"]);
+      expect(labels.officialReconstruction.replace(/\{\{block\}\}/g, "B")).not.toMatch(/[{}]/);
+    }
+  });
   it("defines every literal label used by the interface", () => {
     for (const file of ["src/App.jsx", "src/components/ResidenceExplorer.jsx", "src/components/Reverance3D.jsx"]) {
       const code = readFileSync(file, "utf8");
