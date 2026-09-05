@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { CaretDown, Globe } from "@phosphor-icons/react";
-import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage } from "./i18n.jsx";
+import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidation, clearFieldValidation } from "./i18n.jsx";
 import { FittedHeading } from "./components/FittedHeading.jsx";
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import { PRIVACY_COPY } from "./privacy-copy.js";
@@ -226,6 +226,8 @@ function Modal({ type, onClose, onSwitch }) {
             <p className="modal-copy">{content.copy}</p>
 
             <form
+              onInvalidCapture={(event) => localizeFieldValidation(event, t)}
+              onInputCapture={clearFieldValidation}
               className="access-form"
               onSubmit={async (event) => {
                 event.preventDefault();
@@ -619,7 +621,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
 }
 
 function AppContent() {
-  const { locale } = useLanguage();
+  const { locale, t } = useLanguage();
   const [activeModal, setActiveModal] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(routeFromLocation);
@@ -685,7 +687,7 @@ function AppContent() {
       {currentPage === "broker-access" && <BrokerAccessPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "resources" && <ResourcesPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "privacy" && <PrivacyPage />}
-      {currentPage === "admin" && <Suspense fallback={<p role="status">Loading admin…</p>}><AdminDashboard /></Suspense>}
+      {currentPage === "admin" && <Suspense fallback={<p role="status">{t("loadingAdmin")}</p>}><AdminDashboard /></Suspense>}
       <PrivacyControls page={currentPage} />
 
       {activeModal && (

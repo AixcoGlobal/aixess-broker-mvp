@@ -595,7 +595,7 @@ function MobileResidenceSheet({
                   <div className="mobile-filter-buttons">
                     <button className={filters.block === "all" ? "is-active" : ""} type="button" onClick={() => onChange("block", "all")}>{t("allBlocks")}</button>
                     {blocks.map((block) => (
-                      <button className={filters.block === block.id ? "is-active" : ""} type="button" key={block.id} onClick={() => onChange("block", block.id)}>{block.name}</button>
+                      <button className={filters.block === block.id ? "is-active" : ""} type="button" key={block.id} onClick={() => onChange("block", block.id)}>{t("blockName", { block: block.code })}</button>
                     ))}
                   </div>
                 </div>
@@ -721,7 +721,7 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
       >
         <header className="floor-modal-header">
           <div>
-            <p>{block?.name || t("projectReveranceBlock")}</p>
+            <p>{block ? t("blockName", { block: block.code }) : t("projectReveranceBlock")}</p>
             <h2 id="floor-modal-title">{floorLabel(floor.number, t)}</h2>
           </div>
           <div className="floor-navigation">
@@ -913,7 +913,7 @@ function ResidenceFilter({
             <span>{t("building")}</span>
             <select value={filters.block} onChange={(event) => onChange("block", event.target.value)}>
               <option value="all">{t("allBlocks")}</option>
-              {blocks.map((block) => <option key={block.id} value={block.id}>{block.name.toUpperCase()}</option>)}
+              {blocks.map((block) => <option key={block.id} value={block.id}>{t("blockName", { block: block.code }).toLocaleUpperCase(locale)}</option>)}
             </select>
           </label>
         )}
