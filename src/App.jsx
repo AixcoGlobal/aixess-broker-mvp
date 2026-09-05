@@ -5,6 +5,9 @@ import { FittedHeading } from "./components/FittedHeading.jsx";
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
+import { getWorkbookAvailableCount } from "./data/reveranceInventory.js";
+
+const availableResidenceCount = getWorkbookAvailableCount();
 
 const AdminDashboard = lazy(() => import("./components/AdminDashboard.jsx"));
 
@@ -450,10 +453,10 @@ function BrokerAccessPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onO
         <section className="broker-callout" aria-label={t("projectReveranceBlock")}>
           <div>
             <p className="section-eyebrow">{t("projectReveranceBatumi")}</p>
-            <FittedHeading><span>{t("selectedResidencesProposition")}</span><span>{t("sharperProposition")}</span></FittedHeading>
+            <FittedHeading><span>{t("selectedResidencesProposition", { count: availableResidenceCount })}</span><span>{t("sharperProposition")}</span></FittedHeading>
           </div>
           <dl className="broker-facts">
-            <div><dt>{t("access")}</dt><dd>{t("floors1314")}</dd></div>
+            <div><dt>{t("access")}</dt><dd>{t("blockFloorsBatumi")}</dd></div>
             <div><dt>{t("completion")}</dt><dd>{t("july2028")}</dd></div>
             <div><dt>{t("position")}</dt><dd>{t("newBoulevard")}</dd></div>
           </dl>
@@ -512,7 +515,7 @@ function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
             {[
               [t("minimumInvestmentQuestion"), t("minimumInvestmentAnswer")],
               [t("foreignersOwnQuestion"), t("foreignersOwnAnswer")],
-              [t("reveranceOfferQuestion"), t("reveranceOfferAnswer")],
+              [t("reveranceOfferQuestion"), t("reveranceOfferAnswer", { count: availableResidenceCount })],
             ].map(([question, answer]) => (
               <details key={question}>
                 <summary>{question}<span aria-hidden="true">+</span></summary>
@@ -602,8 +605,8 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
 
         <div className="project-stats" aria-label={t("projectAvailability")}>
           <div className="stat stat-residences">
-            <strong>28</strong>
-            <span>{t("selectedResidences")}</span>
+            <strong>{availableResidenceCount}</strong>
+            <span>{t("availableResidences")}</span>
           </div>
           <span className="stat-divider" aria-hidden="true" />
           <div className="stat stat-completion">

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import snapshot from "../../public/data/reverance-a.json";
-import { applyWorkbookInventory, FINAL_ROWS, OWNED_ROWS } from "./reveranceInventory";
+import { applyWorkbookInventory, getWorkbookAvailableCount, FINAL_ROWS, OWNED_ROWS } from "./reveranceInventory";
 
 function summarize(units) {
   return units.reduce((result, unit) => {
@@ -10,6 +10,11 @@ function summarize(units) {
 }
 
 describe("Reverance workbook inventory", () => {
+  it("uses the explorer's available inventory for the marketing total", () => {
+    const available = applyWorkbookInventory(snapshot).blocks.flatMap(block => block.floors.flatMap(floor => floor.units)).filter(unit => unit.status === "available");
+    expect(getWorkbookAvailableCount()).toBe(165);
+    expect(getWorkbookAvailableCount()).toBe(available.length);
+  });
   it("keeps the supplied workbook rows auditable", () => {
     expect(FINAL_ROWS).toHaveLength(189);
     expect(OWNED_ROWS).toHaveLength(28);

@@ -62,6 +62,10 @@ function canonicalRows() {
   return [...rows.values()];
 }
 
+export function getWorkbookAvailableCount() {
+  return canonicalRows().filter(row => normalizeWorkbookStatus(row.status) === "available").length;
+}
+
 function makeUnit(row, base) {
   // A similar area is not proof of the same apartment plan or bedroom count.
   const meta = base && (row.area == null || Math.abs(base.totalArea - row.area) < 0.05)
