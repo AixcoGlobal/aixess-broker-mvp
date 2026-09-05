@@ -18,6 +18,11 @@ async function verifyBothBlocks(page) {
     for(const floor of block.floors) {
       await page.locator('.model-floor-rail button[data-floor="'+floor.number+'"]').click();
       await page.locator('.floor-modal').waitFor();
+      await page.locator('.floor-plan-stage > img').evaluate(async img=>{
+        await img.decode();
+        const stage=img.parentElement.getBoundingClientRect();
+        if(Math.abs(stage.width/stage.height-img.naturalWidth/img.naturalHeight)>0.005) throw new Error('Plan hotspots do not follow the image aspect ratio');
+      });
       const rows=await page.locator('.unit-row').evaluateAll(els=>els.map(el=>({text:el.textContent,className:el.className})));
       if(rows.length!==12) throw new Error(block.code+' '+floor.number+' row count '+rows.length);
       for(const unit of floor.units) {
