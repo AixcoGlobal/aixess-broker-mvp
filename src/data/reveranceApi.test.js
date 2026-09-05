@@ -105,4 +105,15 @@ describe("Reverance data adapter", () => {
       { status: "mystery" },
     ] })).toEqual({ total: 4, available: 1, reserved: 1, sold: 1, unavailable: 1 });
   });
+
+  it("preserves workbook status, identity and area when an external feed disagrees", () => {
+    const stock = [
+      { id: 'B-204', name: '204', status: 'available', totalArea: 68.3, blockId: 'ReveranceB' },
+      { id: 'B-205', name: '205', status: 'sold', totalArea: null, blockId: 'ReveranceB' },
+      { id: 'B-1501', name: '1501', status: 'unavailable', totalArea: 46.4, blockId: 'ReveranceB' },
+    ];
+    const external = stock.map(unit => ({ ...unit, id: 123, status: 'reserved', totalArea: 99 }));
+    external.push({ name: '9999', status: 'available' });
+    expect(mergeFloorUnits(stock, external, { authoritative: true })).toEqual(stock);
+  });
 });

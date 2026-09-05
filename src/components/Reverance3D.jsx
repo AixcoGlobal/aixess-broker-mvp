@@ -106,7 +106,9 @@ void modifySplatColor(vec3 center, inout vec4 color) {
     return;
   }
   vec3 localCenter = (uFloorWorldToLocal * vec4(center, 1.0)).xyz;
-  bool insideFloor = all(lessThanEqual(abs(localCenter), uFloorHalfSize));
+  // A Gaussian may cross the slab even when its centre is on another floor.
+  // Select the tower here; clip the storey per fragment below.
+  bool insideFloor = all(lessThanEqual(abs(localCenter.xz), uFloorHalfSize.xz));
   float clipW = dot(uFloorWorldToClipW, vec4(center, 1.0));
   setFloorSpan(vec2(
     localCenter.y,
@@ -130,7 +132,7 @@ fn modifySplatColor(center: vec3f, color: ptr<function, vec4f>) {
     return;
   }
   let localCenter = (uniform.uFloorWorldToLocal * vec4f(center, 1.0)).xyz;
-  let insideFloor = all(abs(localCenter) <= uniform.uFloorHalfSize);
+  let insideFloor = all(abs(localCenter.xz) <= uniform.uFloorHalfSize.xz);
   let clipW = dot(uniform.uFloorWorldToClipW, vec4f(center, 1.0));
   setFloorSpan(vec2f(
     localCenter.y,
@@ -756,7 +758,10 @@ function FloorHighlight({ cameraEntityRef, blockId, floorNumber, splatReady }) {
     app.systems.gsplat.on("material:created", onMaterialCreated);
 
     return () => {
-      app.systems.gsplat.off("material:created", onMaterialCreated);
+      app.systems?.gsplat?.off("material:created", onMaterialCreated);
+      // The Application parent may already have destroyed its scene on route
+      // changes or development reloads before passive effect cleanup runs.
+      if (!app.scene?.gsplat) return;
       const material = app.scene.gsplat.material;
       const varyings = app.scene.gsplat.varyings;
       const glslChunks = material.getShaderChunks("glsl");
@@ -1530,7 +1535,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
         </strong>
       </div>
       <span className="building-model-badge" aria-hidden="true">
-        <span className="model-badge-desktop">{t("officialReconstruction")}</span>
+        <span className="model-badge-desktop">{t("officialReconstruction", { block: activeBlock?.code || "A" })}</span>
         <span className="model-badge-mobile">{activeBlock?.name || t("projectReveranceBlock")}</span>
       </span>
     </div>

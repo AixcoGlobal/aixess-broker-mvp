@@ -1,6 +1,7 @@
 // Canonical inventory imported from "Stock Reverance August 26- 1.xlsx".
 // The workbook is kept as a source artifact; this small, deterministic module
 // lets the visitor site render the same data without a network dependency.
+import bPlans from './reveranceBPlans.json' with { type: 'json' };
 
 const FINAL_ROWS = [
   [411, "A", 4, 64.5, "Available"], [412, "A", 4, 59.1, "Available"],
@@ -48,12 +49,7 @@ function normalizeWorkbookStatus(status) {
   return "unavailable";
 }
 
-function inferPlanMeta(area, byArea) {
-  const exact = byArea.get(Number(area));
-  if (exact) return exact;
-  const nearest = [...byArea.entries()].sort((a, b) => Math.abs(a[0] - area) - Math.abs(b[0] - area))[0]?.[1];
-  return nearest || { rooms: null, bedrooms: null, areas: [], image2d: null, image3d: null, price: null };
-}
+const EMPTY_PLAN_META = { rooms: null, bedrooms: null, areas: [], image2d: null, image3d: null, price: null };
 
 function canonicalRows() {
   const rows = new Map();
@@ -66,15 +62,17 @@ function canonicalRows() {
   return [...rows.values()];
 }
 
-function makeUnit(row, base, byArea) {
-  const meta = base || inferPlanMeta(row.area, byArea);
+function makeUnit(row, base) {
+  // A similar area is not proof of the same apartment plan or bedroom count.
+  const meta = base && (row.area == null || Math.abs(base.totalArea - row.area) < 0.05)
+    ? base : EMPTY_PLAN_META;
   return {
     ...meta,
     id: row.block === "A" && base?.id !== undefined ? base.id : `${row.block}-${row.name}`,
     name: row.name,
     status: normalizeWorkbookStatus(row.status),
     floor: row.floor,
-    totalArea: Number(row.area),
+    totalArea: row.area == null ? base?.totalArea ?? null : Number(row.area),
     block: row.block,
     blockId: BLOCK_IDS[row.block],
     sourceStatus: row.status,
@@ -94,37 +92,25 @@ function cloneFloor(floor, block, units) {
 }
 
 /**
- * Applies the workbook to the official A-block snapshot and creates a
- * matching B-block inventory using the same measured floor-plan artwork.
+ * Workbook rows govern sales status; every other mapped apartment is sold,
+ * as confirmed by the owner. Each block keeps its own official floor plans.
  */
 export function applyWorkbookInventory(snapshot) {
   if (!snapshot?.blockId || !Array.isArray(snapshot.floors)) return snapshot;
 
-  const baseUnits = snapshot.floors.flatMap((floor) => floor.units || []);
-  const byName = new Map(baseUnits.map((unit) => [String(unit.name), unit]));
-  const byArea = new Map();
-  for (const unit of baseUnits) if (!byArea.has(Number(unit.totalArea))) byArea.set(Number(unit.totalArea), unit);
-
-  const rows = canonicalRows();
-  const unitsByBlockFloor = new Map();
-  for (const row of rows) {
-    const key = `${row.block}:${row.floor}`;
-    const base = row.block === "A" ? byName.get(row.name) : byName.get(row.name);
-    const unit = makeUnit(row, base, byArea);
-    if (!unitsByBlockFloor.has(key)) unitsByBlockFloor.set(key, []);
-    unitsByBlockFloor.get(key).push(unit);
-  }
-
-  const aFloors = snapshot.floors.map((floor) => cloneFloor(
-    floor,
-    "A",
-    (unitsByBlockFloor.get(`A:${floor.number}`) || []).sort((a, b) => String(a.name).localeCompare(String(b.name), undefined, { numeric: true })),
-  ));
-  const bFloors = snapshot.floors.map((floor) => cloneFloor(
-    floor,
-    "B",
-    (unitsByBlockFloor.get(`B:${floor.number}`) || []).sort((a, b) => String(a.name).localeCompare(String(b.name), undefined, { numeric: true })),
-  ));
+  const rows = new Map(canonicalRows().map(row => [`${row.block}:${row.name}`, row]));
+  const buildFloors = (source, block) => source.map(floor => {
+    const metadata = new Map((floor.units || []).map(unit => [String(unit.name), unit]));
+    const names = new Set((floor.shapes || []).map(shape => String(shape.target)));
+    for (const row of rows.values()) if (row.block === block && row.floor === floor.number) names.add(row.name);
+    const units = [...names].map(name => makeUnit(
+      rows.get(`${block}:${name}`) || { block, name, floor: floor.number, area: null, status: 'Sold' },
+      metadata.get(name),
+    )).sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    return cloneFloor(floor, block, units);
+  });
+  const aFloors = buildFloors(snapshot.floors, 'A');
+  const bFloors = buildFloors(bPlans.floors, 'B');
 
   const blocks = [
     { id: BLOCK_IDS.A, code: "A", name: BLOCK_NAMES.A, floors: aFloors },

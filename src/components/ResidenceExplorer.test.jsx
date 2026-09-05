@@ -296,6 +296,6 @@ describe("Residence explorer", () => {
 
     const dialog = await screen.findByRole("dialog", { name: /Floor 04/i });
     expect(within(dialog).getByText("B Block")).toBeInTheDocument();
-    expect(floorLoader).toHaveBeenCalledWith("ReveranceB", 4);
+    expect(floorLoader).not.toHaveBeenCalled();
   });
 });

@@ -666,10 +666,15 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
     setLightbox(null);
     setSyncState("refreshing");
 
+    if (snapshot.inventoryComplete) {
+      setSyncState("snapshot");
+      return () => { if (requestId.current === currentRequest) requestId.current += 1; };
+    }
+
     floorLoader(block?.id || snapshot.blockId, floor.number)
       .then((liveUnits) => {
         if (requestId.current !== currentRequest) return;
-        setUnits(mergeFloorUnits(floor.units, liveUnits));
+        setUnits(mergeFloorUnits(floor.units, liveUnits, { authoritative: snapshot.inventoryComplete }));
         setSyncState("live");
       })
       .catch(() => {

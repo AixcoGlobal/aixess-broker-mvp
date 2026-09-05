@@ -105,7 +105,10 @@ export async function loadLiveFloor(blockId, floorNumber, options = {}) {
   return payload.data.flats.map(normalizeLiveUnit);
 }
 
-export function mergeFloorUnits(snapshotUnits, liveUnits) {
+export function mergeFloorUnits(snapshotUnits, liveUnits, { authoritative = false } = {}) {
+  // The owner's workbook is authoritative for both blocks. An external feed
+  // must not change statuses, areas, identities, or append unlisted stock.
+  if (authoritative) return [...snapshotUnits];
   const liveByName = new Map((liveUnits || []).map((unit) => [String(unit.name), unit]));
   const snapshotNames = new Set((snapshotUnits || []).map((unit) => String(unit.name)));
   const merged = (snapshotUnits || []).map((unit) => liveByName.get(String(unit.name)) || unit);

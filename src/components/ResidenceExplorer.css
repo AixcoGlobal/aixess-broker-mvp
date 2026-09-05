@@ -2294,6 +2294,20 @@
     transform: translateX(-0.65rem);
   }
 
+  .model-block-switcher {
+    top: max(4.65rem, calc(env(safe-area-inset-top) + 3.5rem));
+    right: auto;
+    left: 0.7rem;
+  }
+
+  .model-block-switcher button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    font-size: 0.8rem;
+  }
+
+  .model-floor-rail { top: max(7.8rem, calc(env(safe-area-inset-top) + 6.4rem)); }
+
   .model-floor-rail.is-visible {
     transform: translateX(0);
   }

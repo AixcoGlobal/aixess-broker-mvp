@@ -22,12 +22,19 @@ describe("Reverance workbook inventory", () => {
     expect(next.blocks.map(({ id }) => id)).toEqual(["ReveranceA", "ReveranceB"]);
 
     const [a, b] = next.blocks.map((block) => block.floors.flatMap((floor) => floor.units));
-    expect(a).toHaveLength(90);
-    expect(b).toHaveLength(127);
-    expect(summarize(a)).toEqual({ available: 62, reserved: 4, unavailable: 24 });
-    expect(summarize(b)).toEqual({ available: 103, unavailable: 24 });
+    expect(a).toHaveLength(180);
+    expect(b).toHaveLength(180);
+    expect(summarize(a)).toEqual({ available: 62, reserved: 4, unavailable: 24, sold: 90 });
+    expect(summarize(b)).toEqual({ available: 103, unavailable: 24, sold: 53 });
     expect(a.find((unit) => unit.name === "1301")).toMatchObject({ status: "reserved", block: "A" });
     expect(b.find((unit) => unit.name === "1301")).toMatchObject({ status: "available", block: "B", blockId: "ReveranceB" });
     expect(a.find((unit) => unit.name === "1501")).toMatchObject({ status: "unavailable" });
+    expect(a.find((unit) => unit.name === "204")).toMatchObject({ status: "sold" });
+    expect(b.find((unit) => unit.name === "204")).toMatchObject({ status: "available", totalArea: 68.3 });
+    expect(next.blocks[0].floors[8].shapes[0].points).not.toEqual(next.blocks[1].floors[8].shapes[0].points);
+    for (const block of next.blocks) {
+      expect(block.floors.every(floor => floor.units.length === 12)).toBe(true);
+      expect(new Set(block.floors.flatMap(floor => floor.units.map(unit => unit.id))).size).toBe(180);
+    }
   });
 });
