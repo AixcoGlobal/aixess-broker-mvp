@@ -292,14 +292,14 @@ input:focus-visible {
 }
 
 .button-primary {
-  border-color: var(--orange);
-  background: var(--orange);
+  border-color: #c84c08;
+  background: #c84c08;
   color: #fff;
 }
 
 .button-primary:hover {
-  border-color: #ff7a2f;
-  background: #ff7a2f;
+  border-color: #b54308;
+  background: #b54308;
 }
 
 .button-ghost {

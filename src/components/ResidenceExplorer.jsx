@@ -512,7 +512,6 @@ function MobileResidenceSheet({
           event.currentTarget.blur();
           openDrawer(false);
         }}
-        aria-label={`${t("explore")} ${t("residenceSelector")}, ${matchingUnits.length} ${matchingUnits.length === 1 ? t("match") : t("matches")}`}
         aria-hidden={drawerOpen}
         tabIndex={drawerOpen ? -1 : 0}
       >

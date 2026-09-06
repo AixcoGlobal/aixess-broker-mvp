@@ -579,7 +579,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
         </div>
       </section>
 
-      <div className="project-ticker" aria-label={`${t("projectReverance")}, ${t("batumi")}, ${t("brokerAccessOpen")}`}>
+      <div className="project-ticker" role="group" aria-label={`${t("projectReverance")}, ${t("batumi")}, ${t("brokerAccessOpen")}`}>
         <div className="ticker-track">
           <TickerGroup />
           <TickerGroup />
