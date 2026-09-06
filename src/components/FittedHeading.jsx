@@ -11,8 +11,11 @@ export function FittedHeading({ as: Tag = "h2", children, ...props }) {
     let active = true;
     let frame = 0;
     let previousWidth = -1;
+    let fontsSettled = !document.fonts?.ready;
+    let fontTimeout = 0;
+    heading.dataset.fitReady = "false";
     const fit = () => {
-      if (!active || !heading.clientWidth) return;
+      if (!active || !fontsSettled || !heading.clientWidth) return;
       heading.style.removeProperty("font-size");
       const maxSize = parseFloat(getComputedStyle(heading).fontSize);
       const available = heading.clientWidth;
@@ -20,14 +23,27 @@ export function FittedHeading({ as: Tag = "h2", children, ...props }) {
       if (longest > available - 2) {
         heading.style.fontSize = `${Math.floor(maxSize * (available - 2) / longest * 100) / 100}px`;
       }
+      heading.dataset.fitReady = "true";
     };
     const scheduleFit = () => {
-      if (!active) return;
+      if (!active || !fontsSettled) return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(fit);
     };
-    fit();
-    scheduleFit();
+    const settleFonts = () => {
+      if (!active || fontsSettled) return;
+      fontsSettled = true;
+      window.clearTimeout(fontTimeout);
+      fit();
+      scheduleFit();
+    };
+    if (fontsSettled) {
+      fit();
+      scheduleFit();
+    } else {
+      fontTimeout = window.setTimeout(settleFonts, 1200);
+      document.fonts.ready.then(settleFonts);
+    }
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(() => {
       const width = heading.clientWidth;
       if (width !== previousWidth) {
@@ -37,14 +53,14 @@ export function FittedHeading({ as: Tag = "h2", children, ...props }) {
     });
     observer?.observe(heading);
     window.addEventListener("resize", fit);
-    document.fonts?.ready.then(scheduleFit);
     return () => {
       active = false;
       cancelAnimationFrame(frame);
+      window.clearTimeout(fontTimeout);
       observer?.disconnect();
       window.removeEventListener("resize", fit);
     };
   }, [locale]);
 
-  return <Tag {...props} ref={ref} data-fitted-heading>{children}</Tag>;
+  return <Tag {...props} ref={ref} data-fitted-heading data-fit-ready="false">{children}</Tag>;
 }

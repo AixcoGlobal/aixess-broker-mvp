@@ -393,6 +393,10 @@ input:focus-visible {
   min-width: 0;
 }
 
+[data-fitted-heading][data-fit-ready="false"] {
+  opacity: 0;
+}
+
 [data-fitted-heading] > span {
   display: block;
   width: max-content;
