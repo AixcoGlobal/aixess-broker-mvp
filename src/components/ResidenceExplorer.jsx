@@ -494,7 +494,7 @@ function MobileResidenceSheet({
   return (
     <>
       <div className="mobile-explorer-topbar">
-        <img src="/assets/aixess-logo-white-cropped.png" alt="AiXESS" />
+        <img src="/assets/aixess-logo-white-cropped.webp" alt="AiXESS" width="2783" height="546" />
         <label className="mobile-floor-chip">
           <span>{t("floor")}</span>
           <select value={filters.floor} onChange={(event) => onChange("floor", event.target.value)} aria-label={t("selectFloor")}>

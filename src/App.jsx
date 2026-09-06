@@ -66,7 +66,7 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   return (
     <header className={`site-header ${pageHeader ? "page-site-header" : ""}`}>
       <button className="brand" type="button" aria-label={t("homeAria")} onClick={() => navigate("home")}>
-        <img src="/assets/aixess-logo-white-cropped.png" alt="AiXESS" />
+        <img src="/assets/aixess-logo-white-cropped.webp" alt="AiXESS" width="2783" height="546" />
       </button>
 
       <nav className="desktop-nav" aria-label={t("primaryNavigation")}>
@@ -315,7 +315,7 @@ function PageHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   );
 }
 
-function PageIntro({ eyebrow, title, copy, children, image = "/assets/reverance-hero.webp" }) {
+function PageIntro({ eyebrow, title, copy, children, image = "/assets/reverance-hero-1536.webp" }) {
   const { t } = useLanguage();
   return (
     <section className="page-intro">
@@ -558,7 +558,16 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
         <SiteHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
 
         <div className="hero-media" aria-hidden="true">
-          <img src="/assets/reverance-hero.webp" alt="" />
+          <img
+            src="/assets/reverance-hero-1536.webp"
+            srcSet="/assets/reverance-hero-768.webp 768w, /assets/reverance-hero-1536.webp 1536w"
+            sizes="(max-width: 767px) 100vw, 50vw"
+            alt=""
+            width="2048"
+            height="2042"
+            fetchPriority="high"
+            decoding="async"
+          />
         </div>
 
         <div className="hero-copy">

@@ -506,7 +506,7 @@ input:focus-visible {
   padding: 2.1rem 5.6rem 2.8rem;
   overflow: hidden;
   background-color: var(--silver);
-  background-image: linear-gradient(rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.055)), url("/assets/brushed-silver.png");
+  background-image: linear-gradient(rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.055)), url("/assets/brushed-silver.webp");
   background-position: center;
   background-size: cover;
   color: #1a1715;

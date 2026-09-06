@@ -60,7 +60,7 @@ export default function AdminLogin({ onSignedIn }) {
   };
 
   return <div className="admin-login-page">
-    <header className="admin-login-header"><a href="#home" aria-label={tr("AiXESS home")}><img src="/assets/aixess-logo-white-cropped.png" alt="AiXESS" /></a><a href="#home">{tr("Back to website ↗")}</a></header>
+    <header className="admin-login-header"><a href="#home" aria-label={tr("AiXESS home")}><img src="/assets/aixess-logo-white-cropped.webp" alt="AiXESS" width="2783" height="546" /></a><a href="#home">{tr("Back to website ↗")}</a></header>
     <main className="admin-login-main">
       <div className="admin-login-context"><p>{tr("PRIVATE WORKSPACE")}</p><h1>{tr("The insight")}<br />{tr("behind the")}<br /><span>{tr("opportunity.")}</span></h1><div className="admin-login-rule" /><span>{tr("PROJECT REVERANCE · AIXESS")}</span></div>
       <section className="admin-login-card" aria-labelledby="admin-login-title">

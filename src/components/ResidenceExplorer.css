@@ -1261,7 +1261,7 @@
   overflow: hidden;
   border-right: 1px solid rgba(28, 24, 21, 0.36);
   background-color: #d8d7d3;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.06)), url("/assets/brushed-silver.png");
+  background-image: linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.06)), url("/assets/brushed-silver.webp");
   background-size: cover;
   color: #1b1716;
 }
