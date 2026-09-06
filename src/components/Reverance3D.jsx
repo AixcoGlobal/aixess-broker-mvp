@@ -210,16 +210,20 @@ class ReveranceCameraControls extends CameraControls {
    * fights the scroll camera and makes the turn hitch.
    */
   scrollLocked = true;
+  floorGestureLocked = false;
 
   drainInput() {
     this._desktopInput?.read?.();
-    this._orbitMobileInput?.read?.();
+    const mobile = this._orbitMobileInput?.read?.();
+    // Discard motion while locked, but retain touch-count transitions so the
+    // next one-finger drag is not mistaken for a two-finger pan.
+    if (mobile && this._state) this._state.touches += mobile.count[0];
     this._flyMobileInput?.read?.();
     this._gamepadInput?.read?.();
   }
 
   update(dt) {
-    if (this.scrollLocked) {
+    if (this.scrollLocked || this.floorGestureLocked) {
       this.drainInput();
       return;
     }
@@ -570,6 +574,13 @@ function CameraRig({ apiRef, fov, interactive, manualCameraRef, onCameraReady, p
       syncControls,
       snapToScroll,
       setScrollLocked,
+      setFloorGestureLocked(locked) {
+        const controls = controlsRef.current;
+        if (!controls || controls.floorGestureLocked === locked) return;
+        controls.floorGestureLocked = locked;
+        controls.drainInput();
+        syncControls();
+      },
       resetView() {
         const { settled: isSettled } = stageRef.current;
         if (!isSettled) {
@@ -1201,14 +1212,26 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   }, []);
 
   const handleModelPointerDown = useCallback((event) => {
+    if (!interactive || !event.target.closest?.("canvas")) return;
     if (event.pointerType === "touch") {
       touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      if (touchPointersRef.current.size === 2) {
+      if (touchPointersRef.current.size >= 2) {
         const [first, second] = [...touchPointersRef.current.values()];
         pinchDistanceRef.current = Math.hypot(second.x - first.x, second.y - first.y);
+        draggedRef.current = true;
+        suppressClickRef.current = true;
+        if (pointerStartRef.current) pointerStartRef.current.mode = "pinch";
+        cameraRigRef.current?.setFloorGestureLocked(true);
+        invalidateHoverPick();
+        clearHover();
+        return;
       }
     }
-    if (!interactive || !event.target.closest?.("canvas")) return;
+    const canvas = event.currentTarget.querySelector("canvas");
+    const rect = canvas?.getBoundingClientRect();
+    const selection = event.pointerType === "touch" && rect
+      ? pickFloorAtPoint(canvas, event.clientX - rect.left, event.clientY - rect.top)
+      : null;
     if (event.button === 1) {
       event.preventDefault();
       manualCameraRef.current = true;
@@ -1218,12 +1241,24 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       x: event.clientX,
       y: event.clientY,
       manualBefore: manualCameraRef.current,
+      mode: selection ? "floor" : "orbit",
     };
     draggedRef.current = false;
     suppressClickRef.current = false;
     // Grabbing the model stops any damped motion still in flight.
     cameraRigRef.current?.syncControls();
-  }, [interactive]);
+    if (selection) {
+      cameraRigRef.current?.setFloorGestureLocked(true);
+      invalidateHoverPick();
+      setHoveredFloor(selection.floor);
+      setHoveredBlock(selection.blockId);
+      setActiveBlockId(selection.blockId);
+      setHoverPoint(getFloorTooltipPosition(
+        { x: event.clientX - rect.left, y: event.clientY - rect.top },
+        { width: rect.width, height: rect.height },
+      ));
+    }
+  }, [clearHover, interactive, invalidateHoverPick, pickFloorAtPoint]);
 
   const handleModelPointerMove = useCallback((event) => {
     if (!interactive) return;
@@ -1246,25 +1281,33 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
           );
         }
         pinchDistanceRef.current = distance;
+        invalidateHoverPick();
+        clearHover();
+        return;
       }
     }
     const pointerStart = pointerStartRef.current;
+    if (pointerStart?.mode === "pinch") return;
     if (pointerStart && (event.buttons > 0 || event.pointerType === "touch")) {
       if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > DRAG_THRESHOLD_PX) {
         draggedRef.current = true;
-        manualCameraRef.current = true;
-        cameraRigRef.current?.setScrollLocked(false);
+        if (pointerStart.mode === "orbit") {
+          manualCameraRef.current = true;
+          cameraRigRef.current?.setScrollLocked(false);
+        }
       }
+      if (pointerStart.mode !== "floor") {
+        invalidateHoverPick();
+        clearHover();
+        return;
+      }
+    }
+    if (event.pointerType === "touch" && pointerStart?.mode !== "floor") {
       invalidateHoverPick();
       clearHover();
       return;
     }
-    if (event.pointerType === "touch") {
-      invalidateHoverPick();
-      clearHover();
-      return;
-    }
-    if (draggedRef.current) return;
+    if (draggedRef.current && pointerStart?.mode !== "floor") return;
     if (!event.target.closest?.("canvas")) {
       invalidateHoverPick();
       if (!event.target.closest?.(".model-floor-rail button")) clearHover();
@@ -1288,17 +1331,24 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const handleModelPointerUp = useCallback((event) => {
     touchPointersRef.current.delete(event.pointerId);
     pinchDistanceRef.current = null;
+    if (touchPointersRef.current.size) return;
+    cameraRigRef.current?.setFloorGestureLocked(false);
     const dragged = draggedRef.current;
     const hadPointerStart = pointerStartRef.current !== null;
     suppressClickRef.current = dragged;
     pointerStartRef.current = null;
     draggedRef.current = false;
+    if (event.pointerType === "touch") {
+      lastPointerClientRef.current = null;
+      invalidateHoverPick();
+      if (dragged) clearHover();
+    }
     // A click without a drag must leave the scroll-bound camera untouched, so
     // undo the sub-threshold orbit nudge CameraControls already applied.
     if (hadPointerStart && !dragged && !manualCameraRef.current) {
       cameraRigRef.current?.snapToScroll();
     }
-  }, []);
+  }, [clearHover, invalidateHoverPick]);
 
   // The browser cancels the pointer when it claims a touch as a page scroll.
   // Any pointer moves that slipped through before that were a swipe, not an
@@ -1310,6 +1360,8 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     pointerStartRef.current = null;
     draggedRef.current = false;
     suppressClickRef.current = false;
+    cameraRigRef.current?.setFloorGestureLocked(false);
+    lastPointerClientRef.current = null;
     if (pointerStart && !pointerStart.manualBefore) {
       manualCameraRef.current = false;
       cameraRigRef.current?.snapToScroll();
@@ -1325,6 +1377,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     pointerStartRef.current = null;
     draggedRef.current = false;
     suppressClickRef.current = false;
+    cameraRigRef.current?.setFloorGestureLocked(false);
     invalidateHoverPick();
     clearHover();
   }, [clearHover, invalidateHoverPick]);
@@ -1359,6 +1412,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     pointerStartRef.current = null;
     draggedRef.current = false;
     suppressClickRef.current = false;
+    cameraRigRef.current?.setFloorGestureLocked(false);
     invalidateHoverPick();
     clearHover();
     setFovTarget(CAMERA_FOV);
