@@ -1,0 +1,45 @@
+.network-section { padding: clamp(3rem, 6vw, 6rem) clamp(1.25rem, 5vw, 5rem); border-top: 1px solid #ffffff30; }
+.network-page-title { margin: 0; padding: 2rem clamp(1.25rem, 5vw, 5rem); font-size: clamp(1.75rem, 3vw, 3rem); line-height: 1.2; }
+.network-section > * { max-width: 90rem; margin-inline: auto; }
+.network-heading { margin-bottom: 2.5rem; }
+.network-heading h2 { max-width: 24ch; font-size: clamp(2rem, 4.4vw, 4.8rem); font-weight: 800; line-height: 1.08; letter-spacing: -.035em; margin: .8rem 0 1.5rem; overflow-wrap: break-word; }
+.network-why .network-heading h2 { max-width: none; }
+.network-section p, .network-card p, .network-steps p { line-height: 1.6; }
+.network-section .network-lead { max-width: 65ch; margin: 1.2rem 0 2rem; font-size: clamp(1.125rem, 1.5vw, 1.35rem); }
+.network-section .section-eyebrow { font-size: .875rem; overflow-wrap: break-word; }
+.network-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3rem; margin-bottom: 2rem; }
+.network-card { padding: 2rem 0; border-top: 1px solid #8888; min-width: 0; }
+.network-card h3, .network-steps h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); line-height: 1.3; margin: .8rem 0; overflow-wrap: anywhere; }
+.network-card p, .network-steps p { font-size: 1.0625rem; max-width: 58ch; }
+.network-number { color: #f16510; font-size: 1rem; font-weight: 800; }
+.network-emphasis { font-size: clamp(1.25rem, 2.3vw, 2rem); font-weight: 800; max-width: 50ch; margin: 1.5rem 0; }
+.network-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+.network-section .button { width: auto; height: auto; min-height: 3.25rem; padding: 1rem 1.5rem; font-size: .9375rem; white-space: normal; text-align: center; line-height: 1.4; gap: 1rem; max-width: 100%; overflow-wrap: anywhere; }
+.network-section .text-link { display: inline-flex; gap: 1rem; font-size: .875rem; min-height: 2.75rem; align-items: center; }
+.network-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; margin-block: 2.5rem; }
+.network-stats > div { border-left: 2px solid #f16510; padding-left: 1.25rem; min-width: 0; }
+.network-stats dd { font-size: clamp(2rem, 3.8vw, 4rem); font-weight: 800; margin: 0 0 .75rem; overflow-wrap: anywhere; }
+.network-stats dt { font-size: .9375rem; line-height: 1.4; overflow-wrap: anywhere; }
+.network-stats p, .network-note { font-size: .875rem; line-height: 1.6; }
+.network-section .network-note { margin: 1.25rem 0 0; }
+.network-steps { list-style: none; padding: 0; }
+.network-steps li { display: grid; grid-template-columns: 3rem minmax(8rem, 1fr) minmax(0, 2fr); gap: 1.5rem; border-top: 1px solid #8888; padding: 1.5rem 0; align-items: baseline; }
+.network-steps h3, .network-steps p { margin: 0; }
+.network-badge { display: inline-block; border: 1px solid currentColor; padding: .5rem .75rem; font-size: .875rem; }
+.network-reports { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.network-reports button, .network-reports a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: transparent; color: inherit; text-align: left; border-block: 1px solid #8888; padding: 1.5rem 0; font-size: 1rem; font-weight: 600; line-height: 1.5; cursor: pointer; text-decoration: none; }
+.network-service-path { display: flex; flex-wrap: wrap; gap: 1rem 2rem; list-style: none; padding: 0; font-size: 1.125rem; font-weight: 600; }
+.network-service-path li:not(:last-child)::after { content: " →"; color: #f16510; padding-left: 1rem; }
+.network-commercial, .network-opportunity, .network-process, .network-services { background: #efefec url('/assets/brushed-silver.webp') center/cover; color: #1b1716; }
+.network-commercial .section-eyebrow, .network-opportunity .section-eyebrow, .network-process .section-eyebrow, .network-services .section-eyebrow, .network-process .network-number { color: #ad4300; }
+.network-client { background: #091d2c; }
+.network-closing { background: #11191e; }
+@media (max-width: 1000px) { .network-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .network-reports { grid-template-columns: 1fr; } }
+@media (max-width: 767px) {
+  .network-grid { grid-template-columns: 1fr; }
+  .network-steps li { grid-template-columns: 2rem minmax(0, 1fr); gap: .5rem 1rem; }
+  .network-steps p { grid-column: 2; }
+  .network-stats { gap: 2rem 1rem; }
+  .network-actions { flex-direction: column; align-items: stretch; }
+  .network-heading h2 { font-size: clamp(1.875rem, 7vw, 3rem); }
+}

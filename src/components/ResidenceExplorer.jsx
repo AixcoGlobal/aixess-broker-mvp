@@ -18,6 +18,7 @@ import {
   normalizeStatus,
 } from "../data/reveranceApi";
 import { useLanguage } from "../i18n.jsx";
+import { NETWORK_COPY } from "../network-copy.js";
 import { track } from "../analytics.js";
 import { FittedHeading } from "./FittedHeading.jsx";
 import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
@@ -1031,8 +1032,8 @@ function ResidenceFilter({
   );
 }
 
-export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResidenceSnapshot, floorLoader = loadLiveFloor }) {
-  const { t } = useLanguage();
+export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, snapshotLoader = loadResidenceSnapshot, floorLoader = loadLiveFloor }) {
+  const { t, locale } = useLanguage();
   const sectionRef = useRef(null);
   const modelHostRef = useRef(null);
   const [snapshot, setSnapshot] = useState(null);
@@ -1193,8 +1194,8 @@ export function ResidenceExplorer({ onBrokerAccess, snapshotLoader = loadResiden
 
         <div className="explorer-copy">
           <div className="explorer-copy-panel explorer-intro-panel" aria-hidden={filterActive} inert={filterActive}>
-            <p className="section-eyebrow">{t("residenceExplorer")}</p>
-            <FittedHeading id="residence-explorer-title"><span>{t("selectOpportunity")}</span><span>{t("opportunity")}</span></FittedHeading>
+            <p className="section-eyebrow">{liveInventoryTitle ? NETWORK_COPY[locale].live : t("residenceExplorer")}</p>
+            <FittedHeading id="residence-explorer-title">{(liveInventoryTitle ? NETWORK_COPY[locale].liveTitle : [t("selectOpportunity"), t("opportunity")]).map(line => <span key={line}>{line}</span>)}</FittedHeading>
             <p className="explorer-description">
               {t("explorerDescription")}
             </p>

@@ -2,6 +2,9 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidation, clearFieldValidation } from "./i18n.jsx";
 import { FittedHeading } from "./components/FittedHeading.jsx";
+import { NetworkSections } from "./components/NetworkSections.jsx";
+import { NETWORK_COPY } from "./network-copy.js";
+const Calculators = lazy(() => import("./components/Calculators.jsx"));
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
@@ -23,9 +26,10 @@ const navItems = [
   { key: "residences", labelKey: "residences" },
   { key: "broker-access", labelKey: "brokerAccess" },
   { key: "resources", labelKey: "resources" },
+  { key: "calculators", labelKey: "calculator" },
 ];
 
-const validRoutes = new Set([...navItems.map(({ key }) => key), "admin", "privacy"]);
+const validRoutes = new Set([...navItems.map(({ key }) => key), "admin", "privacy", "calculators"]);
 
 const WORKWISE_BROKER_PATHS = {
   login: "/realestate/aixco/broker-login",
@@ -333,137 +337,18 @@ function PageIntro({ eyebrow, title, copy, children, image = "/assets/reverance-
   );
 }
 
-const companyStats = [
-  ["5,000+", "trustedClients"],
-  ["$400M", "grossDevelopmentValue"],
-  ["2,000+", "totalTransactions"],
-  ["2009", "inBusinessSince"],
-];
-
-function WhyAixessPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
-  const { t } = useLanguage();
-  return (
-    <div className="route-page why-page">
-      <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
-      <main className="page-main">
-        <PageIntro
-          eyebrow={t("whyAixessEyebrow")}
-          title={<>{t("clearerRoute")}<br />{t("toTheUpside")}</>}
-          copy={t("whyAixessCopy")}
-        >
-          <div className="page-cta-row">
-            <button className="button button-primary" type="button" onClick={() => onNavigate("residences")}>{t("exploreReverance")}</button>
-            <button className="text-link" type="button" onClick={() => onOpenModal("register")}>{t("becomeBroker")} <span aria-hidden="true">↗</span></button>
-          </div>
-        </PageIntro>
-
-        <section className="page-section page-section-stats" aria-labelledby="aixess-track-record">
-          <div className="section-heading-row">
-            <p className="section-eyebrow">{t("trackRecord")}</p>
-            <h2 id="aixess-track-record">{t("numbersBehindNetwork")}</h2>
-          </div>
-          <div className="company-stats-grid">
-            {companyStats.map(([value, label]) => (
-              <div className="company-stat" key={label}>
-                <strong>{value}</strong>
-                <span>{t(label)}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="page-section split-section" aria-labelledby="aixess-philosophy">
-          <div>
-            <p className="section-eyebrow">{t("ourPhilosophy")}</p>
-            <FittedHeading id="aixess-philosophy"><span>{t("internationalReach")}</span><span>{t("localConviction")}</span></FittedHeading>
-          </div>
-          <div className="section-prose">
-            <p>{t("philosophyCopy")}</p>
-            <div className="mini-facts">
-              <div><strong>2009</strong><span>{t("firstAcquisition")}</span></div>
-              <div><strong>$4.2B+</strong><span>{t("valueTransacted")}</span></div>
-              <div><strong>90+</strong><span>{t("skilledEmployees")}</span></div>
-            </div>
-          </div>
-        </section>
-
-        <section className="page-section journey-section" aria-labelledby="aixess-journey">
-          <div className="section-heading-row">
-            <p className="section-eyebrow">{t("howWeWork")}</p>
-            <FittedHeading id="aixess-journey"><span>{t("decisionPath")}</span><span>{t("forMomentum")}</span></FittedHeading>
-          </div>
-          <div className="journey-grid">
-            {[
-              ["01", t("buyApartment"), t("buyApartmentCopy")],
-              ["02", t("brokerRealEstate"), t("brokerRealEstateCopy")],
-              ["03", t("administerProperty"), t("administerPropertyCopy")],
-            ].map(([number, title, copy]) => (
-              <article className="journey-card" key={number}>
-                <span className="journey-number">{number}</span>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </main>
-    </div>
-  );
+function NetworkPage({ sections, ...props }) {
+  const { locale } = useLanguage();
+  const c = NETWORK_COPY[locale];
+  return <div className="route-page"><PageHeader {...props} /><h1 className="network-page-title">{sections[0] === "introduction" ? c.identity : c[sections[0]][0]}</h1><NetworkSections sections={sections} onOpenModal={props.onOpenModal} /></div>;
 }
 
-function BrokerAccessPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
-  const { t } = useLanguage();
-  return (
-    <div className="route-page broker-page">
-      <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
-      <main className="page-main">
-        <PageIntro
-          eyebrow={t("brokerAccessEyebrow")}
-          title={<>{t("turnRight")}<br />{t("briefIntoDeal")}</>}
-          copy={t("brokerAccessCopy")}
-          image="/assets/reverance-explorer/building.webp"
-        >
-          <div className="page-cta-row">
-            <button className="button button-primary" type="button" onClick={() => onOpenModal("register")}>{t("registerAsBroker")}</button>
-            <button className="text-link" type="button" onClick={() => onNavigate("resources")}>{t("viewResources")} <span aria-hidden="true">↗</span></button>
-          </div>
-        </PageIntro>
+function WhyAixessPage(props) {
+  return <NetworkPage {...props} sections={["why", "advantage", "services", "backing", "closing"]} />;
+}
 
-        <section className="page-section broker-process" aria-labelledby="broker-process-title">
-          <div className="section-heading-row">
-            <p className="section-eyebrow">{t("brokerProcess")}</p>
-            <FittedHeading id="broker-process-title"><span>{t("lessChasing")}</span><span>{t("moreClosing")}</span></FittedHeading>
-          </div>
-          <div className="process-list">
-            {[
-              ["01", t("access"), t("accessCopy")],
-              ["02", t("introduce"), t("introduceCopy")],
-              ["03", t("closeStep"), t("closeCopy")],
-            ].map(([number, title, copy]) => (
-              <div className="process-row" key={number}>
-                <span className="process-number">{number}</span>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-                <span className="process-arrow" aria-hidden="true">↗</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="broker-callout" aria-label={t("projectReveranceBlock")}>
-          <div>
-            <p className="section-eyebrow">{t("projectReveranceBatumi")}</p>
-            <FittedHeading><span>{t("selectedResidencesProposition", { count: availableResidenceCount })}</span><span>{t("sharperProposition")}</span></FittedHeading>
-          </div>
-          <dl className="broker-facts">
-            <div><dt>{t("access")}</dt><dd>{t("blockFloorsBatumi")}</dd></div>
-            <div><dt>{t("completion")}</dt><dd>{t("july2028")}</dd></div>
-            <div><dt>{t("position")}</dt><dd>{t("newBoulevard")}</dd></div>
-          </dl>
-        </section>
-      </main>
-    </div>
-  );
+function BrokerAccessPage(props) {
+  return <NetworkPage {...props} sections={["introduction", "eligibility", "commercial", "process", "client", "closing"]} />;
 }
 
 const resources = [
@@ -473,7 +358,7 @@ const resources = [
 ];
 
 function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   return (
     <div className="route-page resources-page">
       <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
@@ -513,7 +398,7 @@ function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
           </div>
           <div className="faq-list">
             {[
-              [t("minimumInvestmentQuestion"), t("minimumInvestmentAnswer")],
+              [t("minimumInvestmentQuestion"), `${NETWORK_COPY[locale].start}. ${NETWORK_COPY[locale].terms}`],
               [t("foreignersOwnQuestion"), t("foreignersOwnAnswer")],
               [t("reveranceOfferQuestion"), t("reveranceOfferAnswer", { count: availableResidenceCount })],
             ].map(([question, answer]) => (
@@ -524,6 +409,7 @@ function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
             ))}
           </div>
         </section>
+        <NetworkSections sections={["tools", "insights"]} onOpenModal={onOpenModal} />
       </main>
     </div>
   );
@@ -542,8 +428,9 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
           </div>
           <p>{t("residenceRouteCopy")}</p>
         </section>
+        <NetworkSections sections={["opportunity"]} onOpenModal={onOpenModal} />
         <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
-          <ResidenceExplorer onBrokerAccess={() => onOpenModal("register")} />
+          <ResidenceExplorer liveInventoryTitle onBrokerAccess={() => onOpenModal("register")} />
         </Suspense>
       </main>
     </div>
@@ -698,6 +585,7 @@ function AppContent() {
       {currentPage === "residences" && <ResidencesPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "broker-access" && <BrokerAccessPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "resources" && <ResourcesPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
+      {currentPage === "calculators" && <div className="route-page"><PageHeader {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} /><Suspense fallback={<p role="status">{t("preparingInteractive")}</p>}><Calculators /></Suspense></div>}
       {currentPage === "privacy" && <PrivacyPage />}
       {currentPage === "admin" && <Suspense fallback={<p role="status">{t("loadingAdmin")}</p>}><AdminDashboard /></Suspense>}
       <PrivacyControls page={currentPage} />

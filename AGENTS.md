@@ -6,6 +6,12 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 
 ## Selected AiXESS direction
 
+- September 7 content placement correction: preserve the existing homepage structure and copy. Put the supplied document's Why AiXESS content on Why AiXESS, partner/network/process/Client Mode content on Broker Access, opportunity facts on Residences, and tools/calculators/insights on Resources. The document does not authorize a new long-form homepage.
+- Why AiXESS flow headline should use the full available section width on tablet/desktop so “ACCESS → EARN → SELL → GROW” remains a single line; allow natural wrapping on narrow phones.
+- Calculators are a first-class top-level navigation destination in desktop and mobile menus, not only a Resources link.
+
+- September 7, 2026: AiXESS_Website_Content_Final.docx is the approved marketing-copy source. Use its market/company figures as supplied, without editing asterisks. Client Mode is coming soon. Integrate only Payment Plan, Rental Yield, Financing and Capital Growth from AiXESS_Calculator_Package; example assumptions are not approved unit terms. Keep all new UI translated in EN/DE/PL/SL/RU.
+
 - The attached black, silver, and orange broker landing-page mockup is the visual source of truth.
 - Use Gilroy throughout, the supplied AiXESS logo, and the real Project Reverance exterior imagery.
 - Preserve the oversized three-line hero headline, diagonal architectural image split, slim repeating project ticker, and brushed-silver broker access section.
