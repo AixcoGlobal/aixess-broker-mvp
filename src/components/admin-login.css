@@ -1,6 +1,6 @@
 .admin-login-page { min-height:100svh;background:#121312;color:#f4f2ed; }
 .admin-login-header { display:flex;justify-content:space-between;align-items:center;gap:20px;padding:28px clamp(20px,5vw,80px);border-bottom:1px solid #393a36; }
-.admin-login-header img { display:block;width:132px; }
+.admin-login-header img { display:block;width:132px;height:auto;max-width:100%; }
 .admin-login-header>a:last-child { color:#c9cbc5;font-size:14px;text-decoration:none; }
 .admin-login-main { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,480px);gap:clamp(40px,8vw,140px);align-items:center;max-width:1360px;margin:auto;padding:clamp(32px,7vw,100px) clamp(20px,5vw,80px); }
 .admin-login-context>p,.admin-login-eyebrow { font-size:12px;font-weight:800;letter-spacing:.15em;color:#ff791f; }

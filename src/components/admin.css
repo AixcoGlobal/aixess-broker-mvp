@@ -1,7 +1,7 @@
 .admin-app { background:#111514;color:#f0efea;min-height:100dvh;font-size:15px;line-height:1.5; }
 .admin-app * { box-sizing:border-box; }
 .admin-header { display:flex;align-items:center;gap:28px;padding:24px clamp(20px,4vw,64px);border-bottom:1px solid #363c38; }
-.admin-logo img { width:120px;display:block; }
+.admin-logo img { width:120px;height:auto;max-width:100%;display:block; }
 .admin-header>span { font-size:11px;letter-spacing:.16em;color:#a7b2ab; }
 .admin-header>a:last-child { margin-left:auto;color:#ebece8;font-size:13px; }
 .admin-header>a[href="#home"]:not(.admin-logo) { margin-left:auto;color:#ebece8;font-size:13px; }
