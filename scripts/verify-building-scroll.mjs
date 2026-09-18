@@ -38,6 +38,9 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
 try {
   await page.goto(BASE_URL, { waitUntil: "networkidle", timeout: 120_000 });
+  await page.waitForSelector(".residence-explorer", { timeout: 120_000 });
+  await page.evaluate(() => document.querySelector(".residence-explorer")?.scrollIntoView({ block: "start" }));
+  await page.waitForTimeout(400);
   await waitForExplorer(page);
   await scrollToSettledBottom(page);
 

@@ -3,6 +3,7 @@
 .network-section > * { max-width: 90rem; margin-inline: auto; }
 .network-heading { margin-bottom: 2.5rem; }
 .network-heading h2 { max-width: 24ch; font-size: clamp(2rem, 4.4vw, 4.8rem); font-weight: 800; line-height: 1.08; letter-spacing: -.035em; margin: .8rem 0 1.5rem; overflow-wrap: break-word; }
+.network-starting-points-title { max-width: 24ch; margin: 3rem 0 1rem; font-size: clamp(1.8rem, 3.5vw, 3.6rem); font-weight: 800; line-height: 1.08; letter-spacing: -.035em; overflow-wrap: anywhere; }
 .network-why .network-heading h2 { max-width: none; }
 .network-section p, .network-card p, .network-steps p { line-height: 1.6; }
 .network-section .network-lead { max-width: 65ch; margin: 1.2rem 0 2rem; font-size: clamp(1.125rem, 1.5vw, 1.35rem); }

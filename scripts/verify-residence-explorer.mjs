@@ -180,8 +180,9 @@ const page = await browser.newPage({ viewport: VIEWPORT });
 
 try {
   await page.goto(BASE_URL, { waitUntil: "networkidle", timeout: 120_000 });
-  await waitForExplorer(page);
+  await page.waitForSelector(".residence-explorer", { timeout: 120_000 });
   await scrollToExplorer(page);
+  await waitForExplorer(page);
 
   // 1. Explorer becomes interactive while visible (before fully settled)
   await scrollExplorerProgress(page, 0.35);

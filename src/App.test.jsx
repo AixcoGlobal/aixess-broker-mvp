@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 
 beforeEach(() => {
@@ -13,6 +13,19 @@ afterEach(() => {
 });
 
 describe("AIXESS navigation pages", () => {
+  it("keeps the primary menu in the approved order", () => {
+    window.history.replaceState({}, "", "/");
+    render(<App />);
+
+    expect(Array.from(document.querySelectorAll(".desktop-nav button")).map((button) => button.textContent)).toEqual([
+      "AIXESS ADVANTAGE",
+      "BROKER ACCESS",
+      "SELECTED OPPORTUNITIES",
+      "INSIGHTS",
+      "BROKER TOOLS",
+    ]);
+  });
+
   it("keeps document content off the original homepage and on dedicated pages", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
@@ -25,8 +38,8 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByText("COMING SOON")).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "REQUEST ACCESS" })[0]).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-signup?lang=en");
     expect(screen.getAllByRole("link", { name: "PARTNER SIGN IN" })[0]).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-login?lang=en");
-    fireEvent.click(screen.getAllByRole("button", { name: "RESOURCES" })[0]);
-    expect(screen.getByRole("link", { name: /OPEN ALL CALCULATORS/i })).toHaveAttribute("href", "#calculators");
+    fireEvent.click(screen.getAllByRole("button", { name: "INSIGHTS" })[0]);
+    expect(screen.getAllByRole("button", { name: /REQUEST PDF/i })).toHaveLength(3);
   });
 
   it("routes broker login and registration to the matching Workwise flows", () => {
@@ -43,35 +56,49 @@ describe("AIXESS navigation pages", () => {
     );
   });
 
+  it("applies the supplied first-page and Broker Access copy corrections", () => {
+    window.history.replaceState({}, "", "/#broker-access");
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: "TURN YOUR NETWORK INTO OPPORTUNITY." })).toBeInTheDocument();
+    expect(screen.getByText("AiXESS expands what you can offer your clients and connections — giving you access to selected international real estate opportunities, professional tools, ready-to-sell materials and direct AIXCO support.")).toBeInTheDocument();
+    expect(screen.getByText("YOUR CONNECTIONS. YOUR AMBITION. YOUR NEXT OPPORTUNITY.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "DIFFERENT STARTING POINTS. ONE PLATFORM TO MOVE FORWARD." })).toBeInTheDocument();
+    expect(screen.getByText("ASPIRING PROFESSIONALS")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "10% DOWN PAYMENT. 100% COMMISSION UNLOCKED." })).toBeInTheDocument();
+    expect(screen.getByText("Your client secures the property with just 10% down payment, unlocking your full commission, paid within 72 hours.")).toBeInTheDocument();
+  });
+
   it("renders the selected page from its shareable hash route", () => {
     render(<App />);
 
     expect(screen.getByRole("heading", { name: /ACCESS → EARN → SELL → GROW/i })).toBeInTheDocument();
     expect(screen.getByText("90+")).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "WHY AIXESS" }).filter((button) => button.getAttribute("aria-current") === "page")).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: "AIXESS ADVANTAGE" }).filter((button) => button.getAttribute("aria-current") === "page")).toHaveLength(2);
   });
 
   it("navigates between pages without a full reload", () => {
     render(<App />);
 
-    fireEvent.click(screen.getAllByRole("button", { name: "RESOURCES" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: "INSIGHTS" })[0]);
 
-    expect(window.location.hash).toBe("#resources");
+    expect(window.location.hash).toBe("#insights");
     expect(screen.getByRole("heading", { name: /make the/i })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "RESOURCES" }).filter((button) => button.getAttribute("aria-current") === "page")).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: "INSIGHTS" }).filter((button) => button.getAttribute("aria-current") === "page")).toHaveLength(2);
   });
 
-  it("exposes calculators directly in the desktop and mobile navigation", () => {
+  it("exposes broker tools directly in the desktop and mobile navigation", async () => {
     window.history.replaceState({}, "", "/");
     render(<App />);
 
-    expect(screen.getAllByRole("button", { name: "CALCULATOR" })).toHaveLength(2);
-    fireEvent.click(screen.getAllByRole("button", { name: "CALCULATOR" })[0]);
-    expect(window.location.hash).toBe("#calculators");
+    expect(screen.getAllByRole("button", { name: "BROKER TOOLS" })).toHaveLength(2);
+    fireEvent.click(screen.getAllByRole("button", { name: "BROKER TOOLS" })[0]);
+    expect(window.location.hash).toBe("#broker-tools");
+    expect(await screen.findByRole("tablist")).toBeInTheDocument();
   });
 
   it("keeps resource CTAs connected to the working materials request dialog", () => {
-    window.history.replaceState({}, "", "/#resources");
+    window.history.replaceState({}, "", "/#insights");
     render(<App />);
 
     const firstResource = screen.getAllByRole("article")[0];
@@ -81,12 +108,30 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { name: /request project materials/i })).toBeInTheDocument();
   });
 
-  it("shows the four document calculators and marks client PDF generation as future", () => {
-    window.history.replaceState({}, "", "/#resources");
+  it("shows the four document calculators and marks client PDF generation as future", async () => {
+    window.history.replaceState({}, "", "/#broker-tools");
     render(<App />);
 
-    expect(screen.getByText("CREATE CLIENT PDF")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /OPEN ALL CALCULATORS/i })).toHaveAttribute("href", "#calculators");
+    expect(await screen.findByText("CREATE CLIENT PDF")).toBeInTheDocument();
+    expect(screen.getByRole("tablist")).toBeInTheDocument();
+  });
+
+  it("renders the admin route through its lazy boundary without throwing", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.endsWith("/api/admin/session")) {
+        return new Response(JSON.stringify({ error: "Sign in" }), { status: 401, headers: { "content-type": "application/json" } });
+      }
+      return new Response(JSON.stringify({ setupAvailable: false }), { status: 200, headers: { "content-type": "application/json" } });
+    });
+
+    try {
+      window.history.replaceState({}, "", "/#admin");
+      render(<App />);
+      expect(await screen.findByRole("heading", { name: "Welcome back." })).toBeInTheDocument();
+    } finally {
+      fetchMock.mockRestore();
+    }
   });
 
   it("exposes the residence explorer as a dedicated destination", () => {
@@ -105,7 +150,7 @@ describe("AIXESS navigation pages", () => {
 
     expect(document.documentElement.lang).toBe("de");
     expect(window.localStorage.getItem("aixess-language")).toBe("de");
-    expect(screen.getAllByRole("button", { name: "WARUM AIXESS" })).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: "AIXESS-VORTEIL" })).toHaveLength(2);
     expect(screen.getByRole("heading", { name: /ZUGANG → VERDIENEN → VERKAUFEN → WACHSEN/i })).toBeInTheDocument();
   });
 });

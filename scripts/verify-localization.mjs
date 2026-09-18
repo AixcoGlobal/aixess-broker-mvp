@@ -8,7 +8,7 @@ const locales = (process.env.QA_LOCALES || "en,de,pl,sl,ru").split(",");
 const sizes = process.env.QA_SIZES
   ? process.env.QA_SIZES.split(",").map((size) => size.split("x").map(Number))
   : [[320, 740], [390, 844], [768, 1024], [1024, 768], [1366, 768], [1440, 900], [1920, 1080], [844, 390]];
-const routes = (process.env.QA_ROUTES || "home,why-aixess,broker-access,resources,residences").split(",");
+const routes = (process.env.QA_ROUTES || "home,why-aixess,broker-access,insights,broker-tools,residences").split(",");
 const browser = await (process.env.QA_BROWSER === "webkit" ? webkit : chromium).launch({ headless: true });
 const context = await browser.newContext({ reducedMotion: "reduce" });
 const page = await context.newPage();
@@ -64,7 +64,10 @@ function inspectLayout() {
 try {
   await page.goto(base);
   for (const locale of locales) {
-    await page.evaluate((language) => localStorage.setItem("aixess-language", language), locale);
+    await page.evaluate((language) => {
+      localStorage.setItem("aixess-language", language);
+      localStorage.setItem("aixess.privacy.v1", JSON.stringify({ value: "rejected", expires: Date.now() + 86400000 }));
+    }, locale);
     await page.reload();
     for (const [width, height] of sizes) {
       await page.setViewportSize({ width, height });
@@ -87,9 +90,12 @@ try {
         if (route === "home" || route === "residences") {
           await page.locator(".residence-filter-controls").waitFor({ state: "attached" });
         }
+        if (route === "home" || route === "residences") {
+          await page.locator('.residence-filter-controls select option:not([value="all"])').first().waitFor({ state: "attached", timeout: 120000 });
+        }
         await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
         await page.screenshot({ path: `${output}/${locale}-${width}x${height}-${route}.png`, fullPage: route !== "home" && route !== "residences" });
-        if (process.env.QA_INTERACTIONS === "1" && route === "resources") {
+        if (process.env.QA_INTERACTIONS === "1" && route === "insights") {
           await page.locator(".page-cta-row button").click();
           await page.locator(".modal-panel").waitFor();
           results.push({ locale, route, state: "materials-form", ...await page.evaluate(inspectLayout) });

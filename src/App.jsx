@@ -21,15 +21,15 @@ const ResidenceExplorer = lazy(() => import("./components/ResidenceExplorer").th
 const tickerItems = ["projectReverance", "batumi", "brokerAccessOpen"];
 
 const navItems = [
-  { key: "home", labelKey: "project" },
-  { key: "why-aixess", labelKey: "whyAixess" },
-  { key: "residences", labelKey: "residences" },
+  { key: "why-aixess", labelKey: "aixessAdvantage" },
   { key: "broker-access", labelKey: "brokerAccess" },
-  { key: "resources", labelKey: "resources" },
-  { key: "calculators", labelKey: "calculator" },
+  { key: "residences", labelKey: "selectedOpportunities" },
+  { key: "insights", labelKey: "insights" },
+  { key: "broker-tools", labelKey: "brokerTools" },
 ];
 
-const validRoutes = new Set([...navItems.map(({ key }) => key), "admin", "privacy", "calculators"]);
+const routeAliases = { resources: "insights", calculators: "broker-tools" };
+const validRoutes = new Set(["home", ...navItems.map(({ key }) => key), "admin", "privacy"]);
 
 const WORKWISE_BROKER_PATHS = {
   login: "/realestate/aixco/broker-login",
@@ -42,7 +42,8 @@ function workwiseBrokerUrl(type, locale = "en") {
 
 function routeFromLocation() {
   if (typeof window === "undefined") return "home";
-  const route = window.location.hash.replace(/^#/, "").split("?")[0].trim().toLowerCase();
+  const requestedRoute = window.location.hash.replace(/^#/, "").split("?")[0].trim().toLowerCase();
+  const route = routeAliases[requestedRoute] || requestedRoute;
   return validRoutes.has(route) ? route : "home";
 }
 
@@ -337,34 +338,34 @@ function PageIntro({ eyebrow, title, copy, children, image = "/assets/reverance-
   );
 }
 
-function NetworkPage({ sections, ...props }) {
-  const { locale } = useLanguage();
+function NetworkPage({ sections, pageTitleKey, ...props }) {
+  const { locale, t } = useLanguage();
   const c = NETWORK_COPY[locale];
-  return <div className="route-page"><PageHeader {...props} /><h1 className="network-page-title">{sections[0] === "introduction" ? c.identity : c[sections[0]][0]}</h1><NetworkSections sections={sections} onOpenModal={props.onOpenModal} /></div>;
+  return <div className="route-page"><PageHeader {...props} /><h1 className="network-page-title">{pageTitleKey ? t(pageTitleKey) : sections[0] === "introduction" ? c.identity : c[sections[0]][0]}</h1><NetworkSections sections={sections} onOpenModal={props.onOpenModal} /></div>;
 }
 
 function WhyAixessPage(props) {
-  return <NetworkPage {...props} sections={["why", "advantage", "services", "backing", "closing"]} />;
+  return <NetworkPage {...props} pageTitleKey="aixessAdvantage" sections={["why", "advantage", "services", "backing", "closing"]} />;
 }
 
 function BrokerAccessPage(props) {
-  return <NetworkPage {...props} sections={["introduction", "eligibility", "commercial", "process", "client", "closing"]} />;
+  return <NetworkPage {...props} pageTitleKey="brokerAccess" sections={["introduction", "eligibility", "commercial", "process", "client", "closing"]} />;
 }
 
-const resources = [
+const insightDownloads = [
   ["01", "resourceBrochureTitle", "resourceBrochureCopy", "resourceClientsTag"],
   ["02", "resourceMedicalTitle", "resourceMedicalCopy", "resourceGuideTag"],
   ["03", "resourceLeisureTitle", "resourceLeisureCopy", "resourceGuideTag"],
 ];
 
-function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
+function InsightsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
   const { t, locale } = useLanguage();
   return (
-    <div className="route-page resources-page">
+    <div className="route-page insights-page">
       <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
       <main className="page-main">
         <PageIntro
-          eyebrow={t("resourcesEyebrow")}
+          eyebrow={t("insightsEyebrow")}
           title={<>{t("makeMoveClear")}<br />{t("nextMoveClear")}</>}
           copy={t("resourcesCopy")}
         >
@@ -380,7 +381,7 @@ function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
             <FittedHeading id="resource-library"><span>{t("everythingOnePlace")}</span><span>{t("place")}</span></FittedHeading>
           </div>
           <div className="resource-grid">
-            {resources.map(([number, titleKey, copyKey, tagKey]) => (
+            {insightDownloads.map(([number, titleKey, copyKey, tagKey]) => (
               <article className="resource-card" key={titleKey}>
                 <div className="resource-card-top"><span>{number}</span><span>{t(tagKey)}</span></div>
                 <h3>{t(titleKey)}</h3>
@@ -409,7 +410,20 @@ function ResourcesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpen
             ))}
           </div>
         </section>
-        <NetworkSections sections={["tools", "insights"]} onOpenModal={onOpenModal} />
+      </main>
+    </div>
+  );
+}
+
+function BrokerToolsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
+  const { t } = useLanguage();
+  return (
+    <div className="route-page broker-tools-page">
+      <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
+      <main className="page-main">
+        <Suspense fallback={<p role="status">{t("preparingInteractive")}</p>}>
+          <Calculators />
+        </Suspense>
       </main>
     </div>
   );
@@ -584,8 +598,8 @@ function AppContent() {
       {currentPage === "why-aixess" && <WhyAixessPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "residences" && <ResidencesPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "broker-access" && <BrokerAccessPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
-      {currentPage === "resources" && <ResourcesPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
-      {currentPage === "calculators" && <div className="route-page"><PageHeader {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} /><Suspense fallback={<p role="status">{t("preparingInteractive")}</p>}><Calculators /></Suspense></div>}
+      {currentPage === "insights" && <InsightsPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
+      {currentPage === "broker-tools" && <BrokerToolsPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "privacy" && <PrivacyPage />}
       {currentPage === "admin" && <Suspense fallback={<p role="status">{t("loadingAdmin")}</p>}><AdminDashboard /></Suspense>}
       <PrivacyControls page={currentPage} />

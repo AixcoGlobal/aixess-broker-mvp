@@ -11,7 +11,7 @@ function toolFromLocation() {
 }
 
 export default function Calculators() {
-  const { locale } = useLanguage();
+  const { locale, t } = useLanguage();
   const c = CALCULATOR_COPY[locale];
   const network = NETWORK_COPY[locale];
   const [active, setActive] = useState(toolFromLocation);
@@ -34,14 +34,15 @@ export default function Calculators() {
   }, []);
   const select = (id) => {
     setActive(id); setOutcome(null); setDirty(false);
-    window.history.replaceState({}, "", `#calculators?tool=${id}`);
+    window.history.replaceState({}, "", `#broker-tools?tool=${id}`);
   };
   const format = (value, kind) => {
     if (kind === "ratio") return `${new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}×`;
     return new Intl.NumberFormat(locale, kind === "percent" ? { style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2 } : { style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
   };
   return <section className="calculator-page">
-    <p className="section-eyebrow">{network.tools[0]}</p><h1>{c.title}</h1><p className="calculator-intro">{c.example}</p>
+    <p className="section-eyebrow">{t("brokerTools")}</p><h1>{c.title}</h1><p className="calculator-intro">{c.example}</p>
+    <p className="calculator-note"><strong>{network.clientPdf}</strong> — {network.pdfFuture}</p>
     <div className="calculator-tabs" role="tablist" aria-label={c.title}>{CALCULATORS.map((calc, i) => <button key={calc.id} id={`tab-${calc.id}`} role="tab" aria-selected={active === calc.id} aria-controls="calculator-panel" tabIndex={active === calc.id ? 0 : -1} onClick={() => select(calc.id)} onKeyDown={event => {
       let next;
       if (event.key === "ArrowRight") next = (i + 1) % CALCULATORS.length;

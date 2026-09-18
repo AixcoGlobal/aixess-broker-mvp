@@ -15,12 +15,12 @@ async function verifyLocales(page) {
   try {
     for(const locale of ['en','de','pl','sl','ru']) {
       await page.evaluate(locale=>{localStorage.setItem('aixess-language',locale);localStorage.setItem('aixess.privacy.v1',JSON.stringify({value:'rejected',expires:Date.now()+86400000}));},locale);
-      await page.goto(base+'/#resources');
+      await page.goto(base+'/#insights');
       await page.reload();
       await page.waitForFunction(locale=>document.documentElement.lang===locale,locale);
       for(const [width,height] of [[1440,900],[390,844],[320,568]]) {
         await page.setViewportSize({width,height});
-        for(const route of ['home','why-aixess','broker-access','resources','privacy','admin']) {
+        for(const route of ['home','why-aixess','broker-access','insights','broker-tools','privacy','admin']) {
           login=false;
           await page.evaluate(route=>{location.hash=route;},route);
           await page.waitForTimeout(200);
@@ -29,7 +29,7 @@ async function verifyLocales(page) {
           const body=await page.locator('body').innerText();
           if(locale!=='en' && forbidden.test(body)) throw new Error(`${locale}/${route}: English remains: ${body.match(forbidden)[0]}`);
           if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1)) throw new Error(`${locale}/${route}/${width}: horizontal overflow`);
-          if(['pl','ru','de'].includes(locale)&&width===390&&['resources','admin'].includes(route)) await page.screenshot({path:`output/playwright/locale-${locale}-${route}-${width}.png`});
+          if(['pl','ru','de'].includes(locale)&&width===390&&['insights','broker-tools','admin'].includes(route)) await page.screenshot({path:`output/playwright/locale-${locale}-${route}-${width}.png`});
           results.push({locale,route,width});
         }
         login=true;
@@ -38,7 +38,7 @@ async function verifyLocales(page) {
         if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1)) throw new Error(`${locale}/login/${width}: horizontal overflow`);
         if(locale!=='en'&&forbidden.test(await page.locator('body').innerText())) throw new Error(`${locale}: English login`);
         if(width===390) await page.screenshot({path:`output/playwright/locale-${locale}-login.png`});
-        await page.evaluate(()=>{location.hash='resources';});
+        await page.evaluate(()=>{location.hash='insights';});
         await page.waitForTimeout(100);
       }
     }
