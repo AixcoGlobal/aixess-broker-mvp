@@ -7,6 +7,8 @@
 .network-why .network-heading h2 { max-width: none; }
 .network-section p, .network-card p, .network-steps p { line-height: 1.6; }
 .network-section .network-lead { max-width: 65ch; margin: 1.2rem 0 2rem; font-size: clamp(1.125rem, 1.5vw, 1.35rem); }
+.network-intro-lead { font-weight: 800; }
+.network-intro-tagline { font-weight: 600; }
 .network-section .section-eyebrow { font-size: .875rem; overflow-wrap: break-word; }
 .network-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3rem; margin-bottom: 2rem; }
 .network-card { padding: 2rem 0; border-top: 1px solid #8888; min-width: 0; }

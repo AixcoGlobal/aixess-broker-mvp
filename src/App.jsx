@@ -345,11 +345,11 @@ function NetworkPage({ sections, pageTitleKey, ...props }) {
 }
 
 function WhyAixessPage(props) {
-  return <NetworkPage {...props} pageTitleKey="aixessAdvantage" sections={["why", "advantage", "services", "backing", "closing"]} />;
+  return <NetworkPage {...props} pageTitleKey="aixessAdvantage" sections={["introduction", "why", "advantage", "services", "backing", "closing"]} />;
 }
 
 function BrokerAccessPage(props) {
-  return <NetworkPage {...props} pageTitleKey="brokerAccess" sections={["introduction", "eligibility", "commercial", "process", "client", "closing"]} />;
+  return <NetworkPage {...props} pageTitleKey="brokerAccess" sections={["eligibility", "commercial", "process", "client", "closing"]} />;
 }
 
 const insightDownloads = [

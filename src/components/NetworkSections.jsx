@@ -31,7 +31,7 @@ export function NetworkSections({ sections }) {
   return sections.map((section) => {
     let content;
     switch (section) {
-      case "introduction": content = <><Heading copy={[c.identity, c.hero.join(" "), c.intro]} />{c.introFollowup && <p className="network-lead">{c.introFollowup}</p>}{c.introTagline && <p className="network-emphasis network-intro-tagline">{c.introTagline}</p>}{c.startingPointsTitle && <h3 className="network-starting-points-title">{c.startingPointsTitle}</h3>}{c.startingPoints && <Cards rows={c.startingPoints} />}<p className="network-emphasis">{c.promise.join(" · ")}</p>{actions()}</>; break;
+      case "introduction": content = <><Heading copy={[c.identity, c.hero.join(" ")]} /><p className="network-lead network-intro-lead">{c.intro}</p>{c.introFollowup && <p className="network-lead">{c.introFollowup}</p>}{c.introTagline && <p className="network-emphasis network-intro-tagline">{c.introTagline}</p>}{c.startingPointsTitle && <h3 className="network-starting-points-title">{c.startingPointsTitle}</h3>}{c.startingPoints && <Cards rows={c.startingPoints} />}<p className="network-emphasis">{c.promise.join(" · ")}</p>{actions()}</>; break;
       case "commercial": content = <><Heading copy={c.commercial} /><p className="network-emphasis">{c.commercial[3]}</p></>; break;
       case "eligibility": content = <><Heading copy={c.eligibility} /><Cards rows={c.people} /><p className="network-emphasis">{c.network}</p>{actions()}</>; break;
       case "why": content = <><Heading copy={c.why} /><Cards rows={c.reasons} /></>; break;

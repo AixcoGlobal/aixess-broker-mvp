@@ -34,7 +34,8 @@ describe("AIXESS navigation pages", () => {
     expect(container.querySelector(".project-ticker")).toBeInTheDocument();
     expect(container.querySelector("[data-content-section]")).not.toBeInTheDocument();
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
-    expect(container.querySelector('[data-content-section="introduction"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-content-section="eligibility"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-content-section="introduction"]')).not.toBeInTheDocument();
     expect(screen.getByText("COMING SOON")).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "REQUEST ACCESS" })[0]).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-signup?lang=en");
     expect(screen.getAllByRole("link", { name: "PARTNER SIGN IN" })[0]).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-login?lang=en");
@@ -56,14 +57,16 @@ describe("AIXESS navigation pages", () => {
     );
   });
 
-  it("applies the supplied first-page and Broker Access copy corrections", () => {
-    window.history.replaceState({}, "", "/#broker-access");
+  it("puts the supplied first-page copy on AiXESS Advantage and Broker Access corrections on Broker Access", () => {
+    window.history.replaceState({}, "", "/#why-aixess");
     render(<App />);
 
     expect(screen.getByRole("heading", { name: "TURN YOUR NETWORK INTO OPPORTUNITY." })).toBeInTheDocument();
     expect(screen.getByText("AiXESS expands what you can offer your clients and connections — giving you access to selected international real estate opportunities, professional tools, ready-to-sell materials and direct AIXCO support.")).toBeInTheDocument();
     expect(screen.getByText("YOUR CONNECTIONS. YOUR AMBITION. YOUR NEXT OPPORTUNITY.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "DIFFERENT STARTING POINTS. ONE PLATFORM TO MOVE FORWARD." })).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
     expect(screen.getByText("ASPIRING PROFESSIONALS")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "10% DOWN PAYMENT. 100% COMMISSION UNLOCKED." })).toBeInTheDocument();
     expect(screen.getByText("Your client secures the property with just 10% down payment, unlocking your full commission, paid within 72 hours.")).toBeInTheDocument();
