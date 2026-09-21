@@ -452,10 +452,11 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
 }
 
 function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const c = NETWORK_COPY[locale];
   return (
     <>
-      <section className="hero" id="project">
+      <section className="hero hero-first-page" id="project">
         <SiteHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
 
         <div className="hero-media" aria-hidden="true">
@@ -473,12 +474,10 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
 
         <div className="hero-copy">
           <FittedHeading as="h1">
-            <span>{t("moveThe")}</span>
-            <span>{t("deal")}</span>
-            <span>{t("forward")}<span className="headline-period">.</span></span>
+            {c.hero.map((line) => <span key={line}>{line}</span>)}
           </FittedHeading>
           <span className="accent-rule" aria-hidden="true" />
-          <p className="hero-subtitle">{t("heroSubtitle")}</p>
+          <p className="hero-subtitle hero-introduction">{c.intro}</p>
           <div className="hero-meta" aria-label={t("currentProjectDetails")}>
             <span className="meta-project">{t("projectReverance")}</span>
             <span className="meta-divider" aria-hidden="true" />
@@ -499,6 +498,14 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
       </div>
 
       <section className="access-section" id="why-aixess">
+        <div className="home-starting-points">
+          <p className="home-intro-followup">{c.introFollowup}</p>
+          <p className="home-intro-tagline">{c.introTagline}</p>
+          <h2>{c.startingPointsTitle}</h2>
+          <div className="home-starting-grid">
+            {c.startingPoints.map(([title, description]) => <article key={title}><h3>{title}</h3><p>{description}</p></article>)}
+          </div>
+        </div>
         <div className="access-copy">
           <p className="section-eyebrow">{t("brokerNetwork")}</p>
           <FittedHeading><span>{t("yourAccess")}</span><span>{t("startsHere")}</span></FittedHeading>

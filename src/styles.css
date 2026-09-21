@@ -439,6 +439,19 @@ input:focus-visible {
   white-space: normal;
 }
 
+.hero-subtitle.hero-introduction { max-width: 46ch; font-size: clamp(1.0625rem, 1.4vw, 1.3rem); line-height: 1.6; letter-spacing: 0; }
+.home-starting-points { grid-column: 1 / -1; min-width: 0; width: 100%; }
+.home-starting-points + .access-copy { grid-row: 2 / span 2; }
+@media (min-width: 701px) { .hero-first-page .hero-copy { width: 49%; padding-right: 1.5rem; } }
+.home-intro-followup { max-width: 75ch; margin: 0; font-size: clamp(1.125rem, 1.5vw, 1.35rem); line-height: 1.6; }
+.home-intro-tagline { margin: 1.5rem 0 2.5rem; font-weight: 800; line-height: 1.5; }
+.home-starting-points h2 { max-width: 36ch; margin: 0 0 2rem; font-size: clamp(1.8rem, 3.4vw, 3.4rem); line-height: 1.12; letter-spacing: -.035em; overflow-wrap: anywhere; }
+.home-starting-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+.home-starting-grid article { min-width: 0; border-top: 2px solid var(--orange); padding-top: 1rem; }
+.home-starting-grid h3 { margin: 0 0 .8rem; font-size: 1.125rem; line-height: 1.4; overflow-wrap: anywhere; }
+.home-starting-grid p { margin: 0; font-size: 1rem; line-height: 1.6; }
+@media (max-width: 767px) { .home-starting-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+
 .meta-project,
 .meta-dot {
   color: var(--orange);

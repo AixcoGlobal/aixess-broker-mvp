@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
+import { NETWORK_COPY } from "./network-copy";
 
 beforeEach(() => {
   window.history.replaceState({}, "", "/#why-aixess");
@@ -26,10 +27,14 @@ describe("AIXESS navigation pages", () => {
     ]);
   });
 
-  it("keeps document content off the original homepage and on dedicated pages", () => {
+  it("puts the newer first-page brief on the homepage while retaining the existing structure", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("MOVE THEDEALFORWARD.");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TURN YOURNETWORK INTOOPPORTUNITY.");
+    expect(screen.getByText(NETWORK_COPY.en.intro)).toBeInTheDocument();
+    expect(screen.getByText(NETWORK_COPY.en.introFollowup)).toBeInTheDocument();
+    expect(screen.getByText(NETWORK_COPY.en.introTagline)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: NETWORK_COPY.en.startingPointsTitle })).toBeInTheDocument();
     expect(container.querySelector(".access-section")).toBeInTheDocument();
     expect(container.querySelector(".project-ticker")).toBeInTheDocument();
     expect(container.querySelector("[data-content-section]")).not.toBeInTheDocument();
@@ -41,6 +46,20 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getAllByRole("link", { name: "PARTNER SIGN IN" })[0]).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-login?lang=en");
     fireEvent.click(screen.getAllByRole("button", { name: "INSIGHTS" })[0]);
     expect(screen.getAllByRole("button", { name: /REQUEST PDF/i })).toHaveLength(3);
+  });
+
+  it.each(Object.keys(NETWORK_COPY))("renders the complete first-page brief in %s", (locale) => {
+    window.history.replaceState({}, "", "/");
+    localStorage.setItem("aixess-language", locale);
+    const { container } = render(<App />);
+    const c = NETWORK_COPY[locale];
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(c.hero.join(""));
+    expect(screen.getByText(c.introFollowup)).toBeInTheDocument();
+    expect(container.querySelectorAll(".home-starting-grid article")).toHaveLength(3);
+    for (const [title, description] of c.startingPoints) {
+      expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+      expect(screen.getByText(description)).toBeInTheDocument();
+    }
   });
 
   it("routes broker login and registration to the matching Workwise flows", () => {
