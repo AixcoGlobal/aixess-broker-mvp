@@ -30,9 +30,11 @@ export default function ClientPdf({ locale, active, values, ready }) {
     <div><h2 id="client-pdf-title">{c.title}</h2><p className="calculator-note">{c.intro}</p></div>
     <fieldset disabled={busy} className="calculator-fields">
       <label htmlFor="pdf-apartment"><span>{c.apartment}</span><select id="pdf-apartment" value={apartmentCode} onChange={event => { setApartmentCode(event.target.value); setState("idle"); }}>
-        {CALCULATOR_APARTMENTS.map(apartment => <option key={apartment.code} value={apartment.code}>{apartment.code} · {new Intl.NumberFormat(locale).format(apartment.area)} m²</option>)}
+        {[false, true].map(premium => <optgroup key={String(premium)} label={premium ? goldenCopy.badge : c.regular}>
+          {CALCULATOR_APARTMENTS.filter(apartment => Boolean(getGoldenPremiumUnit(apartment.code)) === premium).map(apartment => <option key={apartment.code} value={apartment.code} style={premium ? { color: "#9B6D15" } : undefined}>{apartment.code} · {new Intl.NumberFormat(locale).format(apartment.area)} m²</option>)}
+        </optgroup>)}
       </select></label>
-      <p className="calculator-note client-pdf-unit">{c.floor}: {unit.floor} · {c.area}: {new Intl.NumberFormat(locale).format(unit.area)} m² · {c.seaView}</p>
+      <p className="calculator-note client-pdf-unit">{unit.block} · {c.floor}: {unit.floor} · {c.area}: {new Intl.NumberFormat(locale).format(unit.area)} m²</p>
       {goldenPremium && <p className="golden-premium-pdf-label">{goldenCopy.badge}</p>}
       <label htmlFor="pdf-client-name"><span>{c.name}</span><input id="pdf-client-name" type="text" value={clientName} maxLength={100} autoComplete="off" onChange={event => { setClientName(event.target.value); setState("idle"); }} /></label>
       <label htmlFor="pdf-client-address"><span>{c.address}</span><textarea id="pdf-client-address" value={clientAddress} maxLength={300} rows={3} autoComplete="off" placeholder={c.addressHint} onChange={event => { setClientAddress(event.target.value); setState("idle"); }} /></label>

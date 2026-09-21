@@ -7,6 +7,7 @@ import { NETWORK_COPY } from "../network-copy.js";
 import { CALCULATOR_APARTMENTS } from "../data/calculatorApartments.js";
 import { getGoldenPremiumUnit } from "../data/goldenPremiumApartments.js";
 import { GOLDEN_PREMIUM_COPY } from "../golden-premium-copy.js";
+import bPlans from "../data/reveranceBPlans.json";
 
 const W = 595.28, H = 841.89, M = 44, WIDTH = W - M * 2;
 const ink = rgb(.08, .08, .08), muted = rgb(.35, .35, .35), orange = rgb(.75, .3, .02);
@@ -29,7 +30,7 @@ async function asset(url, json = false) {
 
 export async function loadClientPdfAssets(unit) {
   const [snapshot, logo, ...fonts] = await Promise.all([
-    asset("/data/reverance-a.json", true),
+    unit.block === "B" ? Promise.resolve(bPlans) : asset("/data/reverance-a.json", true),
     asset("/assets/aixess-logo-white-cropped.png"),
     ...PDF_FONT_FILES.map(file => asset(`/fonts/client-pdf/${file}`)),
   ]);
@@ -117,7 +118,7 @@ export async function generateClientPdf({
   header(cover, 1);
   line(cover, copy.illustrative, M, 104, 10, true, orange);
   line(cover, `Project Reverance · ${unit.code}`, M, 128, 25, true);
-  line(cover, `${copy.floor} ${unit.floor} · ${new Intl.NumberFormat(locale).format(unit.area)} m² · ${copy.seaView}`, M, 167, 11);
+  line(cover, `${unit.block} · ${copy.floor} ${unit.floor} · ${new Intl.NumberFormat(locale).format(unit.area)} m²`, M, 167, 11);
   if (goldenPremium) line(cover, GOLDEN_PREMIUM_COPY[locale].badge, M, 190, 9, true, rgb(.9, .72, .22));
   let clientTop = 201;
   if (clientName.trim()) clientTop = wrap(cover, clientName, M, clientTop, WIDTH, 10, true) + 6;

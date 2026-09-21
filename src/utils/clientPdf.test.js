@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { PDFDocument } from "pdf-lib";
 import { CALCULATORS } from "./calculators.js";
 import { CALCULATOR_APARTMENTS } from "../data/calculatorApartments.js";
+import { getGoldenPremiumUnit } from "../data/goldenPremiumApartments.js";
 import { CLIENT_PDF_COPY } from "../client-pdf-copy.js";
 import { generateClientPdf, PDF_FONT_FILES } from "./clientPdf.js";
 
@@ -23,7 +24,7 @@ describe("client-facing PDF", () => {
     expect(result.filename).toBe(`aixess-reverance-A1305-${calc.id}-${locale}.pdf`);
   });
   it.each([
-    { apartmentCode: "B1401" }, { locale: "xx" }, { clientName: "x".repeat(101) },
+    { apartmentCode: "B1305" }, { locale: "xx" }, { clientName: "x".repeat(101) },
     { clientAddress: "x".repeat(301) }, { values: [90000, 10, 30, 50, 24] },
     { values: [90000, 10, 30, 60, ""] },
   ])("rejects invalid details before loading assets: %j", async overrides => {
@@ -36,9 +37,18 @@ describe("client-facing PDF", () => {
     const { bytes } = await generateClientPdf({ ...options, locale: "ru", clientName: "Ж".repeat(100), clientAddress: "Ж".repeat(300) }, { loadAssets });
     expect((await PDFDocument.load(bytes)).getPageCount()).toBe(2);
   });
-  it("uses exactly the approved calculator shortlist without assigning prices", () => {
-    expect(CALCULATOR_APARTMENTS.map(unit => unit.code)).toEqual(["A1305", "A1306", "A1307", "A1308", "A1309", "A1310", "A1401", "A1405", "A1407", "A1408"]);
-    expect(CALCULATOR_APARTMENTS.every(unit => unit.block === "A" && [13, 14].includes(unit.floor) && !("price" in unit))).toBe(true);
+  it("includes both lists without premium-label leakage or duplicate units", () => {
+    expect(CALCULATOR_APARTMENTS).toHaveLength(163);
+    expect(new Set(CALCULATOR_APARTMENTS.map(unit => unit.code)).size).toBe(163);
+    expect(CALCULATOR_APARTMENTS.filter(unit => getGoldenPremiumUnit(unit.code))).toHaveLength(22);
+    expect(CALCULATOR_APARTMENTS.filter(unit => !getGoldenPremiumUnit(unit.code))).toHaveLength(141);
+    expect(CALCULATOR_APARTMENTS.find(unit => unit.code === "A411")).toMatchObject({ block: "A", floor: 4, area: 64.5 });
+    expect(CALCULATOR_APARTMENTS.find(unit => unit.code === "B204")).toMatchObject({ block: "B", floor: 2, area: 68.3 });
+    expect(CALCULATOR_APARTMENTS.every(unit => !("price" in unit))).toBe(true);
+  });
+  it.each(["A411", "B204", "B1401"])("exports regular and premium unit %s", async apartmentCode => {
+    const { bytes } = await generateClientPdf({ ...options, apartmentCode }, { loadAssets });
+    expect((await PDFDocument.load(bytes)).getPageCount()).toBe(2);
   });
   it("has complete translated PDF and form labels", () => {
     for (const copy of Object.values(CLIENT_PDF_COPY)) {

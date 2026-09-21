@@ -60,7 +60,11 @@ function canonicalRows() {
   for (const [floor, block, name, area, status] of OWNED_ROWS) {
     rows.set(`${block}:${floor}:${name}`, { block, floor, name, area, status });
   }
-  return [...rows.values()];
+  // The newer premium workbook updates overlapping units; it is not extra stock.
+  return [...rows.values()].map(row => {
+    const premium = getGoldenPremiumUnit(`${row.block}${row.name}`);
+    return premium ? { ...row, status: premium.status, area: premium.area } : row;
+  });
 }
 
 export function getWorkbookAvailableCount() {

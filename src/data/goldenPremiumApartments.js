@@ -1,7 +1,6 @@
 // Golden Premium inventory supplied in the premium-apartment workbook.
-// This is a separate tier from the general stock ledger: the same apartment
-// code can therefore retain its general-stock status while carrying a
-// Golden Premium reference status and price here.
+// Only these codes are premium. This newer workbook overrides the older
+// stock ledger's status for overlapping block + apartment codes.
 const AMENITIES = Object.freeze(["24/7 Security", "Gym", "Swimming Pool"]);
 
 export const GOLDEN_PREMIUM_APARTMENTS = Object.freeze([

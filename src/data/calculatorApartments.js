@@ -1,7 +1,10 @@
-// Approved calculator-only shortlist supplied on 21 September 2026.
-// Prices are deliberately omitted: area and selection are not a unit quote.
+import { FINAL_ROWS } from "./reveranceInventory.js";
+import { GOLDEN_PREMIUM_APARTMENTS, getGoldenPremiumUnit } from "./goldenPremiumApartments.js";
+
+// Both owner workbooks, deduplicated by block + number. Selection is not a quote.
 export const CALCULATOR_APARTMENTS = [
-  ["A1305", 13, 32.4], ["A1306", 13, 32.3], ["A1307", 13, 32.4],
-  ["A1308", 13, 32.3], ["A1309", 13, 32.4], ["A1310", 13, 32.3],
-  ["A1401", 14, 46.4], ["A1405", 14, 32.4], ["A1407", 14, 32.4], ["A1408", 14, 32.3],
-].map(([code, floor, area]) => ({ code, floor, area, block: "A" }));
+  ...FINAL_ROWS.filter(([id, block, , , status]) => status === "Available" && !getGoldenPremiumUnit(`${block}${id}`))
+    .map(([id, block, floor, area]) => ({ code: `${block}${id}`, block, floor, area })),
+  ...GOLDEN_PREMIUM_APARTMENTS.filter(unit => unit.status === "available")
+    .map(({ code, building, floor, area }) => ({ code, block: building, floor, area })),
+];
