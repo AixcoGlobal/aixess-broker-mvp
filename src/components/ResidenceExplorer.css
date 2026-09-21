@@ -1574,6 +1574,34 @@
   white-space: nowrap;
 }
 
+.golden-premium-unit-label {
+  margin: 0 0 0.55rem;
+  color: #e6c767;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.golden-premium-unit-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.9rem 0 0;
+  padding: 0.75rem 0;
+  border-block: 1px solid rgba(230, 199, 103, 0.35);
+  color: rgba(239, 239, 236, 0.58);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.golden-premium-unit-meta strong {
+  color: #e6c767;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+}
+
 .unit-facts {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

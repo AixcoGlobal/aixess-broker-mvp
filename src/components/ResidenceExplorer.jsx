@@ -20,6 +20,8 @@ import {
 import { useLanguage } from "../i18n.jsx";
 import { NETWORK_COPY } from "../network-copy.js";
 import { track } from "../analytics.js";
+import { getGoldenPremiumUnit } from "../data/goldenPremiumApartments.js";
+import { GOLDEN_PREMIUM_COPY } from "../golden-premium-copy.js";
 import { FittedHeading } from "./FittedHeading.jsx";
 import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
 import "./ResidenceExplorer.css";
@@ -384,6 +386,8 @@ function FloorNavigationSelect({ floors, value, onChange }) {
 
 function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPlanImage, onOpenPreview }) {
   const { t, locale } = useLanguage();
+  const goldenPremium = unit.goldenPremium || getGoldenPremiumUnit(`${unit.block || ""}${unit.name}`);
+  const goldenCopy = GOLDEN_PREMIUM_COPY[locale];
   const [imageFailed, setImageFailed] = useState(false);
   const planSource = unit.image2d || fallbackPlanImage;
   const previewSource = imageMode === "3d" ? unit.image3d : planSource;
@@ -396,6 +400,7 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
     <section className="unit-detail" aria-labelledby="selected-unit-title">
       <div className="unit-detail-heading">
         <div>
+            {goldenPremium && <p className="golden-premium-unit-label">{goldenCopy.badge}</p>}
             <p className={`unit-status is-${normalizeStatus(unit.status)}`}>
             <span />{t(normalizeStatus(unit.status))}
           </p>
@@ -403,6 +408,13 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
         </div>
         <strong>{unitAreaLabel(unit, locale)}</strong>
       </div>
+
+      {goldenPremium && (
+        <div className="golden-premium-unit-meta">
+          <span>{goldenCopy.referencePrice}</span>
+          <strong>{new Intl.NumberFormat(locale, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(goldenPremium.price)}</strong>
+        </div>
+      )}
 
       <dl className="unit-facts">
         <div><dt>{t("floor")}</dt><dd>{unit.floor || "—"}</dd></div>

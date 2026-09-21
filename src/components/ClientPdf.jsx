@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { CLIENT_PDF_COPY } from "../client-pdf-copy.js";
 import { CALCULATOR_APARTMENTS } from "../data/calculatorApartments.js";
+import { getGoldenPremiumUnit } from "../data/goldenPremiumApartments.js";
+import { GOLDEN_PREMIUM_COPY } from "../golden-premium-copy.js";
 
 export default function ClientPdf({ locale, active, values, ready }) {
   const c = CLIENT_PDF_COPY[locale];
@@ -10,6 +12,8 @@ export default function ClientPdf({ locale, active, values, ready }) {
   const [state, setState] = useState("idle");
   const busy = state === "loading";
   const unit = CALCULATOR_APARTMENTS.find(item => item.code === apartmentCode);
+  const goldenPremium = getGoldenPremiumUnit(apartmentCode);
+  const goldenCopy = GOLDEN_PREMIUM_COPY[locale];
   async function download() {
     if (!ready || busy) return;
     const options = { locale, calculatorId: active, values: [...values], apartmentCode, clientName, clientAddress };
@@ -29,6 +33,7 @@ export default function ClientPdf({ locale, active, values, ready }) {
         {CALCULATOR_APARTMENTS.map(apartment => <option key={apartment.code} value={apartment.code}>{apartment.code} · {new Intl.NumberFormat(locale).format(apartment.area)} m²</option>)}
       </select></label>
       <p className="calculator-note client-pdf-unit">{c.floor}: {unit.floor} · {c.area}: {new Intl.NumberFormat(locale).format(unit.area)} m² · {c.seaView}</p>
+      {goldenPremium && <p className="golden-premium-pdf-label">{goldenCopy.badge}</p>}
       <label htmlFor="pdf-client-name"><span>{c.name}</span><input id="pdf-client-name" type="text" value={clientName} maxLength={100} autoComplete="off" onChange={event => { setClientName(event.target.value); setState("idle"); }} /></label>
       <label htmlFor="pdf-client-address"><span>{c.address}</span><textarea id="pdf-client-address" value={clientAddress} maxLength={300} rows={3} autoComplete="off" placeholder={c.addressHint} onChange={event => { setClientAddress(event.target.value); setState("idle"); }} /></label>
     </fieldset>

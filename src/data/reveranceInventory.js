@@ -2,6 +2,7 @@
 // The workbook is kept as a source artifact; this small, deterministic module
 // lets the visitor site render the same data without a network dependency.
 import bPlans from './reveranceBPlans.json' with { type: 'json' };
+import { getGoldenPremiumUnit } from './goldenPremiumApartments.js';
 
 const FINAL_ROWS = [
   [411, "A", 4, 64.5, "Available"], [412, "A", 4, 59.1, "Available"],
@@ -80,6 +81,7 @@ function makeUnit(row, base) {
     block: row.block,
     blockId: BLOCK_IDS[row.block],
     sourceStatus: row.status,
+    goldenPremium: getGoldenPremiumUnit(`${row.block}${row.name}`),
   };
 }
 

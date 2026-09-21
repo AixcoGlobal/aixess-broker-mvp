@@ -25,6 +25,7 @@
 .client-pdf select, .client-pdf textarea { width: 100%; min-width: 0; padding: .875rem; border: 1px solid #888; border-radius: 0; background: #151515; color: #fff; font: inherit; }
 .client-pdf textarea { resize: vertical; min-height: 7rem; }
 .client-pdf-unit { margin: 0; align-self: end; padding-block: .875rem; }
+.golden-premium-pdf-label { margin: 0 0 1rem; color: #e6c767; font-size: .72rem; font-weight: 800; letter-spacing: .16em; }
 .client-pdf-status { min-height: 1.5em; line-height: 1.5; }
 .client-pdf button:disabled { opacity: .55; cursor: not-allowed; }
 .client-pdf [role="alert"] { color: #ffb78e; }

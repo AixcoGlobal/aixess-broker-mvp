@@ -5,6 +5,8 @@ import { CALCULATOR_COPY } from "../calculator-copy.js";
 import { CLIENT_PDF_COPY } from "../client-pdf-copy.js";
 import { NETWORK_COPY } from "../network-copy.js";
 import { CALCULATOR_APARTMENTS } from "../data/calculatorApartments.js";
+import { getGoldenPremiumUnit } from "../data/goldenPremiumApartments.js";
+import { GOLDEN_PREMIUM_COPY } from "../golden-premium-copy.js";
 
 const W = 595.28, H = 841.89, M = 44, WIDTH = W - M * 2;
 const ink = rgb(.08, .08, .08), muted = rgb(.35, .35, .35), orange = rgb(.75, .3, .02);
@@ -55,6 +57,7 @@ export async function generateClientPdf({
   const copy = CLIENT_PDF_COPY[locale], c = CALCULATOR_COPY[locale];
   const definition = CALCULATORS.find(item => item.id === calculatorId);
   const unit = CALCULATOR_APARTMENTS.find(item => item.code === apartmentCode);
+  const goldenPremium = getGoldenPremiumUnit(apartmentCode);
   if (!copy || !definition || !unit || typeof clientName !== "string" || typeof clientAddress !== "string"
     || clientName.length > 100 || clientAddress.length > 300 || !Array.isArray(values)) throw new Error("invalid");
   const outcome = calculateScenario(calculatorId, values);
@@ -115,6 +118,7 @@ export async function generateClientPdf({
   line(cover, copy.illustrative, M, 104, 10, true, orange);
   line(cover, `Project Reverance · ${unit.code}`, M, 128, 25, true);
   line(cover, `${copy.floor} ${unit.floor} · ${new Intl.NumberFormat(locale).format(unit.area)} m² · ${copy.seaView}`, M, 167, 11);
+  if (goldenPremium) line(cover, GOLDEN_PREMIUM_COPY[locale].badge, M, 190, 9, true, rgb(.9, .72, .22));
   let clientTop = 201;
   if (clientName.trim()) clientTop = wrap(cover, clientName, M, clientTop, WIDTH, 10, true) + 6;
   if (clientAddress.trim()) clientTop = wrap(cover, clientAddress, M, clientTop, WIDTH, 9, false, muted);
