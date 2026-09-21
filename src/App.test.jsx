@@ -111,11 +111,12 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { name: /request project materials/i })).toBeInTheDocument();
   });
 
-  it("shows the four document calculators and marks client PDF generation as future", async () => {
+  it("shows the four document calculators and client PDF generation", async () => {
     window.history.replaceState({}, "", "/#broker-tools");
     render(<App />);
 
     expect(await screen.findByText("CREATE CLIENT PDF")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "CREATE CLIENT PDF" })).toBeDisabled();
     expect(screen.getByRole("tablist")).toBeInTheDocument();
   });
 

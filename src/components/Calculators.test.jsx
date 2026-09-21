@@ -18,8 +18,10 @@ describe("calculator user flow", () => {
     render(<LanguageProvider><Calculators /></LanguageProvider>);
     fireEvent.click(screen.getByRole("button", { name: "Calculate" }));
     expect(screen.getByText("€9,000.00")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "CREATE CLIENT PDF" })).toBeEnabled();
     fireEvent.change(screen.getByLabelText("Down payment (%)"), { target: { value: "20" } });
     expect(screen.queryByText("€9,000.00")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "CREATE CLIENT PDF" })).toBeDisabled();
     fireEvent.click(screen.getByRole("button", { name: "Calculate" }));
     expect(screen.getByRole("alert")).toHaveTextContent("must total 100%");
   });

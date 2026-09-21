@@ -3,6 +3,7 @@ import { useLanguage } from "../i18n.jsx";
 import { NETWORK_COPY } from "../network-copy.js";
 import { CALCULATOR_COPY } from "../calculator-copy.js";
 import { CALCULATORS, calculateScenario } from "../utils/calculators.js";
+import ClientPdf from "./ClientPdf.jsx";
 import "./calculators.css";
 
 function toolFromLocation() {
@@ -42,7 +43,6 @@ export default function Calculators() {
   };
   return <section className="calculator-page">
     <p className="section-eyebrow">{t("brokerTools")}</p><h1>{c.title}</h1><p className="calculator-intro">{c.example}</p>
-    <p className="calculator-note"><strong>{network.clientPdf}</strong> — {network.pdfFuture}</p>
     <div className="calculator-tabs" role="tablist" aria-label={c.title}>{CALCULATORS.map((calc, i) => <button key={calc.id} id={`tab-${calc.id}`} role="tab" aria-selected={active === calc.id} aria-controls="calculator-panel" tabIndex={active === calc.id ? 0 : -1} onClick={() => select(calc.id)} onKeyDown={event => {
       let next;
       if (event.key === "ArrowRight") next = (i + 1) % CALCULATORS.length;
@@ -61,5 +61,6 @@ export default function Calculators() {
       </form>
       <div ref={resultsRef} className="calculator-results" aria-live="polite" aria-atomic="true"><h2>{c.result}</h2>{outcome?.results ? <dl>{outcome.results.map((value, i) => <div key={c.outputs[index][i]}><dt>{c.outputs[index][i]}</dt><dd>{format(value, definition.formats[i])}</dd></div>)}</dl> : <p>{dirty ? c.changed : c.empty}</p>}<p className="calculator-note">{c.disclaimer}</p></div>
     </div>
+    <ClientPdf locale={locale} active={active} values={values} ready={Boolean(outcome?.results) && !dirty} />
   </section>;
 }
