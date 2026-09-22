@@ -41,6 +41,7 @@ import {
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
   REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER,
   REVERANCE_FLOOR_SIZE,
+  REVERANCE_BLOCK_B_OFFSET,
   REVERANCE_SPLAT_ROTATION,
   getFloorVisualYOffset,
   getFloorVolumesForBlock,
@@ -52,6 +53,7 @@ const SPLAT_URL = "/assets/reverance-3d/reverance-official-97.sog?v=acb1246f";
 const HORIZON_URL = "/assets/reverance-3d/reverance-official-horizon.webp";
 const CAMERA_FOV = 41.09622780396063;
 const CAMERA_MIN_FOV = 31;
+const CAMERA_MAX_FOV = 62;
 const CAMERA_TARGET = [-0.10454206208274158, 0.0008068618049380962, 0.10121364916726469];
 const CAMERA_START = [2.504352717259611, 0.014715904099223222, 2.7438049729703717];
 const CAMERA_END = [2.571008603437904, -0.010401810476404838, -2.4755136248454392];
@@ -195,6 +197,14 @@ fn modifySplatColor(gaussianUV: vec2f, color: ptr<function, vec4f>) {
 const scratchPose = new Pose();
 const scratchPosition = new Vec3();
 
+export function getBlockCameraPose(blockId) {
+  const offset = blockId === "ReveranceB" ? REVERANCE_BLOCK_B_OFFSET : [0, 0, 0];
+  return {
+    target: CAMERA_TARGET.map((value, index) => value + offset[index]),
+    position: CAMERA_END.map((value, index) => value + offset[index]),
+  };
+}
+
 /**
  * PlayCanvas' stock CameraControls wraps the orbit target yaw with `% 360`
  * while the damped current yaw lags behind it. Crossing ±360° therefore makes
@@ -318,8 +328,9 @@ function useCameraFov() {
 
   const step = useCallback((time) => {
     frameRef.current = 0;
-    const dt = clamp((time - lastTimeRef.current) / 1000, 0.001, 0.1);
-    lastTimeRef.current = time;
+    const now = Number.isFinite(time) ? time : (window.performance?.now?.() ?? Date.now());
+    const dt = clamp((now - lastTimeRef.current) / 1000, 0.001, 0.1);
+    lastTimeRef.current = now;
     const target = targetRef.current;
     const current = fovRef.current;
     const alpha = 1 - Math.exp(-dt * FOV_TWEEN_RATE);
@@ -335,7 +346,7 @@ function useCameraFov() {
 
   const setTarget = useCallback((value, immediate = false) => {
     if (!Number.isFinite(value)) return;
-    const clamped = clamp(value, CAMERA_MIN_FOV, CAMERA_FOV);
+    const clamped = clamp(value, CAMERA_MIN_FOV, CAMERA_MAX_FOV);
     targetRef.current = clamped;
     if (immediate) {
       if (frameRef.current) {
@@ -596,6 +607,16 @@ function CameraRig({ apiRef, fov, interactive, manualCameraRef, onCameraReady, p
           return;
         }
         placeCamera(CAMERA_END, true);
+      },
+      focusBlock(blockId) {
+        if (!controlsRef.current?._camera) return;
+        const pose = getBlockCameraPose(blockId);
+        lastScrollPoseRef.current.progress = Number.NaN;
+        setScrollLocked(false);
+        controlsRef.current.reset(
+          new Vec3(...pose.target),
+          scratchPosition.set(...pose.position),
+        );
       },
     };
     return () => {
@@ -1420,6 +1441,19 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     cameraRigRef.current?.resetView();
   }, [clearHover, invalidateHoverPick, setFovTarget]);
 
+  const handleBlockSelect = useCallback((blockId) => {
+    invalidateHoverPick();
+    lastPointerClientRef.current = null;
+    setActiveBlockId(blockId);
+    setHoveredFloor(null);
+    setHoveredBlock(null);
+    setHoverPoint(null);
+    if (interactive) {
+      manualCameraRef.current = true;
+      cameraRigRef.current?.focusBlock(blockId);
+    }
+  }, [interactive, invalidateHoverPick]);
+
   const fallback = <StaticFallback snapshot={snapshot} highlightedFloor={effectiveHighlightedFloor} onSelectFloor={onSelectFloor} />;
 
   return (
@@ -1509,14 +1543,7 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
                   type="button"
                   className={activeBlock?.id === block.id ? "is-active" : ""}
                   aria-pressed={activeBlock?.id === block.id}
-                  onClick={() => {
-                    invalidateHoverPick();
-                    lastPointerClientRef.current = null;
-                    setActiveBlockId(block.id);
-                    setHoveredFloor(null);
-                    setHoveredBlock(null);
-                    setHoverPoint(null);
-                  }}
+                  onClick={() => handleBlockSelect(block.id)}
                 >
                   {block.code || block.name}
                 </button>

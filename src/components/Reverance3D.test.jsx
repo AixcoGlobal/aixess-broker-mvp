@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Reverance3D } from "./Reverance3D";
+import { getBlockCameraPose, Reverance3D } from "./Reverance3D";
 import {
   getFloorAtWorldPoint,
   getFloorWorldTransform,
@@ -28,6 +28,15 @@ const snapshot = {
 };
 
 describe("Reverance official 3D reconstruction", () => {
+  it("uses a distinct camera target for each building block", () => {
+    const a = getBlockCameraPose("ReveranceA");
+    const b = getBlockCameraPose("ReveranceB");
+
+    expect(b.target).not.toEqual(a.target);
+    expect(b.position).not.toEqual(a.position);
+    expect(b.target.map((value, index) => value - a.target[index])).toEqual([-1.05, 0, 0.54]);
+  });
+
   it("keeps floor selection available when a WebGL2 renderer is unavailable", () => {
     const onSelectFloor = vi.fn();
     render(
@@ -75,6 +84,33 @@ describe("Reverance official 3D reconstruction", () => {
 
     expect(preventDefault).toHaveBeenCalled();
     expect(stopPropagation).toHaveBeenCalled();
+  });
+
+  it("allows modified-wheel zoom to move beyond the default view", async () => {
+    const { container } = render(
+      <Reverance3D
+        snapshot={snapshot}
+        onSelectFloor={vi.fn()}
+        settled
+        interactive
+        zoomable
+        progressRef={{ current: 1 }}
+      />,
+    );
+
+    const map = container.querySelector(".building-map");
+    expect(map).toHaveAttribute("data-camera-fov", "41.096");
+
+    fireEvent.wheel(map, {
+      deltaY: 1200,
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+
+    await waitFor(() => {
+      expect(Number(map.getAttribute("data-camera-fov"))).toBeGreaterThan(41.096);
+    });
   });
 
   it("blocks canvas wheel handlers without preventing native scroll", () => {
