@@ -28,13 +28,16 @@ const snapshot = {
 };
 
 describe("Reverance official 3D reconstruction", () => {
-  it("uses a distinct camera target for each building block", () => {
+  it("uses a distinct front-facing camera pose for each building block", () => {
     const a = getBlockCameraPose("ReveranceA");
     const b = getBlockCameraPose("ReveranceB");
 
     expect(b.target).not.toEqual(a.target);
     expect(b.position).not.toEqual(a.position);
-    expect(b.target.map((value, index) => value - a.target[index])).toEqual([-1.05, 0, 0.54]);
+    expect(b.target.map((value, index) => value - a.target[index])).toEqual([1.05, 0, -0.54]);
+    b.position.forEach((value, index) => {
+      expect(value - a.position[index]).toBeCloseTo([1.05, 0, -0.54][index], 10);
+    });
   });
 
   it("keeps floor selection available when a WebGL2 renderer is unavailable", () => {

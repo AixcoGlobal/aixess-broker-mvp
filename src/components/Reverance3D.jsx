@@ -41,7 +41,6 @@ import {
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
   REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER,
   REVERANCE_FLOOR_SIZE,
-  REVERANCE_BLOCK_B_OFFSET,
   REVERANCE_SPLAT_ROTATION,
   getFloorVisualYOffset,
   getFloorVolumesForBlock,
@@ -57,6 +56,9 @@ const CAMERA_MAX_FOV = 62;
 const CAMERA_TARGET = [-0.10454206208274158, 0.0008068618049380962, 0.10121364916726469];
 const CAMERA_START = [2.504352717259611, 0.014715904099223222, 2.7438049729703717];
 const CAMERA_END = [2.571008603437904, -0.010401810476404838, -2.4755136248454392];
+// The splat entity is rotated 180° around Z; the rendered B-front camera pose
+// therefore uses the mirrored block separation from the floor-highlight data.
+const REVERANCE_BLOCK_B_CAMERA_OFFSET = [1.05, 0, -0.54];
 const CAMERA_FOCUS = new Vec3(...CAMERA_TARGET);
 // The calibrated side-to-front path pitches between -0.215° and +0.173°. The
 // orbit range must contain the whole path, otherwise CameraControls clamps the
@@ -198,7 +200,7 @@ const scratchPose = new Pose();
 const scratchPosition = new Vec3();
 
 export function getBlockCameraPose(blockId) {
-  const offset = blockId === "ReveranceB" ? REVERANCE_BLOCK_B_OFFSET : [0, 0, 0];
+  const offset = blockId === "ReveranceB" ? REVERANCE_BLOCK_B_CAMERA_OFFSET : [0, 0, 0];
   return {
     target: CAMERA_TARGET.map((value, index) => value + offset[index]),
     position: CAMERA_END.map((value, index) => value + offset[index]),
@@ -660,7 +662,7 @@ function CameraRig({ apiRef, fov, interactive, manualCameraRef, onCameraReady, p
         moveDamping={0.96}
         rotateDamping={0.9}
         zoomDamping={0.965}
-        focusDamping={0.93}
+        focusDamping={0.99}
       />
     </Entity>
   );
@@ -1106,16 +1108,26 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
       latestHoverRef.current = null;
       if (!next || next.request !== hoverRequestRef.current) return;
       const selection = pickFloorAtPoint(next.canvas, next.x, next.y);
+      if (
+        selection?.blockId
+        && manualCameraRef.current
+        && selection.blockId !== activeBlock?.id
+      ) {
+        setHoveredFloor(null);
+        setHoveredBlock(null);
+        setHoverPoint(null);
+        return;
+      }
       setHoveredFloor(selection?.floor ?? null);
       setHoveredBlock(selection?.blockId ?? null);
       if (!selection) {
         setHoverPoint(null);
         return;
       }
-      if (selection.blockId) setActiveBlockId(selection.blockId);
+      if (selection.blockId && !manualCameraRef.current) setActiveBlockId(selection.blockId);
       setHoverPoint(getFloorTooltipPosition(next.pointer, next.tooltipSize));
     });
-  }, [pickFloorAtPoint]);
+  }, [activeBlock, pickFloorAtPoint]);
 
   const syncHoverToPointer = useCallback(() => {
     const pointer = lastPointerClientRef.current;
