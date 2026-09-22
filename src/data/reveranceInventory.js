@@ -3,6 +3,7 @@
 // lets the visitor site render the same data without a network dependency.
 import bPlans from './reveranceBPlans.json' with { type: 'json' };
 import { getGoldenPremiumUnit } from './goldenPremiumApartments.js';
+import { getReverancePdfReference } from './reverancePdfReferences.js';
 
 const FINAL_ROWS = [
   [411, "A", 4, 64.5, "Available"], [412, "A", 4, 59.1, "Available"],
@@ -75,8 +76,10 @@ function makeUnit(row, base) {
   // A similar area is not proof of the same apartment plan or bedroom count.
   const meta = base && (row.area == null || Math.abs(base.totalArea - row.area) < 0.05)
     ? base : EMPTY_PLAN_META;
+  const pdfReference = getReverancePdfReference(`${row.block}${row.name}`);
   return {
     ...meta,
+    ...(pdfReference || {}),
     id: row.block === "A" && base?.id !== undefined ? base.id : `${row.block}-${row.name}`,
     name: row.name,
     status: normalizeWorkbookStatus(row.status),

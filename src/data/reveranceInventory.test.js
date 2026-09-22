@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import snapshot from "../../public/data/reverance-a.json";
 import { applyWorkbookInventory, getWorkbookAvailableCount, FINAL_ROWS, OWNED_ROWS } from "./reveranceInventory";
+import { REVERANCE_PDF_REFERENCE_CODES } from "./reverancePdfReferences";
 
 function summarize(units) {
   return units.reduce((result, unit) => {
@@ -34,6 +35,23 @@ describe("Reverance workbook inventory", () => {
     expect(b.find(unit => unit.name === "1305").status).toBe("reserved");
     expect(b.find(unit => unit.name === "1306").status).toBe("reserved");
     expect(a.find((unit) => unit.name === "1301")).toMatchObject({ status: "reserved", block: "A" });
+    expect(a.find((unit) => unit.name === "1406")).toMatchObject({
+      image2d: "/assets/reverance-pdf/A1406-plan.webp",
+      image3d: "/assets/reverance-pdf/A1406-render.webp",
+    });
+    expect(b.find((unit) => unit.name === "1408")).toMatchObject({
+      image2d: "/assets/reverance-pdf/B1408-plan.webp",
+      image3d: "/assets/reverance-pdf/B1408-render.webp",
+    });
+    expect(REVERANCE_PDF_REFERENCE_CODES).toHaveLength(28);
+    for (const code of REVERANCE_PDF_REFERENCE_CODES) {
+      const block = code[0] === "A" ? a : b;
+      const unit = block.find((candidate) => candidate.name === code.slice(1));
+      expect(unit, code).toMatchObject({
+        image2d: `/assets/reverance-pdf/${code}-plan.webp`,
+        image3d: `/assets/reverance-pdf/${code}-render.webp`,
+      });
+    }
     expect(b.find((unit) => unit.name === "1301")).toMatchObject({ status: "available", block: "B", blockId: "ReveranceB" });
     expect(a.find((unit) => unit.name === "1501")).toMatchObject({ status: "unavailable" });
     expect(a.find((unit) => unit.name === "204")).toMatchObject({ status: "sold" });
