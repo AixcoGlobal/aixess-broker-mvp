@@ -6,6 +6,8 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 
 ## Selected AiXESS direction
 
+- September 22 mobile explorer: the portrait 3D viewer must fill the available viewport as browser toolbars expand or collapse, with the canvas and residence dock following its full height. Do not leave an empty band below the model; preserve the accepted model, camera framing, floor controls and drawer.
+
 - September 21 audit follow-up: the newer aixess_1st_page.docx brief belongs on the actual homepage, not only AiXESS Advantage. Use its translated headline, introduction, follow-up, tagline and three starting points while retaining the approved visual direction, access CTAs and Residence Explorer. This supersedes the September 7 instruction to keep the older homepage copy.
 
 - September 21 inventory correction: use both owner stock lists in calculator/PDF selectors, not only the former ten-unit shortlist. The regular Final sheet contributes 141 available units; the newer Golden Premium workbook contributes 22 available units. Deduplicate by block + apartment number; only Golden-list codes get premium labels/prices. The newer workbook overrides overlapping availability (B1305/B1306 are reserved). Never substitute another apartment's room plan when metadata conflicts.

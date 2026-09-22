@@ -2191,8 +2191,9 @@
 
   .explorer-sticky {
     display: block;
-    height: 100svh;
-    min-height: 100svh;
+    /* Follow the visible screen as mobile browser chrome expands/collapses. */
+    height: 100dvh;
+    min-height: 100dvh;
     background: #08121e;
   }
 
