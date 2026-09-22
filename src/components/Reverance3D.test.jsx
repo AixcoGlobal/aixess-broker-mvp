@@ -4,6 +4,7 @@ import { getBlockCameraPose, Reverance3D } from "./Reverance3D";
 import {
   getFloorAtWorldPoint,
   getFloorWorldTransform,
+  REVERANCE_BLOCK_B_OFFSET,
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
   REVERANCE_FLOOR_VOLUMES,
 } from "./reveranceFloorHighlight";
@@ -34,10 +35,15 @@ describe("Reverance official 3D reconstruction", () => {
 
     expect(b.target).not.toEqual(a.target);
     expect(b.position).not.toEqual(a.position);
-    expect(b.target.map((value, index) => value - a.target[index])).toEqual([1.05, 0, -0.54]);
-    b.position.forEach((value, index) => {
-      expect(value - a.position[index]).toBeCloseTo([1.05, 0, -0.54][index], 10);
-    });
+    expect(b.target.map((value, index) => value - a.target[index])).toEqual([...REVERANCE_BLOCK_B_OFFSET]);
+
+    const direction = (pose) => pose.position.map((value, index) => value - pose.target[index]);
+    const aDirection = direction(a);
+    const bDirection = direction(b);
+    const dot = aDirection.reduce((sum, value, index) => sum + value * bDirection[index], 0);
+    const aLength = Math.hypot(...aDirection);
+    const bLength = Math.hypot(...bDirection);
+    expect(dot / (aLength * bLength)).toBeLessThan(-0.75);
   });
 
   it("keeps floor selection available when a WebGL2 renderer is unavailable", () => {

@@ -41,6 +41,7 @@ import {
   REVERANCE_FLOOR_HIGHLIGHT_HEIGHT,
   REVERANCE_FLOOR_HIGHLIGHT_MIN_FEATHER,
   REVERANCE_FLOOR_SIZE,
+  REVERANCE_BLOCK_B_OFFSET,
   REVERANCE_SPLAT_ROTATION,
   getFloorVisualYOffset,
   getFloorVolumesForBlock,
@@ -56,9 +57,12 @@ const CAMERA_MAX_FOV = 62;
 const CAMERA_TARGET = [-0.10454206208274158, 0.0008068618049380962, 0.10121364916726469];
 const CAMERA_START = [2.504352717259611, 0.014715904099223222, 2.7438049729703717];
 const CAMERA_END = [2.571008603437904, -0.010401810476404838, -2.4755136248454392];
-// The splat entity is rotated 180° around Z; the rendered B-front camera pose
-// therefore uses the mirrored block separation from the floor-highlight data.
-const REVERANCE_BLOCK_B_CAMERA_OFFSET = [1.05, 0, -0.54];
+// B sits behind A in the accepted orbit. Its front view is on the opposite
+// side of the paired masses, so it needs both the measured block offset and a
+// calibrated opposite-side camera direction; translating A's camera alone
+// leaves the camera looking at A's façade.
+const CAMERA_BLOCK_B_TARGET = CAMERA_TARGET.map((value, index) => value + REVERANCE_BLOCK_B_OFFSET[index]);
+const CAMERA_BLOCK_B_FRONT = [-2.978120017051697, -0.007769220508635044, 3.8795562171936035];
 const CAMERA_FOCUS = new Vec3(...CAMERA_TARGET);
 // The calibrated side-to-front path pitches between -0.215° and +0.173°. The
 // orbit range must contain the whole path, otherwise CameraControls clamps the
@@ -200,10 +204,15 @@ const scratchPose = new Pose();
 const scratchPosition = new Vec3();
 
 export function getBlockCameraPose(blockId) {
-  const offset = blockId === "ReveranceB" ? REVERANCE_BLOCK_B_CAMERA_OFFSET : [0, 0, 0];
+  if (blockId === "ReveranceB") {
+    return {
+      target: CAMERA_BLOCK_B_TARGET,
+      position: CAMERA_BLOCK_B_FRONT,
+    };
+  }
   return {
-    target: CAMERA_TARGET.map((value, index) => value + offset[index]),
-    position: CAMERA_END.map((value, index) => value + offset[index]),
+    target: CAMERA_TARGET,
+    position: CAMERA_END,
   };
 }
 
@@ -1278,8 +1287,10 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     };
     draggedRef.current = false;
     suppressClickRef.current = false;
-    // Grabbing the model stops any damped motion still in flight.
-    cameraRigRef.current?.syncControls();
+    // Grabbing the model stops any damped motion still in flight. A selected
+    // block already owns the orbit target; syncing it to the scroll camera at
+    // this point would silently move the target back to block A.
+    if (!manualCameraRef.current) cameraRigRef.current?.syncControls();
     if (selection) {
       cameraRigRef.current?.setFloorGestureLocked(true);
       invalidateHoverPick();
