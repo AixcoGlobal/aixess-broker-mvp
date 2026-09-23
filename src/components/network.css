@@ -36,11 +36,16 @@
 .golden-premium-summary strong { font-size: clamp(1.7rem, 3vw, 2.8rem); line-height: 1; }
 .golden-premium-summary span { font-size: .62rem; font-weight: 800; letter-spacing: .1em; }
 .golden-premium-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .55rem; }
-.golden-premium-unit { display: grid; gap: .42rem; min-width: 0; padding: .85rem; border: 1px solid rgba(77, 55, 18, .2); background: rgba(255, 255, 255, .48); }
+.golden-premium-unit { display: grid; gap: .42rem; min-width: 0; padding: .85rem; border: 1px solid rgba(77, 55, 18, .2); background: rgba(255, 255, 255, .48); color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .golden-premium-unit > div { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; }
 .golden-premium-unit > div strong { font-size: .95rem; }
 .golden-premium-unit > div span, .golden-premium-unit small { color: rgba(33, 27, 18, .68); font-size: .72rem; }
+.golden-premium-unit > div span:nth-child(2) { margin-left: auto; }
+.golden-premium-unit > div .golden-premium-arrow { color: #9b6d15; font-size: 1rem; line-height: 1; }
+.golden-premium-unit:hover { border-color: #9b6d15; background: #fffaf0; }
+.golden-premium-unit:focus-visible { outline: 3px solid #9b6d15; outline-offset: 2px; }
 .golden-premium-unit.is-reserved { background: rgba(174, 132, 51, .17); }
+.golden-premium-unit.is-reserved:hover { background: rgba(174, 132, 51, .28); }
 .golden-premium-unit small { line-height: 1.35; }
 .golden-premium-note { margin: 1.25rem 0 0; color: rgba(33, 27, 18, .7); font-size: .82rem; line-height: 1.55; }
 .network-steps { list-style: none; padding: 0; }

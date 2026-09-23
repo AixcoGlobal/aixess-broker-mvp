@@ -16,7 +16,7 @@ function Cards({ rows }) {
   return <div className="network-grid">{rows.map(([title, copy], i) => <article className="network-card" key={title}><span className="network-number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>;
 }
 
-function GoldenPremiumPanel({ locale }) {
+function GoldenPremiumPanel({ locale, onSelectApartment }) {
   const copy = GOLDEN_PREMIUM_COPY[locale];
   const money = (value) => new Intl.NumberFormat(locale, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(value);
   return (
@@ -27,17 +27,17 @@ function GoldenPremiumPanel({ locale }) {
         <p>{copy.intro}</p>
       </div>
       <div className="golden-premium-summary" aria-label={copy.title}>
-        <div><strong>{GOLDEN_PREMIUM_SUMMARY.total}</strong><span>UNITS</span></div>
+        <div><strong>{GOLDEN_PREMIUM_SUMMARY.total}</strong><span>{copy.units}</span></div>
         <div><strong>{GOLDEN_PREMIUM_SUMMARY.available}</strong><span>{copy.available}</span></div>
         <div><strong>{GOLDEN_PREMIUM_SUMMARY.reserved}</strong><span>{copy.reserved}</span></div>
       </div>
       <div className="golden-premium-grid">
         {GOLDEN_PREMIUM_APARTMENTS.map((unit) => (
-          <article className={`golden-premium-unit is-${unit.status}`} key={unit.code}>
-            <div><strong>{unit.code}</strong><span>{unit.area.toLocaleString(locale, { maximumFractionDigits: 1 })} m²</span></div>
+          <button className={`golden-premium-unit is-${unit.status}`} type="button" key={unit.code} onClick={() => onSelectApartment(unit.code)} aria-label={`${copy.viewDetails} ${unit.code}`}>
+            <div><strong>{unit.code}</strong><span>{unit.area.toLocaleString(locale, { maximumFractionDigits: 1 })} m²</span><span className="golden-premium-arrow" aria-hidden="true">↗</span></div>
             <span className="golden-premium-status">{unit.status === "available" ? copy.available : copy.reserved}</span>
             <small>{copy.referencePrice}: {money(unit.price)}</small>
-          </article>
+          </button>
         ))}
       </div>
       <p className="golden-premium-note">{copy.note}</p>
@@ -45,7 +45,7 @@ function GoldenPremiumPanel({ locale }) {
   );
 }
 
-export function NetworkSections({ sections }) {
+export function NetworkSections({ sections, onSelectApartment }) {
   const { locale } = useLanguage();
   const c = NETWORK_COPY[locale];
   const stats = {
@@ -67,7 +67,7 @@ export function NetworkSections({ sections }) {
       case "commercial": content = <><Heading copy={c.commercial} /><p className="network-emphasis">{c.commercial[3]}</p></>; break;
       case "eligibility": content = <><Heading copy={c.eligibility} /><Cards rows={c.people} /><p className="network-emphasis">{c.network}</p>{actions()}</>; break;
       case "why": content = <><Heading copy={c.why} /><Cards rows={c.reasons} /></>; break;
-      case "opportunity": content = <><Heading copy={c.opportunity.slice(0, 2)} /><p className="network-emphasis">{c.opportunity[2]}</p><p className="network-lead">{c.opportunity[3]}</p><dl className="network-stats">{[number(2), number(getWorkbookAvailableCount()), number(15), money(45000, "EUR")].map((value, i) => <div key={c.facts[i]}><dd>{value}</dd><dt>{c.facts[i]}</dt></div>)}</dl><GoldenPremiumPanel locale={locale} /><p className="network-emphasis">{c.start}</p><a className="button button-primary" href={workwiseBrokerUrl("login")}>{c.inside}<span aria-hidden="true">→</span></a><p className="network-note">{c.terms}</p></>; break;
+      case "opportunity": content = <><Heading copy={c.opportunity.slice(0, 2)} /><p className="network-emphasis">{c.opportunity[2]}</p><p className="network-lead">{c.opportunity[3]}</p><dl className="network-stats">{[number(2), number(getWorkbookAvailableCount()), number(15), money(45000, "EUR")].map((value, i) => <div key={c.facts[i]}><dd>{value}</dd><dt>{c.facts[i]}</dt></div>)}</dl><GoldenPremiumPanel locale={locale} onSelectApartment={onSelectApartment} /><p className="network-emphasis">{c.start}</p><a className="button button-primary" href={workwiseBrokerUrl("login")}>{c.inside}<span aria-hidden="true">→</span></a><p className="network-note">{c.terms}</p></>; break;
       case "advantage": content = <><Heading copy={c.advantage} /><Cards rows={c.advantages} /></>; break;
       case "process": content = <><Heading copy={c.process} /><ol className="network-steps">{c.steps.map(([title, copy], i) => <li key={title}><span className="network-number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></li>)}</ol></>; break;
       case "tools": content = <><Heading copy={c.tools} /><div className="network-grid">{c.calculators.map(([title, copy], i) => <article className="network-card" key={title}><span className="network-number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p><a className="text-link" href={`#broker-tools?tool=${CALCULATOR_IDS[i]}`}>{c.openCalculator}<span aria-hidden="true">↗</span></a></article>)}</div><a className="button button-primary" href="#broker-tools">{c.openCalculators}<span aria-hidden="true">→</span></a><p className="network-note"><a href="#broker-tools"><strong>{c.clientPdf}</strong></a> — {CLIENT_PDF_COPY[locale].ready}</p></>; break;

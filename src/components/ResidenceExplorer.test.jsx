@@ -298,4 +298,51 @@ describe("Residence explorer", () => {
     expect(within(dialog).getByText("B Block")).toBeInTheDocument();
     expect(floorLoader).not.toHaveBeenCalled();
   });
+
+  it("opens a requested Golden Premium apartment with its own block, status and plan", async () => {
+    const premiumSnapshot = {
+      ...multiBlockSnapshot,
+      blocks: multiBlockSnapshot.blocks.map((block) => ({
+        ...block,
+        floors: [...block.floors, {
+          id: `${block.code}-13`,
+          number: 13,
+          planImage: `/floor-${block.code}-13.webp`,
+          shapes: [],
+          units: [{
+            id: `${block.code}-1305`,
+            name: "1305",
+            block: block.code,
+            blockId: block.id,
+            floor: 13,
+            status: block.code === "A" ? "available" : "reserved",
+            totalArea: 32.4,
+            rooms: null,
+            bedrooms: null,
+            areas: [],
+            image2d: `/assets/reverance-pdf/${block.code}1305-plan.webp`,
+            image3d: `/assets/reverance-pdf/${block.code}1305-render.webp`,
+          }],
+        }],
+      })),
+    };
+    const snapshotLoader = () => Promise.resolve(premiumSnapshot);
+    const floorLoader = vi.fn();
+    const props = { onBrokerAccess: vi.fn(), snapshotLoader, floorLoader };
+    const { rerender } = render(<ResidenceExplorer {...props} requestedApartment={{ code: "A1305" }} />);
+
+    let dialog = await screen.findByRole("dialog", { name: /Floor 13/i });
+    expect(within(dialog).getByText("A Block")).toBeInTheDocument();
+    expect(await within(dialog).findByRole("heading", { name: "Residence 1305" })).toBeInTheDocument();
+    expect(within(dialog).getByText("€52,164")).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: /Open 2D PLAN of residence 1305 full screen/i }).querySelector("img"))
+      .toHaveAttribute("src", "/assets/reverance-pdf/A1305-plan.webp");
+
+    rerender(<ResidenceExplorer {...props} requestedApartment={{ code: "B1305" }} />);
+    dialog = await screen.findByRole("dialog", { name: /Floor 13/i });
+    await waitFor(() => expect(within(dialog).getByText("B Block")).toBeInTheDocument());
+    expect(within(dialog).getByText("€50,771")).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: /Reserved residence/i })).toBeDisabled();
+    expect(floorLoader).not.toHaveBeenCalled();
+  });
 });

@@ -1044,7 +1044,7 @@ function ResidenceFilter({
   );
 }
 
-export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, snapshotLoader = loadResidenceSnapshot, floorLoader = loadLiveFloor }) {
+export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, requestedApartment = null, snapshotLoader = loadResidenceSnapshot, floorLoader = loadLiveFloor }) {
   const { t, locale } = useLanguage();
   const sectionRef = useRef(null);
   const modelHostRef = useRef(null);
@@ -1053,6 +1053,7 @@ export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, 
   const [selectedBlockId, setSelectedBlockId] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [selectedUnitName, setSelectedUnitName] = useState(null);
+  const handledApartmentRequest = useRef(null);
   const [previewUnitId, setPreviewUnitId] = useState(null);
   const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS }));
   const [filtersTouched, setFiltersTouched] = useState(false);
@@ -1184,6 +1185,14 @@ export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, 
     setSelectedBlockId(unit.blockId || null);
     setSelectedFloor(unit.floor);
   }, []);
+
+  useEffect(() => {
+    if (!requestedApartment || handledApartmentRequest.current === requestedApartment) return;
+    const unit = inventory.find((item) => `${item.block}${item.name}` === requestedApartment.code);
+    if (!unit) return;
+    handledApartmentRequest.current = requestedApartment;
+    openResidence(unit);
+  }, [inventory, openResidence, requestedApartment]);
 
   const handleModelFloorSelect = useCallback((floorNumber, blockId = null) => {
     setSelectedBlockId(blockId || null);

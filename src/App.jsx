@@ -431,6 +431,7 @@ function BrokerToolsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOp
 
 function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
   const { t } = useLanguage();
+  const [requestedApartment, setRequestedApartment] = useState(null);
   return (
     <div className="route-page residences-page">
       <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
@@ -442,9 +443,9 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
           </div>
           <p>{t("residenceRouteCopy")}</p>
         </section>
-        <NetworkSections sections={["opportunity"]} onOpenModal={onOpenModal} />
+        <NetworkSections sections={["opportunity"]} onSelectApartment={(code) => setRequestedApartment({ code })} />
         <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
-          <ResidenceExplorer liveInventoryTitle onBrokerAccess={() => onOpenModal("register")} />
+          <ResidenceExplorer liveInventoryTitle requestedApartment={requestedApartment} onBrokerAccess={() => onOpenModal("register")} />
         </Suspense>
       </main>
     </div>

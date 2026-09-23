@@ -16,6 +16,8 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 
 - September 21 inventory correction: use both owner stock lists in calculator/PDF selectors, not only the former ten-unit shortlist. The regular Final sheet contributes 141 available units; the newer Golden Premium workbook contributes 22 available units. Deduplicate by block + apartment number; only Golden-list codes get premium labels/prices. The newer workbook overrides overlapping availability (B1305/B1306 are reserved). Never substitute another apartment's room plan when metadata conflicts.
 
+- Golden Premium apartment cards on the Residences page are direct, keyboard-accessible entry points to the exact block-qualified residence detail, including its own status, plan, render and reference price. Keep them visibly interactive on desktop and mobile.
+
 - September 21, 2026: keep the AIXCO.Global calculator release intact and add a separate AiXESS-branded client PDF workflow in Broker Tools. Preserve the four approved AiXESS calculator formulas. Offer the approved Block A shortlist (A1305–A1310, A1401, A1405, A1407, A1408), optional client name/address, and localized EN/DE/PL/SL/RU PDF downloads. Entered prices remain illustrative assumptions, not approved unit quotes. Client details must not be stored or sent to analytics. Do not change the full Residence Explorer inventory to this calculator-only shortlist.
 
 - September 7 content placement correction: preserve the existing homepage structure and copy. Put the supplied document's Why AiXESS content on Why AiXESS, partner/network/process/Client Mode content on Broker Access, opportunity facts on Residences, and tools/calculators/insights on Resources. The document does not authorize a new long-form homepage.
