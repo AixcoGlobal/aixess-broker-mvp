@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { getBlockCameraPose, Reverance3D } from "./Reverance3D";
+import { getBlockCameraPose, Reverance3D, syncCanvasResolution } from "./Reverance3D";
 import {
   getFloorAtWorldPoint,
   getFloorWorldTransform,
@@ -29,6 +29,28 @@ const snapshot = {
 };
 
 describe("Reverance official 3D reconstruction", () => {
+  it("restores a zero-sized render buffer without resizing a healthy canvas", () => {
+    const canvas = {
+      width: 0,
+      height: 0,
+      getBoundingClientRect: () => ({ width: 609, height: 609 }),
+    };
+    const app = {
+      renderNextFrame: false,
+      setCanvasResolution: vi.fn((mode, width, height) => {
+        canvas.width = width;
+        canvas.height = height;
+      }),
+    };
+
+    expect(syncCanvasResolution(app, canvas)).toBe(true);
+    expect(canvas.width).toBeGreaterThan(0);
+    expect(canvas.height).toBeGreaterThan(0);
+    expect(app.renderNextFrame).toBe(true);
+    expect(syncCanvasResolution(app, canvas)).toBe(false);
+    expect(app.setCanvasResolution).toHaveBeenCalledTimes(1);
+  });
+
   it("uses a distinct front-facing camera pose for each building block", () => {
     const a = getBlockCameraPose("ReveranceA");
     const b = getBlockCameraPose("ReveranceB");

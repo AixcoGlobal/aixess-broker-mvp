@@ -184,6 +184,22 @@ try {
   await scrollToExplorer(page);
   await waitForExplorer(page);
 
+  // A loaded SOG must recover if the visible canvas backing buffer becomes 0x0.
+  const canvasSize = await page.evaluate(() => {
+    const canvas = document.querySelector(".building-map canvas");
+    return { width: canvas.width, height: canvas.height };
+  });
+  await page.evaluate(() => {
+    const canvas = document.querySelector(".building-map canvas");
+    canvas.width = 0;
+    canvas.height = 0;
+  });
+  const canvasRecovered = await page.waitForFunction(({ width, height }) => {
+    const canvas = document.querySelector(".building-map canvas");
+    return canvas?.width === width && canvas?.height === height;
+  }, canvasSize, { timeout: 5_000 }).then(() => true, () => false);
+  record("Visible model canvas recovers from a zero-sized render buffer", canvasRecovered);
+
   // 1. Explorer becomes interactive while visible (before fully settled)
   await scrollExplorerProgress(page, 0.35);
   let state = await readState(page);

@@ -277,6 +277,18 @@ function getAdaptiveRenderScale(width, height) {
   return Math.min(Math.max(dpr, 1), mobileCap, capScale);
 }
 
+export function syncCanvasResolution(app, canvas) {
+  const bounds = canvas.getBoundingClientRect();
+  if (bounds.width <= 0 || bounds.height <= 0) return false;
+  const scale = getAdaptiveRenderScale(bounds.width, bounds.height);
+  const width = Math.max(1, Math.round(bounds.width * scale));
+  const height = Math.max(1, Math.round(bounds.height * scale));
+  if (canvas.width === width && canvas.height === height) return false;
+  app.setCanvasResolution(RESOLUTION_FIXED, width, height);
+  app.renderNextFrame = true;
+  return true;
+}
+
 function getScrollCameraPosition(progress, reducedMotion) {
   return getScrollCameraPathPose(
     progress,
@@ -403,20 +415,16 @@ function RenderQuality() {
 
     const resize = () => {
       resizeFrame = 0;
-      const bounds = canvas.getBoundingClientRect();
-      if (bounds.width <= 0 || bounds.height <= 0) return;
-      const scale = getAdaptiveRenderScale(bounds.width, bounds.height);
-      app.setCanvasResolution(
-        RESOLUTION_FIXED,
-        Math.round(bounds.width * scale),
-        Math.round(bounds.height * scale),
-      );
-      app.renderNextFrame = true;
+      syncCanvasResolution(app, canvas);
     };
     const scheduleResize = () => {
       if (!resizeFrame) resizeFrame = window.requestAnimationFrame(resize);
     };
     const resizeObserver = new ResizeObserver(scheduleResize);
+    const checkResolution = () => {
+      if (document.visibilityState !== "hidden" && (!canvas.width || !canvas.height)) scheduleResize();
+    };
+    const recoveryTimer = window.setInterval(checkResolution, 1000);
 
     gsplat.radialSorting = true;
     gsplat.antiAlias = true;
@@ -426,11 +434,18 @@ function RenderQuality() {
       gsplat.minContribution = 2;
     }
     resizeObserver.observe(canvas);
+    window.addEventListener("pageshow", scheduleResize);
+    window.addEventListener("focus", scheduleResize);
+    document.addEventListener("visibilitychange", scheduleResize);
     resize();
 
     return () => {
       if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+      window.clearInterval(recoveryTimer);
       resizeObserver.disconnect();
+      window.removeEventListener("pageshow", scheduleResize);
+      window.removeEventListener("focus", scheduleResize);
+      document.removeEventListener("visibilitychange", scheduleResize);
       gsplat.radialSorting = previous.radialSorting;
       gsplat.antiAlias = previous.antiAlias;
       gsplat.minContribution = previous.minContribution;
