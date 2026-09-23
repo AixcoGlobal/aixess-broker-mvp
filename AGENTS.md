@@ -6,6 +6,10 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 
 ## Selected AiXESS direction
 
+- September 24 footer: do not add a full-width footer after the Residence Explorer; reaching the final building view must not trigger an extra downward scroll or move the sticky model. Keep legal links, cookie settings and admin access in a compact right-side disclosure at the page end, clear of the mobile residence dock.
+
+- September 24 building switch: selecting A or B should visibly and smoothly orbit the camera to that block, in either direction, while preserving the accepted final views and immediate manual-orbit takeover. Honor reduced-motion preferences.
+
 - September 22 mobile explorer: the portrait 3D viewer must fill the available viewport as browser toolbars expand or collapse, with the canvas and residence dock following its full height. Do not leave an empty band below the model; preserve the accepted model, camera framing, floor controls and drawer.
 
 - September 21 audit follow-up: the newer aixess_1st_page.docx brief belongs on the actual homepage, not only AiXESS Advantage. Use its translated headline, introduction, follow-up, tagline and three starting points while retaining the approved visual direction, access CTAs and Residence Explorer. This supersedes the September 7 instruction to keep the older homepage copy.

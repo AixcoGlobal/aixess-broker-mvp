@@ -97,6 +97,7 @@ input:focus-visible {
 }
 
 .site-shell {
+  position: relative;
   min-height: 100vh;
   background: var(--ink);
 }

@@ -95,6 +95,45 @@ async function readState(page) {
   });
 }
 
+async function readCameraPosition(page) {
+  return page.evaluate(() => {
+    const canvas = document.querySelector(".building-map canvas");
+    let fiber = canvas[Object.keys(canvas).find((key) => key.startsWith("__reactFiber"))];
+    while (fiber.return) fiber = fiber.return;
+    const queue = [fiber];
+    let app;
+    while (queue.length) {
+      const node = queue.shift();
+      const value = node.memoizedProps?.value;
+      if (value?.scene && value?.root) {
+        app = value;
+        break;
+      }
+      if (node.child) queue.push(node.child);
+      if (node.sibling) queue.push(node.sibling);
+    }
+    const position = app.root.findByName("Official Reverance orbit camera").getPosition();
+    return [position.x, position.y, position.z];
+  });
+}
+
+function cameraDistance(a, b) {
+  return Math.hypot(...a.map((value, index) => value - b[index]));
+}
+
+async function measureBlockSwitch(page, index) {
+  const start = await readCameraPosition(page);
+  await page.evaluate((buttonIndex) => {
+    document.querySelectorAll(".model-block-switcher button")[buttonIndex].click();
+  }, index);
+  await page.waitForTimeout(160);
+  const early = await readCameraPosition(page);
+  await page.waitForTimeout(1440);
+  const end = await readCameraPosition(page);
+  const total = cameraDistance(start, end);
+  return { progress: total > 0 ? 1 - cameraDistance(early, end) / total : 0, total, end };
+}
+
 async function measureOrangeTintDifference(page, beforeBuffer, afterBuffer) {
   return page.evaluate(async ({ beforeBase64, afterBase64 }) => {
     const decode = async (base64) => {
@@ -261,6 +300,26 @@ try {
   await scrollToSettled(page);
   state = await readState(page);
   record("Building reaches settled front view", state.settled, `progress=${state.progress.toFixed(3)}`);
+
+  const extraScrollAfterExplorer = await page.evaluate(() => {
+    const section = document.querySelector(".residence-explorer");
+    return document.documentElement.scrollHeight - (section.offsetTop + section.offsetHeight);
+  });
+  record(
+    "Collapsed site information adds no scroll past the explorer",
+    extraScrollAfterExplorer <= 1,
+    `${extraScrollAfterExplorer}px beyond the explorer`,
+  );
+
+  const blockBTransition = await measureBlockSwitch(page, 1);
+  const blockATransition = await measureBlockSwitch(page, 0);
+  record(
+    "A/B building camera turns are visibly progressive in both directions",
+    blockBTransition.total > 3 && blockATransition.total > 3
+      && blockBTransition.progress > 0.05 && blockBTransition.progress < 0.8
+      && blockATransition.progress > 0.05 && blockATransition.progress < 0.8,
+    `B ${(blockBTransition.progress * 100).toFixed(0)}%, A ${(blockATransition.progress * 100).toFixed(0)}% of turn after 160ms`,
+  );
 
   const settledScrollBefore = state.scrollY;
   await wheelOverCanvas(page, -120);

@@ -25,6 +25,22 @@ it.each([["Reject analytics", "rejected"], ["Accept analytics", "accepted"]])("p
   fireEvent.click(screen.getByRole("button", { name: button }));
   expect(consentChoice()).toBe(choice);
   expect(screen.queryByRole("region", { name: "Your privacy, your choice." })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Site info" }));
   fireEvent.click(screen.getByRole("button", { name: "Cookie settings" }));
   expect(screen.getByRole("region", { name: "Your privacy, your choice." })).toBeVisible();
+});
+
+it("keeps the footer out of the scroll flow and reveals its links on request", () => {
+  mount();
+  fireEvent.click(screen.getByRole("button", { name: "Reject analytics" }));
+  const toggle = screen.getByRole("button", { name: "Site info" });
+  expect(styles).toMatch(/\.privacy-footer\.has-explorer\s*\{[^}]*position:\s*absolute/);
+  expect(toggle).toHaveAttribute("aria-expanded", "false");
+  expect(screen.queryByRole("link", { name: "Privacy & cookies" })).not.toBeInTheDocument();
+  fireEvent.click(toggle);
+  expect(toggle).toHaveAttribute("aria-expanded", "true");
+  expect(screen.getByRole("link", { name: "Privacy & cookies" })).toBeVisible();
+  expect(screen.getByRole("link", { name: "Admin" })).toBeVisible();
+  fireEvent.keyDown(document, { key: "Escape" });
+  expect(toggle).toHaveAttribute("aria-expanded", "false");
 });

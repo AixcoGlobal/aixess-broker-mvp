@@ -70,6 +70,8 @@ const CAMERA_FOCUS = new Vec3(...CAMERA_TARGET);
 const CAMERA_PITCH_RANGE = new Vec2(-0.25, 0.25);
 const CAMERA_YAW_RANGE = new Vec2(-360, 360);
 const CAMERA_ZOOM_RANGE = new Vec2(3.7123, 3.7165);
+const CAMERA_FOCUS_DAMPING = 0.99;
+const BLOCK_FOCUS_DAMPING = 0.997;
 const DISTANT_ENVIRONMENT_RADIUS = 20;
 const DRAG_THRESHOLD_PX = 6;
 const WHEEL_ZOOM_DEGREES_PER_PIXEL = 0.012;
@@ -224,6 +226,15 @@ export function getBlockCameraPose(blockId) {
  */
 class ReveranceCameraControls extends CameraControls {
   static scriptName = "reveranceCameraControls";
+
+  // The stock control redirects focus to orbit whenever fly is disabled.
+  // Allow focus mode only for a programmed camera turn; fly stays disabled.
+  _setMode(mode) {
+    const allowFocus = mode === "focus" && !this.enableFly && this.enableOrbit;
+    if (allowFocus) this.enableFly = true;
+    super._setMode(mode);
+    if (allowFocus) this.enableFly = false;
+  }
 
   /**
    * While the scroll-driven side-to-front path owns the camera, skip writing a
@@ -629,17 +640,20 @@ function CameraRig({ apiRef, fov, interactive, manualCameraRef, onCameraReady, p
         const controls = controlsRef.current;
         if (controls?.enabled && controls._camera) {
           // Glide back to the settled front view instead of snapping.
+          controls.focusDamping = CAMERA_FOCUS_DAMPING;
           controls.reset(CAMERA_FOCUS, scratchPosition.set(...CAMERA_END));
           return;
         }
         placeCamera(CAMERA_END, true);
       },
       focusBlock(blockId) {
-        if (!controlsRef.current?._camera) return;
+        const controls = controlsRef.current;
+        if (!controls?._camera) return;
         const pose = getBlockCameraPose(blockId);
         lastScrollPoseRef.current.progress = Number.NaN;
         setScrollLocked(false);
-        controlsRef.current.reset(
+        controls.focusDamping = stageRef.current.reducedMotion ? 0 : BLOCK_FOCUS_DAMPING;
+        controls.reset(
           new Vec3(...pose.target),
           scratchPosition.set(...pose.position),
         );
@@ -686,7 +700,7 @@ function CameraRig({ apiRef, fov, interactive, manualCameraRef, onCameraReady, p
         moveDamping={0.96}
         rotateDamping={0.9}
         zoomDamping={0.965}
-        focusDamping={0.99}
+        focusDamping={CAMERA_FOCUS_DAMPING}
       />
     </Entity>
   );
