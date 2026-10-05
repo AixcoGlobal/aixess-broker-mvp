@@ -4,6 +4,8 @@ import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidatio
 import { FittedHeading } from "./components/FittedHeading.jsx";
 import { NetworkSections } from "./components/NetworkSections.jsx";
 import { NETWORK_COPY } from "./network-copy.js";
+import { HOME_HERO_LINES } from "./project-showcase-copy.js";
+import { ProjectShowcase } from "./components/ProjectShowcase.jsx";
 const Calculators = lazy(() => import("./components/Calculators.jsx"));
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import { PRIVACY_COPY } from "./privacy-copy.js";
@@ -475,7 +477,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
 
         <div className="hero-copy">
           <FittedHeading as="h1">
-            {c.hero.map((line) => <span key={line}>{line}</span>)}
+            {HOME_HERO_LINES.map((line) => <span key={line}>{line}</span>)}
           </FittedHeading>
           <span className="accent-rule" aria-hidden="true" />
           <p className="hero-subtitle hero-introduction">{c.intro}</p>
@@ -533,6 +535,8 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
           </div>
         </div>
       </section>
+
+      <ProjectShowcase onNavigate={onNavigate} />
 
       <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
         <ResidenceExplorer onBrokerAccess={() => onOpenModal("register")} />
