@@ -12,20 +12,22 @@ export function HomeHero({ children }) {
 
   return (
     <section className="lasha-hero" id="project">
-      <img
-        className="lasha-hero-media"
-        src="/assets/projects/reverance-skyline-1440.webp"
-        srcSet="/assets/projects/reverance-skyline-720.webp 720w, /assets/projects/reverance-skyline-1440.webp 1440w"
-        sizes="100vw"
-        alt=""
-        fetchPriority="high"
-        decoding="async"
-      />
       {children}
-      <div className="lasha-hero-copy">
-        <h1>{lines.map((line) => <span key={line}>{line}</span>)}</h1>
-        <p>{copy.heroSubtitle}</p>
-        <a className="lasha-hero-cta" href="#projects">{copy.heroCta} {ARROW}</a>
+      <div className="lasha-hero-frame">
+        <img
+          className="lasha-hero-media"
+          src="/assets/projects/reverance-skyline-1440.webp"
+          srcSet="/assets/projects/reverance-skyline-720.webp 720w, /assets/projects/reverance-skyline-1440.webp 1440w"
+          sizes="100vw"
+          alt=""
+          fetchPriority="high"
+          decoding="async"
+        />
+        <div className="lasha-hero-copy">
+          <h1>{lines.map((line) => <span key={line}>{line}</span>)}</h1>
+          <p>{copy.heroSubtitle}</p>
+          <a className="lasha-hero-cta" href="#projects">{copy.heroCta} {ARROW}</a>
+        </div>
       </div>
     </section>
   );
@@ -40,7 +42,10 @@ export function HomeMetrics() {
       {copy.metrics.map(([label, value, note]) => (
         <div key={label}>
           <p className="lasha-metrics-label">{label}</p>
-          <p className="lasha-metrics-value">{value}</p>
+          <p className="lasha-metrics-value" style={{ "--chars": Math.max(value.length, 6) }}>
+            {value.replace(/\+$/, "")}
+            {value.endsWith("+") && <span className="lasha-metrics-plus">+</span>}
+          </p>
           <p className="lasha-metrics-note">{note}</p>
         </div>
       ))}
@@ -89,11 +94,13 @@ export function HomeStartingPoints() {
   return (
     <section className="lasha-starting" aria-labelledby="lasha-starting-title">
       <p className="lasha-eyebrow">{network.introTagline}</p>
-      <h2 id="lasha-starting-title">{lead} <span className="lasha-accent">{accent}</span></h2>
+      <h2 id="lasha-starting-title"><span>{lead}</span> <span className="lasha-accent">{accent}</span></h2>
       <div className="lasha-starting-grid">
         {network.startingPoints.map(([title, description], index) => (
           <article key={title}>
-            <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
+            <span className="lasha-starting-rule" aria-hidden="true">
+              <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
+            </span>
             <h3>{title}</h3>
             <p>{description}</p>
           </article>

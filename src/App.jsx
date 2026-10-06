@@ -463,6 +463,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
         <SiteHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
       </HomeHero>
 
+      <HomeMetrics />
       <div className="project-ticker" role="group" aria-label={`${t("projectReverance")}, ${t("batumi")}, ${t("brokerAccessOpen")}`}>
         <div className="ticker-track">
           <TickerGroup />
@@ -472,7 +473,6 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
         </div>
       </div>
 
-      <HomeMetrics />
       <HomeAbout />
       <ProjectShowcase onNavigate={onNavigate} />
 
