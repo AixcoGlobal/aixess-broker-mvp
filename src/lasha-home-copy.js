@@ -8,7 +8,7 @@
 // from Klem. Live availability (163) and the completion date come from project data.
 export const LASHA_HOME_COPY = {
   en: {
-    heroSubtitle: "Disciplined real estate investment, development and long-term asset management",
+    heroSubtitle: "Disciplined real estate investment,\ndevelopment and long-term asset management",
     startingTitle: ["DIFFERENT STARTING POINTS. ONE PLATFORM TO", "MOVE FORWARD"],
     heroCta: "EXPLORE INVESTMENTS",
     metrics: [
@@ -35,6 +35,7 @@ export const LASHA_HOME_COPY = {
     exploreProject: "EXPLORE PROJECT",
     galleryLabel: "Project Reverance gallery",
     galleryImage: "Show Reverance image {{n}}",
+    openImage: "Open full-size image",
   },
   de: {
     heroSubtitle: "Disziplinierte Immobilieninvestition, Entwicklung und langfristiges Asset-Management",
@@ -64,6 +65,7 @@ export const LASHA_HOME_COPY = {
     exploreProject: "PROJEKT ENTDECKEN",
     galleryLabel: "Galerie Projekt Reverance",
     galleryImage: "Reverance-Bild {{n}} anzeigen",
+    openImage: "Bild in voller Größe öffnen",
   },
   pl: {
     heroSubtitle: "Zdyscyplinowane inwestycje w nieruchomości, deweloperka i długoterminowe zarządzanie aktywami",
@@ -93,6 +95,7 @@ export const LASHA_HOME_COPY = {
     exploreProject: "POZNAJ PROJEKT",
     galleryLabel: "Galeria projektu Reverance",
     galleryImage: "Pokaż zdjęcie Reverance {{n}}",
+    openImage: "Otwórz obraz w pełnym rozmiarze",
   },
   sl: {
     heroSubtitle: "Disciplinirano nepremičninsko investiranje, razvoj in dolgoročno upravljanje premoženja",
@@ -122,6 +125,7 @@ export const LASHA_HOME_COPY = {
     exploreProject: "RAZIŠČITE PROJEKT",
     galleryLabel: "Galerija projekta Reverance",
     galleryImage: "Prikaži sliko Reverance {{n}}",
+    openImage: "Odpri sliko v polni velikosti",
   },
   ru: {
     heroSubtitle: "Дисциплинированные инвестиции в недвижимость, девелопмент и долгосрочное управление активами",
@@ -151,5 +155,6 @@ export const LASHA_HOME_COPY = {
     exploreProject: "СМОТРЕТЬ ПРОЕКТ",
     galleryLabel: "Галерея проекта Reverance",
     galleryImage: "Показать изображение Reverance {{n}}",
+    openImage: "Открыть изображение в полном размере",
   },
 };

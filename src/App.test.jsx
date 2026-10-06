@@ -33,12 +33,12 @@ describe("AIXESS navigation pages", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("AIXESSTO MARKET");
-    expect(screen.getByText(LASHA_HOME_COPY.en.heroSubtitle)).toBeInTheDocument();
+    expect(screen.getByText(LASHA_HOME_COPY.en.heroSubtitle.replace(/\s+/g, " "))).toBeInTheDocument();
     expect(screen.getByText(LASHA_HOME_COPY.en.aboutBody)).toBeInTheDocument();
-    expect(screen.getByText(NETWORK_COPY.en.introTagline)).toBeInTheDocument();
+    expect(screen.getByText(NETWORK_COPY.en.introTagline.replace(/\.$/, ""))).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "DIFFERENT STARTING POINTS. ONE PLATFORM TO MOVE FORWARD" })).toBeInTheDocument();
     expect(container.querySelector(".lasha-access")).toBeInTheDocument();
-    expect(container.querySelector(".project-ticker")).toBeInTheDocument();
+    expect(container.querySelector(".project-ticker")).not.toBeInTheDocument();
     expect(container.querySelector("[data-content-section]")).not.toBeInTheDocument();
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
     expect(container.querySelector('[data-content-section="eligibility"]')).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe("AIXESS navigation pages", () => {
     const l = LASHA_HOME_COPY[locale];
     expect(screen.getByRole("heading", { name: l.projectTitle })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: l.aboutTitle.join("") })).toBeInTheDocument();
-    expect(screen.getByText(l.heroSubtitle)).toBeInTheDocument();
+    expect(screen.getByText(l.heroSubtitle.replace(/\s+/g, " "))).toBeInTheDocument();
     expect(container.querySelectorAll(".lasha-starting-grid article")).toHaveLength(3);
     expect(container.querySelectorAll(".lasha-metrics > div")).toHaveLength(3);
     for (const [title, description] of c.startingPoints) {

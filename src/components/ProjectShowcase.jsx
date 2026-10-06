@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LashaArrow, LashaValue } from "./LashaHomeSections.jsx";
 import { useLanguage } from "../i18n.jsx";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { PROJECT_SHOWCASE_COPY } from "../project-showcase-copy.js";
@@ -35,6 +36,11 @@ export function ProjectShowcase({ onNavigate, upcoming = UPCOMING_PROJECTS }) {
               loading="lazy"
               decoding="async"
             />
+            <a className="project-feature-expand" href={image.src} target="_blank" rel="noreferrer" aria-label={copy.openImage}>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true" focusable="false">
+                <path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4" />
+              </svg>
+            </a>
           </figure>
           <div className="project-thumbs" role="group" aria-label={copy.galleryLabel}>
             {project.gallery.map((item, index) => (
@@ -55,7 +61,7 @@ export function ProjectShowcase({ onNavigate, upcoming = UPCOMING_PROJECTS }) {
         <div className="project-feature-side">
           <dl className="project-facts">
             {copy.projectFacts.map(([value, label]) => (
-              <div key={label}><dd>{value}</dd><dt>{label}</dt></div>
+              <div key={label}><dd><LashaValue value={value} /></dd><dt>{label}</dt></div>
             ))}
           </dl>
           <div className="project-card">
@@ -64,10 +70,10 @@ export function ProjectShowcase({ onNavigate, upcoming = UPCOMING_PROJECTS }) {
             <p className="project-card-meta">{copy.projectMeta}</p>
             <div className="project-card-actions">
               <button className="lasha-button lasha-button-primary" type="button" onClick={exploreProject}>
-                {copy.exploreProject}<span aria-hidden="true">→</span>
+                {copy.exploreProject}<LashaArrow length={26} />
               </button>
               <button className="lasha-button lasha-button-dark" type="button" onClick={() => onNavigate("broker-tools")}>
-                {t("calculator")}<span aria-hidden="true">→</span>
+                {t("calculator")}<LashaArrow length={26} />
               </button>
             </div>
           </div>

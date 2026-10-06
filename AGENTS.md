@@ -6,7 +6,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 
 ## Selected AiXESS direction
 
-- October 6 Lasha layout (Kemo): the homepage is an exact copy of Lasha Bakashvili's Figma frame. Hero, metric strip, about split, Batumi project, starting points and broker access keep the 1440px desktop composition at every width, scaled in Figma pixels (`--u`) with small text floors; never stack them into a reflowed mobile layout. The Residence Explorer keeps its own accepted mobile mode.
+- October 6 Lasha layout (Kemo): the homepage is an exact copy of Lasha Bakashvili's Figma frame. Hero, metric strip, about split, Batumi project, starting points and broker access keep the 1440px desktop composition at every width, scaled in Figma pixels (`--u`) with small text floors; never stack them into a reflowed mobile layout. The Residence Explorer keeps its own accepted mobile mode. Lasha's Figma export (HOME page, 1440 × 4948, shared by Kemo on October 6) is the measurement source: positions and type sizes in `lasha-home.css` are frame pixels, Tusker/Albireo widths are approximated by the condensed OFL fonts built with `scripts/make-lasha-condensed-fonts.py`, and the homepage has no project ticker. Availability colours in the explorer keep the accepted green/bronze/deep-blue rule rather than the frame's swatches.
 
 - October 6 homepage hero: the homepage headline is "AIXESS TO MARKET" (Klem, October 5). Keep the AIXESS brand word unchanged and translate the rest per locale: DE "ZUM MARKT", PL "DO RYNKU", SL "DO TRGA", RU "К РЫНКУ". A "Now on AiXESS" featured-project section (Reverance) sits above the Residence Explorer; future Dubai projects stay hidden until real names and approved images exist.
 

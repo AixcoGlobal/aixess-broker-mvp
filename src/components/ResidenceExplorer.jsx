@@ -1216,7 +1216,7 @@ export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, 
         <div className="explorer-copy">
           <div className="explorer-copy-panel explorer-intro-panel" aria-hidden={filterActive} inert={filterActive}>
             <p className="section-eyebrow">{liveInventoryTitle ? NETWORK_COPY[locale].live : t("residenceExplorer")}</p>
-            <FittedHeading id="residence-explorer-title">{(liveInventoryTitle ? NETWORK_COPY[locale].liveTitle : [t("selectOpportunity"), t("opportunity")]).map(line => <span key={line}>{line}</span>)}</FittedHeading>
+            <FittedHeading id="residence-explorer-title">{(liveInventoryTitle ? NETWORK_COPY[locale].liveTitle : [t("selectOpportunity"), t("opportunity").replace(/\.$/, "")]).map(line => <span key={line}>{line}</span>)}</FittedHeading>
             <p className="explorer-description">
               {t("explorerDescription")}
             </p>
@@ -1292,9 +1292,10 @@ export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, 
         )}
 
         <div className="explorer-motion-caption" aria-hidden="true">
-          <span>{t("sideProfile")}</span>
-          <span>{t("live3DRotation")}</span>
-          <span>{t("exploreFloor")}</span>
+          {["sideProfile", "live3DRotation", "exploreFloor"].map((key) => {
+            const [step, label] = t(key).split(" · ");
+            return <span key={key}><span className="explorer-step-number">{step}</span><span className="explorer-step-separator"> · </span>{label}</span>;
+          })}
         </div>
       </div>
 

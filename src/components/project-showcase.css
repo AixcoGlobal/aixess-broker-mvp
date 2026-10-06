@@ -1,151 +1,164 @@
 /* "Current project in Batumi" section, following Lasha's Figma frame:
    large render with a thumbnail strip, four metric tiles and a dark project card. */
-.project-showcase {
-  display: grid;
-  padding: calc(84 * var(--u)) calc(70 * var(--u)) calc(90 * var(--u));
-}
+.lasha-home .project-showcase { padding: calc(47.6 * var(--u)) calc(70 * var(--u)) calc(22 * var(--u)); }
 
-.project-showcase-head { display: grid; gap: calc(18 * var(--u)); }
+.lasha-home .project-showcase-head .lasha-eyebrow { letter-spacing: 0; }
 
-.project-showcase h2 {
-  font-size: calc(94 * var(--u));
+.lasha-home .project-showcase h2 {
+  margin-top: calc(6.6 * var(--u));
+  font-size: calc(129.5 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.012em;
   white-space: nowrap;
 }
 
-.project-feature {
+.lasha-home .project-feature {
   display: grid;
-  grid-template-columns: minmax(0, 748fr) minmax(0, 514fr);
-  gap: calc(38 * var(--u));
-  align-items: stretch;
-  margin-top: calc(40 * var(--u));
+  grid-template-columns: calc(746 * var(--u)) calc(515 * var(--u));
+  column-gap: calc(39 * var(--u));
+  align-items: start;
+  margin-top: calc(29.1 * var(--u));
 }
 
-.project-feature-gallery { display: grid; gap: calc(10 * var(--u)); align-content: start; min-width: 0; }
+.lasha-home .project-feature-gallery { display: grid; row-gap: calc(17 * var(--u)); min-width: 0; }
 
-.project-feature-media {
+.lasha-home .project-feature-media {
+  position: relative;
   margin: 0;
-  aspect-ratio: 748 / 607;
+  height: calc(606 * var(--u));
   overflow: hidden;
   background: #d9ddd8;
 }
 
-.project-feature-media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.lasha-home .project-feature-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-.project-thumbs {
+.lasha-home .project-feature-expand {
+  position: absolute;
+  right: calc(15 * var(--u));
+  bottom: calc(15 * var(--u));
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: calc(8 * var(--u));
+  place-items: center;
+  width: calc(41 * var(--u));
+  height: calc(41 * var(--u));
+  min-width: 18px;
+  min-height: 18px;
+  border: 1px solid rgba(244, 244, 241, 0.25);
+  background: rgba(23, 26, 29, 0.82);
+  color: #fff;
 }
 
-.project-thumbs button {
-  aspect-ratio: 101 / 67;
+.lasha-home .project-feature-expand svg { width: calc(14 * var(--u)); min-width: 7px; }
+.lasha-home .project-feature-expand:focus-visible { outline: 2px solid var(--l-blue); outline-offset: 2px; }
+
+.lasha-home .project-thumbs {
+  display: flex;
+  gap: calc(9 * var(--u));
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.lasha-home .project-thumbs::-webkit-scrollbar { display: none; }
+
+.lasha-home .project-thumbs button {
+  flex: 0 0 calc(100 * var(--u));
+  height: calc(67 * var(--u));
   padding: 0;
   border: 0;
   border-radius: 0;
   background: none;
   overflow: hidden;
-  outline: max(calc(3 * var(--u)), 1.5px) solid transparent;
-  outline-offset: max(calc(2 * var(--u)), 1px);
-  opacity: 0.74;
   cursor: pointer;
-  transition: opacity 160ms ease, outline-color 160ms ease;
 }
 
-.project-thumbs button:hover,
-.project-thumbs button.is-active { opacity: 1; }
-.project-thumbs button.is-active { outline-color: var(--l-blue); }
-.project-thumbs button:focus-visible { outline-color: var(--l-ink); }
-.project-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.lasha-home .project-thumbs button.is-active { box-shadow: inset 0 0 0 max(calc(2 * var(--u)), 1px) var(--l-blue); }
+.lasha-home .project-thumbs button.is-active img { padding: max(calc(3 * var(--u)), 1px); }
+.lasha-home .project-thumbs button:focus-visible { outline: 2px solid var(--l-ink); outline-offset: -2px; }
+.lasha-home .project-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-.project-feature-side {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: calc(14 * var(--u));
-  min-width: 0;
-}
+.lasha-home .project-feature-side { display: grid; min-width: 0; }
 
-.project-facts {
+.lasha-home .project-facts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin: 0;
+  grid-template-columns: calc(246 * var(--u)) minmax(0, 1fr);
+  grid-template-rows: minmax(calc(154 * var(--u)), auto) minmax(calc(165 * var(--u)), auto);
   border-top: 1px solid var(--l-line);
 }
 
-.project-facts > div {
-  display: flex;
-  flex-direction: column;
-  gap: calc(10 * var(--u));
+.lasha-home .project-facts > div {
   min-width: 0;
-  min-height: calc(154 * var(--u));
-  padding: calc(22 * var(--u)) calc(34 * var(--u));
-  border-bottom: 1px solid var(--l-line);
+  padding: calc(5.8 * var(--u)) calc(16 * var(--u)) calc(6 * var(--u)) calc(34.4 * var(--u));
 }
 
-.project-facts > div:nth-child(odd) { border-right: 1px solid var(--l-line); }
+.lasha-home .project-facts > div:nth-child(even) { padding-left: calc(85.4 * var(--u)); border-left: 1px solid var(--l-line); }
+.lasha-home .project-facts > div:nth-child(-n + 2) { border-bottom: 1px solid var(--l-line); }
+.lasha-home .project-facts > div:nth-child(n + 3) { padding-top: calc(15.8 * var(--u)); }
 
-.project-facts dd {
-  margin: 0;
+.lasha-home .project-facts dd {
   color: var(--l-blue);
-  font-family: var(--l-num);
-  font-size: calc(76 * var(--u));
+  font-family: var(--l-num-tall);
+  font-size: calc(87.8 * var(--u));
   font-weight: 500;
-  line-height: 0.85;
-  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
 }
 
-.project-facts dt {
-  max-width: calc(140 * var(--u));
-  font-size: max(calc(11 * var(--u)), 5.5px);
-  line-height: 1.3;
-  color: #3e454c;
+.lasha-home .project-facts dd .lasha-plus { font-size: 0.42em; vertical-align: 0.42em; }
+
+.lasha-home .project-facts dt {
+  margin-top: calc(1.3 * var(--u));
+  max-width: calc(135 * var(--u));
+  overflow-wrap: anywhere;
+  color: #505050;
+  font-size: max(calc(13 * var(--u)), 5.5px);
+  line-height: 1.077;
 }
 
-.project-card {
+.lasha-home .project-card {
   display: grid;
-  align-content: start;
-  gap: calc(16 * var(--u));
-  padding: calc(34 * var(--u)) calc(34 * var(--u)) calc(36 * var(--u));
+  justify-items: start;
+  min-height: calc(374 * var(--u));
+  padding: calc(32.4 * var(--u)) calc(34 * var(--u)) calc(37 * var(--u)) calc(34 * var(--u));
   background: var(--l-ink);
-  color: #fff;
+  color: var(--l-paper);
 }
 
-.project-card h3 { font-size: calc(50 * var(--u)); }
-
-.project-card p {
-  font-size: max(calc(13 * var(--u)), 6px);
-  line-height: 1.3;
-  color: rgba(255, 255, 255, 0.82);
+.lasha-home .project-card h3 {
+  font-size: calc(62 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.015em;
 }
 
-.project-card .project-card-meta {
+.lasha-home .project-card p {
+  margin-top: calc(16.6 * var(--u));
+  max-width: calc(412 * var(--u));
+  font-size: max(calc(16 * var(--u)), 6px);
+  line-height: 1.075;
+}
+
+.lasha-home .project-card .project-card-meta {
+  justify-self: stretch;
+  margin-top: calc(19.2 * var(--u));
   padding-top: calc(16 * var(--u));
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  font-size: max(calc(11 * var(--u)), 5.5px);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid #858787;
+  font-size: max(calc(16 * var(--u)), 6px);
+  line-height: 1;
 }
 
-.project-card-actions {
+.lasha-home .project-card-actions {
   display: flex;
-  gap: calc(14 * var(--u));
-  margin-top: calc(10 * var(--u));
+  gap: calc(14.5 * var(--u));
+  margin-top: calc(36 * var(--u));
 }
 
-.project-card-actions .lasha-button {
-  flex: 0 1 calc(218 * var(--u));
-  min-width: 0;
-  min-height: max(calc(70 * var(--u)), 22px);
-  gap: calc(14 * var(--u));
-  padding: 0 calc(22 * var(--u));
-  letter-spacing: 0.04em;
-  font-size: max(calc(11 * var(--u)), 5.5px);
+.lasha-home .project-card-actions .lasha-button {
+  width: calc(217 * var(--u));
+  height: calc(69 * var(--u));
+  min-height: 22px;
+  padding: 0 calc(10 * var(--u)) 0 calc(14 * var(--u));
 }
+
+.lasha-home .project-card-actions .lasha-button-dark { width: calc(216 * var(--u)); }
+.lasha-home .project-card-actions .lasha-arrow { width: calc(26 * var(--u)); }
 
 .project-upcoming {
   display: grid;

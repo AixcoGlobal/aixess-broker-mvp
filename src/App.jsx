@@ -21,7 +21,6 @@ const ResidenceExplorer = lazy(() => import("./components/ResidenceExplorer").th
   default: module.ResidenceExplorer,
 })));
 
-const tickerItems = ["projectReverance", "batumi", "brokerAccessOpen"];
 
 const navItems = [
   { key: "why-aixess", labelKey: "aixessAdvantage" },
@@ -48,19 +47,6 @@ function routeFromLocation() {
   const requestedRoute = window.location.hash.replace(/^#/, "").split("?")[0].trim().toLowerCase();
   const route = routeAliases[requestedRoute] || requestedRoute;
   return validRoutes.has(route) ? route : "home";
-}
-
-function TickerGroup() {
-  const { t } = useLanguage();
-  return (
-    <span className="ticker-group" aria-hidden="true">
-      {tickerItems.map((key) => (
-        <span className="ticker-item" key={key}>
-          {t(key)}<span className="ticker-dot">•</span>
-        </span>
-      ))}
-    </span>
-  );
 }
 
 function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal, pageHeader = false }) {
@@ -464,15 +450,6 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
       </HomeHero>
 
       <HomeMetrics />
-      <div className="project-ticker" role="group" aria-label={`${t("projectReverance")}, ${t("batumi")}, ${t("brokerAccessOpen")}`}>
-        <div className="ticker-track">
-          <TickerGroup />
-          <TickerGroup />
-          <TickerGroup />
-          <TickerGroup />
-        </div>
-      </div>
-
       <HomeAbout />
       <ProjectShowcase onNavigate={onNavigate} />
 

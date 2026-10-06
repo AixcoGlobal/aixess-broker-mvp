@@ -1,88 +1,86 @@
 @import "../lasha-fonts.css";
 
-/* Homepage styled to Lasha Bakashvili's Figma frame: paper ground, condensed
-   display headlines, Albireo-style condensed numerals and strong blue accents.
-   Scoped to .lasha-home so the other routes keep the existing AiXESS styling. */
+/* Homepage built to Lasha Bakashvili's Figma frame (HOME page, 1440 × 4948).
+   Every size and position below is in Figma pixels: --u is one frame pixel at the
+   current viewport width, so phones, tablets and desktops all show the same composition.
+   Text offsets come from the frame's measured cap-heights; small body copy keeps a
+   legibility floor on phones. Scoped to .lasha-home so other routes keep their styling. */
 .lasha-home {
+  --u: calc(min(100vw, 1920px) / 1440);
   --l-ink: #171a1d;
-  --l-paper: #f7f7f4;
+  --l-paper: #f4f4f1;
   --l-mist: #dce7f0;
   --l-blue: #2557d6;
   --l-sage: #9bb69e;
-  --l-line: rgba(23, 26, 29, 0.16);
-  --l-display: "League Gothic", "Tusker Grotesk", "Oswald", "Arial Narrow", sans-serif;
+  --l-line: #cecece;
+  --l-narrow: "Lasha Narrow", "League Gothic", "Arial Narrow", sans-serif;
+  --l-tall: "Lasha Tall", "League Gothic", "Arial Narrow", sans-serif;
+  --l-display: "Lasha Display", "League Gothic", "Arial Narrow", sans-serif;
   --l-num: "Barlow Condensed", "Albireo Cond", "Arial Narrow", sans-serif;
+  --l-num-tall: "Lasha Num Tall", "Barlow Condensed", "Arial Narrow", sans-serif;
   --l-body: "Inter", "Gilroy", system-ui, sans-serif;
+  overflow-x: clip;
   background: var(--l-paper);
   color: var(--l-ink);
   font-family: var(--l-body);
-}
-
-.lasha-home :lang(ru) .lasha-display,
-.lasha-home:lang(ru) {
-  --l-display: "Oswald", "League Gothic", "Arial Narrow", sans-serif;
 }
 
 .lasha-home h1,
 .lasha-home h2,
 .lasha-home h3 {
   margin: 0;
-  font-family: var(--l-display);
+  font-family: var(--l-tall);
   font-weight: 400;
-  letter-spacing: 0.005em;
-  line-height: 0.9;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
-.lasha-home p { margin: 0; }
+.lasha-home p,
+.lasha-home ol,
+.lasha-home dl,
+.lasha-home dd { margin: 0; }
+
+.lasha-home h1 > span,
+.lasha-home h2 > span { display: block; }
+
+.lasha-accent { color: var(--l-blue); }
+
+.lasha-arrow { flex: none; height: calc(8 * var(--u)); overflow: visible; }
+.lasha-arrow path { vector-effect: non-scaling-stroke; }
+
+.lasha-plus { font-size: 0.5em; vertical-align: 0.18em; margin-left: 0.04em; }
 
 .lasha-eyebrow {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
   color: var(--l-blue);
-  font-size: 0.72rem;
+  font-size: max(calc(16.2 * var(--u)), 7px);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 .lasha-eyebrow::after {
-  flex: 0 1 5.5rem;
+  flex: 0 0 calc(125 * var(--u));
   height: 1px;
-  background: currentColor;
-  opacity: 0.6;
+  margin-left: calc(17.5 * var(--u));
+  background: rgba(37, 87, 214, 0.5);
   content: "";
-}
-
-.lasha-eyebrow-light { color: #fff; }
-
-.lasha-accent { color: var(--l-blue); }
-
-.lasha-index {
-  display: block;
-  color: var(--l-blue);
-  font-family: var(--l-num);
-  font-size: 1.3rem;
-  font-weight: 500;
-  letter-spacing: 0;
 }
 
 .lasha-button {
   display: inline-flex;
-  max-width: 100%;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.6rem;
-  min-height: 3rem;
-  padding: 0.9rem 1.1rem;
+  gap: calc(14 * var(--u));
+  max-width: 100%;
   border: 1px solid var(--l-ink);
   border-radius: 0;
   background: transparent;
   color: var(--l-ink);
   font-family: var(--l-body);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: max(calc(15.3 * var(--u)), 6.5px);
+  font-weight: 500;
+  letter-spacing: 0.026em;
+  line-height: 1;
   text-align: left;
   text-transform: uppercase;
   text-decoration: none;
@@ -90,40 +88,32 @@
   transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
 }
 
-.lasha-button-primary {
-  border-color: var(--l-blue);
-  background: var(--l-blue);
-  color: #fff;
-}
-
+.lasha-button-primary { border-color: var(--l-blue); background: var(--l-blue); color: var(--l-paper); }
 .lasha-button-primary:hover { border-color: #1b45b0; background: #1b45b0; }
-
-.lasha-button-dark {
-  border-color: rgba(255, 255, 255, 0.55);
-  color: #fff;
-}
-
-.lasha-button-dark:hover { border-color: #fff; background: #fff; color: var(--l-ink); }
+.lasha-button-dark { border-color: #fff; color: var(--l-paper); }
+.lasha-button-dark:hover { background: #fff; color: var(--l-ink); }
 .lasha-button-outline:hover { background: var(--l-ink); color: var(--l-paper); }
 .lasha-button:focus-visible { outline: 2px solid var(--l-blue); outline-offset: 3px; }
 
-/* Hero and metric strip: a fixed 1440px Figma frame scaled to the viewport
-   width, so phone, tablet and desktop all show Lasha's composition unchanged.
-   --u is one Figma pixel; small text keeps a legibility floor on phones. */
-.lasha-hero { background: var(--l-ink); }
+/* Hero: frame 0–992. The site header floats over the sky, as the frame has no bar. */
+.lasha-hero { position: relative; }
 
-.lasha-hero-frame,
-.lasha-metrics {
-  --u: calc(100cqi / 1440);
-  container-type: inline-size;
+.lasha-hero > .site-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 5;
+  background: transparent;
+  border-bottom-color: rgba(244, 244, 241, 0.35);
+  color: #fff;
 }
 
 .lasha-hero-frame {
+  --u: calc(100cqi / 1440);
   position: relative;
-  aspect-ratio: 1440 / 985;
-  max-height: 62rem;
+  container-type: inline-size;
+  aspect-ratio: 1440 / 992;
   overflow: hidden;
-  background: #bbd3ee;
+  background: #5d8fd0;
 }
 
 .lasha-hero-media {
@@ -132,355 +122,393 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 50%;
 }
 
 .lasha-hero-copy {
   position: absolute;
   z-index: 2;
-  top: calc(262 * var(--u));
+  top: calc(273.4 * var(--u));
   left: calc(70 * var(--u));
   display: grid;
   justify-items: start;
-  max-width: calc(620 * var(--u));
 }
 
 .lasha-hero h1 {
-  display: grid;
-  font-size: calc(150 * var(--u));
-  line-height: 0.86;
+  font-family: var(--l-narrow);
+  font-size: calc(147.3 * var(--u));
+  line-height: calc(131 * var(--u));
   white-space: nowrap;
+  color: #000;
 }
 
 .lasha-hero-copy p {
-  margin-top: calc(28 * var(--u));
-  max-width: calc(440 * var(--u));
-  font-size: max(calc(16 * var(--u)), 7px);
-  line-height: 1.25;
+  margin-top: calc(4.8 * var(--u));
+  max-width: max(calc(410 * var(--u)), 172px);
+  font-size: max(calc(18 * var(--u)), 7px);
+  line-height: 1.09;
+  white-space: pre-line;
+  color: #000;
 }
 
 .lasha-hero-cta {
-  margin-top: calc(40 * var(--u));
+  display: inline-flex;
+  align-items: center;
+  gap: calc(11.4 * var(--u));
+  margin-top: calc(39.1 * var(--u));
   color: var(--l-blue);
-  font-size: max(calc(17 * var(--u)), 7px);
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-size: max(calc(20.5 * var(--u)), 7px);
+  letter-spacing: -0.018em;
+  line-height: 1;
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
 }
 
+.lasha-hero-cta .lasha-arrow { width: calc(24 * var(--u)); height: calc(11 * var(--u)); }
+.lasha-hero-cta .lasha-arrow path { stroke-width: 1.5; }
 .lasha-hero-cta:hover { text-decoration: underline; }
 
+/* Metric strip: frame 992–1270. */
 .lasha-metrics {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 374fr)) minmax(0, 318fr);
-  min-height: calc(277 * var(--u));
+  grid-template-columns: calc(376 * var(--u)) calc(378 * var(--u)) calc(374 * var(--u)) minmax(0, 1fr);
+  min-height: calc(278 * var(--u));
   background: var(--l-ink);
-  color: #fff;
+  color: var(--l-paper);
 }
 
-.lasha-metrics > div,
-.lasha-home .lasha-metrics-tagline {
-  position: relative;
+.lasha-metrics > div {
   min-width: 0;
-  padding: calc(56 * var(--u)) calc(30 * var(--u)) calc(44 * var(--u)) calc(70 * var(--u));
-  border-right: 1px solid rgba(255, 255, 255, 0.16);
+  padding: calc(53.6 * var(--u)) calc(24 * var(--u)) calc(24 * var(--u)) calc(70 * var(--u));
+  border-right: 1px solid #4f5152;
 }
-
-/* Bottom rule: silver under the first two columns, Lasha's blue under the third. */
-.lasha-metrics > div::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: max(calc(4 * var(--u)), 2px);
-  background: rgba(255, 255, 255, 0.82);
-}
-
-.lasha-metrics > div:nth-child(3)::after { background: var(--l-blue); }
 
 .lasha-home .lasha-metrics-label {
   overflow-wrap: anywhere;
-  font-size: max(calc(12 * var(--u)), 5.5px);
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-size: max(calc(13.4 * var(--u)), 5.5px);
+  letter-spacing: -0.03em;
+  line-height: 1;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
 }
 
 .lasha-home .lasha-metrics-value {
-  margin-top: calc(18 * var(--u));
-  padding-bottom: calc(20 * var(--u));
-  background: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)) left bottom / calc(132 * var(--u)) 1px no-repeat;
+  margin-top: calc(7 * var(--u));
   color: var(--l-blue);
   font-family: var(--l-num);
   /* Longer translated values ("4,2 Mrd. $") shrink to stay inside their column. */
-  font-size: calc(600 / var(--chars, 6) * var(--u));
+  font-size: calc(666 / var(--chars, 6) * var(--u));
   font-weight: 500;
-  line-height: 0.82;
-  letter-spacing: 0.03em;
+  line-height: 1;
   white-space: nowrap;
 }
 
-.lasha-metrics-plus {
-  margin-left: 0.12em;
-  font-size: 0.5em;
-  vertical-align: 0.38em;
+.lasha-metrics-value .lasha-plus { font-size: 0.49em; vertical-align: 0.24em; margin-left: 0; }
+
+.lasha-home .lasha-metrics-value::after {
+  display: block;
+  width: calc(133.5 * var(--u));
+  height: 1px;
+  margin-top: calc(20 * var(--u));
+  background: #858787;
+  content: "";
 }
 
 .lasha-home .lasha-metrics-note {
-  margin-top: max(calc(14 * var(--u)), 6px);
-  max-width: calc(260 * var(--u));
-  font-size: max(calc(12 * var(--u)), 5.5px);
-  line-height: 1.3;
-  color: rgba(255, 255, 255, 0.72);
+  overflow-wrap: anywhere;
+  margin-top: max(calc(11.8 * var(--u)), 5px);
+  max-width: calc(240 * var(--u));
+  font-size: max(calc(12.8 * var(--u)), 5.5px);
+  line-height: 1.29;
 }
 
 .lasha-home .lasha-metrics-tagline {
   display: grid;
   align-content: start;
-  padding-top: calc(48 * var(--u));
-  padding-right: calc(10 * var(--u));
-  border-right: 0;
+  padding: calc(52.5 * var(--u)) calc(10 * var(--u)) 0 calc(68 * var(--u));
   color: var(--l-sage);
-  font-family: var(--l-display);
-  font-size: calc(46 * var(--u));
-  line-height: 0.95;
+  font-family: var(--l-tall);
+  font-size: calc(51.4 * var(--u));
+  line-height: calc(41.3 * var(--u));
+  letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
-/* Below the hero, every section also keeps Lasha's 1440px desktop composition
-   at all widths: sizes are in Figma pixels (--u), with small legibility floors. */
-.lasha-home { --u: calc(min(100vw, 1920px) / 1440); }
-
-/* About split */
+/* About: frame 1270–2016. */
 .lasha-about {
   display: grid;
-  grid-template-columns: 753fr 687fr;
-  min-height: calc(726 * var(--u));
+  grid-template-columns: calc(754 * var(--u)) minmax(0, 1fr);
+  min-height: calc(746 * var(--u));
 }
 
-.lasha-about-media {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.lasha-about-media { width: 100%; height: 100%; object-fit: cover; }
 
 .lasha-about-panel {
-  display: grid;
-  align-content: start;
-  padding: calc(64 * var(--u)) calc(70 * var(--u)) calc(56 * var(--u)) calc(70 * var(--u));
+  padding: calc(73.6 * var(--u)) calc(40 * var(--u)) calc(40 * var(--u)) calc(71 * var(--u));
   background: var(--l-blue);
-  color: #fff;
+  color: var(--l-paper);
+}
+
+.lasha-eyebrow-lead {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  color: var(--l-paper);
+  font-size: max(calc(13.3 * var(--u)), 5.5px);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.lasha-eyebrow-lead::after {
+  flex-basis: calc(113.5 * var(--u));
+  margin: 0 calc(8.5 * var(--u)) 0 0;
+  background: rgba(244, 244, 241, 0.5);
 }
 
 .lasha-about-panel h2 {
   display: grid;
-  margin-top: calc(30 * var(--u));
-  font-size: calc(92 * var(--u));
+  justify-items: start;
+  margin-top: calc(26.4 * var(--u));
+  font-size: calc(118.9 * var(--u));
+  line-height: calc(100 * var(--u));
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
-.lasha-home .lasha-about-body {
-  margin-top: calc(52 * var(--u));
-  max-width: calc(500 * var(--u));
-  font-size: max(calc(14 * var(--u)), 6.5px);
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.86);
+.lasha-about-panel h2::after {
+  display: block;
+  width: calc(480 * var(--u));
+  height: 1px;
+  margin-top: calc(23.7 * var(--u));
+  background: rgba(244, 244, 241, 0.25);
+  content: "";
 }
 
-.lasha-about-points {
+.lasha-home .lasha-about-body {
+  margin-top: calc(20.1 * var(--u));
+  max-width: calc(486 * var(--u));
+  font-size: max(calc(17.2 * var(--u)), 6.5px);
+  line-height: 1.035;
+}
+
+.lasha-home .lasha-about-points {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(34 * var(--u)) calc(40 * var(--u));
-  margin: calc(56 * var(--u)) 0 0;
+  grid-template-columns: calc(295 * var(--u)) minmax(0, 1fr);
+  row-gap: calc(32.9 * var(--u));
+  margin-top: calc(77.7 * var(--u));
   padding: 0;
   list-style: none;
 }
 
+/* Lasha's single hairline between the two rows of points. */
+.lasha-about-points::before {
+  position: absolute;
+  top: calc(73 * var(--u));
+  left: calc(-1 * var(--u));
+  width: calc(414 * var(--u));
+  height: 1px;
+  background: rgba(244, 244, 241, 0.25);
+  content: "";
+}
+
 .lasha-about-points li {
   display: grid;
-  gap: calc(10 * var(--u));
-  padding-top: calc(14 * var(--u));
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
-  font-size: max(calc(11 * var(--u)), 5.5px);
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  row-gap: calc(9.3 * var(--u));
+  font-size: max(calc(13.4 * var(--u)), 5.5px);
+  letter-spacing: 0.015em;
+  line-height: 1;
   text-transform: uppercase;
 }
 
-.lasha-about-points .lasha-index { color: #fff; font-size: calc(26 * var(--u)); }
-
-.lasha-home .lasha-eyebrow {
-  gap: calc(16 * var(--u));
-  font-size: max(calc(11 * var(--u)), 5.5px);
+.lasha-index {
+  display: block;
+  font-family: var(--l-num);
+  font-weight: 500;
+  line-height: 1;
 }
 
-.lasha-home .lasha-eyebrow::after { flex-basis: calc(90 * var(--u)); }
+.lasha-about-points .lasha-index { font-size: calc(29.3 * var(--u)); }
 
-/* Starting points */
-.lasha-starting {
-  display: grid;
-  padding: calc(110 * var(--u)) calc(70 * var(--u)) 0;
+/* Starting points: eyebrow, three-line statement, mist band 214 tall. */
+.lasha-starting { padding: calc(125 * var(--u)) 0 0; }
+
+.lasha-starting > .lasha-eyebrow,
+.lasha-starting > h2 { margin-left: calc(70 * var(--u)); }
+
+.lasha-starting > .lasha-eyebrow {
+  font-family: var(--l-display);
+  font-size: calc(26.1 * var(--u));
+  font-weight: 400;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
 }
+
+.lasha-starting > .lasha-eyebrow::after { content: none; }
 
 .lasha-starting h2 {
-  display: grid;
-  justify-items: start;
-  margin-top: calc(26 * var(--u));
-  font-size: calc(106 * var(--u));
-  line-height: 0.92;
+  margin-top: calc(18.2 * var(--u));
+  font-size: calc(140.5 * var(--u));
+  line-height: calc(119 * var(--u));
 }
 
-.lasha-starting h2 > span { display: block; }
-.lasha-starting h2 > span:first-child { max-width: calc(940 * var(--u)); }
+.lasha-starting h2 > span:first-child { max-width: calc(900 * var(--u)); }
 
 .lasha-starting-grid {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: calc(46 * var(--u)) calc(-70 * var(--u)) 0;
-  padding: calc(30 * var(--u)) calc(70 * var(--u)) calc(30 * var(--u));
+  grid-template-columns: calc(477.7 * var(--u)) calc(476 * var(--u)) minmax(0, 1fr);
+  min-height: calc(214 * var(--u));
+  margin-top: calc(41.1 * var(--u));
+  padding-bottom: calc(16 * var(--u));
+  padding: calc(19.7 * var(--u)) 0 0 calc(71 * var(--u));
   background: var(--l-mist);
 }
 
-.lasha-starting-grid article {
-  display: grid;
-  align-content: start;
-  min-width: 0;
-  padding: 0 calc(40 * var(--u));
-  border-right: 1px solid rgba(23, 26, 29, 0.14);
+.lasha-starting-grid::after {
+  position: absolute;
+  right: calc(70 * var(--u));
+  bottom: 0;
+  left: calc(70 * var(--u));
+  height: 1px;
+  background: #babfc4;
+  content: "";
 }
 
-.lasha-starting-grid article:first-child { padding-left: 0; }
-.lasha-starting-grid article:last-child { border-right: 0; padding-right: 0; }
+.lasha-starting-grid article { position: relative; min-width: 0; }
+
+.lasha-starting-grid article + article::before {
+  position: absolute;
+  top: calc(19.3 * var(--u));
+  left: calc(-124.7 * var(--u));
+  height: calc(159 * var(--u));
+  width: 1px;
+  background: #bfc4c9;
+  content: "";
+}
+
+.lasha-starting-grid article:nth-child(3)::before { left: calc(-133.7 * var(--u)); }
 
 .lasha-starting-rule {
   display: flex;
   align-items: center;
-  gap: calc(16 * var(--u));
+  gap: calc(14 * var(--u));
   color: var(--l-blue);
 }
 
-.lasha-starting-rule::after {
-  flex: 0 0 calc(190 * var(--u));
-  height: max(calc(2 * var(--u)), 1px);
-  background:
-    linear-gradient(currentColor, currentColor) left center / calc(100% - 6px) 1px no-repeat,
-    conic-gradient(from -135deg at 100% 50%, currentColor 90deg, transparent 0) right center / 6px 6px no-repeat;
-  content: "";
-}
-
-.lasha-starting-grid .lasha-index { font-size: calc(30 * var(--u)); }
+.lasha-starting-rule .lasha-index { font-size: calc(35.1 * var(--u)); }
+.lasha-starting-rule .lasha-arrow { width: calc(193 * var(--u)); }
 
 .lasha-starting-grid h3 {
-  margin-top: calc(22 * var(--u));
-  font-size: calc(38 * var(--u));
+  margin-top: calc(27.4 * var(--u));
+  font-family: var(--l-display);
+  font-size: calc(41.6 * var(--u));
+  line-height: 1;
+  letter-spacing: 0.015em;
 }
 
 .lasha-starting-grid p {
-  margin-top: calc(12 * var(--u));
-  max-width: calc(220 * var(--u));
-  font-size: max(calc(13 * var(--u)), 6px);
-  line-height: 1.3;
-  color: #3e454c;
+  margin-top: calc(8.95 * var(--u));
+  max-width: calc(206 * var(--u));
+  font-size: max(calc(16.4 * var(--u)), 6px);
+  line-height: 1.073;
 }
 
-/* Broker access */
+/* Broker access: frame 4609–4948. */
 .lasha-access {
+  position: relative;
   display: grid;
-  grid-template-columns: calc(327 * var(--u)) calc(360 * var(--u)) minmax(0, 1fr);
-  align-items: center;
-  padding: calc(30 * var(--u)) calc(70 * var(--u)) calc(56 * var(--u));
+  grid-template-columns: calc(398 * var(--u)) calc(358 * var(--u)) minmax(0, 1fr);
+  height: calc(339 * var(--u));
 }
+
+.lasha-access-copy { min-width: 0; padding: calc(27.8 * var(--u)) 0 0 calc(71 * var(--u)); }
+
+.lasha-access .lasha-eyebrow {
+  font-size: max(calc(15.3 * var(--u)), 6px);
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.lasha-access .lasha-eyebrow::after { content: none; }
 
 .lasha-access h2 {
-  margin-top: calc(14 * var(--u));
-  font-size: calc(84 * var(--u));
-  line-height: 0.92;
+  display: grid;
+  justify-items: start;
+  margin-top: calc(9.7 * var(--u));
+  font-family: var(--l-narrow);
+  font-size: calc(140.5 * var(--u));
+  line-height: calc(119 * var(--u));
+  white-space: nowrap;
 }
 
-.lasha-access-copy { min-width: 0; }
+.lasha-access-count,
+.lasha-access-actions { position: relative; }
+
+.lasha-access-count::before,
+.lasha-access-actions::before {
+  position: absolute;
+  top: calc(41 * var(--u));
+  left: 0;
+  width: 1px;
+  height: calc(237.5 * var(--u));
+  background: #d7d9da;
+  content: "";
+}
 
 .lasha-home .lasha-access-count {
   display: flex;
-  align-items: flex-end;
-  gap: calc(14 * var(--u));
-  align-self: stretch;
-  padding-left: calc(30 * var(--u));
-  border-left: 1px solid var(--l-line);
+  align-items: flex-start;
+  gap: calc(15 * var(--u));
+  padding: calc(24 * var(--u)) 0 0 calc(39.9 * var(--u));
 }
 
 .lasha-access-count strong {
   color: var(--l-blue);
-  font-family: var(--l-display);
-  font-size: calc(250 * var(--u));
+  font-family: var(--l-narrow);
+  font-size: calc(295.7 * var(--u));
   font-weight: 400;
-  line-height: 0.76;
-  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .lasha-access-count span {
-  max-width: 7ch;
-  font-family: var(--l-display);
-  font-size: calc(40 * var(--u));
-  line-height: 0.95;
+  margin-top: calc(155.6 * var(--u));
+  font-family: var(--l-narrow);
+  font-size: calc(60.8 * var(--u));
+  line-height: calc(52 * var(--u));
   text-transform: uppercase;
 }
 
 .lasha-access-actions {
   display: grid;
-  align-self: stretch;
-  align-content: center;
-  gap: calc(28 * var(--u));
-  padding-left: calc(100 * var(--u));
-  border-left: 1px solid var(--l-line);
+  align-content: start;
+  row-gap: calc(53.5 * var(--u));
+  padding: calc(64 * var(--u)) 0 0 calc(101 * var(--u));
 }
 
 .lasha-access-actions .lasha-button {
-  width: calc(418 * var(--u));
-  max-width: 100%;
-  gap: calc(14 * var(--u));
-  letter-spacing: 0.04em;
-  min-height: max(calc(67 * var(--u)), 24px);
-  padding: 0 calc(26 * var(--u));
-  font-size: max(calc(12 * var(--u)), 6px);
+  justify-content: space-between;
+  width: calc(417 * var(--u));
+  height: calc(69 * var(--u));
+  min-height: 22px;
+  padding: 0 calc(21 * var(--u)) 0 calc(31 * var(--u));
+  letter-spacing: 0.027em;
 }
 
-/* Header and ticker sit on Lasha's dark bar */
-.lasha-home .site-header {
-  position: relative;
-  z-index: 3;
-  background: var(--l-ink);
-  border-bottom: 0;
-  color: #fff;
-}
+.lasha-access-actions .lasha-arrow { width: calc(47 * var(--u)); }
 
-/* Keep every translated navigation label inside the bar. */
+/* Header on the homepage follows Lasha's palette. */
 .lasha-home .desktop-nav { gap: clamp(0.6rem, 1.15vw, 1.8rem); }
-
 .lasha-home .desktop-nav button { font-size: clamp(0.66rem, 0.86vw, 0.82rem); }
-
 .lasha-home .header-actions { gap: 0.6rem; }
-
 .lasha-home .register-button,
 .lasha-home .login-button { min-width: 0; padding-inline: clamp(0.8rem, 1.3vw, 2rem); }
-
-.lasha-home .project-ticker {
-  border-top: 0;
-  border-bottom: 0;
-  background: var(--l-ink);
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.lasha-home .ticker-dot { color: var(--l-blue); }
-
 .lasha-home .button-primary,
-.lasha-home .mobile-register {
-  border-color: var(--l-blue);
-  background: var(--l-blue);
-}
-
+.lasha-home .mobile-register { border-color: var(--l-blue); background: var(--l-blue); }
 .lasha-home .button-primary:hover { border-color: #1b45b0; background: #1b45b0; }
+
+@media (max-width: 479px) {
+  .lasha-home .project-card-actions .lasha-button { font-size: max(calc(15.3 * var(--u)), 5px); letter-spacing: 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .lasha-button { transition: none; }
@@ -546,30 +574,126 @@
 .lasha-home .residence-filter-result.is-unavailable strong { color: #6a6560; }
 .lasha-home .residence-filter-empty { color: rgba(23, 26, 29, 0.6); }
 .lasha-home .residence-filter-empty strong { color: var(--l-blue); }
-.lasha-home .explorer-motion-caption {
-  counter-reset: explorer-step;
-  gap: clamp(1.5rem, 4vw, 4rem);
-  color: #3e454c;
-  font-size: 0.64rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-}
-.lasha-home .explorer-motion-caption span {
-  flex: 1;
-  display: flex;
-  gap: 0.8rem;
-  align-items: baseline;
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--l-blue);
-}
-.lasha-home .explorer-motion-caption span::before {
-  counter-increment: explorer-step;
-  content: counter(explorer-step, decimal-leading-zero);
-  color: var(--l-blue);
-  font-family: var(--l-num);
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0;
+.lasha-home .explorer-step-separator { display: none; }
+.lasha-home .explorer-step-number { margin-right: 0.5em; }
+
+/* Desktop explorer copy follows Lasha's frame (2960–3830): type sizes in frame pixels.
+   The sticky stage, model framing and filter behaviour stay as accepted. */
+@media (min-width: 1181px) {
+  .lasha-home .explorer-copy-panel {
+    justify-content: flex-start;
+    padding: calc(118 * var(--u)) calc(30 * var(--u)) 0 calc(70 * var(--u));
+  }
+  .lasha-home .explorer-copy .section-eyebrow {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    color: var(--l-blue);
+    font-family: var(--l-body);
+    font-size: calc(16.4 * var(--u));
+    font-weight: 400;
+    letter-spacing: -0.023em;
+    line-height: 1;
+  }
+  .lasha-home .explorer-copy .section-eyebrow::after {
+    flex: 0 0 calc(125 * var(--u));
+    height: 1px;
+    margin-left: calc(20 * var(--u));
+    background: rgba(37, 87, 214, 0.5);
+    content: "";
+  }
+  .lasha-home .explorer-copy h2 {
+    margin-top: calc(8.5 * var(--u));
+    font-family: var(--l-tall);
+    font-size: calc(165.5 * var(--u));
+    line-height: calc(138 * var(--u));
+    letter-spacing: 0;
+  }
+  .lasha-home .explorer-copy h2 span { display: block; }
+  .lasha-home .explorer-description {
+    max-width: calc(480 * var(--u));
+    margin-top: calc(7 * var(--u));
+    color: var(--l-ink);
+    font-size: calc(21.5 * var(--u));
+    line-height: calc(24 * var(--u));
+  }
+  .lasha-home .explorer-metrics {
+    max-width: calc(482 * var(--u));
+    grid-template-columns: calc(234 * var(--u)) minmax(0, 1fr);
+    margin-top: calc(22 * var(--u));
+    border-color: #cecece;
+  }
+  .lasha-home .explorer-metrics > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(8 * var(--u));
+    padding: calc(22 * var(--u)) 0 calc(28 * var(--u)) calc(2 * var(--u));
+  }
+  .lasha-home .explorer-metrics > div + div { padding-left: calc(48 * var(--u)); border-left-color: #cecece; }
+  .lasha-home .explorer-metrics strong {
+    font-family: var(--l-num-tall);
+    font-size: calc(78 * var(--u));
+    letter-spacing: 0;
+    line-height: 1;
+  }
+  .lasha-home .explorer-metrics span {
+    color: var(--l-ink);
+    font-size: calc(16.4 * var(--u));
+    font-weight: 600;
+    letter-spacing: 0.024em;
+    line-height: 1;
+  }
+  .lasha-home .availability-legend {
+    gap: calc(48 * var(--u));
+    margin-top: calc(28 * var(--u));
+    color: var(--l-ink);
+    font-size: calc(12 * var(--u));
+    font-weight: 500;
+    letter-spacing: 0.12em;
+  }
+  .lasha-home .availability-legend span { gap: calc(14 * var(--u)); }
+  .lasha-home .availability-legend .status-swatch { width: calc(11 * var(--u)); height: calc(11 * var(--u)); }
+  .lasha-home .explorer-footnote {
+    margin-top: calc(20 * var(--u));
+    color: var(--l-ink);
+    font-size: calc(12 * var(--u));
+    font-weight: 600;
+    letter-spacing: 0.16em;
+  }
+  .lasha-home .explorer-motion-caption {
+    right: calc(71 * var(--u));
+    bottom: calc(33 * var(--u));
+    left: calc(69 * var(--u));
+    display: grid;
+    grid-template-columns: calc(462 * var(--u)) calc(498 * var(--u)) minmax(0, 1fr);
+    padding-top: calc(6 * var(--u));
+    border-top: 1px solid #cecece;
+    color: var(--l-blue);
+    font-size: calc(13.4 * var(--u));
+    font-weight: 400;
+    letter-spacing: -0.023em;
+  }
+  .lasha-home .explorer-motion-caption > span {
+    display: flex;
+    align-items: center;
+    padding-left: calc(2 * var(--u));
+  }
+  .lasha-home .explorer-motion-caption > span::after {
+    flex: 0 0 calc(155 * var(--u));
+    height: 1px;
+    margin-left: calc(20 * var(--u));
+    background: rgba(37, 87, 214, 0.5);
+    content: "";
+  }
+  .lasha-home .explorer-motion-caption > span:last-child::after { flex: 1 1 auto; max-width: calc(155 * var(--u)); margin-left: auto; }
+  .lasha-home .explorer-step-number {
+    margin-right: calc(36 * var(--u));
+    font-family: var(--l-num);
+    font-size: calc(35.1 * var(--u));
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1;
+  }
 }
 
 /* Mobile explorer chrome on the homepage follows Lasha's blue; the floor
@@ -580,5 +704,5 @@
   .lasha-home .mobile-floor-chip svg { color: #6f9bff; }
 }
 
-/* Oswald (the Cyrillic stand-in) is wider than League Gothic. */
-.lasha-home:lang(ru) .lasha-metrics .lasha-metrics-tagline { font-size: calc(34 * var(--u)); }
+/* Slovenian "RAZPOLOŽLJIVE" is the longest single word beside the 163 count. */
+.lasha-home:lang(sl) .lasha-access-count span { font-size: calc(50 * var(--u)); }
