@@ -5,7 +5,8 @@
    current viewport width, so phones, tablets and desktops all show the same composition.
    Text offsets come from the frame's measured cap-heights; small body copy keeps a
    legibility floor on phones. Scoped to .lasha-home so other routes keep their styling. */
-.lasha-home {
+.lasha-home,
+.lasha-page {
   --u: calc(min(100vw, 1920px) / 1440);
   --l-ink: #171a1d;
   --l-paper: #f4f4f1;
@@ -516,18 +517,18 @@
 
 .lasha-access-actions .lasha-arrow { width: calc(47 * var(--u)); }
 
-/* Header on the homepage follows Lasha's palette. */
-.lasha-home .desktop-nav { gap: clamp(0.6rem, 1.15vw, 1.8rem); }
-.lasha-home .desktop-nav button { font-size: clamp(0.66rem, 0.86vw, 0.82rem); }
-.lasha-home .header-actions { gap: 0.6rem; }
-.lasha-home .register-button,
-.lasha-home .login-button { min-width: 0; padding-inline: clamp(0.8rem, 1.3vw, 2rem); }
-.lasha-home .button-primary,
-.lasha-home .mobile-register { border-color: var(--l-blue); background: var(--l-blue); }
-.lasha-home .button-primary:hover { border-color: #1b45b0; background: #1b45b0; }
+/* The site header follows Lasha's palette on the homepage and the inner pages. */
+:is(.lasha-home, .lasha-page) .desktop-nav { gap: clamp(0.6rem, 1.15vw, 1.8rem); }
+:is(.lasha-home, .lasha-page) .desktop-nav button { font-size: clamp(0.66rem, 0.86vw, 0.82rem); }
+:is(.lasha-home, .lasha-page) .header-actions { gap: 0.6rem; }
+:is(.lasha-home, .lasha-page) .register-button,
+:is(.lasha-home, .lasha-page) .login-button { min-width: 0; padding-inline: clamp(0.8rem, 1.3vw, 2rem); }
+:is(.lasha-home, .lasha-page) .button-primary,
+:is(.lasha-home, .lasha-page) .mobile-register { border-color: var(--l-blue); background: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .button-primary:hover { border-color: #1b45b0; background: #1b45b0; }
 
 @media (max-width: 479px) {
-  .lasha-home .project-card-actions .lasha-button { font-size: max(calc(15.3 * var(--u)), 5px); letter-spacing: 0; }
+  :is(.lasha-home, .lasha-page) .project-card-actions .lasha-button { font-size: max(calc(15.3 * var(--u)), 5px); letter-spacing: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -536,77 +537,77 @@
 
 /* Residence explorer on Lasha's light homepage: same component and behaviour,
    paper ground and blue accents instead of the dark broker styling. */
-.lasha-home .residence-explorer { border-top: 0; background: var(--l-paper); color: var(--l-ink); }
-.lasha-home .explorer-sticky { background: var(--l-paper); }
-.lasha-home .explorer-sticky::after { background: var(--l-line); }
-.lasha-home .explorer-progress { background: rgba(23, 26, 29, 0.1); }
-.lasha-home .explorer-progress span { background: var(--l-blue); }
-.lasha-home .explorer-copy { background: var(--l-paper); }
-.lasha-home .explorer-copy::after { background: linear-gradient(90deg, var(--l-paper) 16%, transparent 100%); }
-.lasha-home .explorer-copy .section-eyebrow { color: var(--l-blue); }
-.lasha-home .explorer-copy h2 {
+:is(.lasha-home, .lasha-page) .residence-explorer { border-top: 0; background: var(--l-paper); color: var(--l-ink); }
+:is(.lasha-home, .lasha-page) .explorer-sticky { background: var(--l-paper); }
+:is(.lasha-home, .lasha-page) .explorer-sticky::after { background: var(--l-line); }
+:is(.lasha-home, .lasha-page) .explorer-progress { background: rgba(23, 26, 29, 0.1); }
+:is(.lasha-home, .lasha-page) .explorer-progress span { background: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .explorer-copy { background: var(--l-paper); }
+:is(.lasha-home, .lasha-page) .explorer-copy::after { background: linear-gradient(90deg, var(--l-paper) 16%, transparent 100%); }
+:is(.lasha-home, .lasha-page) .explorer-copy .section-eyebrow { color: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .explorer-copy h2 {
   color: var(--l-ink);
   font-family: var(--l-display);
   font-weight: 400;
   letter-spacing: 0.005em;
 }
-.lasha-home .explorer-copy h2 span:last-child { color: var(--l-blue); }
-.lasha-home .explorer-description { color: #3e454c; }
-.lasha-home .explorer-metrics { border-color: var(--l-line); }
-.lasha-home .explorer-metrics > div + div { border-left-color: var(--l-line); }
-.lasha-home .explorer-metrics strong { color: var(--l-blue); font-family: var(--l-num); font-weight: 500; }
-.lasha-home .explorer-footnote { color: rgba(23, 26, 29, 0.56); }
-.lasha-home .availability-legend { color: rgba(23, 26, 29, 0.7); }
-.lasha-home .residence-filter-panel h2 { font-family: var(--l-display); font-weight: 400; }
-.lasha-home .residence-filter-intro { color: #3e454c; }
-.lasha-home .residence-filter-heading-actions > span { border-left-color: var(--l-blue); color: rgba(23, 26, 29, 0.74); }
-.lasha-home .residence-filter-reset { border-bottom-color: var(--l-line); color: rgba(23, 26, 29, 0.68); }
-.lasha-home .residence-filter-reset:hover,
-.lasha-home .residence-filter-reset:focus-visible { border-color: var(--l-blue); color: var(--l-blue); }
-.lasha-home .residence-filter-controls { border-color: var(--l-line); background: rgba(23, 26, 29, 0.015); }
-.lasha-home .residence-select-field,
-.lasha-home .residence-choice-field,
-.lasha-home .residence-area-field { border-right-color: var(--l-line); border-bottom-color: var(--l-line); }
-.lasha-home .residence-select-field > span,
-.lasha-home .residence-choice-field legend,
-.lasha-home .residence-area-field legend { color: rgba(23, 26, 29, 0.6); }
-.lasha-home .residence-select-field select { color: var(--l-ink); color-scheme: light; }
-.lasha-home .residence-select-field select option { background: #fff; color: var(--l-ink); }
-.lasha-home .residence-choice-field button { border-color: rgba(23, 26, 29, 0.22); color: rgba(23, 26, 29, 0.72); }
-.lasha-home .residence-choice-field button.is-active { border-color: var(--l-blue); background: var(--l-blue); color: #fff; }
-.lasha-home .residence-area-readout output { color: var(--l-ink); }
-.lasha-home .residence-area-readout span { color: rgba(23, 26, 29, 0.55); }
-.lasha-home .residence-area-ranges input::-webkit-slider-runnable-track { border-color: rgba(23, 26, 29, 0.2); }
-.lasha-home .residence-area-ranges input::-webkit-slider-thumb { border-color: var(--l-paper); background: var(--l-blue); }
-.lasha-home .residence-area-ranges input::-moz-range-track { border-color: rgba(23, 26, 29, 0.2); background: rgba(23, 26, 29, 0.3); }
-.lasha-home .residence-area-ranges input::-moz-range-progress { background: var(--l-blue); }
-.lasha-home .residence-area-ranges input::-moz-range-thumb { border-color: var(--l-paper); background: var(--l-blue); }
-.lasha-home .residence-filter-results { border-top-color: var(--l-line); scrollbar-color: var(--l-blue) rgba(23, 26, 29, 0.08); }
-.lasha-home .residence-filter-results::-webkit-scrollbar-track { background: rgba(23, 26, 29, 0.07); }
-.lasha-home .residence-filter-results::-webkit-scrollbar-thumb { background: var(--l-blue); }
-.lasha-home .residence-filter-results-head { border-bottom-color: var(--l-line); color: rgba(23, 26, 29, 0.55); }
-.lasha-home .residence-filter-result { border-bottom-color: var(--l-line); color: rgba(23, 26, 29, 0.74); }
-.lasha-home .residence-filter-result > span:first-child,
-.lasha-home .residence-filter-result strong { color: var(--l-ink); }
-.lasha-home .residence-filter-result:is(:hover, :focus-visible, .is-active) { background: rgba(63, 154, 88, 0.16); color: #2f7a46; }
-.lasha-home .residence-filter-result.is-unavailable { background: rgba(122, 118, 114, 0.14); color: #6a6560; }
-.lasha-home .residence-filter-result.is-unavailable > span:first-child,
-.lasha-home .residence-filter-result.is-unavailable strong { color: #6a6560; }
-.lasha-home .residence-filter-empty { color: rgba(23, 26, 29, 0.6); }
-.lasha-home .residence-filter-empty strong { color: var(--l-blue); }
-.lasha-home .explorer-step-separator { display: none; }
-.lasha-home .explorer-step-number { margin-right: 0.5em; }
+:is(.lasha-home, .lasha-page) .explorer-copy h2 span:last-child { color: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .explorer-description { color: #3e454c; }
+:is(.lasha-home, .lasha-page) .explorer-metrics { border-color: var(--l-line); }
+:is(.lasha-home, .lasha-page) .explorer-metrics > div + div { border-left-color: var(--l-line); }
+:is(.lasha-home, .lasha-page) .explorer-metrics strong { color: var(--l-blue); font-family: var(--l-num); font-weight: 500; }
+:is(.lasha-home, .lasha-page) .explorer-footnote { color: rgba(23, 26, 29, 0.56); }
+:is(.lasha-home, .lasha-page) .availability-legend { color: rgba(23, 26, 29, 0.7); }
+:is(.lasha-home, .lasha-page) .residence-filter-panel h2 { font-family: var(--l-display); font-weight: 400; }
+:is(.lasha-home, .lasha-page) .residence-filter-intro { color: #3e454c; }
+:is(.lasha-home, .lasha-page) .residence-filter-heading-actions > span { border-left-color: var(--l-blue); color: rgba(23, 26, 29, 0.74); }
+:is(.lasha-home, .lasha-page) .residence-filter-reset { border-bottom-color: var(--l-line); color: rgba(23, 26, 29, 0.68); }
+:is(.lasha-home, .lasha-page) .residence-filter-reset:hover,
+:is(.lasha-home, .lasha-page) .residence-filter-reset:focus-visible { border-color: var(--l-blue); color: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .residence-filter-controls { border-color: var(--l-line); background: rgba(23, 26, 29, 0.015); }
+:is(.lasha-home, .lasha-page) .residence-select-field,
+:is(.lasha-home, .lasha-page) .residence-choice-field,
+:is(.lasha-home, .lasha-page) .residence-area-field { border-right-color: var(--l-line); border-bottom-color: var(--l-line); }
+:is(.lasha-home, .lasha-page) .residence-select-field > span,
+:is(.lasha-home, .lasha-page) .residence-choice-field legend,
+:is(.lasha-home, .lasha-page) .residence-area-field legend { color: rgba(23, 26, 29, 0.6); }
+:is(.lasha-home, .lasha-page) .residence-select-field select { color: var(--l-ink); color-scheme: light; }
+:is(.lasha-home, .lasha-page) .residence-select-field select option { background: #fff; color: var(--l-ink); }
+:is(.lasha-home, .lasha-page) .residence-choice-field button { border-color: rgba(23, 26, 29, 0.22); color: rgba(23, 26, 29, 0.72); }
+:is(.lasha-home, .lasha-page) .residence-choice-field button.is-active { border-color: var(--l-blue); background: var(--l-blue); color: #fff; }
+:is(.lasha-home, .lasha-page) .residence-area-readout output { color: var(--l-ink); }
+:is(.lasha-home, .lasha-page) .residence-area-readout span { color: rgba(23, 26, 29, 0.55); }
+:is(.lasha-home, .lasha-page) .residence-area-ranges input::-webkit-slider-runnable-track { border-color: rgba(23, 26, 29, 0.2); }
+:is(.lasha-home, .lasha-page) .residence-area-ranges input::-webkit-slider-thumb { border-color: var(--l-paper); background: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .residence-area-ranges input::-moz-range-track { border-color: rgba(23, 26, 29, 0.2); background: rgba(23, 26, 29, 0.3); }
+:is(.lasha-home, .lasha-page) .residence-area-ranges input::-moz-range-progress { background: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .residence-area-ranges input::-moz-range-thumb { border-color: var(--l-paper); background: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .residence-filter-results { border-top-color: var(--l-line); scrollbar-color: var(--l-blue) rgba(23, 26, 29, 0.08); }
+:is(.lasha-home, .lasha-page) .residence-filter-results::-webkit-scrollbar-track { background: rgba(23, 26, 29, 0.07); }
+:is(.lasha-home, .lasha-page) .residence-filter-results::-webkit-scrollbar-thumb { background: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .residence-filter-results-head { border-bottom-color: var(--l-line); color: rgba(23, 26, 29, 0.55); }
+:is(.lasha-home, .lasha-page) .residence-filter-result { border-bottom-color: var(--l-line); color: rgba(23, 26, 29, 0.74); }
+:is(.lasha-home, .lasha-page) .residence-filter-result > span:first-child,
+:is(.lasha-home, .lasha-page) .residence-filter-result strong { color: var(--l-ink); }
+:is(.lasha-home, .lasha-page) .residence-filter-result:is(:hover, :focus-visible, .is-active) { background: rgba(63, 154, 88, 0.16); color: #2f7a46; }
+:is(.lasha-home, .lasha-page) .residence-filter-result.is-unavailable { background: rgba(122, 118, 114, 0.14); color: #6a6560; }
+:is(.lasha-home, .lasha-page) .residence-filter-result.is-unavailable > span:first-child,
+:is(.lasha-home, .lasha-page) .residence-filter-result.is-unavailable strong { color: #6a6560; }
+:is(.lasha-home, .lasha-page) .residence-filter-empty { color: rgba(23, 26, 29, 0.6); }
+:is(.lasha-home, .lasha-page) .residence-filter-empty strong { color: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .explorer-step-separator { display: none; }
+:is(.lasha-home, .lasha-page) .explorer-step-number { margin-right: 0.5em; }
 
 /* Desktop explorer copy follows Lasha's frame (2960–3830): type sizes in frame pixels.
    The sticky stage, model framing and filter behaviour stay as accepted. */
 @media (min-width: 1181px) {
   /* Lasha's explorer frame is 870px tall: on short laptop windows (Safari with tabs) the
      copy scales with the viewport height too, so the steps never collide with it. */
-  .lasha-home .explorer-sticky { --u: min(calc(min(100vw, 1920px) / 1440), calc(max(100svh, 44rem) / 900)); }
+  :is(.lasha-home, .lasha-page) .explorer-sticky { --u: min(calc(min(100vw, 1920px) / 1440), calc(max(100svh, 44rem) / 900)); }
   /* The model fills the whole right half edge to edge instead of a framed square. */
-  .lasha-home .explorer-stage { padding: 0; place-items: stretch; }
-  .lasha-home .explorer-model-host { height: 100%; }
-  .lasha-home .building-map {
+  :is(.lasha-home, .lasha-page) .explorer-stage { padding: 0; place-items: stretch; }
+  :is(.lasha-home, .lasha-page) .explorer-model-host { height: 100%; }
+  :is(.lasha-home, .lasha-page) .building-map {
     width: 100%;
     height: 100%;
     aspect-ratio: auto;
@@ -614,12 +615,12 @@
     box-shadow: none;
   }
   /* Steps narrate the scroll; they fade out as the filter panel takes the left half. */
-  .lasha-home .explorer-motion-caption { opacity: clamp(0, calc(1 - var(--filter-progress) * 2.5), 1); }
-  .lasha-home .explorer-intro-panel {
+  :is(.lasha-home, .lasha-page) .explorer-motion-caption { opacity: clamp(0, calc(1 - var(--filter-progress) * 2.5), 1); }
+  :is(.lasha-home, .lasha-page) .explorer-intro-panel {
     justify-content: flex-start;
     padding: calc(118 * var(--u)) calc(30 * var(--u)) 0 calc(70 * var(--u));
   }
-  .lasha-home .explorer-intro-panel .section-eyebrow {
+  :is(.lasha-home, .lasha-page) .explorer-intro-panel .section-eyebrow {
     display: flex;
     align-items: center;
     margin-bottom: 0;
@@ -630,55 +631,55 @@
     letter-spacing: -0.023em;
     line-height: 1;
   }
-  .lasha-home .explorer-intro-panel .section-eyebrow::after {
+  :is(.lasha-home, .lasha-page) .explorer-intro-panel .section-eyebrow::after {
     flex: 0 0 calc(125 * var(--u));
     height: 1px;
     margin-left: calc(20 * var(--u));
     background: rgba(37, 87, 214, 0.5);
     content: "";
   }
-  .lasha-home .explorer-intro-panel h2 {
+  :is(.lasha-home, .lasha-page) .explorer-intro-panel h2 {
     margin-top: calc(8.5 * var(--u));
     font-family: var(--l-tall);
     font-size: calc(165.5 * var(--u));
     line-height: calc(138 * var(--u));
     letter-spacing: 0;
   }
-  .lasha-home .explorer-intro-panel h2 span { display: block; }
-  .lasha-home .explorer-description {
+  :is(.lasha-home, .lasha-page) .explorer-intro-panel h2 span { display: block; }
+  :is(.lasha-home, .lasha-page) .explorer-description {
     max-width: calc(480 * var(--u));
     margin-top: calc(7 * var(--u));
     color: var(--l-ink);
     font-size: calc(21.5 * var(--u));
     line-height: calc(24 * var(--u));
   }
-  .lasha-home .explorer-metrics {
+  :is(.lasha-home, .lasha-page) .explorer-metrics {
     max-width: calc(482 * var(--u));
     grid-template-columns: calc(234 * var(--u)) minmax(0, 1fr);
     margin-top: calc(22 * var(--u));
     border-color: #cecece;
   }
-  .lasha-home .explorer-metrics > div {
+  :is(.lasha-home, .lasha-page) .explorer-metrics > div {
     flex-direction: column;
     align-items: flex-start;
     gap: calc(8 * var(--u));
     padding: calc(22 * var(--u)) 0 calc(28 * var(--u)) calc(2 * var(--u));
   }
-  .lasha-home .explorer-metrics > div + div { padding-left: calc(48 * var(--u)); border-left-color: #cecece; }
-  .lasha-home .explorer-metrics strong {
+  :is(.lasha-home, .lasha-page) .explorer-metrics > div + div { padding-left: calc(48 * var(--u)); border-left-color: #cecece; }
+  :is(.lasha-home, .lasha-page) .explorer-metrics strong {
     font-family: var(--l-num-tall);
     font-size: calc(78 * var(--u));
     letter-spacing: 0;
     line-height: 1;
   }
-  .lasha-home .explorer-metrics span {
+  :is(.lasha-home, .lasha-page) .explorer-metrics span {
     color: var(--l-ink);
     font-size: calc(16.4 * var(--u));
     font-weight: 600;
     letter-spacing: 0.024em;
     line-height: 1;
   }
-  .lasha-home .availability-legend {
+  :is(.lasha-home, .lasha-page) .availability-legend {
     gap: calc(48 * var(--u));
     margin-top: calc(28 * var(--u));
     color: var(--l-ink);
@@ -686,16 +687,16 @@
     font-weight: 500;
     letter-spacing: 0.12em;
   }
-  .lasha-home .availability-legend span { gap: calc(14 * var(--u)); }
-  .lasha-home .availability-legend .status-swatch { width: calc(11 * var(--u)); height: calc(11 * var(--u)); }
-  .lasha-home .explorer-footnote {
+  :is(.lasha-home, .lasha-page) .availability-legend span { gap: calc(14 * var(--u)); }
+  :is(.lasha-home, .lasha-page) .availability-legend .status-swatch { width: calc(11 * var(--u)); height: calc(11 * var(--u)); }
+  :is(.lasha-home, .lasha-page) .explorer-footnote {
     margin-top: calc(20 * var(--u));
     color: var(--l-ink);
     font-size: calc(12 * var(--u));
     font-weight: 600;
     letter-spacing: 0.16em;
   }
-  .lasha-home .explorer-motion-caption {
+  :is(.lasha-home, .lasha-page) .explorer-motion-caption {
     /* The model now fills the right half, so the steps stay under the copy column. */
     right: calc(50% + 30 * var(--u));
     bottom: calc(33 * var(--u));
@@ -710,14 +711,14 @@
     font-weight: 400;
     letter-spacing: -0.023em;
   }
-  .lasha-home .explorer-motion-caption > span {
+  :is(.lasha-home, .lasha-page) .explorer-motion-caption > span {
     display: flex;
     min-width: 0;
     align-items: center;
     padding-left: calc(2 * var(--u));
     line-height: 1.15;
   }
-  .lasha-home .explorer-motion-caption > span::after {
+  :is(.lasha-home, .lasha-page) .explorer-motion-caption > span::after {
     flex: 1 1 0;
     min-width: 0;
     max-width: calc(155 * var(--u));
@@ -726,7 +727,7 @@
     background: rgba(37, 87, 214, 0.5);
     content: "";
   }
-  .lasha-home .explorer-step-number {
+  :is(.lasha-home, .lasha-page) .explorer-step-number {
     margin-right: calc(18 * var(--u));
     font-family: var(--l-num);
     font-size: calc(35.1 * var(--u));
@@ -739,9 +740,9 @@
 /* Mobile explorer chrome on the homepage follows Lasha's blue; the floor
    highlight on the model keeps its accepted orange tint. */
 @media (max-width: 900px) {
-  .lasha-home .mobile-dock-open { background: var(--l-blue); }
-  .lasha-home .mobile-floor-chip select,
-  .lasha-home .mobile-floor-chip svg { color: #6f9bff; }
+  :is(.lasha-home, .lasha-page) .mobile-dock-open { background: var(--l-blue); }
+  :is(.lasha-home, .lasha-page) .mobile-floor-chip select,
+  :is(.lasha-home, .lasha-page) .mobile-floor-chip svg { color: #6f9bff; }
 }
 
 /* Slovenian "RAZPOLOŽLJIVE" is the longest single word beside the 163 count. */

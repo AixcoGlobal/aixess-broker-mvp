@@ -5,8 +5,9 @@ import { FittedHeading } from "./components/FittedHeading.jsx";
 import { NetworkSections } from "./components/NetworkSections.jsx";
 import { NETWORK_COPY } from "./network-copy.js";
 import { ProjectShowcase } from "./components/ProjectShowcase.jsx";
-import { HomeAbout, HomeAccess, HomeHero, HomeMetrics, HomeStartingPoints } from "./components/LashaHomeSections.jsx";
+import { HomeAbout, HomeAccess, HomeHero, HomeMetrics, HomeStartingPoints, LashaPageHero } from "./components/LashaHomeSections.jsx";
 import "./components/lasha-home.css";
+import "./components/lasha-pages.css";
 const Calculators = lazy(() => import("./components/Calculators.jsx"));
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import { PRIVACY_COPY } from "./privacy-copy.js";
@@ -295,42 +296,19 @@ function Modal({ type, onClose, onSwitch }) {
 }
 
 function PageHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
-  return (
-    <div className="page-header-wrap">
-      <SiteHeader
-        currentPage={currentPage}
-        menuOpen={menuOpen}
-        onToggleMenu={onToggleMenu}
-        onNavigate={onNavigate}
-        onOpenModal={onOpenModal}
-        pageHeader
-      />
-    </div>
-  );
-}
-
-function PageIntro({ eyebrow, title, copy, children, image = "/assets/reverance-hero-1536.webp" }) {
-  const { t } = useLanguage();
-  return (
-    <section className="page-intro">
-      <div className="page-intro-copy">
-        <p className="section-eyebrow">{eyebrow}</p>
-        <h1>{title}</h1>
-        <p className="page-intro-copy-text">{copy}</p>
-        {children}
-      </div>
-      <div className="page-intro-media">
-        <img src={image} alt={t("projectImageAlt")} />
-        <span className="page-intro-media-label">{t("projectReveranceBatumi")}</span>
-      </div>
-    </section>
-  );
+  return <SiteHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} pageHeader />;
 }
 
 function NetworkPage({ sections, pageTitleKey, ...props }) {
   const { locale, t } = useLanguage();
   const c = NETWORK_COPY[locale];
-  return <div className="route-page"><PageHeader {...props} /><h1 className="network-page-title">{pageTitleKey ? t(pageTitleKey) : sections[0] === "introduction" ? c.identity : c[sections[0]][0]}</h1><NetworkSections sections={sections} onOpenModal={props.onOpenModal} /></div>;
+  const title = pageTitleKey ? t(pageTitleKey) : sections[0] === "introduction" ? c.identity : c[sections[0]][0];
+  return (
+    <div className="route-page lasha-page">
+      <LashaPageHero header={<PageHeader {...props} />} eyebrow="AIXESS" title={title} />
+      <NetworkSections sections={sections} onOpenModal={props.onOpenModal} />
+    </div>
+  );
 }
 
 function WhyAixessPage(props) {
@@ -350,20 +328,19 @@ const insightDownloads = [
 function InsightsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
   const { t, locale } = useLanguage();
   return (
-    <div className="route-page insights-page">
-      <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
+    <div className="route-page lasha-page insights-page">
+      <LashaPageHero
+        header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
+        eyebrow={t("insightsEyebrow")}
+        title={[t("makeMoveClear"), t("nextMoveClear")]}
+        copy={t("resourcesCopy")}
+      >
+        <div className="page-cta-row">
+          <button className="button button-primary" type="button" onClick={() => onOpenModal("materials")}>{t("requestDossier")}</button>
+          <a className="text-link" href="mailto:info@aixco.global">{t("emailAixco")} <span aria-hidden="true">↗</span></a>
+        </div>
+      </LashaPageHero>
       <main className="page-main">
-        <PageIntro
-          eyebrow={t("insightsEyebrow")}
-          title={<>{t("makeMoveClear")}<br />{t("nextMoveClear")}</>}
-          copy={t("resourcesCopy")}
-        >
-          <div className="page-cta-row">
-            <button className="button button-primary" type="button" onClick={() => onOpenModal("materials")}>{t("requestDossier")}</button>
-            <a className="text-link" href="mailto:info@aixco.global">{t("emailAixco")} <span aria-hidden="true">↗</span></a>
-          </div>
-        </PageIntro>
-
         <section className="page-section resource-section" aria-labelledby="resource-library">
           <div className="section-heading-row">
             <p className="section-eyebrow">{t("library")}</p>
@@ -407,8 +384,13 @@ function InsightsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenM
 function BrokerToolsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
   const { t } = useLanguage();
   return (
-    <div className="route-page broker-tools-page">
-      <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
+    <div className="route-page lasha-page broker-tools-page">
+      <LashaPageHero
+        header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
+        eyebrow="AIXESS"
+        title={t("brokerTools")}
+        titleAs="p"
+      />
       <main className="page-main">
         <Suspense fallback={<p role="status">{t("preparingInteractive")}</p>}>
           <Calculators />
@@ -422,16 +404,14 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
   const { t } = useLanguage();
   const [requestedApartment, setRequestedApartment] = useState(null);
   return (
-    <div className="route-page residences-page">
-      <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
+    <div className="route-page lasha-page residences-page">
+      <LashaPageHero
+        header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
+        eyebrow={t("projectReveranceBatumi")}
+        title={[t("oneBuilding"), t("yourNextMove")]}
+        copy={t("residenceRouteCopy")}
+      />
       <main className="page-main">
-        <section className="residences-route-intro">
-          <div>
-            <p className="section-eyebrow">{t("projectReveranceBatumi")}</p>
-            <h1>{t("oneBuilding")}<br />{t("yourNextMove")}</h1>
-          </div>
-          <p>{t("residenceRouteCopy")}</p>
-        </section>
         <NetworkSections sections={["opportunity"]} onSelectApartment={(code) => setRequestedApartment({ code })} />
         <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
           <ResidenceExplorer liveInventoryTitle requestedApartment={requestedApartment} onBrokerAccess={() => onOpenModal("register")} />
@@ -530,7 +510,7 @@ function AppContent() {
       {currentPage === "broker-access" && <BrokerAccessPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "insights" && <InsightsPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "broker-tools" && <BrokerToolsPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
-      {currentPage === "privacy" && <PrivacyPage />}
+      {currentPage === "privacy" && <PrivacyPage header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />} />}
       {currentPage === "admin" && <Suspense fallback={<p role="status">{t("loadingAdmin")}</p>}><AdminDashboard /></Suspense>}
       <PrivacyControls page={currentPage} />
 
