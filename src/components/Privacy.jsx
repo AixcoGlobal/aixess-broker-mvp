@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { consentChoice, setConsent } from "../analytics.js";
 import { PRIVACY_COPY } from "../privacy-copy.js";
+import { LashaPageHero } from "./LashaHomeSections.jsx";
 import "./privacy.css";
 
 export function PrivacyControls({ page }) {
@@ -53,7 +54,12 @@ export function PrivacyControls({ page }) {
   </>;
 }
 
-export function PrivacyPage() {
+export function PrivacyPage({ header }) {
   const { locale } = useLanguage(); const copy = PRIVACY_COPY[locale];
-  return <article className="privacy-page lasha-page"><a href="#home">← {copy.back}</a><p className="section-eyebrow">AiXESS · 04.09.2026</p><h1>{copy.policy}</h1>{copy.sections.map(([heading, body]) => <section key={heading}><h2>{heading}</h2><p>{body}</p></section>)}</article>;
+  return (
+    <div className="route-page lasha-page privacy-route">
+      <LashaPageHero header={header} eyebrow="AIXESS · 04.09.2026" title={copy.policy} />
+      <article className="privacy-page lasha-page">{copy.sections.map(([heading, body]) => <section key={heading}><h2>{heading}</h2><p>{body}</p></section>)}</article>
+    </div>
+  );
 }

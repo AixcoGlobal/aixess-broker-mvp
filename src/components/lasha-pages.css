@@ -461,16 +461,6 @@
 }
 
 .privacy-page.lasha-page > * { max-width: 52rem; }
-.privacy-page.lasha-page > a { color: var(--l-blue); }
-
-.privacy-page.lasha-page h1 {
-  margin: 0.4rem 0 2.5rem;
-  font-family: var(--l-tall);
-  font-size: clamp(3rem, 7.4vw, 7.4rem);
-  font-weight: 400;
-  line-height: 0.86;
-  text-transform: uppercase;
-}
 
 .privacy-page.lasha-page h2 {
   font-family: var(--l-display);
@@ -480,6 +470,8 @@
   text-transform: uppercase;
 }
 
+/* The first policy section sits right under the hero. */
+.privacy-page.lasha-page section:first-child { margin-top: 0; }
 .privacy-page.lasha-page section { border-top: 1px solid rgba(23, 26, 29, 0.15); }
 .privacy-page.lasha-page p { color: rgba(23, 26, 29, 0.82); }
 
