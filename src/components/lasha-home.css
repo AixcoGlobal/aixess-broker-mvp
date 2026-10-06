@@ -747,3 +747,14 @@
 
 /* Slovenian "RAZPOLOŽLJIVE" is the longest single word beside the 163 count. */
 .lasha-home:lang(sl) .lasha-access-count span { font-size: calc(50 * var(--u)); }
+
+/* Residence dialog and explorer states: headlines in the shared headline face on every public page. */
+:is(.lasha-home, .lasha-page) :is(.floor-modal-header h2, .unit-detail h3, .inventory-intro h3, .explorer-error h3) {
+  font-family: var(--l-tall);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+:is(.lasha-home, .lasha-page) .floor-modal-header h2 { font-size: clamp(2.4rem, 3.6vw, 3.6rem); }
+:is(.lasha-home, .lasha-page) :is(.unit-detail h3, .inventory-intro h3, .explorer-error h3) { font-size: 2.1rem; }
