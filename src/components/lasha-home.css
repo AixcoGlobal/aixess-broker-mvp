@@ -580,6 +580,9 @@
 /* Desktop explorer copy follows Lasha's frame (2960–3830): type sizes in frame pixels.
    The sticky stage, model framing and filter behaviour stay as accepted. */
 @media (min-width: 1181px) {
+  /* Lasha's explorer frame is 870px tall: on short laptop windows (Safari with tabs) the
+     copy scales with the viewport height too, so the steps never collide with it. */
+  .lasha-home .explorer-sticky { --u: min(calc(min(100vw, 1920px) / 1440), calc(max(100svh, 44rem) / 900)); }
   .lasha-home .explorer-copy-panel {
     justify-content: flex-start;
     padding: calc(118 * var(--u)) calc(30 * var(--u)) 0 calc(70 * var(--u));
