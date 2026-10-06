@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import { NETWORK_COPY } from "./network-copy";
+import { HOME_HERO_LINES, PROJECT_SHOWCASE_COPY } from "./project-showcase-copy";
 
 beforeEach(() => {
   window.history.replaceState({}, "", "/#why-aixess");
@@ -30,7 +31,7 @@ describe("AIXESS navigation pages", () => {
   it("puts the newer first-page brief on the homepage while retaining the existing structure", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TURN YOURNETWORK INTOOPPORTUNITY.");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("AIXESSTO MARKET");
     expect(screen.getByText(NETWORK_COPY.en.intro)).toBeInTheDocument();
     expect(screen.getByText(NETWORK_COPY.en.introFollowup)).toBeInTheDocument();
     expect(screen.getByText(NETWORK_COPY.en.introTagline)).toBeInTheDocument();
@@ -53,13 +54,37 @@ describe("AIXESS navigation pages", () => {
     localStorage.setItem("aixess-language", locale);
     const { container } = render(<App />);
     const c = NETWORK_COPY[locale];
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(c.hero.join(""));
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(HOME_HERO_LINES[locale].join(""));
+    expect(screen.getByRole("heading", { name: PROJECT_SHOWCASE_COPY[locale].title })).toBeInTheDocument();
     expect(screen.getByText(c.introFollowup)).toBeInTheDocument();
     expect(container.querySelectorAll(".home-starting-grid article")).toHaveLength(3);
     for (const [title, description] of c.startingPoints) {
       expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
       expect(screen.getByText(description)).toBeInTheDocument();
     }
+  });
+
+  it("shows Reverance as the featured homepage project with working project actions", () => {
+    window.history.replaceState({}, "", "/");
+    const scrollIntoView = vi.fn();
+    const explorer = document.createElement("section");
+    explorer.id = "residences";
+    explorer.scrollIntoView = scrollIntoView;
+    document.body.appendChild(explorer);
+    const { container } = render(<App />);
+    const showcase = container.querySelector("#projects");
+    expect(within(showcase).getByRole("heading", { name: "NOW ON AIXESS" })).toBeInTheDocument();
+    expect(within(showcase).getByText("€45,000")).toBeInTheDocument();
+    expect(within(showcase).getByText("163")).toBeInTheDocument();
+    expect(showcase.querySelector(".project-upcoming")).not.toBeInTheDocument();
+    const thumbs = within(showcase).getAllByRole("button", { name: /Show Reverance image/ });
+    fireEvent.click(thumbs[1]);
+    expect(thumbs[1]).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(within(showcase).getByRole("button", { name: /EXPLORE RESIDENCES/ }));
+    expect(scrollIntoView).toHaveBeenCalled();
+    fireEvent.click(within(showcase).getByRole("button", { name: /CALCULATOR/ }));
+    expect(screen.getAllByRole("button", { name: "BROKER TOOLS" }).filter((button) => button.getAttribute("aria-current") === "page").length).toBeGreaterThan(0);
+    explorer.remove();
   });
 
   it("routes broker login and registration to the matching Workwise flows", () => {
