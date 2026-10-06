@@ -477,7 +477,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
 
         <div className="hero-copy">
           <FittedHeading as="h1">
-            {HOME_HERO_LINES.map((line) => <span key={line}>{line}</span>)}
+            {(HOME_HERO_LINES[locale] ?? HOME_HERO_LINES.en).map((line) => <span key={line}>{line}</span>)}
           </FittedHeading>
           <span className="accent-rule" aria-hidden="true" />
           <p className="hero-subtitle hero-introduction">{c.intro}</p>

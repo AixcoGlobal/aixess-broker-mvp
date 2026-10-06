@@ -1,6 +1,12 @@
 // Homepage hero line requested by Klem (5 October 2026) and the project showcase copy.
-// "AIXESS TO MARKET" is kept as a brand line in every locale until a translation is approved.
-export const HOME_HERO_LINES = ["AIXESS", "TO MARKET"];
+// The AIXESS brand name stays unchanged; "TO MARKET" is translated per locale (owner decision, 6 October 2026).
+export const HOME_HERO_LINES = {
+  en: ["AIXESS", "TO MARKET"],
+  de: ["AIXESS", "ZUM MARKT"],
+  pl: ["AIXESS", "DO RYNKU"],
+  sl: ["AIXESS", "DO TRGA"],
+  ru: ["AIXESS", "К РЫНКУ"],
+};
 
 export const PROJECT_SHOWCASE_COPY = {
   en: {

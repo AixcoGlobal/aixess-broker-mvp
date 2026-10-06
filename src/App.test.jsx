@@ -2,7 +2,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import { NETWORK_COPY } from "./network-copy";
-import { PROJECT_SHOWCASE_COPY } from "./project-showcase-copy";
+import { HOME_HERO_LINES, PROJECT_SHOWCASE_COPY } from "./project-showcase-copy";
 
 beforeEach(() => {
   window.history.replaceState({}, "", "/#why-aixess");
@@ -54,7 +54,7 @@ describe("AIXESS navigation pages", () => {
     localStorage.setItem("aixess-language", locale);
     const { container } = render(<App />);
     const c = NETWORK_COPY[locale];
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("AIXESSTO MARKET");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(HOME_HERO_LINES[locale].join(""));
     expect(screen.getByRole("heading", { name: PROJECT_SHOWCASE_COPY[locale].title })).toBeInTheDocument();
     expect(screen.getByText(c.introFollowup)).toBeInTheDocument();
     expect(container.querySelectorAll(".home-starting-grid article")).toHaveLength(3);
