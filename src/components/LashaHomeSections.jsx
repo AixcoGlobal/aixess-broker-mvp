@@ -67,6 +67,31 @@ export function HomeHero({ children }) {
   );
 }
 
+// Inner pages open with the homepage's language: the site header floating over the
+// Reverance skyline, a blue eyebrow and an oversized light headline.
+export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", copy, children }) {
+  const lines = Array.isArray(title) ? title : [title];
+  return (
+    <section className="lasha-page-hero">
+      {header}
+      <img
+        className="lasha-page-hero-media"
+        src="/assets/projects/reverance-skyline-1440.webp"
+        srcSet="/assets/projects/reverance-skyline-720.webp 720w, /assets/projects/reverance-skyline-1440.webp 1440w, /assets/projects/reverance-skyline-2160.webp 2160w"
+        sizes="100vw"
+        alt=""
+        decoding="async"
+      />
+      <div className="lasha-page-hero-copy">
+        {eyebrow && <p className="lasha-eyebrow">{eyebrow}</p>}
+        <Title className="lasha-page-hero-title">{lines.map((line) => <span key={line}>{line}</span>)}</Title>
+        {copy && <p className="lasha-page-hero-text">{copy}</p>}
+        {children}
+      </div>
+    </section>
+  );
+}
+
 export function HomeMetrics() {
   const { locale } = useLanguage();
   const copy = LASHA_HOME_COPY[locale] || LASHA_HOME_COPY.en;

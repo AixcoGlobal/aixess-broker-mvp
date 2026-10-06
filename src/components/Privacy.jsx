@@ -55,5 +55,5 @@ export function PrivacyControls({ page }) {
 
 export function PrivacyPage() {
   const { locale } = useLanguage(); const copy = PRIVACY_COPY[locale];
-  return <article className="privacy-page"><a href="#home">← {copy.back}</a><p className="section-eyebrow">AiXESS · 04.09.2026</p><h1>{copy.policy}</h1>{copy.sections.map(([heading, body]) => <section key={heading}><h2>{heading}</h2><p>{body}</p></section>)}</article>;
+  return <article className="privacy-page lasha-page"><a href="#home">← {copy.back}</a><p className="section-eyebrow">AiXESS · 04.09.2026</p><h1>{copy.policy}</h1>{copy.sections.map(([heading, body]) => <section key={heading}><h2>{heading}</h2><p>{body}</p></section>)}</article>;
 }

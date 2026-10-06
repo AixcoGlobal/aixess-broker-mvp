@@ -1,0 +1,560 @@
+/* Inner pages in the language of Lasha Bakashvili's homepage frame: paper ground,
+   ink and blue, condensed uppercase headlines, blue eyebrows with a hairline, square
+   blue and ink buttons. Lasha drew only the homepage, so these pages reflow
+   responsively in rem rather than scaling a frame. Tokens come from lasha-home.css. */
+
+.route-page.lasha-page {
+  --page-gutter: clamp(1.25rem, 4.9vw, 4.4rem);
+  min-height: 100vh;
+  background: var(--l-paper);
+  color: var(--l-ink);
+}
+
+.lasha-page .lasha-eyebrow { font-size: clamp(0.78rem, 1.13vw, 1rem); }
+.lasha-page .lasha-eyebrow::after { flex-basis: clamp(3.5rem, 8.7vw, 7.8rem); margin-left: 1.1rem; }
+
+/* Page hero: the site header floats over the Reverance skyline, as on the homepage. */
+.lasha-page-hero {
+  position: relative;
+  display: flex;
+  min-height: clamp(34rem, 78vh, 48rem);
+  flex-direction: column;
+  overflow: hidden;
+  background: #5d8fd0;
+  isolation: isolate;
+}
+
+.lasha-page-hero > .site-header {
+  z-index: 5;
+  background: transparent;
+  border-bottom-color: rgba(244, 244, 241, 0.35);
+  color: #fff;
+}
+
+.lasha-page-hero-media {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% 30%;
+}
+
+/* A light shade under the header keeps the white navigation readable over pale sky. */
+.lasha-page-hero::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 9rem;
+  background: linear-gradient(180deg, rgba(23, 26, 29, 0.42), rgba(23, 26, 29, 0));
+  content: "";
+  pointer-events: none;
+}
+
+/* A soft wash keeps the dark headline readable where the building crosses the copy. */
+.lasha-page-hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(232, 240, 250, 0.72) 0%, rgba(232, 240, 250, 0.38) 42%, rgba(232, 240, 250, 0) 62%);
+  content: "";
+  pointer-events: none;
+}
+
+.lasha-page-hero-copy {
+  display: grid;
+  flex: 1;
+  align-content: center;
+  justify-items: start;
+  max-width: min(100%, 62rem);
+  padding: clamp(2.5rem, 6vw, 5rem) var(--page-gutter) clamp(3rem, 7vw, 5.5rem);
+}
+
+.lasha-page .lasha-page-hero-title {
+  margin: clamp(0.9rem, 1.6vw, 1.4rem) 0 0;
+  color: #000;
+  font-family: var(--l-light);
+  font-size: clamp(3.6rem, 10.2vw, 9.2rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.89;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.lasha-page-hero-title > span { display: block; }
+
+.lasha-page-hero-text {
+  max-width: 34rem;
+  margin: clamp(1rem, 1.8vw, 1.5rem) 0 0;
+  color: #000;
+  font-size: clamp(1rem, 1.25vw, 1.125rem);
+  line-height: 1.4;
+}
+
+.lasha-page-hero .page-cta-row { margin-top: clamp(1.5rem, 2.6vw, 2.4rem); }
+.lasha-page-hero .text-link { color: var(--l-blue); }
+
+/* Navigation over the photography: white labels, blue accents instead of orange. */
+:is(.lasha-home, .lasha-page) .site-header .desktop-nav { color: #fff; }
+:is(.lasha-home, .lasha-page) .site-header .desktop-nav button::after { background: #fff; }
+:is(.lasha-home, .lasha-page) .language-switcher-trigger svg:first-child { color: #fff; }
+:is(.lasha-home, .lasha-page) .language-switcher-trigger:is(:hover, :focus-visible) { border-color: #fff; }
+:is(.lasha-home, .lasha-page) .language-switcher-menu { border: 0; background: #f4f4f1; }
+:is(.lasha-home, .lasha-page) .language-switcher-menu button { color: #171a1d; }
+:is(.lasha-home, .lasha-page) .language-switcher-menu button:is(:hover, :focus-visible, .is-active) { background: rgba(37, 87, 214, 0.12); color: #171a1d; }
+:is(.lasha-home, .lasha-page) .language-switcher-menu button.is-active small { color: #2557d6; }
+
+/* Shared type and controls. */
+.lasha-page .section-eyebrow {
+  display: flex;
+  align-items: center;
+  margin: 0 0 1rem;
+  color: var(--l-blue);
+  font-family: var(--l-body);
+  font-size: clamp(0.78rem, 1.13vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.lasha-page .section-eyebrow::after {
+  flex: 0 0 clamp(3.5rem, 8.7vw, 7.8rem);
+  height: 1px;
+  margin-left: 1.1rem;
+  background: rgba(37, 87, 214, 0.5);
+  content: "";
+}
+
+.lasha-page .button {
+  gap: 1rem;
+  min-height: 3.6rem;
+  padding: 1rem 1.6rem;
+  border: 1px solid var(--l-ink);
+  background: transparent;
+  color: var(--l-ink);
+  font-family: var(--l-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.026em;
+}
+
+.lasha-page .button-primary { border-color: var(--l-blue); background: var(--l-blue); color: var(--l-paper); }
+.lasha-page .button-primary:hover { border-color: #1b45b0; background: #1b45b0; }
+.lasha-page .button-ghost:hover { background: var(--l-ink); color: var(--l-paper); }
+.lasha-page .site-header .button-ghost { border-color: rgba(255, 255, 255, 0.82); color: #fff; }
+.lasha-page .site-header .button-ghost:hover { background: #fff; color: var(--l-ink); }
+.lasha-page .site-header .button { min-height: 3rem; padding-block: 0.85rem; font-size: 0.77rem; }
+
+.lasha-page .text-link,
+.lasha-page .resource-link {
+  color: var(--l-ink);
+  font-family: var(--l-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lasha-page .text-link span,
+.lasha-page .resource-link span { color: var(--l-blue); }
+
+.lasha-page :is(button, input, select, textarea, a):focus-visible { outline-color: var(--l-blue); }
+
+/* Content sections from NetworkSections. */
+.lasha-page .network-section {
+  padding: clamp(4rem, 8.5vw, 7.8rem) var(--page-gutter);
+  border-top: 1px solid rgba(23, 26, 29, 0.12);
+  background: var(--l-paper);
+  color: var(--l-ink);
+}
+
+.lasha-page .network-section > * { max-width: 81.2rem; }
+
+.lasha-page .network-heading { margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+
+.lasha-page .network-heading h2 {
+  max-width: 18ch;
+  margin: 0.4rem 0 0;
+  font-family: var(--l-tall);
+  font-size: clamp(3rem, 7.4vw, 7.4rem);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+
+.lasha-page .network-section .network-lead {
+  max-width: 44rem;
+  margin: clamp(1.4rem, 2.4vw, 2rem) 0 0;
+  color: inherit;
+  font-size: clamp(1.02rem, 1.25vw, 1.15rem);
+  line-height: 1.45;
+}
+
+.lasha-page .network-intro-lead { font-weight: 500; }
+
+.lasha-page .network-emphasis,
+.lasha-page .network-intro-tagline {
+  max-width: 34ch;
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  color: var(--l-blue);
+  font-family: var(--l-display);
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.lasha-page .network-starting-points-title {
+  max-width: 20ch;
+  margin: clamp(3rem, 6vw, 5rem) 0 1rem;
+  font-family: var(--l-tall);
+  font-size: clamp(2.6rem, 5.6vw, 5.6rem);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+
+.lasha-page .network-grid { gap: 0 clamp(2rem, 5vw, 5rem); margin-bottom: 0; }
+
+.lasha-page .network-card {
+  padding: clamp(1.6rem, 2.6vw, 2.3rem) 0;
+  border-top: 1px solid rgba(23, 26, 29, 0.2);
+}
+
+.lasha-page .network-number {
+  display: block;
+  color: var(--l-blue);
+  font-family: var(--l-num);
+  font-size: clamp(1.8rem, 2.4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.lasha-page :is(.network-card, .network-steps) h3 {
+  margin: 0.9rem 0 0.6rem;
+  font-family: var(--l-display);
+  font-size: clamp(1.7rem, 2.9vw, 2.6rem);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.lasha-page :is(.network-card, .network-steps) p { font-size: 1rem; line-height: 1.45; }
+
+.lasha-page .network-actions { margin-top: clamp(2rem, 4vw, 3rem); }
+.lasha-page .network-section .button { min-height: 3.6rem; padding: 1rem 1.6rem; font-size: 0.875rem; }
+.lasha-page .network-section .text-link { margin-top: 0.8rem; }
+
+.lasha-page .network-why .network-heading h2 { max-width: none; }
+
+/* Golden Premium keeps its gold signal but takes the condensed headline type. */
+.lasha-page .golden-premium-heading h3,
+.lasha-page .golden-premium-summary strong {
+  font-family: var(--l-tall);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+.lasha-page .golden-premium-heading h3 { font-size: clamp(2.4rem, 4.6vw, 4.4rem); line-height: 0.9; }
+.lasha-page .golden-premium-summary strong { font-family: var(--l-num); font-weight: 500; }
+
+/* Figures read like the homepage metric strip: blue condensed numerals over a short rule. */
+.lasha-page .network-stats { gap: clamp(1.5rem, 3vw, 3rem); margin-block: clamp(2rem, 4vw, 3.2rem); }
+.lasha-page .network-stats > div { display: flex; flex-direction: column; padding-left: 0; border-left: 0; }
+
+.lasha-page .network-stats dd {
+  margin: 0;
+  color: var(--l-blue);
+  font-family: var(--l-num);
+  font-size: clamp(3rem, 6.4vw, 5.6rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.lasha-page .network-stats dd::after {
+  display: block;
+  width: min(8.3rem, 70%);
+  height: 1px;
+  margin: 1rem 0 0.9rem;
+  background: currentColor;
+  content: "";
+  opacity: 0.45;
+}
+
+.lasha-page .network-stats dt {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.lasha-page .network-steps li { border-top: 1px solid rgba(23, 26, 29, 0.2); }
+.lasha-page .network-steps h3 { margin: 0; }
+.lasha-page .network-badge { border-color: var(--l-blue); color: var(--l-blue); font-weight: 500; letter-spacing: 0.06em; }
+
+.lasha-page .network-reports :is(a, button) { border-color: rgba(23, 26, 29, 0.2); }
+.lasha-page .network-reports span { color: var(--l-blue); }
+
+.lasha-page .network-service-path {
+  gap: 1rem 2.4rem;
+  margin-top: 1rem;
+  font-family: var(--l-display);
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.lasha-page .network-service-path li:not(:last-child)::after { color: var(--l-blue); }
+
+/* Section grounds alternate like the homepage: paper, Lasha's mist band, the blue
+   about panel and the ink metric strip. */
+.lasha-page :is(.network-commercial, .network-services, .network-eligibility) { background: var(--l-mist); }
+.lasha-page :is(.network-process, .network-opportunity) { background: var(--l-paper); }
+
+.lasha-page :is(.network-advantage) { background: var(--l-blue); color: #fff; }
+.lasha-page .network-advantage :is(.section-eyebrow, .network-number) { color: #fff; }
+.lasha-page .network-advantage .section-eyebrow::after { background: rgba(255, 255, 255, 0.6); }
+.lasha-page .network-advantage .network-card { border-top-color: rgba(255, 255, 255, 0.4); }
+
+.lasha-page :is(.network-backing, .network-client) { background: var(--l-ink); color: var(--l-paper); }
+.lasha-page :is(.network-backing, .network-client) .network-card { border-top-color: rgba(244, 244, 241, 0.25); }
+.lasha-page :is(.network-backing, .network-client) .network-stats dd { color: var(--l-blue); }
+.lasha-page :is(.network-backing, .network-client) .network-emphasis { color: var(--l-sage); }
+.lasha-page :is(.network-backing, .network-client) .network-badge { border-color: var(--l-sage); color: var(--l-sage); }
+.lasha-page :is(.network-backing, .network-client) .button-ghost { border-color: #fff; color: var(--l-paper); }
+.lasha-page :is(.network-backing, .network-client) .button-ghost:hover { background: #fff; color: var(--l-ink); }
+
+/* The closing call to action echoes the homepage's broker access row. */
+.lasha-page .network-closing .network-heading h2 { max-width: 16ch; font-family: var(--l-narrow); font-size: clamp(3.4rem, 9.8vw, 8.8rem); line-height: 0.85; }
+
+/* Insights. */
+.lasha-page .page-section {
+  padding: clamp(4rem, 8.5vw, 7.8rem) var(--page-gutter);
+  border-bottom: 0;
+  border-top: 1px solid rgba(23, 26, 29, 0.12);
+}
+
+.lasha-page .section-heading-row { align-items: flex-start; flex-direction: column; gap: 0.6rem; }
+
+.lasha-page .section-heading-row h2 {
+  max-width: none;
+  color: var(--l-ink);
+  font-family: var(--l-tall);
+  font-size: clamp(3rem, 7.4vw, 7.4rem);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 0.86;
+}
+
+.lasha-page .resource-section { background: var(--l-mist); }
+.lasha-page .resource-grid { gap: 0; border-top: 0; }
+
+.lasha-page .resource-card {
+  min-height: 0;
+  padding: 1.8rem clamp(1.2rem, 2.4vw, 2.2rem) 2rem;
+  border: 0;
+  border-left: 1px solid rgba(23, 26, 29, 0.18);
+  background: transparent;
+}
+
+.lasha-page .resource-card:first-child { padding-left: 0; border-left: 0; }
+
+.lasha-page .resource-card-top { color: rgba(23, 26, 29, 0.6); }
+.lasha-page .resource-card-top span:first-child { color: var(--l-blue); font-family: var(--l-num); font-size: 2rem; font-weight: 500; letter-spacing: 0; }
+
+.lasha-page .resource-card h3 {
+  color: var(--l-ink);
+  font-family: var(--l-display);
+  font-size: clamp(1.7rem, 2.9vw, 2.6rem);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.lasha-page .resource-card p { color: rgba(23, 26, 29, 0.78); }
+
+.lasha-page .faq-section { background: var(--l-paper); }
+.lasha-page .faq-list details { border-color: rgba(23, 26, 29, 0.2); }
+.lasha-page .faq-list summary { color: var(--l-ink); }
+.lasha-page .faq-list summary span { color: var(--l-blue); }
+.lasha-page .faq-list p { color: rgba(23, 26, 29, 0.78); }
+
+/* Broker tools. */
+.lasha-page .calculator-page { padding: clamp(4rem, 8.5vw, 7.8rem) var(--page-gutter); }
+
+.lasha-page .calculator-page h1 {
+  margin: 0.4rem 0 0;
+  font-family: var(--l-tall);
+  font-size: clamp(3rem, 7.4vw, 7.4rem);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+
+.lasha-page .calculator-intro { margin-top: 1.4rem; font-size: clamp(1.02rem, 1.25vw, 1.15rem); line-height: 1.45; }
+
+.lasha-page .calculator-tabs { gap: 1px; margin: clamp(2rem, 4vw, 3rem) 0 2rem; border: 1px solid var(--l-ink); background: var(--l-ink); }
+
+.lasha-page .calculator-tabs button {
+  border: 0;
+  background: var(--l-paper);
+  color: var(--l-ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.026em;
+  text-transform: uppercase;
+}
+
+.lasha-page .calculator-tabs button[aria-selected="true"] { background: var(--l-blue); color: #fff; }
+
+.lasha-page .calculator-layout h2,
+.lasha-page .client-pdf h2 {
+  font-family: var(--l-display);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.lasha-page :is(.calculator-form, .client-pdf) { border: 1px solid rgba(23, 26, 29, 0.2); background: #fff; }
+.lasha-page .client-pdf { background: var(--l-mist); }
+.lasha-page .calculator-results { border: 0; background: var(--l-ink); color: var(--l-paper); }
+.lasha-page .calculator-results dl > div { border-top-color: rgba(244, 244, 241, 0.25); }
+.lasha-page .calculator-results dd { color: var(--l-blue); font-family: var(--l-num); font-weight: 500; }
+
+.lasha-page .calculator-fields label { font-size: 0.9rem; font-weight: 500; }
+
+.lasha-page :is(.calculator-fields input, .client-pdf select, .client-pdf textarea) {
+  border: 1px solid rgba(23, 26, 29, 0.35);
+  background: #fff;
+  color: var(--l-ink);
+  color-scheme: light;
+}
+
+.lasha-page .calculator-error,
+.lasha-page .client-pdf [role="alert"] { border-left-color: #b3261e; color: #b3261e; }
+.lasha-page .golden-premium-pdf-label { color: #8a6114; }
+
+/* Residences: the opportunity facts and the live explorer under the hero. */
+.lasha-page.residences-page .network-opportunity { border-top: 0; }
+
+/* Privacy policy. */
+.privacy-page.lasha-page {
+  max-width: none;
+  margin: 0;
+  padding: clamp(3rem, 7vw, 6rem) var(--page-gutter, clamp(1.25rem, 4.9vw, 4.4rem));
+  background: var(--l-paper);
+  color: var(--l-ink);
+}
+
+.privacy-page.lasha-page > * { max-width: 52rem; }
+.privacy-page.lasha-page > a { color: var(--l-blue); }
+
+.privacy-page.lasha-page h1 {
+  margin: 0.4rem 0 2.5rem;
+  font-family: var(--l-tall);
+  font-size: clamp(3rem, 7.4vw, 7.4rem);
+  font-weight: 400;
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+
+.privacy-page.lasha-page h2 {
+  font-family: var(--l-display);
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+}
+
+.privacy-page.lasha-page section { border-top: 1px solid rgba(23, 26, 29, 0.15); }
+.privacy-page.lasha-page p { color: rgba(23, 26, 29, 0.82); }
+
+/* Page ground and the compact site-info disclosure on every page. */
+html:root,
+html body,
+body .site-shell { background: #f4f4f1; }
+body .privacy-footer { color: #171a1d; }
+body .privacy-footer-toggle,
+body .privacy-footer-panel { border-color: rgba(23, 26, 29, 0.3); background: #f4f4f1; box-shadow: 0 0.5rem 1.5rem rgba(23, 26, 29, 0.14); }
+body .privacy-footer-toggle span { color: #2557d6; }
+body .privacy-footer-toggle:hover,
+body .privacy-footer-toggle[aria-expanded="true"] { border-color: #2557d6; }
+body .privacy-footer-brand { border-bottom-color: rgba(23, 26, 29, 0.18); }
+body .privacy-footer-brand span { color: rgba(23, 26, 29, 0.6); }
+
+body .privacy-footer-panel nav :is(a, button) { border-bottom-color: rgba(23, 26, 29, 0.12); }
+body .privacy-footer-panel nav a:last-child { color: rgba(23, 26, 29, 0.6); }
+body .privacy-footer-panel nav :is(a, button):hover,
+body .privacy-footer-panel nav span { color: #2557d6; }
+
+body .cookie-notice { border-color: rgba(23, 26, 29, 0.25); background: #f4f4f1; color: #171a1d; }
+body .cookie-notice h2 { font-family: "Lasha Tall", "League Gothic", "Arial Narrow", sans-serif; font-size: 34px; font-weight: 400; letter-spacing: 0.005em; line-height: 0.95; text-transform: uppercase; }
+body .cookie-actions button { border-color: #2557d6; background: #2557d6; font-weight: 500; letter-spacing: 0.026em; text-transform: uppercase; }
+body .cookie-actions button:hover { border-color: #1b45b0; background: #1b45b0; }
+body .access-form .privacy-acknowledgement input { accent-color: #2557d6; }
+
+/* Sign-up, login and materials dialogs, on every page. */
+body .modal-backdrop { background: rgba(23, 26, 29, 0.72); }
+
+body .modal-panel {
+  border: 0;
+  background: #f4f4f1;
+  color: #171a1d;
+  font-family: "Inter", "Gilroy", system-ui, sans-serif;
+}
+
+body .modal-close { color: #171a1d; }
+body .modal-eyebrow { color: #2557d6; font-weight: 500; }
+
+body .modal-panel h2 {
+  color: #171a1d;
+  font-family: "Lasha Tall", "League Gothic", "Arial Narrow", sans-serif;
+  font-size: clamp(3rem, 7vw, 4.8rem);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+
+body .modal-copy { color: rgba(23, 26, 29, 0.78); }
+body .access-form label span { color: rgba(23, 26, 29, 0.68); }
+
+body .access-form input {
+  border-color: rgba(23, 26, 29, 0.35);
+  background: #fff;
+  color: #171a1d;
+}
+
+body .access-form input::placeholder { color: rgba(23, 26, 29, 0.42); }
+body .modal-panel .button-primary { border-color: #2557d6; background: #2557d6; color: #f4f4f1; }
+body .modal-panel .button-primary:hover { border-color: #1b45b0; background: #1b45b0; }
+body .modal-panel .button-ghost { border-color: #171a1d; color: #171a1d; }
+body .modal-switch { color: #2557d6; }
+body .modal-panel :is(button, input, a):focus-visible { outline-color: #2557d6; }
+
+@media (max-width: 1000px) {
+  .lasha-page .resource-card { padding-left: 0; border-left: 0; border-top: 1px solid rgba(23, 26, 29, 0.18); }
+}
+
+@media (max-width: 767px) {
+  .lasha-page-hero { min-height: clamp(26rem, 68svh, 34rem); }
+  .lasha-page-hero-media { object-position: 78% 30%; }
+  .lasha-page-hero::before {
+    background: linear-gradient(180deg, rgba(232, 240, 250, 0.1) 0%, rgba(232, 240, 250, 0.78) 45%, rgba(232, 240, 250, 0.86) 100%);
+  }
+  .lasha-page-hero-copy { align-content: end; }
+}
