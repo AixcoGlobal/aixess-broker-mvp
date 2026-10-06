@@ -4,8 +4,9 @@ import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidatio
 import { FittedHeading } from "./components/FittedHeading.jsx";
 import { NetworkSections } from "./components/NetworkSections.jsx";
 import { NETWORK_COPY } from "./network-copy.js";
-import { HOME_HERO_LINES } from "./project-showcase-copy.js";
 import { ProjectShowcase } from "./components/ProjectShowcase.jsx";
+import { HomeAbout, HomeAccess, HomeHero, HomeMetrics, HomeStartingPoints } from "./components/LashaHomeSections.jsx";
+import "./components/lasha-home.css";
 const Calculators = lazy(() => import("./components/Calculators.jsx"));
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import { PRIVACY_COPY } from "./privacy-copy.js";
@@ -20,7 +21,6 @@ const ResidenceExplorer = lazy(() => import("./components/ResidenceExplorer").th
   default: module.ResidenceExplorer,
 })));
 
-const tickerItems = ["projectReverance", "batumi", "brokerAccessOpen"];
 
 const navItems = [
   { key: "why-aixess", labelKey: "aixessAdvantage" },
@@ -47,19 +47,6 @@ function routeFromLocation() {
   const requestedRoute = window.location.hash.replace(/^#/, "").split("?")[0].trim().toLowerCase();
   const route = routeAliases[requestedRoute] || requestedRoute;
   return validRoutes.has(route) ? route : "home";
-}
-
-function TickerGroup() {
-  const { t } = useLanguage();
-  return (
-    <span className="ticker-group" aria-hidden="true">
-      {tickerItems.map((key) => (
-        <span className="ticker-item" key={key}>
-          {t(key)}<span className="ticker-dot">•</span>
-        </span>
-      ))}
-    </span>
-  );
 }
 
 function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal, pageHeader = false }) {
@@ -455,93 +442,24 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
 }
 
 function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
-  const { t, locale } = useLanguage();
-  const c = NETWORK_COPY[locale];
+  const { t } = useLanguage();
   return (
-    <>
-      <section className="hero hero-first-page" id="project">
+    <div className="lasha-home">
+      <HomeHero>
         <SiteHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />
+      </HomeHero>
 
-        <div className="hero-media" aria-hidden="true">
-          <img
-            src="/assets/reverance-hero-1536.webp"
-            srcSet="/assets/reverance-hero-768.webp 768w, /assets/reverance-hero-1536.webp 1536w"
-            sizes="(max-width: 767px) 100vw, 50vw"
-            alt=""
-            width="2048"
-            height="2042"
-            fetchPriority="high"
-            decoding="async"
-          />
-        </div>
-
-        <div className="hero-copy">
-          <FittedHeading as="h1">
-            {(HOME_HERO_LINES[locale] ?? HOME_HERO_LINES.en).map((line) => <span key={line}>{line}</span>)}
-          </FittedHeading>
-          <span className="accent-rule" aria-hidden="true" />
-          <p className="hero-subtitle hero-introduction">{c.intro}</p>
-          <div className="hero-meta" aria-label={t("currentProjectDetails")}>
-            <span className="meta-project">{t("projectReverance")}</span>
-            <span className="meta-divider" aria-hidden="true" />
-            <span>{t("batumi")}</span>
-            <span className="meta-dot" aria-hidden="true">•</span>
-            <span>{t("brokerAccessOpen")}</span>
-          </div>
-        </div>
-      </section>
-
-      <div className="project-ticker" role="group" aria-label={`${t("projectReverance")}, ${t("batumi")}, ${t("brokerAccessOpen")}`}>
-        <div className="ticker-track">
-          <TickerGroup />
-          <TickerGroup />
-          <TickerGroup />
-          <TickerGroup />
-        </div>
-      </div>
-
-      <section className="access-section" id="why-aixess">
-        <div className="home-starting-points">
-          <p className="home-intro-followup">{c.introFollowup}</p>
-          <p className="home-intro-tagline">{c.introTagline}</p>
-          <h2>{c.startingPointsTitle}</h2>
-          <div className="home-starting-grid">
-            {c.startingPoints.map(([title, description]) => <article key={title}><h3>{title}</h3><p>{description}</p></article>)}
-          </div>
-        </div>
-        <div className="access-copy">
-          <p className="section-eyebrow">{t("brokerNetwork")}</p>
-          <FittedHeading><span>{t("yourAccess")}</span><span>{t("startsHere")}</span></FittedHeading>
-        </div>
-
-        <div className="access-actions">
-          <button className="button button-primary access-button" type="button" onClick={() => onOpenModal("register")}>
-            {t("registerAsBroker")}
-          </button>
-          <button className="button button-outline-dark access-button" type="button" onClick={() => onOpenModal("materials")}>
-            {t("downloadMaterials")}
-          </button>
-        </div>
-
-        <div className="project-stats" aria-label={t("projectAvailability")}>
-          <div className="stat stat-residences">
-            <strong>{availableResidenceCount}</strong>
-            <span>{t("availableResidences")}</span>
-          </div>
-          <span className="stat-divider" aria-hidden="true" />
-          <div className="stat stat-completion">
-            <span>{t("completion")}</span>
-            <strong>{t("july2028")}</strong>
-          </div>
-        </div>
-      </section>
-
+      <HomeMetrics />
+      <HomeAbout />
       <ProjectShowcase onNavigate={onNavigate} />
 
       <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
         <ResidenceExplorer onBrokerAccess={() => onOpenModal("register")} />
       </Suspense>
-    </>
+
+      <HomeStartingPoints />
+      <HomeAccess availableResidences={availableResidenceCount} onOpenModal={onOpenModal} />
+    </div>
   );
 }
 

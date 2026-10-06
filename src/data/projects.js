@@ -1,33 +1,30 @@
 import { getWorkbookAvailableCount } from "./reveranceInventory.js";
 
-// Homepage project showcase (Option A: featured project + project grid).
-// Only projects with a confirmed name and approved imagery belong here.
-// Future Dubai projects are added to UPCOMING_PROJECTS once Klem supplies
-// their name, renders, pricing and handover date; until then the
-// "next on AiXESS" row is not rendered.
+// Homepage project showcase, following Lasha Bakashvili's "Current project in Batumi"
+// frame: one large render with a thumbnail strip, four metric tiles and a dark
+// project card. Only projects with a confirmed name and approved imagery belong
+// here; future projects are added to UPCOMING_PROJECTS once their name, renders,
+// pricing and handover date are supplied, and nothing renders until then.
+const image = (slug, sizes, thumb = `/assets/projects/${slug}-600.webp`) => ({
+  src: `/assets/projects/${slug}-${sizes[sizes.length - 1]}.webp`,
+  srcSet: sizes.map((width) => `/assets/projects/${slug}-${width}.webp ${width}w`).join(", "),
+  thumb,
+});
+
 export const FEATURED_PROJECT = {
   id: "reverance",
   startingPrice: 45000,
   currency: "EUR",
-  downPaymentPercent: 10,
   availableResidences: getWorkbookAvailableCount(),
   completionYear: 2028,
   gallery: [
-    {
-      src: "/assets/projects/reverance-front-1400.webp",
-      srcSet: "/assets/projects/reverance-front-700.webp 700w, /assets/projects/reverance-front-1400.webp 1400w",
-      thumb: "/assets/projects/reverance-front-700.webp",
-    },
-    {
-      src: "/assets/reverance-hero-1536.webp",
-      srcSet: "/assets/reverance-hero-768.webp 768w, /assets/reverance-hero-1536.webp 1536w",
-      thumb: "/assets/reverance-hero-768.webp",
-    },
-    {
-      src: "/assets/projects/reverance-facade-700.webp",
-      srcSet: "/assets/projects/reverance-facade-700.webp 700w",
-      thumb: "/assets/projects/reverance-facade-700.webp",
-    },
+    image("reverance-front", [700, 1400], "/assets/projects/reverance-front-700.webp"),
+    image("reverance-hero", [600, 1200]),
+    image("reverance-entrance", [600, 1200]),
+    image("reverance-aerial", [600, 1200]),
+    image("reverance-facade", [600, 1200]),
+    image("reverance-residence-a", [700], "/assets/projects/reverance-residence-a-700.webp"),
+    image("reverance-residence-b", [700], "/assets/projects/reverance-residence-b-700.webp"),
   ],
 };
 

@@ -1,97 +1,93 @@
 import { useState } from "react";
+import { LashaArrow, LashaValue } from "./LashaHomeSections.jsx";
 import { useLanguage } from "../i18n.jsx";
-import { NETWORK_COPY } from "../network-copy.js";
+import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { PROJECT_SHOWCASE_COPY } from "../project-showcase-copy.js";
 import { FEATURED_PROJECT, UPCOMING_PROJECTS } from "../data/projects.js";
 import "./project-showcase.css";
 
 export function ProjectShowcase({ onNavigate, upcoming = UPCOMING_PROJECTS }) {
   const { t, locale } = useLanguage();
-  const copy = PROJECT_SHOWCASE_COPY[locale] || PROJECT_SHOWCASE_COPY.en;
-  const network = NETWORK_COPY[locale] || NETWORK_COPY.en;
+  const copy = LASHA_HOME_COPY[locale] || LASHA_HOME_COPY.en;
+  const showcase = PROJECT_SHOWCASE_COPY[locale] || PROJECT_SHOWCASE_COPY.en;
   const [active, setActive] = useState(0);
   const project = FEATURED_PROJECT;
   const image = project.gallery[active];
-  const number = (value) => new Intl.NumberFormat(locale).format(value);
-  const money = new Intl.NumberFormat(locale, { style: "currency", currency: project.currency, maximumFractionDigits: 0 }).format(project.startingPrice);
-  const facts = [
-    [money, network.facts[3]],
-    [`${project.downPaymentPercent}%`, copy.downPayment],
-    [number(project.availableResidences), network.facts[1]],
-    [String(project.completionYear), `${t("completion")} · ${t("july2028")}`],
-  ];
 
-  const exploreResidences = () => {
+  const exploreProject = () => {
     document.getElementById("residences")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
     <section className="project-showcase" id="projects" aria-labelledby="project-showcase-title">
       <header className="project-showcase-head">
-        <p className="section-eyebrow">{copy.eyebrow}</p>
-        <h2 id="project-showcase-title">{copy.title}</h2>
-        <p className="project-showcase-lead">{copy.lead}</p>
+        <p className="lasha-eyebrow">{copy.projectEyebrow}</p>
+        <h2 id="project-showcase-title">{copy.projectTitle}</h2>
       </header>
 
       <div className="project-feature">
-        <figure className="project-feature-media">
-          <img
-            src={image.src}
-            srcSet={image.srcSet}
-            sizes="(max-width: 899px) 100vw, 55vw"
-            alt={copy.imageAlt}
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption className="project-status"><span className="project-status-dot" aria-hidden="true" />{t("batumi")} · {copy.onSale}</figcaption>
-        </figure>
-
-        <div className="project-feature-side">
-          <dl className="project-facts">
-            {facts.map(([value, label]) => (
-              <div key={label}><dd>{value}</dd><dt>{label}</dt></div>
+        <div className="project-feature-gallery">
+          <figure className="project-feature-media">
+            <img
+              src={image.src}
+              srcSet={image.srcSet}
+              sizes="(max-width: 899px) 100vw, 46vw"
+              alt={showcase.imageAlt}
+              loading="lazy"
+              decoding="async"
+            />
+            <a className="project-feature-expand" href={image.src} target="_blank" rel="noreferrer" aria-label={copy.openImage}>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true" focusable="false">
+                <path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4" />
+              </svg>
+            </a>
+          </figure>
+          <div className="project-thumbs" role="group" aria-label={copy.galleryLabel}>
+            {project.gallery.map((item, index) => (
+              <button
+                type="button"
+                key={item.thumb}
+                className={index === active ? "is-active" : ""}
+                aria-pressed={index === active}
+                aria-label={copy.galleryImage.replace("{{n}}", String(index + 1))}
+                onClick={() => setActive(index)}
+              >
+                <img src={item.thumb} alt="" loading="lazy" decoding="async" />
+              </button>
             ))}
-          </dl>
-          <div className="project-card">
-            <p className="project-card-live">{copy.onSale} · {copy.liveInventory}</p>
-            <h3>{t("projectReverance")}</h3>
-            <p>{network.opportunity[3]}</p>
-            <p className="project-card-meta">{copy.location}</p>
-            <div className="project-card-actions">
-              <button className="button button-primary" type="button" onClick={exploreResidences}>
-                {copy.exploreResidences}<span aria-hidden="true">→</span>
-              </button>
-              <button className="button button-ghost" type="button" onClick={() => onNavigate("broker-tools")}>
-                {t("calculator")}<span aria-hidden="true">→</span>
-              </button>
-            </div>
           </div>
         </div>
 
-        <div className="project-thumbs" role="group" aria-label={copy.gallery}>
-          {project.gallery.map((item, index) => (
-            <button
-              type="button"
-              key={item.thumb}
-              className={index === active ? "is-active" : ""}
-              aria-pressed={index === active}
-              aria-label={copy.showImage.replace("{{n}}", String(index + 1))}
-              onClick={() => setActive(index)}
-            >
-              <img src={item.thumb} alt="" loading="lazy" decoding="async" />
-            </button>
-          ))}
+        <div className="project-feature-side">
+          <dl className="project-facts">
+            {copy.projectFacts.map(([value, label]) => (
+              <div key={label}><dd><LashaValue value={value} /></dd><dt>{label}</dt></div>
+            ))}
+          </dl>
+          <div className="project-card">
+            <h3>{copy.projectName}</h3>
+            <p>{copy.projectBody}</p>
+            <p className="project-card-meta">{copy.projectMeta}</p>
+            <div className="project-card-actions">
+              <button className="lasha-button lasha-button-primary" type="button" onClick={exploreProject}>
+                {copy.exploreProject}<LashaArrow length={26} />
+              </button>
+              <button className="lasha-button lasha-button-dark" type="button" onClick={() => onNavigate("broker-tools")}>
+                {t("calculator")}<LashaArrow length={26} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       {upcoming.length > 0 && (
         <div className="project-upcoming">
-          <h3>{copy.next}</h3>
+          <h3>{showcase.next}</h3>
           <div className="project-upcoming-row">
             {upcoming.map((item) => (
               <article key={item.id}>
                 <img src={item.image} alt="" loading="lazy" decoding="async" />
-                <p className="project-upcoming-status">{item.location[locale] || item.location.en} · {copy.comingSoon}</p>
+                <p className="project-upcoming-status">{item.location[locale] || item.location.en} · {showcase.comingSoon}</p>
                 <h4>{item.name}</h4>
               </article>
             ))}

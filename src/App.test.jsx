@@ -2,7 +2,8 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import { NETWORK_COPY } from "./network-copy";
-import { HOME_HERO_LINES, PROJECT_SHOWCASE_COPY } from "./project-showcase-copy";
+import { HOME_HERO_LINES } from "./project-showcase-copy";
+import { LASHA_HOME_COPY } from "./lasha-home-copy";
 
 beforeEach(() => {
   window.history.replaceState({}, "", "/#why-aixess");
@@ -31,13 +32,14 @@ describe("AIXESS navigation pages", () => {
   it("puts the newer first-page brief on the homepage while retaining the existing structure", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("AIXESSTO MARKET");
-    expect(screen.getByText(NETWORK_COPY.en.intro)).toBeInTheDocument();
-    expect(screen.getByText(NETWORK_COPY.en.introFollowup)).toBeInTheDocument();
-    expect(screen.getByText(NETWORK_COPY.en.introTagline)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: NETWORK_COPY.en.startingPointsTitle })).toBeInTheDocument();
-    expect(container.querySelector(".access-section")).toBeInTheDocument();
-    expect(container.querySelector(".project-ticker")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("DESIGNED FOR VALUEBUILT FOR TOMORROW");
+    expect(container.querySelector(".lasha-hero-copy")).toContainElement(screen.getByRole("img", { name: "AIXESS" }));
+    expect(screen.getByText(LASHA_HOME_COPY.en.heroSubtitle.replace(/\s+/g, " "))).toBeInTheDocument();
+    expect(screen.getByText(LASHA_HOME_COPY.en.aboutBody)).toBeInTheDocument();
+    expect(screen.getByText(NETWORK_COPY.en.introTagline.replace(/\.$/, ""))).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "DIFFERENT STARTING POINTS. ONE PLATFORM TO MOVE FORWARD" })).toBeInTheDocument();
+    expect(container.querySelector(".lasha-access")).toBeInTheDocument();
+    expect(container.querySelector(".project-ticker")).not.toBeInTheDocument();
     expect(container.querySelector("[data-content-section]")).not.toBeInTheDocument();
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
     expect(container.querySelector('[data-content-section="eligibility"]')).toBeInTheDocument();
@@ -55,13 +57,17 @@ describe("AIXESS navigation pages", () => {
     const { container } = render(<App />);
     const c = NETWORK_COPY[locale];
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(HOME_HERO_LINES[locale].join(""));
-    expect(screen.getByRole("heading", { name: PROJECT_SHOWCASE_COPY[locale].title })).toBeInTheDocument();
-    expect(screen.getByText(c.introFollowup)).toBeInTheDocument();
-    expect(container.querySelectorAll(".home-starting-grid article")).toHaveLength(3);
-    for (const [title, description] of c.startingPoints) {
+    const l = LASHA_HOME_COPY[locale];
+    expect(screen.getByRole("heading", { name: l.projectTitle })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: l.aboutTitle.join("") })).toBeInTheDocument();
+    expect(screen.getByText(l.heroSubtitle.replace(/\s+/g, " "))).toBeInTheDocument();
+    expect(container.querySelectorAll(".lasha-starting-grid article")).toHaveLength(3);
+    expect(container.querySelectorAll(".lasha-metrics > div")).toHaveLength(3);
+    for (const [title] of c.startingPoints) {
       expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
-      expect(screen.getByText(description)).toBeInTheDocument();
     }
+    // Lasha's frame repeats the first card's line under all three starting points.
+    expect(screen.getAllByText(c.startingPoints[0][1])).toHaveLength(3);
   });
 
   it("shows Reverance as the featured homepage project with working project actions", () => {
@@ -73,14 +79,15 @@ describe("AIXESS navigation pages", () => {
     document.body.appendChild(explorer);
     const { container } = render(<App />);
     const showcase = container.querySelector("#projects");
-    expect(within(showcase).getByRole("heading", { name: "NOW ON AIXESS" })).toBeInTheDocument();
-    expect(within(showcase).getByText("€45,000")).toBeInTheDocument();
-    expect(within(showcase).getByText("163")).toBeInTheDocument();
+    expect(within(showcase).getByRole("heading", { name: "CURRENT PROJECT IN BATUMI" })).toBeInTheDocument();
+    expect(within(showcase).getByText("€45K")).toBeInTheDocument();
+    expect(within(showcase).getByText("Entry from €45,000")).toBeInTheDocument();
+    expect(screen.getByText(String(163))).toBeInTheDocument();
     expect(showcase.querySelector(".project-upcoming")).not.toBeInTheDocument();
     const thumbs = within(showcase).getAllByRole("button", { name: /Show Reverance image/ });
     fireEvent.click(thumbs[1]);
     expect(thumbs[1]).toHaveAttribute("aria-pressed", "true");
-    fireEvent.click(within(showcase).getByRole("button", { name: /EXPLORE RESIDENCES/ }));
+    fireEvent.click(within(showcase).getByRole("button", { name: /EXPLORE PROJECT/ }));
     expect(scrollIntoView).toHaveBeenCalled();
     fireEvent.click(within(showcase).getByRole("button", { name: /CALCULATOR/ }));
     expect(screen.getAllByRole("button", { name: "BROKER TOOLS" }).filter((button) => button.getAttribute("aria-current") === "page").length).toBeGreaterThan(0);
