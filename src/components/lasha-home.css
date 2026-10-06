@@ -583,11 +583,23 @@
   /* Lasha's explorer frame is 870px tall: on short laptop windows (Safari with tabs) the
      copy scales with the viewport height too, so the steps never collide with it. */
   .lasha-home .explorer-sticky { --u: min(calc(min(100vw, 1920px) / 1440), calc(max(100svh, 44rem) / 900)); }
-  .lasha-home .explorer-copy-panel {
+  /* The model fills the whole right half edge to edge instead of a framed square. */
+  .lasha-home .explorer-stage { padding: 0; place-items: stretch; }
+  .lasha-home .explorer-model-host { height: 100%; }
+  .lasha-home .building-map {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border: 0;
+    box-shadow: none;
+  }
+  /* Steps narrate the scroll; they fade out as the filter panel takes the left half. */
+  .lasha-home .explorer-motion-caption { opacity: clamp(0, calc(1 - var(--filter-progress) * 2.5), 1); }
+  .lasha-home .explorer-intro-panel {
     justify-content: flex-start;
     padding: calc(118 * var(--u)) calc(30 * var(--u)) 0 calc(70 * var(--u));
   }
-  .lasha-home .explorer-copy .section-eyebrow {
+  .lasha-home .explorer-intro-panel .section-eyebrow {
     display: flex;
     align-items: center;
     margin-bottom: 0;
@@ -598,21 +610,21 @@
     letter-spacing: -0.023em;
     line-height: 1;
   }
-  .lasha-home .explorer-copy .section-eyebrow::after {
+  .lasha-home .explorer-intro-panel .section-eyebrow::after {
     flex: 0 0 calc(125 * var(--u));
     height: 1px;
     margin-left: calc(20 * var(--u));
     background: rgba(37, 87, 214, 0.5);
     content: "";
   }
-  .lasha-home .explorer-copy h2 {
+  .lasha-home .explorer-intro-panel h2 {
     margin-top: calc(8.5 * var(--u));
     font-family: var(--l-tall);
     font-size: calc(165.5 * var(--u));
     line-height: calc(138 * var(--u));
     letter-spacing: 0;
   }
-  .lasha-home .explorer-copy h2 span { display: block; }
+  .lasha-home .explorer-intro-panel h2 span { display: block; }
   .lasha-home .explorer-description {
     max-width: calc(480 * var(--u));
     margin-top: calc(7 * var(--u));
@@ -664,11 +676,13 @@
     letter-spacing: 0.16em;
   }
   .lasha-home .explorer-motion-caption {
-    right: calc(71 * var(--u));
+    /* The model now fills the right half, so the steps stay under the copy column. */
+    right: calc(50% + 30 * var(--u));
     bottom: calc(33 * var(--u));
     left: calc(69 * var(--u));
     display: grid;
-    grid-template-columns: calc(462 * var(--u)) calc(498 * var(--u)) minmax(0, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: calc(24 * var(--u));
     padding-top: calc(6 * var(--u));
     border-top: 1px solid #cecece;
     color: var(--l-blue);
@@ -678,19 +692,22 @@
   }
   .lasha-home .explorer-motion-caption > span {
     display: flex;
+    min-width: 0;
     align-items: center;
     padding-left: calc(2 * var(--u));
+    line-height: 1.15;
   }
   .lasha-home .explorer-motion-caption > span::after {
-    flex: 0 0 calc(155 * var(--u));
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: calc(155 * var(--u));
     height: 1px;
-    margin-left: calc(20 * var(--u));
+    margin-left: calc(14 * var(--u));
     background: rgba(37, 87, 214, 0.5);
     content: "";
   }
-  .lasha-home .explorer-motion-caption > span:last-child::after { flex: 1 1 auto; max-width: calc(155 * var(--u)); margin-left: auto; }
   .lasha-home .explorer-step-number {
-    margin-right: calc(36 * var(--u));
+    margin-right: calc(18 * var(--u));
     font-family: var(--l-num);
     font-size: calc(35.1 * var(--u));
     font-weight: 500;
