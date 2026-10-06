@@ -18,7 +18,7 @@
   --l-light: "Lasha Light", "Lasha Narrow", "Arial Narrow", sans-serif;
   --l-tall: "Lasha Tall", "League Gothic", "Arial Narrow", sans-serif;
   --l-display: "Lasha Display", "League Gothic", "Arial Narrow", sans-serif;
-  --l-num: "Barlow Condensed", "Albireo Cond", "Arial Narrow", sans-serif;
+  --l-num: "Lasha Num", "Barlow Condensed", "Arial Narrow", sans-serif;
   --l-num-tall: "Lasha Num Tall", "Barlow Condensed", "Arial Narrow", sans-serif;
   --l-body: "Inter", "Gilroy", system-ui, sans-serif;
   overflow-x: clip;
@@ -50,7 +50,7 @@
 .lasha-arrow { flex: none; height: calc(8 * var(--u)); overflow: visible; }
 .lasha-arrow path { vector-effect: non-scaling-stroke; }
 
-.lasha-plus { font-size: 0.5em; vertical-align: 0.18em; margin-left: 0.04em; }
+.lasha-plus { font-family: var(--l-body); font-weight: 700; font-size: 0.6em; vertical-align: 0.27em; margin-left: 0.03em; }
 
 .lasha-eyebrow {
   display: flex;
@@ -223,7 +223,7 @@
   white-space: nowrap;
 }
 
-.lasha-metrics-value .lasha-plus { font-size: 0.49em; vertical-align: 0.24em; margin-left: 0; }
+.lasha-metrics-value .lasha-plus { font-size: 0.6em; vertical-align: 0.27em; margin-left: 0.06em; }
 
 .lasha-home .lasha-metrics-value::after {
   display: block;
