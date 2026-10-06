@@ -14,10 +14,10 @@
   --l-blue: #2557d6;
   --l-sage: #9bb69e;
   --l-line: #cecece;
-  --l-narrow: "Lasha Narrow", "League Gothic", "Arial Narrow", sans-serif;
-  --l-light: "Lasha Light", "Lasha Narrow", "Arial Narrow", sans-serif;
-  --l-tall: "Lasha Tall", "League Gothic", "Arial Narrow", sans-serif;
-  --l-display: "Lasha Display", "League Gothic", "Arial Narrow", sans-serif;
+  --l-narrow: "Morganite Display", "Lasha Narrow", "League Gothic", "Arial Narrow", sans-serif;
+  --l-light: "Morganite Light", "Lasha Light", "Lasha Narrow", "Arial Narrow", sans-serif;
+  --l-tall: "Morganite Display", "Lasha Tall", "League Gothic", "Arial Narrow", sans-serif;
+  --l-display: "Morganite Display", "Lasha Display", "League Gothic", "Arial Narrow", sans-serif;
   --l-num: "Lasha Num", "Barlow Condensed", "Arial Narrow", sans-serif;
   --l-num-tall: "Lasha Num Tall", "Barlow Condensed", "Arial Narrow", sans-serif;
   --l-body: "Inter", "Gilroy", system-ui, sans-serif;
@@ -372,7 +372,7 @@
   line-height: calc(119 * var(--u));
 }
 
-.lasha-starting h2 > span:first-child { max-width: calc(900 * var(--u)); }
+.lasha-starting h2 > span:first-child { max-width: calc(820 * var(--u)); }
 
 .lasha-starting-grid {
   position: relative;

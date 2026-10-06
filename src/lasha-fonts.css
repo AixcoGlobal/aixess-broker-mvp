@@ -379,3 +379,31 @@
   src: url("/fonts/lasha/lasha-light-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
+/* Morganite (Rajesh Rajput, freeware for personal and commercial use; licence in
+   public/fonts/morganite/License.pdf, which forbids modifying the files, so they ship as supplied).
+   Chosen by Kemo on 6 October 2026 for every headline. size-adjust and the metric overrides give it
+   the cap height and line box of the Lasha stand-ins it replaces, so frame sizes stay valid.
+   Morganite has no Cyrillic: Russian headlines fall through to the Lasha families below it. */
+@font-face {
+  font-family: "Morganite Display";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/morganite/Morganite-SemiBold.ttf") format("truetype");
+  size-adjust: 105.15%;
+  ascent-override: 109.8%;
+  descent-override: 13.2%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Morganite Light";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/morganite/Morganite-Medium.ttf") format("truetype");
+  size-adjust: 104%;
+  ascent-override: 114.7%;
+  descent-override: 27.8%;
+  line-gap-override: 0%;
+}
