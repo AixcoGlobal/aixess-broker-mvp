@@ -1,5 +1,5 @@
 // Homepage copy from Lasha Bakashvili's Figma homepage frame (AIXESS / Frame 1),
-// with the hero headline replaced by Klem's "AIXESS TO MARKET" (5 October 2026).
+// copied word for word at Kemo's request (6 October 2026).
 //
 // The company and project figures below are taken from that draft as drawn.
 // They are not yet reconciled with AiXESS_Website_Content_Final.docx or the owner
@@ -19,7 +19,7 @@ export const LASHA_HOME_COPY = {
     metricsTagline: ["TURN YOUR", "NETWORK", "INTO", "OPPORTUNITY"],
     aboutEyebrow: "ABOUT AIXESS",
     aboutTitle: ["TURN CONNECTIONS", "INTO OPPORTUNITIES."],
-    aboutBody: "AiXESS connects brokers and ambitious professionals with selected international real estate opportunities — providing the projects, materials and support needed to turn their network into business.",
+    aboutBody: "AIXESS connects brokers and ambitious professionals with selected international real estate opportunities — providing the projects, materials and support needed to turn their network into business.",
     aboutPoints: ["SELECTED OPPORTUNITIES", "BROKER SUPPORT", "READY-TO-SELL MATERIALS", "INTERNATIONAL ACCESS"],
     projectEyebrow: "Emerging market opportunity",
     projectTitle: "CURRENT PROJECT IN BATUMI",
@@ -49,7 +49,7 @@ export const LASHA_HOME_COPY = {
     metricsTagline: ["MACHEN SIE", "IHR NETZWERK", "ZUR", "CHANCE"],
     aboutEyebrow: "ÜBER AIXESS",
     aboutTitle: ["VERBINDUNGEN", "WERDEN CHANCEN."],
-    aboutBody: "AiXESS verbindet Makler und ambitionierte Fachleute mit ausgewählten internationalen Immobilienchancen – mit den Projekten, Materialien und der Unterstützung, um aus dem eigenen Netzwerk Geschäft zu machen.",
+    aboutBody: "AIXESS verbindet Makler und ambitionierte Fachleute mit ausgewählten internationalen Immobilienchancen – mit den Projekten, Materialien und der Unterstützung, um aus dem eigenen Netzwerk Geschäft zu machen.",
     aboutPoints: ["AUSGEWÄHLTE ANGEBOTE", "MAKLER-SUPPORT", "VERKAUFSFERTIGE MATERIALIEN", "INTERNATIONALER ZUGANG"],
     projectEyebrow: "Chance in einem aufstrebenden Markt",
     projectTitle: "AKTUELLES PROJEKT IN BATUMI",
@@ -79,7 +79,7 @@ export const LASHA_HOME_COPY = {
     metricsTagline: ["ZAMIEŃ SWOJĄ", "SIEĆ", "W", "SZANSĘ"],
     aboutEyebrow: "O AIXESS",
     aboutTitle: ["ZAMIEŃ KONTAKTY", "W MOŻLIWOŚCI."],
-    aboutBody: "AiXESS łączy pośredników i ambitnych profesjonalistów z wybranymi międzynarodowymi okazjami na rynku nieruchomości — zapewniając projekty, materiały i wsparcie potrzebne, by zamienić sieć kontaktów w biznes.",
+    aboutBody: "AIXESS łączy pośredników i ambitnych profesjonalistów z wybranymi międzynarodowymi okazjami na rynku nieruchomości — zapewniając projekty, materiały i wsparcie potrzebne, by zamienić sieć kontaktów w biznes.",
     aboutPoints: ["WYBRANE OKAZJE", "WSPARCIE POŚREDNIKA", "MATERIAŁY GOTOWE DO SPRZEDAŻY", "DOSTĘP MIĘDZYNARODOWY"],
     projectEyebrow: "Okazja na wschodzącym rynku",
     projectTitle: "AKTUALNY PROJEKT W BATUMI",
@@ -109,7 +109,7 @@ export const LASHA_HOME_COPY = {
     metricsTagline: ["SPREMENITE SVOJO", "MREŽO", "V", "PRILOŽNOST"],
     aboutEyebrow: "O AIXESS",
     aboutTitle: ["POVEZAVE", "POSTANEJO PRILOŽNOSTI."],
-    aboutBody: "AiXESS povezuje posrednike in ambiciozne strokovnjake z izbranimi mednarodnimi nepremičninskimi priložnostmi — s projekti, gradivi in podporo, ki so potrebni, da mrežo spremenite v posel.",
+    aboutBody: "AIXESS povezuje posrednike in ambiciozne strokovnjake z izbranimi mednarodnimi nepremičninskimi priložnostmi — s projekti, gradivi in podporo, ki so potrebni, da mrežo spremenite v posel.",
     aboutPoints: ["IZBRANE PRILOŽNOSTI", "PODPORA POSREDNIKOM", "GRADIVA ZA PRODAJO", "MEDNARODNI DOSTOP"],
     projectEyebrow: "Priložnost na trgu v vzponu",
     projectTitle: "AKTUALNI PROJEKT V BATUMIJU",
@@ -139,7 +139,7 @@ export const LASHA_HOME_COPY = {
     metricsTagline: ["ПРЕВРАТИТЕ СВЯЗИ", "В", "НОВЫЕ", "ВОЗМОЖНОСТИ"],
     aboutEyebrow: "О AIXESS",
     aboutTitle: ["СВЯЗИ СТАНОВЯТСЯ", "ВОЗМОЖНОСТЯМИ."],
-    aboutBody: "AiXESS связывает брокеров и амбициозных профессионалов с избранными международными объектами недвижимости — предоставляя проекты, материалы и поддержку, чтобы превратить вашу сеть контактов в бизнес.",
+    aboutBody: "AIXESS связывает брокеров и амбициозных профессионалов с избранными международными объектами недвижимости — предоставляя проекты, материалы и поддержку, чтобы превратить вашу сеть контактов в бизнес.",
     aboutPoints: ["ИЗБРАННЫЕ ПРЕДЛОЖЕНИЯ", "ПОДДЕРЖКА БРОКЕРА", "ГОТОВЫЕ МАТЕРИАЛЫ", "МЕЖДУНАРОДНЫЙ ДОСТУП"],
     projectEyebrow: "Возможность на растущем рынке",
     projectTitle: "ТЕКУЩИЙ ПРОЕКТ В БАТУМИ",

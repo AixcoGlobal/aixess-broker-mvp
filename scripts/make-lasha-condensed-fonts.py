@@ -10,8 +10,12 @@ Usage: python3 scripts/make-lasha-condensed-fonts.py   (needs fonttools + brotli
 from pathlib import Path
 
 from fontTools.ttLib import TTFont
+from fontTools.pens.recordingPen import DecomposingRecordingPen
+from fontTools.pens.ttGlyphPen import TTGlyphPen
+from fontTools.varLib import instancer
 
 FONTS = Path(__file__).resolve().parent.parent / "public" / "fonts" / "lasha"
+SOURCES = Path(__file__).resolve().parent / "font-sources"
 
 # Oswald's cap height is 0.81 em against League Gothic's 0.74 em, so Cyrillic glyphs are
 # also scaled vertically to share one font-size, and horizontally by 0.686 relative to
@@ -25,15 +29,38 @@ BARLOW = {"latin": "barlow-condensed-latin-79f19b.woff2", "latin-ext": "barlow-c
 
 # family slug -> (League Gothic x-scale, Barlow x-scale or None)
 WIDTHS = {
-    "narrow": 0.55,   # hero headline, broker-access heading, 163 count
+    "narrow": 0.55,   # broker-access heading, 163 count
     "tall": 0.77,     # section headlines (about, Batumi, explorer, starting points)
     "display": 1.0,   # small card headings and eyebrows (Cyrillic only; Latin uses League Gothic)
 }
 NUM_TALL = 0.82      # project facts and explorer stats (Albireo's narrower numerals)
 
 
-def scale_font(src, dest, sx, sy, family):
-    font = TTFont(FONTS / src)
+# Lasha's hero headline uses a light Tusker cut. "Lasha Light" is Oswald (variable, OFL)
+# pinned at weight 350, condensed to the frame's line widths
+# and scaled vertically to League Gothic's cap height so every family shares one font-size.
+LIGHT_WEIGHT = 350
+LIGHT_X = 0.396
+LIGHT_Y = OSWALD_Y * 0.982  # Tusker light caps sit 2% shorter than League Gothic's
+
+
+def scale_font(src, dest, sx, sy, family, weight=None):
+    font = TTFont(src if isinstance(src, Path) else FONTS / src)
+    if weight is not None:
+        font = instancer.instantiateVariableFont(font, {"wght": weight})
+        # Oswald builds accents as composites positioned by anchors: flatten them first so
+        # scaling cannot misplace a diacritic.
+        glyf = font["glyf"]
+        for name in font.getGlyphOrder():
+            if glyf[name].isComposite():
+                pen = TTGlyphPen(font.getGlyphSet())
+                rec = DecomposingRecordingPen(font.getGlyphSet())
+                font.getGlyphSet()[name].draw(rec)
+                rec.replay(pen)
+                glyf[name] = pen.glyph()
+        for table in ("HVAR", "MVAR", "STAT"):
+            if table in font:
+                del font[table]
     glyf, hmtx = font["glyf"], font["hmtx"]
     for name in font.getGlyphOrder():
         glyph = glyf[name]
@@ -69,3 +96,7 @@ for slug, sx in WIDTHS.items():
 
 for subset, src in BARLOW.items():
     scale_font(src, f"lasha-num-tall-{subset}.woff2", NUM_TALL, 1.0, "Lasha Num Tall")
+
+for subset in ("latin", "latin-ext", "cyrillic", "cyrillic-ext"):
+    scale_font(SOURCES / f"oswald-variable-{subset}.woff2", f"lasha-light-{subset}.woff2",
+               LIGHT_X, LIGHT_Y, "Lasha Light", weight=LIGHT_WEIGHT)

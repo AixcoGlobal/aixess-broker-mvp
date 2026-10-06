@@ -14,6 +14,7 @@
   --l-sage: #9bb69e;
   --l-line: #cecece;
   --l-narrow: "Lasha Narrow", "League Gothic", "Arial Narrow", sans-serif;
+  --l-light: "Lasha Light", "Lasha Narrow", "Arial Narrow", sans-serif;
   --l-tall: "Lasha Tall", "League Gothic", "Arial Narrow", sans-serif;
   --l-display: "Lasha Display", "League Gothic", "Arial Narrow", sans-serif;
   --l-num: "Barlow Condensed", "Albireo Cond", "Arial Narrow", sans-serif;
@@ -133,13 +134,32 @@
   justify-items: start;
 }
 
+/* Wordmark: frame x 69–210, y 189–243, above the headline block that starts at 273.4. */
+.lasha-hero-wordmark {
+  position: absolute;
+  top: calc(-84.4 * var(--u));
+  left: calc(-1 * var(--u));
+  width: calc(141 * var(--u));
+  height: calc(54 * var(--u));
+  color: #000;
+}
+
 .lasha-hero h1 {
-  font-family: var(--l-narrow);
+  position: relative;
+  /* Oswald-based caps sit lower in the line box than Tusker's: nudge onto the frame's 284 cap line. */
+  top: calc(-11 * var(--u));
+  left: calc(-3 * var(--u));
+  font-family: var(--l-light);
   font-size: calc(147.3 * var(--u));
   line-height: calc(131 * var(--u));
   white-space: nowrap;
   color: #000;
 }
+
+/* Longer translations shrink to stay clear of the building (frame x ≈ 712). */
+.lasha-home .lasha-hero h1[data-fitted-heading] { width: calc(600 * var(--u)); }
+/* "FÜR" on the second line needs room for its umlaut under the first line. */
+.lasha-home:lang(de) .lasha-hero h1 { line-height: calc(152 * var(--u)); }
 
 .lasha-hero-copy p {
   margin-top: calc(4.8 * var(--u));
