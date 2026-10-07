@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { getBlockCameraPose, Reverance3D, syncCanvasResolution } from "./Reverance3D";
+import { getAdaptiveRenderScale, getBlockCameraPose, requestRender, Reverance3D, syncCanvasResolution } from "./Reverance3D";
 import {
   getFloorAtWorldPoint,
   getFloorWorldTransform,
@@ -49,6 +49,40 @@ describe("Reverance official 3D reconstruction", () => {
     expect(app.renderNextFrame).toBe(true);
     expect(syncCanvasResolution(app, canvas)).toBe(false);
     expect(app.setCanvasResolution).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders touch phones at a lighter backing scale while desktop keeps 2x", () => {
+    const originalMatchMedia = window.matchMedia;
+    const originalDpr = window.devicePixelRatio;
+    const originalWidth = window.innerWidth;
+    const originalHeight = window.innerHeight;
+    const setPointer = (coarse) => {
+      window.matchMedia = (query) => ({ matches: coarse && query === "(pointer: coarse)", addEventListener() {}, removeEventListener() {} });
+    };
+    try {
+      Object.defineProperty(window, "devicePixelRatio", { configurable: true, value: 3 });
+      Object.defineProperty(window, "innerWidth", { configurable: true, value: 390 });
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 844 });
+      setPointer(true);
+      expect(getAdaptiveRenderScale(390, 844)).toBe(1.25);
+      setPointer(false);
+      expect(getAdaptiveRenderScale(390, 844)).toBe(1.5);
+      Object.defineProperty(window, "innerWidth", { configurable: true, value: 1440 });
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 900 });
+      expect(getAdaptiveRenderScale(720, 700)).toBe(2);
+    } finally {
+      window.matchMedia = originalMatchMedia;
+      Object.defineProperty(window, "devicePixelRatio", { configurable: true, value: originalDpr });
+      Object.defineProperty(window, "innerWidth", { configurable: true, value: originalWidth });
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: originalHeight });
+    }
+  });
+
+  it("asks the on-demand renderer for frames through a durable event", () => {
+    const app = { renderNextFrame: false, fire: vi.fn() };
+    requestRender(app);
+    expect(app.renderNextFrame).toBe(true);
+    expect(app.fire).toHaveBeenCalledWith("aixess:render-request");
   });
 
   it("uses a distinct front-facing camera pose for each building block", () => {

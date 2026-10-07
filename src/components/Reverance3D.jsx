@@ -79,9 +79,22 @@ const PINCH_ZOOM_DEGREES_PER_LOG_UNIT = 10;
 const FOV_TWEEN_RATE = 16;
 const FOV_TWEEN_EPSILON = 0.01;
 const RENDER_SCALE_MAX = 2;
+// Phones are fill-rate bound: every Gaussian is a blended quad, so the backing
+// buffer size dominates GPU cost while the page scrolls. Touch phones render at
+// 1.25x (still above CSS resolution, so edges stay clean); small fine-pointer
+// windows and touch tablets keep the previous 1.5x cap; desktop keeps 2x.
 const RENDER_SCALE_MOBILE_MAX = 1.5;
+const RENDER_SCALE_PHONE_MAX = 1.25;
 const RENDER_MAX_DIMENSION = 1440;
 const MOBILE_RENDER_WIDTH = 480;
+const SPLAT_MIN_PIXEL_SIZE = 0.75;
+const SPLAT_MIN_PIXEL_SIZE_PHONE = 1;
+// On-demand rendering: after the last visual change (camera pose, uniforms,
+// resize, asset load) keep drawing this long so the asynchronous splat sorter
+// and any damped camera motion land on screen, then let the GPU idle.
+const RENDER_TAIL_MS = 600;
+const RENDER_TAIL_LOADING_MS = 1500;
+const POSE_EPSILON = 1e-6;
 const CANVAS_STYLE = { width: "100%", height: "100%" };
 const SPLAT_DEVICE_TYPES = [DEVICETYPE_WEBGL2, DEVICETYPE_WEBGPU];
 const GRAPHICS_OPTIONS = {
@@ -279,13 +292,60 @@ function floorName(number, t) {
   return `${t("floorLabelPrefix")} ${String(number).padStart(2, "0")}`;
 }
 
-function getAdaptiveRenderScale(width, height) {
+function isCoarsePointer() {
+  return typeof window !== "undefined"
+    && typeof window.matchMedia === "function"
+    && Boolean(window.matchMedia("(pointer: coarse)")?.matches);
+}
+
+// A touch device with a phone-sized viewport (either orientation).
+function isPhoneViewport() {
+  if (typeof window === "undefined" || !isCoarsePointer()) return false;
+  const shortest = Math.min(window.innerWidth || 0, window.innerHeight || 0);
+  return shortest > 0 && shortest <= MOBILE_RENDER_WIDTH;
+}
+
+export function getAdaptiveRenderScale(width, height) {
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
   const longest = Math.max(width, height);
   if (longest <= 0) return 1;
   const capScale = RENDER_MAX_DIMENSION / longest;
-  const mobileCap = width <= MOBILE_RENDER_WIDTH ? RENDER_SCALE_MOBILE_MAX : RENDER_SCALE_MAX;
-  return Math.min(Math.max(dpr, 1), mobileCap, capScale);
+  let deviceCap = RENDER_SCALE_MAX;
+  if (isPhoneViewport()) deviceCap = RENDER_SCALE_PHONE_MAX;
+  else if (width <= MOBILE_RENDER_WIDTH || isCoarsePointer()) deviceCap = RENDER_SCALE_MOBILE_MAX;
+  return Math.min(Math.max(dpr, 1), deviceCap, capScale);
+}
+
+let splatPrefetch = null;
+
+/**
+ * Warms the HTTP cache with the splat bundle during idle time so mounting the
+ * explorer mid-scroll does not also have to wait on an 8.5 MB download.
+ */
+export function prefetchReveranceSplat() {
+  if (splatPrefetch || typeof window === "undefined" || typeof window.fetch !== "function") return splatPrefetch;
+  splatPrefetch = window.fetch(SPLAT_URL, { credentials: "same-origin", priority: "low" })
+    .then((response) => (response.ok ? response.arrayBuffer() : null))
+    .then(() => true)
+    .catch(() => {
+      splatPrefetch = null;
+      return false;
+    });
+  return splatPrefetch;
+}
+
+const RENDER_REQUEST_EVENT = "aixess:render-request";
+
+/**
+ * Asks the on-demand renderer for fresh frames. `renderNextFrame` alone is not
+ * reliable here: <Application> re-applies its default props on every React
+ * render, which can clear the flag before the next tick, so the governor also
+ * listens for this event and keeps a short render tail.
+ */
+export function requestRender(app) {
+  if (!app) return;
+  app.renderNextFrame = true;
+  app.fire?.(RENDER_REQUEST_EVENT);
 }
 
 export function syncCanvasResolution(app, canvas) {
@@ -296,7 +356,7 @@ export function syncCanvasResolution(app, canvas) {
   const height = Math.max(1, Math.round(bounds.height * scale));
   if (canvas.width === width && canvas.height === height) return false;
   app.setCanvasResolution(RESOLUTION_FIXED, width, height);
-  app.renderNextFrame = true;
+  requestRender(app);
   return true;
 }
 
@@ -439,7 +499,7 @@ function RenderQuality() {
 
     gsplat.radialSorting = true;
     gsplat.antiAlias = true;
-    gsplat.minPixelSize = 0.75;
+    gsplat.minPixelSize = isPhoneViewport() ? SPLAT_MIN_PIXEL_SIZE_PHONE : SPLAT_MIN_PIXEL_SIZE;
     gsplat.dataFormat = GSPLATDATA_LARGE;
     if (app.graphicsDevice.isWebGPU) {
       gsplat.minContribution = 2;
@@ -468,26 +528,113 @@ function RenderQuality() {
   return null;
 }
 
-function VisibilityGovernor() {
+/**
+ * Renders on demand. The app still ticks every animation frame (scripts,
+ * input, camera damping), but a frame is only drawn while the canvas is on
+ * screen and something visible changed: the camera pose or projection, the
+ * backing size, a component asking for `renderNextFrame` (uniform updates,
+ * resizes, device restore), a fresh splat sort result, or a short tail after
+ * any of those. Once the settled camera is still, page scrolling leaves the
+ * GPU idle instead of redrawing an identical 8.5 MB splat every frame.
+ */
+function RenderGovernor({ splatReady }) {
   const app = useApp();
+  const splatReadyRef = useRef(splatReady);
+  const keepAliveRef = useRef(null);
 
   useLayoutEffect(() => {
     const canvas = app.graphicsDevice.canvas;
-    if (!canvas || !("IntersectionObserver" in window)) return undefined;
+    const now = () => window.performance?.now?.() ?? Date.now();
+    const lastPose = new Float64Array(10).fill(Number.NaN);
+    let visible = true;
+    let sortArrived = false;
+    let renderUntil = now() + RENDER_TAIL_LOADING_MS;
 
-    app.autoRender = true;
+    const keepAlive = (duration = RENDER_TAIL_MS) => {
+      renderUntil = Math.max(renderUntil, now() + duration);
+    };
+    keepAliveRef.current = keepAlive;
 
-    const observer = new IntersectionObserver(([entry]) => {
-      app.autoRender = entry.isIntersecting;
-      if (entry.isIntersecting) app.renderNextFrame = true;
-    }, { threshold: 0 });
+    const poseChanged = () => {
+      const cameras = app.systems.camera?.cameras;
+      const camera = cameras?.[0];
+      if (!camera?.entity) return false;
+      const position = camera.entity.getPosition();
+      const rotation = camera.entity.getRotation();
+      const next = [
+        position.x, position.y, position.z,
+        rotation.x, rotation.y, rotation.z, rotation.w,
+        camera.fov, app.graphicsDevice.width, app.graphicsDevice.height,
+      ];
+      let changed = false;
+      for (let index = 0; index < next.length; index += 1) {
+        if (!(Math.abs(next[index] - lastPose[index]) <= POSE_EPSILON)) {
+          changed = true;
+          break;
+        }
+      }
+      if (changed) lastPose.set(next);
+      return changed;
+    };
 
-    observer.observe(canvas);
+    // `framerender` fires after every update handler (scroll camera, orbit
+    // damping, block-switch tween) and right before the engine decides
+    // whether to draw, so the decision always sees this frame's pose.
+    const handleFrameRender = () => {
+      if (!visible) {
+        app.renderNextFrame = false;
+        return;
+      }
+      if (app.renderNextFrame) keepAlive();
+      if (!splatReadyRef.current) keepAlive(RENDER_TAIL_LOADING_MS);
+      if (poseChanged()) keepAlive();
+      if (sortArrived || now() < renderUntil) app.renderNextFrame = true;
+      sortArrived = false;
+    };
+    // A finished worker sort is applied on the next draw; show it once.
+    const handleSorted = () => {
+      sortArrived = true;
+    };
+    const handleFrameReady = (camera, layer, ready, loadingCount) => {
+      if (!ready || loadingCount > 0) keepAlive();
+    };
+
+    const handleRenderRequest = () => keepAlive();
+
+    app.autoRender = false;
+    app.renderNextFrame = true;
+    app.on("framerender", handleFrameRender);
+    app.on(RENDER_REQUEST_EVENT, handleRenderRequest);
+    app.scene?.on?.("gsplat:sorted", handleSorted);
+    app.systems.gsplat?.on?.("frame:ready", handleFrameReady);
+
+    let observer = null;
+    if (canvas && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) {
+          lastPose.fill(Number.NaN);
+          keepAlive();
+        }
+      }, { threshold: 0 });
+      observer.observe(canvas);
+    }
+
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
+      app.off("framerender", handleFrameRender);
+      app.off(RENDER_REQUEST_EVENT, handleRenderRequest);
+      app.scene?.off?.("gsplat:sorted", handleSorted);
+      app.systems?.gsplat?.off?.("frame:ready", handleFrameReady);
+      keepAliveRef.current = null;
       app.autoRender = true;
     };
   }, [app]);
+
+  useEffect(() => {
+    splatReadyRef.current = splatReady;
+    keepAliveRef.current?.(RENDER_TAIL_LOADING_MS);
+  }, [splatReady]);
 
   return null;
 }
@@ -500,7 +647,7 @@ function DeviceLossGuard({ onDeviceLost, onDeviceRestored }) {
     if (!device?.on) return undefined;
     const handleLost = () => onDeviceLost();
     const handleRestored = () => {
-      app.renderNextFrame = true;
+      requestRender(app);
       onDeviceRestored();
     };
     device.on("devicelost", handleLost);
@@ -727,7 +874,11 @@ function HorizonEnvironment() {
     return nextMaterial;
   }, [asset]);
 
-  useEffect(() => () => material?.destroy(), [material]);
+  const app = useApp();
+  useEffect(() => {
+    if (material) requestRender(app);
+    return () => material?.destroy();
+  }, [app, material]);
   if (!material) return null;
 
   return (
@@ -740,6 +891,32 @@ function HorizonEnvironment() {
       <Render type="sphere" material={material} castShadows={false} receiveShadows={false} />
     </Entity>
   );
+}
+
+// If the idle prefetch is still downloading when the explorer mounts, wait for
+// it so the loader reads the cached bundle instead of downloading it twice.
+function useSplatPrefetchSettled() {
+  const [settled, setSettled] = useState(() => !splatPrefetch);
+  useEffect(() => {
+    if (settled || !splatPrefetch) {
+      if (!settled) setSettled(true);
+      return undefined;
+    }
+    let active = true;
+    splatPrefetch.finally(() => {
+      if (active) setSettled(true);
+    });
+    return () => {
+      active = false;
+    };
+  }, [settled]);
+  return settled;
+}
+
+function SplatAssetAfterPrefetch({ onStateChange }) {
+  const prefetchSettled = useSplatPrefetchSettled();
+  if (!prefetchSettled) return null;
+  return <SplatAsset onStateChange={onStateChange} />;
 }
 
 function SplatAsset({ onStateChange }) {
@@ -881,7 +1058,7 @@ function FloorHighlight({ cameraEntityRef, blockId, floorNumber, splatReady }) {
     // mark it dirty, so the scalar enabled flag otherwise stays at its initial
     // zero value even though picking and the tooltip continue to update.
     material.update();
-    app.renderNextFrame = true;
+    requestRender(app);
   }, [app, blockId, floorNumber]);
 
   // Runs on `prerender`, after every `update` handler has finished moving the
@@ -973,7 +1150,7 @@ function SplatScene({
       />
       <HorizonEnvironment />
       <Entity name="Official Project Reverance reconstruction" rotation={REVERANCE_SPLAT_ROTATION}>
-        <SplatAsset onStateChange={onStateChange} />
+        <SplatAssetAfterPrefetch onStateChange={onStateChange} />
       </Entity>
       <FloorPicker cameraEntityRef={cameraEntityRef} pickerRef={pickerRef} />
       <FloorHighlight
@@ -982,7 +1159,7 @@ function SplatScene({
         floorNumber={interactive ? hoveredFloor ?? highlightedFloor : null}
         splatReady={splatReady}
       />
-      <VisibilityGovernor />
+      <RenderGovernor splatReady={splatReady} />
       <DeviceLossGuard onDeviceLost={onDeviceLost} onDeviceRestored={onDeviceRestored} />
     </>
   );
@@ -1539,6 +1716,10 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
             deviceTypes={SPLAT_DEVICE_TYPES}
             graphicsDeviceOptions={GRAPHICS_OPTIONS}
             maxDeltaTime={0.05}
+            // <Application> re-applies every prop on each render; without this
+            // its default autoRender=true would silently re-enable continuous
+            // drawing. RenderGovernor decides which frames are drawn.
+            autoRender={false}
           >
             <RenderQuality />
             <SplatScene
