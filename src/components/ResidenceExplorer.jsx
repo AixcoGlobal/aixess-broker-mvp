@@ -26,9 +26,71 @@ import { FittedHeading } from "./FittedHeading.jsx";
 import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
 import "./ResidenceExplorer.css";
 
-const Reverance3D = lazy(() => import("./Reverance3D").then((module) => ({
+const loadReverance3D = () => import("./Reverance3D");
+const Reverance3D = lazy(() => loadReverance3D().then((module) => ({
   default: module.Reverance3D,
 })));
+
+// Mount the WebGL explorer well before it scrolls into view so context
+// creation, shader compilation and splat decoding finish while the visitor is
+// still reading the sections above, not during the scroll that reveals it.
+const MODEL_MOUNT_ROOT_MARGIN = "150% 0px";
+const MODEL_PREFETCH_DELAY_MS = 2500;
+
+function canPrefetchModel() {
+  if (typeof window === "undefined") return false;
+  const connection = window.navigator?.connection;
+  if (connection?.saveData) return false;
+  if (/(^|-)2g$/.test(connection?.effectiveType || "")) return false;
+  if (typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-data: reduce)")?.matches) return false;
+  return true;
+}
+
+/**
+ * After the page has loaded and the main thread is idle, download the 3D
+ * module and the splat bundle at low priority. Mounting the model later then
+ * reads both from cache instead of competing with the visitor's scroll.
+ */
+function useIdleModelPrefetch(enabled) {
+  useEffect(() => {
+    if (!enabled || !canPrefetchModel()) return undefined;
+    let cancelled = false;
+    let timer = 0;
+    let idleHandle = 0;
+
+    const prefetch = () => {
+      idleHandle = 0;
+      if (cancelled) return;
+      loadReverance3D()
+        .then((module) => {
+          if (!cancelled) module.prefetchReveranceSplat?.();
+        })
+        .catch(() => {});
+    };
+    const scheduleIdle = () => {
+      timer = 0;
+      if (cancelled) return;
+      if (typeof window.requestIdleCallback === "function") {
+        idleHandle = window.requestIdleCallback(prefetch, { timeout: 4000 });
+      } else {
+        prefetch();
+      }
+    };
+    const start = () => {
+      if (!timer) timer = window.setTimeout(scheduleIdle, MODEL_PREFETCH_DELAY_MS);
+    };
+
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("load", start);
+      if (timer) window.clearTimeout(timer);
+      if (idleHandle) window.cancelIdleCallback?.(idleHandle);
+    };
+  }, [enabled]);
+}
 
 function pointsToString(points) {
   return (points || []).map((point) => `${point.x},${point.y}`).join(" ");
@@ -127,33 +189,67 @@ function useScrollStage(sectionRef) {
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
+    // Scroll fires for the whole page, not just the explorer. Remember what was
+    // last written so unchanged CSS variables and React state are not touched:
+    // each redundant write would invalidate the sticky stage's styles and force
+    // the next scroll event's measurement to recalculate layout.
+    const written = {
+      progress: "",
+      filterProgress: "",
+      settled: null,
+      interactive: null,
+      zoomable: null,
+      filterActive: null,
+    };
 
     const render = () => {
       frame = 0;
       const bounds = section.getBoundingClientRect();
-      const height = Math.max(section.offsetHeight - window.innerHeight, 1);
-      const progress = reducedMotion.matches
+      const viewportHeight = window.innerHeight;
+      const height = Math.max(section.offsetHeight - viewportHeight, 1);
+      const reduced = reducedMotion.matches;
+      const progress = reduced
         ? 1
         : clamp(-bounds.top / height);
-      const isSettled = reducedMotion.matches || progress >= EXPLORER_SETTLE_PROGRESS;
-      const isInteractive = reducedMotion.matches
-        || (bounds.top < window.innerHeight && bounds.bottom > 0);
-      const isZoomable = reducedMotion.matches
+      const isSettled = reduced || progress >= EXPLORER_SETTLE_PROGRESS;
+      const isInteractive = reduced
+        || (bounds.top < viewportHeight && bounds.bottom > 0);
+      const isZoomable = reduced
         || progress > 0.001
         || isInteractive;
       const filterTravel = height * EXPLORER_SETTLE_PROGRESS;
-      const filterProgress = reducedMotion.matches
+      const filterProgress = reduced
         ? 1
         : clamp(-bounds.top / filterTravel);
-      const isFilterActive = reducedMotion.matches || filterProgress >= 0.5;
+      const isFilterActive = reduced || filterProgress >= 0.5;
 
       progressRef.current = progress;
-      section.style.setProperty("--explorer-progress", progress.toFixed(4));
-      section.style.setProperty("--filter-progress", filterProgress.toFixed(4));
-      setSettled((current) => (current === isSettled ? current : isSettled));
-      setInteractive((current) => (current === isInteractive ? current : isInteractive));
-      setZoomable((current) => (current === isZoomable ? current : isZoomable));
-      setFilterActive((current) => (current === isFilterActive ? current : isFilterActive));
+      const progressValue = progress.toFixed(4);
+      if (progressValue !== written.progress) {
+        written.progress = progressValue;
+        section.style.setProperty("--explorer-progress", progressValue);
+      }
+      const filterProgressValue = filterProgress.toFixed(4);
+      if (filterProgressValue !== written.filterProgress) {
+        written.filterProgress = filterProgressValue;
+        section.style.setProperty("--filter-progress", filterProgressValue);
+      }
+      if (isSettled !== written.settled) {
+        written.settled = isSettled;
+        setSettled(isSettled);
+      }
+      if (isInteractive !== written.interactive) {
+        written.interactive = isInteractive;
+        setInteractive(isInteractive);
+      }
+      if (isZoomable !== written.zoomable) {
+        written.zoomable = isZoomable;
+        setZoomable(isZoomable);
+      }
+      if (isFilterActive !== written.filterActive) {
+        written.filterActive = isFilterActive;
+        setFilterActive(isFilterActive);
+      }
     };
 
     const schedule = () => {
@@ -1065,6 +1161,7 @@ export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, 
     typeof window === "undefined" || !("IntersectionObserver" in window)
   ));
   const { filterActive, interactive, settled, zoomable, progressRef } = useScrollStage(sectionRef);
+  useIdleModelPrefetch(!canMountModel);
   const blocks = useMemo(() => getSnapshotBlocks(snapshot), [snapshot]);
 
   useEffect(() => {
@@ -1082,7 +1179,7 @@ export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, 
       if (!entries.some((entry) => entry.isIntersecting)) return;
       setCanMountModel(true);
       observer.disconnect();
-    }, { rootMargin: "160px 0px" });
+    }, { rootMargin: MODEL_MOUNT_ROOT_MARGIN });
 
     observer.observe(modelHostRef.current);
     return () => observer.disconnect();

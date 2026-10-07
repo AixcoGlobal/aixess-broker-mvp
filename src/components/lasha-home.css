@@ -527,10 +527,6 @@
 :is(.lasha-home, .lasha-page) .mobile-register { border-color: var(--l-blue); background: var(--l-blue); }
 :is(.lasha-home, .lasha-page) .button-primary:hover { border-color: #1b45b0; background: #1b45b0; }
 
-@media (max-width: 479px) {
-  :is(.lasha-home, .lasha-page) .project-card-actions .lasha-button { font-size: max(calc(15.3 * var(--u)), 5px); letter-spacing: 0; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .lasha-button { transition: none; }
 }
@@ -758,3 +754,112 @@
 }
 :is(.lasha-home, .lasha-page) .floor-modal-header h2 { font-size: clamp(2.4rem, 3.6vw, 3.6rem); }
 :is(.lasha-home, .lasha-page) :is(.unit-detail h3, .inventory-intro h3, .explorer-error h3) { font-size: 2.1rem; }
+
+/* Phones and small tablets: Lasha drew only the 1440 desktop frame, and scaling it down
+   to a 390px screen leaves 6–7px text. Below 900px the sections keep her colours, type
+   and order but restack into a readable single column (Kemo, October 7). */
+@media (max-width: 899px) {
+  .lasha-home .lasha-eyebrow { font-size: 0.85rem; }
+  .lasha-home .lasha-eyebrow::after { flex-basis: 3.5rem; margin-left: 0.8rem; }
+  .lasha-home .lasha-button { gap: 0.75rem; font-size: 0.8rem; letter-spacing: 0.02em; }
+  .lasha-home .lasha-arrow { height: 0.5rem; }
+
+  /* Hero: full-height photo, copy on the sky with a soft wash so black type stays legible. */
+  .lasha-hero-frame {
+    aspect-ratio: auto;
+    height: clamp(36rem, 100svh, 52rem);
+  }
+  .lasha-hero-media { object-position: 34% 50%; }
+  .lasha-hero-frame::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(226, 236, 247, 0) 0, rgba(226, 236, 247, 0.78) 16%, rgba(226, 236, 247, 0.62) 46%, rgba(226, 236, 247, 0) 70%);
+    content: "";
+  }
+  .lasha-hero-copy { top: 7.4rem; right: 1.25rem; left: 1.25rem; }
+  .lasha-hero-wordmark {
+    position: static;
+    width: 5.4rem;
+    height: 2.07rem;
+    margin-bottom: 1.1rem;
+  }
+  .lasha-hero h1 { top: 0; left: 0; font-size: 5.8rem; line-height: 0.9; }
+  .lasha-home .lasha-hero h1[data-fitted-heading] { width: 100%; }
+  .lasha-home:lang(de) .lasha-hero h1 { line-height: 1; }
+  .lasha-hero-copy p { margin-top: 1.1rem; max-width: 21rem; font-size: 1rem; line-height: 1.38; }
+  .lasha-hero-cta { gap: 0.6rem; margin-top: 1.4rem; font-size: 0.95rem; letter-spacing: 0; }
+  .lasha-hero-cta .lasha-arrow { width: 1.5rem; height: 0.7rem; }
+
+  /* Metrics: two by two, the tagline takes the fourth cell. */
+  .lasha-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 0; }
+  .lasha-metrics > div { padding: 1.6rem 1.1rem 1.7rem 1.25rem; border-bottom: 1px solid #4f5152; }
+  .lasha-metrics > div:nth-child(2) { border-right: 0; }
+  /* Two-line labels ("REAL ESTATE / TRANSACTION") keep the values on one baseline. */
+  .lasha-home .lasha-metrics-label { min-height: 2.5em; font-size: 0.7rem; letter-spacing: 0.02em; line-height: 1.25; }
+  /* Long German compounds hyphenate instead of splitting at an arbitrary letter. */
+  .lasha-home :is(.lasha-metrics-label, .lasha-metrics-note) { overflow-wrap: break-word; hyphens: auto; }
+  .lasha-home .lasha-metrics-value { margin-top: 0.55rem; font-size: min(3.1rem, calc(17rem / var(--chars, 6))); }
+  .lasha-home .lasha-metrics-value::after { width: 3.5rem; margin-top: 0.8rem; }
+  .lasha-home .lasha-metrics-note { max-width: none; margin-top: 0.75rem; font-size: 0.82rem; line-height: 1.35; }
+  .lasha-home .lasha-metrics-tagline {
+    align-content: center;
+    padding: 1.6rem 1.1rem 1.7rem 1.25rem;
+    border-bottom: 1px solid #4f5152;
+    font-size: 2.35rem;
+    line-height: 0.95;
+  }
+
+  /* About: photo above the blue panel. */
+  .lasha-about { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .lasha-about-media { height: auto; aspect-ratio: 4 / 3; }
+  .lasha-about-panel { padding: 2.6rem 1.25rem 2.8rem; }
+  .lasha-eyebrow-lead { font-size: 0.74rem; }
+  .lasha-home .lasha-eyebrow-lead::after { flex-basis: 3rem; margin: 0 0.7rem 0 0; }
+  .lasha-about-panel h2 { margin-top: 1.1rem; font-size: 4.6rem; line-height: 0.9; }
+  .lasha-about-panel h2::after { width: 100%; margin-top: 1.3rem; }
+  .lasha-home .lasha-about-body { max-width: 34rem; margin-top: 1.2rem; font-size: 1rem; line-height: 1.45; }
+  .lasha-home .lasha-about-points { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem 1rem; margin-top: 2.2rem; }
+  .lasha-about-points::before { content: none; }
+  .lasha-about-points li { align-content: start; row-gap: 0.45rem; font-size: 0.74rem; line-height: 1.25; }
+  .lasha-about-points li:nth-child(n + 3) { padding-top: 1.3rem; border-top: 1px solid rgba(244, 244, 241, 0.25); }
+  .lasha-about-points .lasha-index { font-size: 1.7rem; }
+
+  /* Starting points: one card per row. */
+  .lasha-starting { padding-top: 3.6rem; }
+  .lasha-starting > .lasha-eyebrow,
+  .lasha-starting > h2 { margin-inline: 1.25rem; }
+  .lasha-starting > .lasha-eyebrow { font-size: 1.15rem; line-height: 1.1; }
+  .lasha-starting h2 { margin-top: 0.8rem; font-size: 3.9rem; line-height: 0.92; }
+  .lasha-starting h2 > span:first-child { max-width: none; }
+  .lasha-starting-grid {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    margin-top: 2.2rem;
+    padding: 0.6rem 1.25rem 0.8rem;
+  }
+  .lasha-starting-grid::after { right: 1.25rem; left: 1.25rem; }
+  .lasha-starting-grid article { padding: 1.4rem 0 1.5rem; }
+  .lasha-starting-grid article + article { border-top: 1px solid #bfc4c9; }
+  .lasha-starting-grid article + article::before { content: none; }
+  .lasha-starting-rule { gap: 0.8rem; }
+  .lasha-starting-rule .lasha-index { font-size: 1.7rem; }
+  .lasha-starting-rule .lasha-arrow { width: 7rem; }
+  .lasha-starting-grid h3 { margin-top: 0.9rem; font-size: 2.1rem; }
+  .lasha-starting-grid p { max-width: 24rem; margin-top: 0.45rem; font-size: 1rem; line-height: 1.4; }
+
+  /* Broker access: headline, count, then full-width actions. */
+  .lasha-access { grid-template-columns: minmax(0, 1fr); height: auto; padding-bottom: 3.2rem; }
+  .lasha-access-copy { padding: 3.2rem 1.25rem 0; }
+  .lasha-access .lasha-eyebrow { font-size: 0.8rem; }
+  .lasha-access h2 { margin-top: 0.7rem; font-size: 4.4rem; line-height: 0.9; }
+  .lasha-access-count::before,
+  .lasha-access-actions::before { content: none; }
+  .lasha-home .lasha-access-count { align-items: flex-end; gap: 0.8rem; padding: 1.4rem 1.25rem 0; }
+  .lasha-access-count strong { font-size: 8.5rem; line-height: 0.82; }
+  .lasha-access-count span,
+  .lasha-home:lang(sl) .lasha-access-count span { margin: 0 0 0.2rem; font-size: 2rem; line-height: 0.95; }
+  .lasha-access-actions { row-gap: 0.75rem; padding: 2rem 1.25rem 0; }
+  .lasha-access-actions .lasha-button { width: 100%; height: 3.5rem; padding: 0 1.1rem 0 1.25rem; }
+  .lasha-access-actions .lasha-arrow { width: 2.4rem; }
+}

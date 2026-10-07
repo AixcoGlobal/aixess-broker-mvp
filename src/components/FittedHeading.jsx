@@ -53,12 +53,16 @@ export function FittedHeading({ as: Tag = "h2", children, ...props }) {
     });
     observer?.observe(heading);
     window.addEventListener("resize", fit);
+    // fonts.ready can resolve before a headline face has even started loading, so a fit
+    // measured against the fallback face would stick: refit whenever a face finishes.
+    document.fonts?.addEventListener?.("loadingdone", scheduleFit);
     return () => {
       active = false;
       cancelAnimationFrame(frame);
       window.clearTimeout(fontTimeout);
       observer?.disconnect();
       window.removeEventListener("resize", fit);
+      document.fonts?.removeEventListener?.("loadingdone", scheduleFit);
     };
   }, [locale]);
 
