@@ -99,12 +99,12 @@
 /* Navigation over the photography: white labels, blue accents instead of orange. */
 :is(.lasha-home, .lasha-page) .site-header .desktop-nav { color: #fff; }
 :is(.lasha-home, .lasha-page) .site-header .desktop-nav button::after { background: #fff; }
-:is(.lasha-home, .lasha-page) .language-switcher-trigger svg:first-child { color: #fff; }
-:is(.lasha-home, .lasha-page) .language-switcher-trigger:is(:hover, :focus-visible) { border-color: #fff; }
-:is(.lasha-home, .lasha-page) .language-switcher-menu { border: 0; background: #f4f4f1; }
-:is(.lasha-home, .lasha-page) .language-switcher-menu button { color: #171a1d; }
-:is(.lasha-home, .lasha-page) .language-switcher-menu button:is(:hover, :focus-visible, .is-active) { background: rgba(37, 87, 214, 0.12); color: #171a1d; }
-:is(.lasha-home, .lasha-page) .language-switcher-menu button.is-active small { color: #2557d6; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-trigger svg:first-child { color: #fff; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-trigger:is(:hover, :focus-visible) { border-color: #fff; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-menu { border: 0; background: #f4f4f1; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-menu button { color: #171a1d; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-menu button:is(:hover, :focus-visible, .is-active) { background: rgba(37, 87, 214, 0.12); color: #171a1d; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-menu button.is-active small { color: #2557d6; }
 
 /* Shared type and controls. */
 .lasha-page .section-eyebrow {
@@ -554,25 +554,23 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: #2557d6; 
 /* Phone and tablet menu in Lasha's language (Kemo, 7 October 2026: the old black/orange
    drawer had to go). A full-height ink panel under the header, Morganite links with a blue
    marker on the current page, a paper language row and square blue/outline actions. The
-   hero is lifted above the following sections while it is open so nothing paints over it. */
-:is(.lasha-hero, .lasha-page-hero):has(.mobile-nav.is-open) { z-index: 60; }
+   panel lives at the end of <body> with its own logo and Close bar, so no section can cover it. */
 
 @media (max-width: 1220px) {
-  /* The panel covers the header too, so the logo and Close sit on ink rather than the photo. */
-  :is(.lasha-home, .lasha-page) .site-header :is(.brand, .menu-toggle) { position: relative; z-index: 41; }
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav {
+  .mobile-nav.lasha-menu {
+    z-index: 90;
     top: 0;
     bottom: 0;
     align-content: start;
     max-height: none;
-    padding: 5.6rem var(--menu-gutter, 1.25rem) calc(1.5rem + env(safe-area-inset-bottom));
+    padding: 0 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
     border-top: 0;
     border-bottom: 0;
     background: var(--l-ink);
     color: var(--l-paper);
   }
 
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav > button {
+  .mobile-nav.lasha-menu > button {
     position: relative;
     min-height: 4.1rem;
     padding: 0.35rem 0 0;
@@ -588,8 +586,8 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: #2557d6; 
     text-transform: uppercase;
   }
 
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav > button.is-active { padding-left: 1.1rem; color: #8fb0ff; }
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav > button.is-active::before {
+  .mobile-nav.lasha-menu > button.is-active { padding-left: 1.1rem; color: #8fb0ff; }
+  .mobile-nav.lasha-menu > button.is-active::before {
     position: absolute;
     top: 50%;
     left: 0;
@@ -600,8 +598,8 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: #2557d6; 
     transform: translateY(-40%);
   }
 
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .language-switcher { margin-top: 1.6rem; }
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .language-switcher-trigger {
+  .mobile-nav.lasha-menu .language-switcher { margin-top: 1.6rem; }
+  .mobile-nav.lasha-menu .language-switcher-trigger {
     min-height: 3.3rem;
     padding: 0 1rem;
     border: 1px solid rgba(244, 244, 241, 0.35);
@@ -611,9 +609,9 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: #2557d6; 
     font-size: 0.85rem;
     letter-spacing: 0.08em;
   }
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .language-switcher-menu { border: 0; background: var(--l-paper); }
+  .mobile-nav.lasha-menu .language-switcher-menu { border: 0; background: var(--l-paper); }
 
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav :is(.mobile-register, .mobile-login) {
+  .mobile-nav.lasha-menu :is(.mobile-register, .mobile-login) {
     justify-content: center;
     min-height: 3.4rem;
     margin-top: 0.75rem;
@@ -626,7 +624,23 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: #2557d6; 
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .mobile-register { margin-top: 1.4rem; border-color: var(--l-blue); background: var(--l-blue); }
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .mobile-register:hover { border-color: #1b45b0; background: #1b45b0; }
-  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .mobile-login:hover { background: var(--l-paper); color: var(--l-ink); }
+  .mobile-nav.lasha-menu .mobile-register { margin-top: 1.4rem; border-color: var(--l-blue); background: var(--l-blue); }
+  .mobile-nav.lasha-menu .mobile-register:hover { border-color: #1b45b0; background: #1b45b0; }
+  .mobile-nav.lasha-menu .mobile-login:hover { background: var(--l-paper); color: var(--l-ink); }
+
+  .mobile-nav.lasha-menu .lasha-menu-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 5.35rem;
+    margin-bottom: 0.4rem;
+  }
+  .mobile-nav.lasha-menu .lasha-menu-bar button { min-height: 2.8rem; border-bottom: 0; }
+  .mobile-nav.lasha-menu .lasha-menu-bar .menu-toggle { display: inline-flex; justify-content: center; border: 1px solid rgba(239, 239, 236, 0.75); }
+  body:has(.lasha-menu.is-open) { overflow: hidden; }
+}
+
+@media (max-width: 700px) {
+  .mobile-nav.lasha-menu { padding-inline: 1rem; }
+  .mobile-nav.lasha-menu .lasha-menu-bar { height: 4.75rem; }
 }

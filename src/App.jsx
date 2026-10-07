@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidation, clearFieldValidation } from "./i18n.jsx";
 import { FittedHeading } from "./components/FittedHeading.jsx";
@@ -94,7 +95,18 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
         {menuOpen ? t("close") : t("menu")}
       </button>
 
-      <div className={`mobile-nav ${menuOpen ? "is-open" : ""}`} id="mobile-navigation">
+      {/* Rendered at the end of <body> so no hero's clipping or stacking can hide part of it
+          (Kemo's iPhone cut the panel off at the bottom of the page photo). */}
+      {typeof document !== "undefined" && createPortal(
+      <div className={`mobile-nav lasha-menu ${menuOpen ? "is-open" : ""}`} id="mobile-navigation">
+        <div className="lasha-menu-bar">
+          <button className="brand" type="button" aria-label={t("homeAria")} tabIndex={menuOpen ? 0 : -1} onClick={() => navigate("home")}>
+            <img src="/assets/aixess-logo-white-cropped.webp" alt="AiXESS" width="2783" height="546" />
+          </button>
+          <button className="menu-toggle" type="button" aria-controls="mobile-navigation" aria-expanded={menuOpen} tabIndex={menuOpen ? 0 : -1} onClick={() => onToggleMenu(false)}>
+            {t("close")}
+          </button>
+        </div>
         {navItems.map(({ key, labelKey }) => (
           <button
             className={currentPage === key ? "is-active" : ""}
@@ -109,7 +121,8 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
         <LanguageSwitcher languageOpen={languageOpen} setLanguageOpen={setLanguageOpen} />
         <a className="mobile-register" href={workwiseBrokerUrl("register", locale)}>{t("register")}</a>
         <a className="mobile-login" href={workwiseBrokerUrl("login", locale)}>{t("login")}</a>
-      </div>
+      </div>,
+      document.body)}
     </header>
   );
 }
