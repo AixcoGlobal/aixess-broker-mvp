@@ -16,6 +16,8 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 
 - September 24 building switch: selecting A or B should visibly and smoothly orbit the camera to that block, in either direction, while preserving the accepted final views and immediate manual-orbit takeover. Honor reduced-motion preferences.
 
+- October 7 phone framing (Kemo: buildings should not be zoomed in by default on phone): portrait canvases narrower than 4:5 widen the default camera FOV (up to 60°) so their horizontal coverage matches the desktop framing; Reset View returns to that default and pinch zoom keeps 8° of extra zoom-out headroom. Desktop keeps the accepted 41.1° framing.
+
 - September 22 mobile explorer: the portrait 3D viewer must fill the available viewport as browser toolbars expand or collapse, with the canvas and residence dock following its full height. Do not leave an empty band below the model; preserve the accepted model, camera framing, floor controls and drawer.
 
 - September 21 audit follow-up: the newer aixess_1st_page.docx brief belongs on the actual homepage, not only AiXESS Advantage. Use its translated headline, introduction, follow-up, tagline and three starting points while retaining the approved visual direction, access CTAs and Residence Explorer. This supersedes the September 7 instruction to keep the older homepage copy.

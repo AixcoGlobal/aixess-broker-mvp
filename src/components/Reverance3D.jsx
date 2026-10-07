@@ -54,6 +54,13 @@ const HORIZON_URL = "/assets/reverance-3d/reverance-official-horizon.webp";
 const CAMERA_FOV = 41.09622780396063;
 const CAMERA_MIN_FOV = 31;
 const CAMERA_MAX_FOV = 62;
+// The accepted framing was tuned on the desktop half-width canvas (about 4:5).
+// A portrait phone canvas keeps the same vertical FOV and so crops the sides,
+// which reads as zoomed in: there the default widens until the horizontal
+// coverage matches desktop, capped to keep perspective natural.
+const CAMERA_REFERENCE_ASPECT = 0.8;
+const CAMERA_PORTRAIT_MAX_FOV = 60;
+const CAMERA_ZOOM_OUT_HEADROOM = 8;
 const CAMERA_TARGET = [-0.10454206208274158, 0.0008068618049380962, 0.10121364916726469];
 const CAMERA_START = [2.504352717259611, 0.014715904099223222, 2.7438049729703717];
 const CAMERA_END = [2.571008603437904, -0.010401810476404838, -2.4755136248454392];
@@ -408,15 +415,52 @@ function useReducedMotion() {
   return reducedMotion;
 }
 
+export function getDefaultFov(width, height) {
+  if (!(width > 0) || !(height > 0)) return CAMERA_FOV;
+  const aspect = width / height;
+  if (aspect >= CAMERA_REFERENCE_ASPECT) return CAMERA_FOV;
+  const halfWidth = Math.tan((CAMERA_FOV * Math.PI) / 360) * CAMERA_REFERENCE_ASPECT;
+  const fov = (Math.atan(halfWidth / aspect) * 360) / Math.PI;
+  return clamp(fov, CAMERA_FOV, CAMERA_PORTRAIT_MAX_FOV);
+}
+
+function getMaxFov(defaultFov) {
+  return Math.max(CAMERA_MAX_FOV, defaultFov + CAMERA_ZOOM_OUT_HEADROOM);
+}
+
+/** Tracks the default FOV for the model canvas's current shape. */
+function useDefaultFov(elementRef) {
+  const [defaultFov, setDefaultFov] = useState(CAMERA_FOV);
+  useLayoutEffect(() => {
+    const element = elementRef.current;
+    if (!element) return undefined;
+    const update = () => {
+      const { width, height } = element.getBoundingClientRect();
+      const fov = getDefaultFov(width, height);
+      // Round so sub-pixel toolbar jitter does not re-render the canvas.
+      const next = fov === CAMERA_FOV ? fov : Math.round(fov * 100) / 100;
+      setDefaultFov((current) => (current === next ? current : next));
+    };
+    update();
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(update);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [elementRef]);
+  return defaultFov;
+}
+
 /**
  * Smoothly eases the optical zoom toward its target so wheel notches glide
  * instead of stepping. Pinch input writes the value immediately because the
  * fingers already define the exact zoom the user expects.
  */
-function useCameraFov() {
-  const [fov, setFov] = useState(CAMERA_FOV);
-  const fovRef = useRef(CAMERA_FOV);
-  const targetRef = useRef(CAMERA_FOV);
+function useCameraFov(defaultFov = CAMERA_FOV) {
+  const [fov, setFov] = useState(defaultFov);
+  const fovRef = useRef(defaultFov);
+  const targetRef = useRef(defaultFov);
+  const maxFovRef = useRef(getMaxFov(defaultFov));
+  maxFovRef.current = getMaxFov(defaultFov);
   const frameRef = useRef(0);
   const lastTimeRef = useRef(0);
 
@@ -440,7 +484,7 @@ function useCameraFov() {
 
   const setTarget = useCallback((value, immediate = false) => {
     if (!Number.isFinite(value)) return;
-    const clamped = clamp(value, CAMERA_MIN_FOV, CAMERA_MAX_FOV);
+    const clamped = clamp(value, CAMERA_MIN_FOV, maxFovRef.current);
     targetRef.current = clamped;
     if (immediate) {
       if (frameRef.current) {
@@ -1243,12 +1287,14 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   const [hoverPoint, setHoverPoint] = useState(null);
   const [loadState, setLoadState] = useState({ status: "loading", progress: 0, error: null });
   const [deviceLost, setDeviceLost] = useState(false);
-  const { fov: cameraFov, setTarget: setFovTarget, adjustTarget: adjustFovTarget } = useCameraFov();
+  const modelRef = useRef(null);
+  const defaultFov = useDefaultFov(modelRef);
+  const { fov: cameraFov, setTarget: setFovTarget, adjustTarget: adjustFovTarget } = useCameraFov(defaultFov);
+  const userZoomedRef = useRef(false);
   const cameraEntityRef = useRef(null);
   const cameraRigRef = useRef(null);
   const manualCameraRef = useRef(false);
   const pickerRef = useRef(null);
-  const modelRef = useRef(null);
   const pointerStartRef = useRef(null);
   const touchPointersRef = useRef(new Map());
   const pinchDistanceRef = useRef(null);
@@ -1418,15 +1464,23 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
   useEffect(() => {
     if (interactive) return;
     manualCameraRef.current = false;
-    setFovTarget(CAMERA_FOV, true);
+    userZoomedRef.current = false;
+    setFovTarget(defaultFov, true);
     invalidateHoverPick();
     clearHover();
-  }, [clearHover, interactive, invalidateHoverPick, setFovTarget]);
+  }, [clearHover, defaultFov, interactive, invalidateHoverPick, setFovTarget]);
+
+  // Browser toolbars and rotation reshape the canvas: follow the new default
+  // framing unless the visitor has zoomed on purpose.
+  useEffect(() => {
+    if (!userZoomedRef.current) setFovTarget(defaultFov, true);
+  }, [defaultFov, setFovTarget]);
 
   useEffect(() => () => invalidateHoverPick(), [invalidateHoverPick]);
 
   const handleOpticalZoom = useCallback((delta, immediate = false) => {
     if (!zoomable) return;
+    userZoomedRef.current = true;
     adjustFovTarget(delta, immediate);
   }, [adjustFovTarget, zoomable]);
 
@@ -1680,10 +1734,11 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
     cameraRigRef.current?.setFloorGestureLocked(false);
     invalidateHoverPick();
     clearHover();
-    setFovTarget(CAMERA_FOV);
+    userZoomedRef.current = false;
+    setFovTarget(defaultFov);
     manualCameraRef.current = false;
     cameraRigRef.current?.resetView();
-  }, [clearHover, invalidateHoverPick, setFovTarget]);
+  }, [clearHover, defaultFov, invalidateHoverPick, setFovTarget]);
 
   const handleBlockSelect = useCallback((blockId) => {
     invalidateHoverPick();
