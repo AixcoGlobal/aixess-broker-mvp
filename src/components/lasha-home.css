@@ -781,7 +781,10 @@
   .lasha-home .lasha-hero h1[data-fitted-heading] { width: 100%; }
   .lasha-home:lang(de) .lasha-hero h1 { line-height: 1; }
   .lasha-hero-copy p { margin-top: 1.3rem; max-width: 23rem; font-size: 1.18rem; line-height: 1.38; }
-  .lasha-hero-cta { gap: 0.7rem; margin-top: 1.7rem; font-size: 1.1rem; font-weight: 600; letter-spacing: 0; }
+  /* Kemo, October 7: the blue text link was unreadable over the trees, so phones get a solid button. */
+  .lasha-hero-cta { justify-content: space-between; gap: 0.9rem; min-height: 3.4rem; margin-top: 1.7rem; padding: 0 1.1rem 0 1.25rem; background: var(--l-blue); color: var(--l-paper); font-size: 1rem; font-weight: 600; letter-spacing: 0.02em; }
+  .lasha-hero-cta:hover { background: #1b45b0; text-decoration: none; }
+  .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
   .lasha-hero-cta .lasha-arrow { width: 1.8rem; height: 0.8rem; }
 
   /* Metrics: two by two, the tagline takes the fourth cell. */
