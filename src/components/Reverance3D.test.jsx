@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { getAdaptiveRenderScale, getBlockCameraPose, requestRender, Reverance3D, syncCanvasResolution } from "./Reverance3D";
+import { getAdaptiveRenderScale, getBlockCameraPose, getDefaultFov, requestRender, Reverance3D, syncCanvasResolution } from "./Reverance3D";
 import {
   getFloorAtWorldPoint,
   getFloorWorldTransform,
@@ -302,5 +302,20 @@ describe("Reverance official 3D reconstruction", () => {
     expect(getFloorAtWorldPoint(center)).toBe(7);
     expect(getFloorAtWorldPoint(outsideFacade)).toBeNull();
     expect(getFloorAtWorldPoint(slabEdge)).toBeNull();
+  });
+});
+
+describe("getDefaultFov", () => {
+  it("keeps the accepted desktop framing on landscape and 4:5 canvases", () => {
+    expect(getDefaultFov(720, 900)).toBeCloseTo(41.096, 3);
+    expect(getDefaultFov(1440, 900)).toBeCloseTo(41.096, 3);
+  });
+
+  it("widens portrait phone canvases so the whole building fits, within the cap", () => {
+    const phone = getDefaultFov(390, 844);
+    expect(phone).toBeGreaterThan(50);
+    expect(phone).toBeLessThanOrEqual(60);
+    expect(getDefaultFov(600, 900)).toBeGreaterThan(41.1);
+    expect(getDefaultFov(600, 900)).toBeLessThan(phone);
   });
 });

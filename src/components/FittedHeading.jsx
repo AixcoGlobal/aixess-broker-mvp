@@ -54,8 +54,16 @@ export function FittedHeading({ as: Tag = "h2", children, ...props }) {
     observer?.observe(heading);
     window.addEventListener("resize", fit);
     // fonts.ready can resolve before a headline face has even started loading, so a fit
-    // measured against the fallback face would stick: refit whenever a face finishes.
+    // measured against the fallback face would stick. Refit whenever a face finishes:
+    // the loadingdone event, the heading's own face promise (Safari is unreliable with
+    // the event) and the lines' boxes changing when the web font swaps in all trigger it.
     document.fonts?.addEventListener?.("loadingdone", scheduleFit);
+    const lineObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(scheduleFit);
+    Array.from(heading.children).forEach((line) => lineObserver?.observe(line));
+    const style = getComputedStyle(heading);
+    document.fonts?.load?.(`${style.fontWeight} 64px ${style.fontFamily}`, heading.textContent)
+      .then(scheduleFit, () => {});
+    window.addEventListener("load", scheduleFit);
     return () => {
       active = false;
       cancelAnimationFrame(frame);
@@ -63,6 +71,8 @@ export function FittedHeading({ as: Tag = "h2", children, ...props }) {
       observer?.disconnect();
       window.removeEventListener("resize", fit);
       document.fonts?.removeEventListener?.("loadingdone", scheduleFit);
+      lineObserver?.disconnect();
+      window.removeEventListener("load", scheduleFit);
     };
   }, [locale]);
 

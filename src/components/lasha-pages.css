@@ -57,7 +57,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: linear-gradient(90deg, rgba(232, 240, 250, 0.72) 0%, rgba(232, 240, 250, 0.38) 42%, rgba(232, 240, 250, 0) 62%);
+  background: linear-gradient(90deg, rgba(232, 240, 250, 0.86) 0%, rgba(232, 240, 250, 0.62) 40%, rgba(232, 240, 250, 0) 68%);
   content: "";
   pointer-events: none;
 }
@@ -99,12 +99,12 @@
 /* Navigation over the photography: white labels, blue accents instead of orange. */
 :is(.lasha-home, .lasha-page) .site-header .desktop-nav { color: #fff; }
 :is(.lasha-home, .lasha-page) .site-header .desktop-nav button::after { background: #fff; }
-:is(.lasha-home, .lasha-page) .language-switcher-trigger svg:first-child { color: #fff; }
-:is(.lasha-home, .lasha-page) .language-switcher-trigger:is(:hover, :focus-visible) { border-color: #fff; }
-:is(.lasha-home, .lasha-page) .language-switcher-menu { border: 0; background: #f4f4f1; }
-:is(.lasha-home, .lasha-page) .language-switcher-menu button { color: #171a1d; }
-:is(.lasha-home, .lasha-page) .language-switcher-menu button:is(:hover, :focus-visible, .is-active) { background: rgba(37, 87, 214, 0.12); color: #171a1d; }
-:is(.lasha-home, .lasha-page) .language-switcher-menu button.is-active small { color: #2557d6; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-trigger svg:first-child { color: #fff; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-trigger:is(:hover, :focus-visible) { border-color: #fff; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-menu { border: 0; background: #f4f4f1; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-menu button { color: #171a1d; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-menu button:is(:hover, :focus-visible, .is-active) { background: rgba(37, 87, 214, 0.12); color: #171a1d; }
+:is(.lasha-home, .lasha-page, .lasha-menu) .language-switcher-menu button.is-active small { color: #2557d6; }
 
 /* Shared type and controls. */
 .lasha-page .section-eyebrow {
@@ -549,4 +549,98 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: #2557d6; 
     background: linear-gradient(180deg, rgba(232, 240, 250, 0.1) 0%, rgba(232, 240, 250, 0.78) 45%, rgba(232, 240, 250, 0.86) 100%);
   }
   .lasha-page-hero-copy { align-content: end; }
+}
+
+/* Phone and tablet menu in Lasha's language (Kemo, 7 October 2026: the old black/orange
+   drawer had to go). A full-height ink panel under the header, Morganite links with a blue
+   marker on the current page, a paper language row and square blue/outline actions. The
+   panel lives at the end of <body> with its own logo and Close bar, so no section can cover it. */
+
+@media (max-width: 1220px) {
+  .mobile-nav.lasha-menu {
+    z-index: 90;
+    top: 0;
+    bottom: 0;
+    align-content: start;
+    max-height: none;
+    padding: 0 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
+    border-top: 0;
+    border-bottom: 0;
+    background: var(--l-ink);
+    color: var(--l-paper);
+  }
+
+  .mobile-nav.lasha-menu > button {
+    position: relative;
+    min-height: 4.1rem;
+    padding: 0.35rem 0 0;
+    border: 0;
+    border-bottom: 1px solid rgba(244, 244, 241, 0.16);
+    background: none;
+    color: var(--l-paper);
+    font-family: var(--l-display);
+    font-size: 2.35rem;
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .mobile-nav.lasha-menu > button.is-active { padding-left: 1.1rem; color: #8fb0ff; }
+  .mobile-nav.lasha-menu > button.is-active::before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0.35rem;
+    height: 1.6rem;
+    background: var(--l-blue);
+    content: "";
+    transform: translateY(-40%);
+  }
+
+  .mobile-nav.lasha-menu .language-switcher { margin-top: 1.6rem; }
+  .mobile-nav.lasha-menu .language-switcher-trigger {
+    min-height: 3.3rem;
+    padding: 0 1rem;
+    border: 1px solid rgba(244, 244, 241, 0.35);
+    background: transparent;
+    color: var(--l-paper);
+    font-family: var(--l-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+  }
+  .mobile-nav.lasha-menu .language-switcher-menu { border: 0; background: var(--l-paper); }
+
+  .mobile-nav.lasha-menu :is(.mobile-register, .mobile-login) {
+    justify-content: center;
+    min-height: 3.4rem;
+    margin-top: 0.75rem;
+    padding: 0 1rem;
+    border: 1px solid var(--l-paper);
+    background: transparent;
+    color: var(--l-paper);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .mobile-nav.lasha-menu .mobile-register { margin-top: 1.4rem; border-color: var(--l-blue); background: var(--l-blue); }
+  .mobile-nav.lasha-menu .mobile-register:hover { border-color: #1b45b0; background: #1b45b0; }
+  .mobile-nav.lasha-menu .mobile-login:hover { background: var(--l-paper); color: var(--l-ink); }
+
+  .mobile-nav.lasha-menu .lasha-menu-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 5.35rem;
+    margin-bottom: 0.4rem;
+  }
+  .mobile-nav.lasha-menu .lasha-menu-bar button { min-height: 2.8rem; border-bottom: 0; }
+  .mobile-nav.lasha-menu .lasha-menu-bar .menu-toggle { display: inline-flex; justify-content: center; border: 1px solid rgba(239, 239, 236, 0.75); }
+  body:has(.lasha-menu.is-open) { overflow: hidden; }
+}
+
+@media (max-width: 700px) {
+  .mobile-nav.lasha-menu { padding-inline: 1rem; }
+  .mobile-nav.lasha-menu .lasha-menu-bar { height: 4.75rem; }
 }

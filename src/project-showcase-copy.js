@@ -1,11 +1,11 @@
-// Homepage hero headline from Lasha Bakashvili's frame, under the AIXESS wordmark.
-// Kemo, 6 October 2026: the homepage is an exact copy of Lasha's frame, texts included.
+// Homepage hero headline: "AIXESS TO MARKET", requested by Klem (5 October 2026 voice note)
+// and confirmed by Kemo on 7 October 2026. AIXESS stays as is; "TO MARKET" is translated per locale.
 export const HOME_HERO_LINES = {
-  en: ["DESIGNED FOR VALUE", "BUILT FOR TOMORROW"],
-  de: ["FÜR WERT GESTALTET", "FÜR MORGEN GEBAUT"],
-  pl: ["ZAPROJEKTOWANE DLA WARTOŚCI", "ZBUDOWANE NA JUTRO"],
-  sl: ["OBLIKOVANO ZA VREDNOST", "ZGRAJENO ZA PRIHODNOST"],
-  ru: ["СОЗДАНО ДЛЯ ЦЕННОСТИ", "ПОСТРОЕНО ДЛЯ БУДУЩЕГО"],
+  en: ["AIXESS", "TO MARKET"],
+  de: ["AIXESS", "ZUM MARKT"],
+  pl: ["AIXESS", "DO RYNKU"],
+  sl: ["AIXESS", "DO TRGA"],
+  ru: ["AIXESS", "К РЫНКУ"],
 };
 
 export const PROJECT_SHOWCASE_COPY = {

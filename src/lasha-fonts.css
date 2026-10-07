@@ -390,7 +390,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/morganite/Morganite-SemiBold.ttf") format("truetype");
+  src: url("/fonts/morganite/Morganite-ExtraBold.ttf") format("truetype");
   size-adjust: 105.15%;
   ascent-override: 109.8%;
   descent-override: 13.2%;
@@ -401,7 +401,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/morganite/Morganite-Medium.ttf") format("truetype");
+  src: url("/fonts/morganite/Morganite-Bold.ttf") format("truetype");
   size-adjust: 104%;
   ascent-override: 114.7%;
   descent-override: 27.8%;

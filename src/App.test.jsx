@@ -32,8 +32,8 @@ describe("AIXESS navigation pages", () => {
   it("puts the newer first-page brief on the homepage while retaining the existing structure", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("DESIGNED FOR VALUEBUILT FOR TOMORROW");
-    expect(container.querySelector(".lasha-hero-copy")).toContainElement(screen.getByRole("img", { name: "AIXESS" }));
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("AIXESSTO MARKET");
+    expect(container.querySelector(".lasha-hero-copy")).toContainElement(screen.getByRole("heading", { level: 1 }));
     expect(screen.getByText(LASHA_HOME_COPY.en.heroSubtitle.replace(/\s+/g, " "))).toBeInTheDocument();
     expect(screen.getByText(LASHA_HOME_COPY.en.aboutBody)).toBeInTheDocument();
     expect(screen.getByText(NETWORK_COPY.en.introTagline.replace(/\.$/, ""))).toBeInTheDocument();

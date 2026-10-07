@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidation, clearFieldValidation } from "./i18n.jsx";
 import { FittedHeading } from "./components/FittedHeading.jsx";
@@ -94,7 +95,18 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
         {menuOpen ? t("close") : t("menu")}
       </button>
 
-      <div className={`mobile-nav ${menuOpen ? "is-open" : ""}`} id="mobile-navigation">
+      {/* Rendered at the end of <body> so no hero's clipping or stacking can hide part of it
+          (Kemo's iPhone cut the panel off at the bottom of the page photo). */}
+      {typeof document !== "undefined" && createPortal(
+      <div className={`mobile-nav lasha-menu ${menuOpen ? "is-open" : ""}`} id="mobile-navigation">
+        <div className="lasha-menu-bar">
+          <button className="brand" type="button" aria-label={t("homeAria")} tabIndex={menuOpen ? 0 : -1} onClick={() => navigate("home")}>
+            <img src="/assets/aixess-logo-white-cropped.webp" alt="AiXESS" width="2783" height="546" />
+          </button>
+          <button className="menu-toggle" type="button" aria-controls="mobile-navigation" aria-expanded={menuOpen} tabIndex={menuOpen ? 0 : -1} onClick={() => onToggleMenu(false)}>
+            {t("close")}
+          </button>
+        </div>
         {navItems.map(({ key, labelKey }) => (
           <button
             className={currentPage === key ? "is-active" : ""}
@@ -109,7 +121,8 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
         <LanguageSwitcher languageOpen={languageOpen} setLanguageOpen={setLanguageOpen} />
         <a className="mobile-register" href={workwiseBrokerUrl("register", locale)}>{t("register")}</a>
         <a className="mobile-login" href={workwiseBrokerUrl("login", locale)}>{t("login")}</a>
-      </div>
+      </div>,
+      document.body)}
     </header>
   );
 }
@@ -299,24 +312,24 @@ function PageHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   return <SiteHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} pageHeader />;
 }
 
-function NetworkPage({ sections, pageTitleKey, ...props }) {
+function NetworkPage({ sections, pageTitleKey, heroImage, ...props }) {
   const { locale, t } = useLanguage();
   const c = NETWORK_COPY[locale];
   const title = pageTitleKey ? t(pageTitleKey) : sections[0] === "introduction" ? c.identity : c[sections[0]][0];
   return (
     <div className="route-page lasha-page">
-      <LashaPageHero header={<PageHeader {...props} />} eyebrow="AIXESS" title={title} />
+      <LashaPageHero header={<PageHeader {...props} />} eyebrow="AIXESS" title={title} image={heroImage} />
       <NetworkSections sections={sections} onOpenModal={props.onOpenModal} />
     </div>
   );
 }
 
 function WhyAixessPage(props) {
-  return <NetworkPage {...props} pageTitleKey="aixessAdvantage" sections={["introduction", "why", "advantage", "services", "backing", "closing"]} />;
+  return <NetworkPage {...props} pageTitleKey="aixessAdvantage" heroImage="crown" sections={["introduction", "why", "advantage", "services", "backing", "closing"]} />;
 }
 
 function BrokerAccessPage(props) {
-  return <NetworkPage {...props} pageTitleKey="brokerAccess" sections={["eligibility", "commercial", "process", "client", "closing"]} />;
+  return <NetworkPage {...props} pageTitleKey="brokerAccess" heroImage="entrance" sections={["eligibility", "commercial", "process", "client", "closing"]} />;
 }
 
 const insightDownloads = [
@@ -333,6 +346,7 @@ function InsightsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenM
         header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
         eyebrow={t("insightsEyebrow")}
         title={[t("makeMoveClear"), t("nextMoveClear")]}
+        image="facade"
         copy={t("resourcesCopy")}
       >
         <div className="page-cta-row">
@@ -390,6 +404,7 @@ function BrokerToolsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOp
         eyebrow="AIXESS"
         title={t("brokerTools")}
         titleAs="p"
+        image="aerial"
       />
       <main className="page-main">
         <Suspense fallback={<p role="status">{t("preparingInteractive")}</p>}>
@@ -409,6 +424,7 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
         header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
         eyebrow={t("projectReveranceBatumi")}
         title={[t("oneBuilding"), t("yourNextMove")]}
+        image="front"
         copy={t("residenceRouteCopy")}
       />
       <main className="page-main">
