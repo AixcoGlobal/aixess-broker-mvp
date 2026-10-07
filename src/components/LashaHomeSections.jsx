@@ -66,18 +66,31 @@ export function HomeHero({ children }) {
   );
 }
 
-// Inner pages open with the homepage's language: the site header floating over the
-// Reverance skyline, a blue eyebrow and an oversized light headline.
-export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", copy, children }) {
+// Each inner page opens on its own Reverance render (Kemo, 7 October 2026: not the same image everywhere).
+const PAGE_HERO_IMAGES = {
+  skyline: { src: "reverance-skyline-1440", srcSet: "reverance-skyline-720 720w, reverance-skyline-1440 1440w, reverance-skyline-2160 2160w", position: "72% 30%" },
+  crown: { src: "reverance-hero-1200", srcSet: "reverance-hero-600 600w, reverance-hero-1200 1200w", position: "70% 22%" },
+  entrance: { src: "reverance-entrance-1200", srcSet: "reverance-entrance-600 600w, reverance-entrance-1200 1200w", position: "62% 58%" },
+  front: { src: "reverance-front-1400", srcSet: "reverance-front-700 700w, reverance-front-1400 1400w", position: "70% 18%" },
+  facade: { src: "reverance-facade-1200", srcSet: "reverance-facade-600 600w, reverance-facade-1200 1200w", position: "60% 40%" },
+  aerial: { src: "reverance-aerial-1200", srcSet: "reverance-aerial-600 600w, reverance-aerial-1200 1200w", position: "70% 30%" },
+};
+const projectImage = (name) => `/assets/projects/${name}.webp`;
+
+// Inner pages open with the homepage's language: the site header floating over a
+// Reverance render, a blue eyebrow and an oversized headline.
+export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", copy, image = "skyline", children }) {
   const lines = Array.isArray(title) ? title : [title];
+  const media = PAGE_HERO_IMAGES[image] ?? PAGE_HERO_IMAGES.skyline;
   return (
     <section className="lasha-page-hero">
       {header}
       <img
         className="lasha-page-hero-media"
-        src="/assets/projects/reverance-skyline-1440.webp"
-        srcSet="/assets/projects/reverance-skyline-720.webp 720w, /assets/projects/reverance-skyline-1440.webp 1440w, /assets/projects/reverance-skyline-2160.webp 2160w"
+        src={projectImage(media.src)}
+        srcSet={media.srcSet.split(", ").map((entry) => `/assets/projects/${entry.replace(" ", ".webp ")}`).join(", ")}
         sizes="100vw"
+        style={{ objectPosition: media.position }}
         alt=""
         decoding="async"
       />

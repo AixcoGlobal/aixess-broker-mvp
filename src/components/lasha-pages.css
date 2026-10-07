@@ -57,7 +57,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: linear-gradient(90deg, rgba(232, 240, 250, 0.72) 0%, rgba(232, 240, 250, 0.38) 42%, rgba(232, 240, 250, 0) 62%);
+  background: linear-gradient(90deg, rgba(232, 240, 250, 0.86) 0%, rgba(232, 240, 250, 0.62) 40%, rgba(232, 240, 250, 0) 68%);
   content: "";
   pointer-events: none;
 }
@@ -549,4 +549,84 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: #2557d6; 
     background: linear-gradient(180deg, rgba(232, 240, 250, 0.1) 0%, rgba(232, 240, 250, 0.78) 45%, rgba(232, 240, 250, 0.86) 100%);
   }
   .lasha-page-hero-copy { align-content: end; }
+}
+
+/* Phone and tablet menu in Lasha's language (Kemo, 7 October 2026: the old black/orange
+   drawer had to go). A full-height ink panel under the header, Morganite links with a blue
+   marker on the current page, a paper language row and square blue/outline actions. The
+   hero is lifted above the following sections while it is open so nothing paints over it. */
+:is(.lasha-hero, .lasha-page-hero):has(.mobile-nav.is-open) { z-index: 60; }
+
+@media (max-width: 1220px) {
+  /* The panel covers the header too, so the logo and Close sit on ink rather than the photo. */
+  :is(.lasha-home, .lasha-page) .site-header :is(.brand, .menu-toggle) { position: relative; z-index: 41; }
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav {
+    top: 0;
+    bottom: 0;
+    align-content: start;
+    max-height: none;
+    padding: 5.6rem var(--menu-gutter, 1.25rem) calc(1.5rem + env(safe-area-inset-bottom));
+    border-top: 0;
+    border-bottom: 0;
+    background: var(--l-ink);
+    color: var(--l-paper);
+  }
+
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav > button {
+    position: relative;
+    min-height: 4.1rem;
+    padding: 0.35rem 0 0;
+    border: 0;
+    border-bottom: 1px solid rgba(244, 244, 241, 0.16);
+    background: none;
+    color: var(--l-paper);
+    font-family: var(--l-display);
+    font-size: 2.35rem;
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav > button.is-active { padding-left: 1.1rem; color: #8fb0ff; }
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav > button.is-active::before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0.35rem;
+    height: 1.6rem;
+    background: var(--l-blue);
+    content: "";
+    transform: translateY(-40%);
+  }
+
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .language-switcher { margin-top: 1.6rem; }
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .language-switcher-trigger {
+    min-height: 3.3rem;
+    padding: 0 1rem;
+    border: 1px solid rgba(244, 244, 241, 0.35);
+    background: transparent;
+    color: var(--l-paper);
+    font-family: var(--l-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+  }
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .language-switcher-menu { border: 0; background: var(--l-paper); }
+
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav :is(.mobile-register, .mobile-login) {
+    justify-content: center;
+    min-height: 3.4rem;
+    margin-top: 0.75rem;
+    padding: 0 1rem;
+    border: 1px solid var(--l-paper);
+    background: transparent;
+    color: var(--l-paper);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .mobile-register { margin-top: 1.4rem; border-color: var(--l-blue); background: var(--l-blue); }
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .mobile-register:hover { border-color: #1b45b0; background: #1b45b0; }
+  :is(.lasha-home, .lasha-page) .site-header .mobile-nav .mobile-login:hover { background: var(--l-paper); color: var(--l-ink); }
 }

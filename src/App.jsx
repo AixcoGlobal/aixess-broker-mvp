@@ -299,24 +299,24 @@ function PageHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   return <SiteHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} pageHeader />;
 }
 
-function NetworkPage({ sections, pageTitleKey, ...props }) {
+function NetworkPage({ sections, pageTitleKey, heroImage, ...props }) {
   const { locale, t } = useLanguage();
   const c = NETWORK_COPY[locale];
   const title = pageTitleKey ? t(pageTitleKey) : sections[0] === "introduction" ? c.identity : c[sections[0]][0];
   return (
     <div className="route-page lasha-page">
-      <LashaPageHero header={<PageHeader {...props} />} eyebrow="AIXESS" title={title} />
+      <LashaPageHero header={<PageHeader {...props} />} eyebrow="AIXESS" title={title} image={heroImage} />
       <NetworkSections sections={sections} onOpenModal={props.onOpenModal} />
     </div>
   );
 }
 
 function WhyAixessPage(props) {
-  return <NetworkPage {...props} pageTitleKey="aixessAdvantage" sections={["introduction", "why", "advantage", "services", "backing", "closing"]} />;
+  return <NetworkPage {...props} pageTitleKey="aixessAdvantage" heroImage="crown" sections={["introduction", "why", "advantage", "services", "backing", "closing"]} />;
 }
 
 function BrokerAccessPage(props) {
-  return <NetworkPage {...props} pageTitleKey="brokerAccess" sections={["eligibility", "commercial", "process", "client", "closing"]} />;
+  return <NetworkPage {...props} pageTitleKey="brokerAccess" heroImage="entrance" sections={["eligibility", "commercial", "process", "client", "closing"]} />;
 }
 
 const insightDownloads = [
@@ -333,6 +333,7 @@ function InsightsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenM
         header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
         eyebrow={t("insightsEyebrow")}
         title={[t("makeMoveClear"), t("nextMoveClear")]}
+        image="facade"
         copy={t("resourcesCopy")}
       >
         <div className="page-cta-row">
@@ -390,6 +391,7 @@ function BrokerToolsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOp
         eyebrow="AIXESS"
         title={t("brokerTools")}
         titleAs="p"
+        image="aerial"
       />
       <main className="page-main">
         <Suspense fallback={<p role="status">{t("preparingInteractive")}</p>}>
@@ -409,6 +411,7 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
         header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
         eyebrow={t("projectReveranceBatumi")}
         title={[t("oneBuilding"), t("yourNextMove")]}
+        image="front"
         copy={t("residenceRouteCopy")}
       />
       <main className="page-main">
