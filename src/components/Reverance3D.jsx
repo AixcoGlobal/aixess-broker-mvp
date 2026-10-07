@@ -600,6 +600,13 @@ function RenderGovernor({ splatReady }) {
     };
 
     const handleRenderRequest = () => keepAlive();
+    // The unified splat renderer asks for frames while LOD streaming or a CPU
+    // sort is still pending; it fires inside this tick's framerender, before
+    // the handler above decides whether to draw.
+    const handleFrameRequest = () => {
+      sortArrived = true;
+      keepAlive();
+    };
 
     app.autoRender = false;
     app.renderNextFrame = true;
@@ -607,6 +614,7 @@ function RenderGovernor({ splatReady }) {
     app.on(RENDER_REQUEST_EVENT, handleRenderRequest);
     app.scene?.on?.("gsplat:sorted", handleSorted);
     app.systems.gsplat?.on?.("frame:ready", handleFrameReady);
+    app.systems.gsplat?.on?.("frame:request", handleFrameRequest);
 
     let observer = null;
     if (canvas && "IntersectionObserver" in window) {
@@ -626,6 +634,7 @@ function RenderGovernor({ splatReady }) {
       app.off(RENDER_REQUEST_EVENT, handleRenderRequest);
       app.scene?.off?.("gsplat:sorted", handleSorted);
       app.systems?.gsplat?.off?.("frame:ready", handleFrameReady);
+      app.systems?.gsplat?.off?.("frame:request", handleFrameRequest);
       keepAliveRef.current = null;
       app.autoRender = true;
     };
@@ -894,7 +903,10 @@ function HorizonEnvironment() {
 }
 
 // If the idle prefetch is still downloading when the explorer mounts, wait for
-// it so the loader reads the cached bundle instead of downloading it twice.
+// it so the loader reads the cached bundle instead of downloading it twice, but
+// never longer than this: a stalled prefetch must not block the real loader.
+const PREFETCH_WAIT_MS = 4000;
+
 function useSplatPrefetchSettled() {
   const [settled, setSettled] = useState(() => !splatPrefetch);
   useEffect(() => {
@@ -903,11 +915,14 @@ function useSplatPrefetchSettled() {
       return undefined;
     }
     let active = true;
-    splatPrefetch.finally(() => {
+    const settle = () => {
       if (active) setSettled(true);
-    });
+    };
+    const timeout = window.setTimeout(settle, PREFETCH_WAIT_MS);
+    splatPrefetch.finally(settle);
     return () => {
       active = false;
+      window.clearTimeout(timeout);
     };
   }, [settled]);
   return settled;
