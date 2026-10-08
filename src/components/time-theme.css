@@ -6,13 +6,20 @@
    --l-blue-deep   = v4 --v4-cobalt-deep  button hover
    --l-blue-light  = v4 --v4-cobalt-light accent on ink grounds (afternoon and night)
    --l-field       = v4 --v4-accent       colour bands (about panel, Advantage band)
-   --l-on-field    = v4 --v4-on-accent    text on those bands */
+   --l-on-field    = v4 --v4-on-accent    text on those bands
+   Kemo, 8 October 2026 ("doesn't switch colors of everything"): the pale grounds follow too, as
+   tints of each theme's colour: --l-mist (light bands), --l-wash / --l-wash-page (the soft wash
+   over hero photos) and --l-sky (the hero ground before its photo loads). */
 
 @property --l-blue { syntax: "<color>"; inherits: true; initial-value: #2557d6; }
 @property --l-blue-deep { syntax: "<color>"; inherits: true; initial-value: #1b45b0; }
 @property --l-blue-light { syntax: "<color>"; inherits: true; initial-value: #8eaaf6; }
 @property --l-field { syntax: "<color>"; inherits: true; initial-value: #2557d6; }
 @property --l-on-field { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --l-mist { syntax: "<color>"; inherits: true; initial-value: #dce7f0; }
+@property --l-wash { syntax: "<color>"; inherits: true; initial-value: #e2ecf7; }
+@property --l-wash-page { syntax: "<color>"; inherits: true; initial-value: #e8f0fa; }
+@property --l-sky { syntax: "<color>"; inherits: true; initial-value: #5d8fd0; }
 
 html:root {
   --l-blue: #2557d6;
@@ -20,6 +27,10 @@ html:root {
   --l-blue-light: #8eaaf6;
   --l-field: #2557d6;
   --l-on-field: #ffffff;
+  --l-mist: #dce7f0;
+  --l-wash: #e2ecf7;
+  --l-wash-page: #e8f0fa;
+  --l-sky: #5d8fd0;
   --time-theme-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -29,6 +40,10 @@ html:root[data-time-theme='afternoon'] {
   --l-blue-light: #b7cfba;
   --l-field: #9bb69e;
   --l-on-field: #171a1d;
+  --l-mist: #d9e3d8;
+  --l-wash: #e3ebe2;
+  --l-wash-page: #e9efe8;
+  --l-sky: #9bb69e;
 }
 
 html:root[data-time-theme='night'] {
@@ -37,6 +52,10 @@ html:root[data-time-theme='night'] {
   --l-blue-light: #c9d3dc;
   --l-field: #0d0f11;
   --l-on-field: #f7f7f4;
+  --l-mist: #dededc;
+  --l-wash: #e6e6e4;
+  --l-wash-page: #ebebe9;
+  --l-sky: #3a4047;
 }
 
 html:root.time-theme-animating,
@@ -47,6 +66,10 @@ html:root.time-theme-animating * {
     --l-blue-light 900ms var(--time-theme-ease),
     --l-field 900ms var(--time-theme-ease),
     --l-on-field 900ms var(--time-theme-ease),
+    --l-mist 900ms var(--time-theme-ease),
+    --l-wash 900ms var(--time-theme-ease),
+    --l-wash-page 900ms var(--time-theme-ease),
+    --l-sky 900ms var(--time-theme-ease),
     background-color 900ms var(--time-theme-ease),
     color 900ms var(--time-theme-ease),
     border-color 900ms var(--time-theme-ease) !important;
@@ -60,22 +83,50 @@ html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(
   .lasha-page .network-backing,
   .lasha-page .network-client,
   .lasha-page .calculator-results,
-  .mobile-nav.lasha-menu
+  .mobile-nav.lasha-menu,
+  .floor-modal
 ) {
   --l-blue: var(--l-blue-light);
 }
 
 html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) .mobile-nav.lasha-menu > button.is-active { color: var(--l-blue-light); }
 html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(.lasha-home, .lasha-page) .mobile-floor-chip :is(select, svg) { color: var(--l-blue-light); }
+html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(.lasha-home, .lasha-page) .mobile-floor-chip { border-color: color-mix(in srgb, var(--l-blue-light) 90%, transparent); }
+
+/* Residence Explorer chrome (model badges, floor rail, floor modal, phone drawer) was drawn in the
+   old orange; it follows the theme too: sage in the afternoon, v4's light graphite tint at night.
+   Day keeps the accepted orange. The model's own floor highlight is set in WebGL and stays orange. */
+html:root[data-time-theme='afternoon'] { --orange: #9bb69e; }
+html:root[data-time-theme='night'] { --orange: #c9d3dc; }
+
+/* Fallback floor plan (no WebGL): the highlighted floor's outline follows the fill. */
+html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) .model-static-fallback svg polygon:is(:hover, :focus, .is-filter-match) { stroke: var(--orange); }
+
+/* The PDF form's keyboard focus ring sits on the light band, so it takes the ink accent. */
+html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) .client-pdf :is(input, select, textarea):focus-visible { outline-color: var(--l-blue); }
+
+/* The phone's light room sheet and drawer take the ink accent instead, so labels stay readable. */
+html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(.mobile-residence-sheet, .mobile-residence-drawer) { --orange: var(--l-blue); }
+html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(.mobile-residence-sheet, .mobile-residence-drawer) :is(.mobile-filter-buttons button.is-active, .mobile-floor-plan-cta) { color: #f7f7f4; }
+
+html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(
+  .model-instruction-index,
+  .inventory-filters button.is-active,
+  .unit-preview-tabs button.is-active,
+  .mobile-filter-buttons button.is-active,
+  .mobile-floor-plan-cta
+) {
+  color: #171a1d;
+}
 
 /* Buttons on ink grounds keep the theme's ink colour in the afternoon (the light tint above is
    for text)... */
-html:root[data-time-theme='afternoon'] :is(.lasha-home .project-card, .lasha-page .network-backing, .lasha-page .network-client, .mobile-nav.lasha-menu) :is(.lasha-button-primary, .button-primary, .mobile-register) {
+html:root[data-time-theme='afternoon'] :is(.lasha-home .project-card, .lasha-page .network-backing, .lasha-page .network-client, .mobile-nav.lasha-menu, .floor-modal, .mobile-residence-dock) :is(.lasha-button-primary, .button-primary, .mobile-register, .mobile-dock-open) {
   border-color: #4d6e52;
   background: #4d6e52;
 }
 
-html:root[data-time-theme='afternoon'] :is(.lasha-home .project-card, .lasha-page .network-backing, .lasha-page .network-client, .mobile-nav.lasha-menu) :is(.lasha-button-primary, .button-primary, .mobile-register):hover {
+html:root[data-time-theme='afternoon'] :is(.lasha-home .project-card, .lasha-page .network-backing, .lasha-page .network-client, .mobile-nav.lasha-menu, .floor-modal, .mobile-residence-dock) :is(.lasha-button-primary, .button-primary, .mobile-register, .mobile-dock-open):hover {
   border-color: #3c5a41;
   background: #3c5a41;
 }
@@ -83,14 +134,14 @@ html:root[data-time-theme='afternoon'] :is(.lasha-home .project-card, .lasha-pag
 /* ...and at night they turn off-white with graphite text, as v4's buttons do on its dark sections
    and over its hero photos. */
 html:root[data-time-theme='night'] :is(.lasha-hero, .lasha-page-hero) .site-header .button-primary,
-html:root[data-time-theme='night'] :is(.lasha-home .project-card, .lasha-page .network-backing, .lasha-page .network-client, .mobile-nav.lasha-menu) :is(.lasha-button-primary, .button-primary, .mobile-register) {
+html:root[data-time-theme='night'] :is(.lasha-home .project-card, .lasha-page .network-backing, .lasha-page .network-client, .mobile-nav.lasha-menu, .floor-modal, .mobile-residence-dock) :is(.lasha-button-primary, .button-primary, .mobile-register, .mobile-dock-open) {
   border-color: #f7f7f4;
   background: #f7f7f4;
   color: #171a1d;
 }
 
 html:root[data-time-theme='night'] :is(.lasha-hero, .lasha-page-hero) .site-header .button-primary:hover,
-html:root[data-time-theme='night'] :is(.lasha-home .project-card, .lasha-page .network-backing, .lasha-page .network-client, .mobile-nav.lasha-menu) :is(.lasha-button-primary, .button-primary, .mobile-register):hover {
+html:root[data-time-theme='night'] :is(.lasha-home .project-card, .lasha-page .network-backing, .lasha-page .network-client, .mobile-nav.lasha-menu, .floor-modal, .mobile-residence-dock) :is(.lasha-button-primary, .button-primary, .mobile-register, .mobile-dock-open):hover {
   border-color: #dce7f0;
   background: #dce7f0;
   color: #171a1d;
