@@ -99,6 +99,12 @@ html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(.lash
 html:root[data-time-theme='afternoon'] { --orange: #9bb69e; }
 html:root[data-time-theme='night'] { --orange: #c9d3dc; }
 
+/* Fallback floor plan (no WebGL): the highlighted floor's outline follows the fill. */
+html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) .model-static-fallback svg polygon:is(:hover, :focus, .is-filter-match) { stroke: var(--orange); }
+
+/* The PDF form's keyboard focus ring sits on the light band, so it takes the ink accent. */
+html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) .client-pdf :is(input, select, textarea):focus-visible { outline-color: var(--l-blue); }
+
 /* The phone's light room sheet and drawer take the ink accent instead, so labels stay readable. */
 html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(.mobile-residence-sheet, .mobile-residence-drawer) { --orange: var(--l-blue); }
 html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(.mobile-residence-sheet, .mobile-residence-drawer) :is(.mobile-filter-buttons button.is-active, .mobile-floor-plan-cta) { color: #f7f7f4; }
