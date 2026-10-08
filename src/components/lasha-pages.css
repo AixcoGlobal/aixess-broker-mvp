@@ -19,7 +19,7 @@
   min-height: clamp(34rem, 78vh, 48rem);
   flex-direction: column;
   overflow: hidden;
-  background: #5d8fd0;
+  background: var(--l-sky);
   isolation: isolate;
 }
 
@@ -56,7 +56,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: linear-gradient(90deg, rgba(232, 240, 250, 0.86) 0%, rgba(232, 240, 250, 0.62) 40%, rgba(232, 240, 250, 0) 68%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--l-wash-page) 86%, transparent) 0%, color-mix(in srgb, var(--l-wash-page) 62%, transparent) 40%, color-mix(in srgb, var(--l-wash-page) 0%, transparent) 68%);
   content: "";
   pointer-events: none;
 }
@@ -552,7 +552,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
   .lasha-page-hero { min-height: clamp(26rem, 68svh, 34rem); }
   .lasha-page-hero-media { object-position: 78% 30%; }
   .lasha-page-hero::before {
-    background: linear-gradient(180deg, rgba(232, 240, 250, 0.1) 0%, rgba(232, 240, 250, 0.78) 45%, rgba(232, 240, 250, 0.86) 100%);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--l-wash-page) 10%, transparent) 0%, color-mix(in srgb, var(--l-wash-page) 78%, transparent) 45%, color-mix(in srgb, var(--l-wash-page) 86%, transparent) 100%);
   }
   .lasha-page-hero-copy { align-content: end; }
 }

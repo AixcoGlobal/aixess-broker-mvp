@@ -343,7 +343,7 @@
   border: 3px solid #141210;
   border-radius: 0.12rem;
   background: var(--orange);
-  box-shadow: 0 0 0 1px var(--orange), 0 0 0.8rem rgba(241, 101, 16, 0.32);
+  box-shadow: 0 0 0 1px var(--orange), 0 0 0.8rem color-mix(in srgb, var(--orange) 32%, transparent);
 }
 
 .residence-area-ranges input::-moz-range-track {
@@ -359,11 +359,11 @@
   border: 3px solid #141210;
   border-radius: 0.12rem;
   background: var(--orange);
-  box-shadow: 0 0 0 1px var(--orange), 0 0 0.8rem rgba(241, 101, 16, 0.32);
+  box-shadow: 0 0 0 1px var(--orange), 0 0 0.8rem color-mix(in srgb, var(--orange) 32%, transparent);
 }
 
 .residence-area-ranges input:focus-visible {
-  outline: 2px solid rgba(241, 101, 16, 0.72);
+  outline: 2px solid color-mix(in srgb, var(--orange) 72%, transparent);
   outline-offset: 0.18rem;
 }
 
@@ -786,9 +786,9 @@
 .model-floor-rail button:focus-visible,
 .model-floor-rail button.is-active,
 .model-floor-rail button.is-filter-match {
-  background: rgba(241, 101, 16, 0.28);
+  background: color-mix(in srgb, var(--orange) 28%, transparent);
   color: #fff;
-  box-shadow: inset 2px 0 0 var(--orange), 0 0 0.8rem rgba(241, 101, 16, 0.18);
+  box-shadow: inset 2px 0 0 var(--orange), 0 0 0.8rem color-mix(in srgb, var(--orange) 18%, transparent);
 }
 
 .model-floor-rail button span {
@@ -802,13 +802,13 @@
   width: calc(var(--available) * 100%);
   height: 1px;
   background: var(--orange);
-  box-shadow: 0 0 0.4rem rgba(241, 101, 16, 0.4);
+  box-shadow: 0 0 0.4rem color-mix(in srgb, var(--orange) 40%, transparent);
 }
 
 .model-floor-rail button.is-active i,
 .model-floor-rail button.is-filter-match i {
   height: 2px;
-  box-shadow: 0 0 0.65rem rgba(241, 101, 16, 0.85);
+  box-shadow: 0 0 0.65rem color-mix(in srgb, var(--orange) 85%, transparent);
 }
 
 .building-model-instruction {
@@ -884,7 +884,7 @@
   border: 1px solid rgba(255, 255, 255, 0.48);
   border-left: 3px solid var(--orange);
   background: rgba(14, 14, 13, 0.9);
-  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.34), 0 0 1.1rem rgba(241, 101, 16, 0.18);
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.34), 0 0 1.1rem color-mix(in srgb, var(--orange) 18%, transparent);
   color: white;
   pointer-events: none;
   animation: floor-tooltip-in 120ms ease-out both;
@@ -947,7 +947,7 @@
 }
 
 .model-static-fallback svg polygon {
-  fill: rgba(241, 101, 16, 0.03);
+  fill: color-mix(in srgb, var(--orange) 3%, transparent);
   stroke: rgba(255, 255, 255, 0.25);
   stroke-width: 0.12;
   cursor: pointer;
@@ -956,7 +956,7 @@
 .model-static-fallback svg polygon:hover,
 .model-static-fallback svg polygon:focus,
 .model-static-fallback svg polygon.is-filter-match {
-  fill: rgba(241, 101, 16, 0.44);
+  fill: color-mix(in srgb, var(--orange) 44%, transparent);
   stroke: #ff873e;
 }
 
@@ -1385,7 +1385,7 @@
   padding: 1.5rem;
   overflow-y: auto;
   background: #171412;
-  scrollbar-color: rgba(241, 101, 16, 0.75) transparent;
+  scrollbar-color: color-mix(in srgb, var(--orange) 75%, transparent) transparent;
   scrollbar-width: thin;
 }
 
@@ -2280,7 +2280,7 @@
     border: 0;
     outline: 0;
     background: transparent;
-    color: #f16510;
+    color: var(--orange);
     font: inherit;
     font-size: 0.92rem;
     font-weight: 800;
@@ -2296,7 +2296,7 @@
 
   .mobile-floor-chip svg {
     width: 1rem;
-    color: #f16510;
+    color: var(--orange);
   }
 
   .building-model-badge,
@@ -2325,7 +2325,7 @@
     overflow-x: hidden;
     padding: 0.32rem;
     scrollbar-width: thin;
-    scrollbar-color: rgba(241, 101, 16, 0.84) transparent;
+    scrollbar-color: color-mix(in srgb, var(--orange) 84%, transparent) transparent;
     transform: translateX(-0.65rem);
   }
 
@@ -2407,7 +2407,7 @@
   }
 
   .mobile-sheet-kicker {
-    color: #f16510;
+    color: var(--orange);
     font-size: 0.62rem;
     font-weight: 800;
     letter-spacing: 0.14em;
@@ -2460,7 +2460,7 @@
   .mobile-room-card.is-reserved { border-color: rgba(166, 109, 70, 0.72); }
   .mobile-room-card.is-sold,
   .mobile-room-card.is-unavailable { border-color: rgba(91, 111, 141, 0.72); color: #334961; }
-  .mobile-room-card.is-active { box-shadow: 0 0 0 2px #f16510; transform: translateY(-1px); }
+  .mobile-room-card.is-active { box-shadow: 0 0 0 2px var(--orange); transform: translateY(-1px); }
   .mobile-room-card.is-sold {
     border-color: #4f8fbd;
     background: rgba(24, 70, 103, 0.95);
@@ -2468,9 +2468,9 @@
     color: #fff;
   }
   .mobile-room-card.is-sold.is-active {
-    box-shadow: 0 0 0 2px #f16510, inset 0.18rem 0 #8ac1e1;
+    box-shadow: 0 0 0 2px var(--orange), inset 0.18rem 0 #8ac1e1;
   }
-  .mobile-room-card:focus-visible { outline: 2px solid #f16510; outline-offset: 2px; }
+  .mobile-room-card:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 
   .mobile-room-thumb {
     position: relative;
@@ -2631,11 +2631,11 @@
     font-weight: 800;
   }
 
-  .mobile-filter-buttons button.is-active { border-color: #f16510; background: #f16510; color: #fff; }
+  .mobile-filter-buttons button.is-active { border-color: var(--orange); background: var(--orange); color: #fff; }
   .mobile-filter-buttons button.is-sold.is-active { border-color: #2f6f9f; background: #2f6f9f; color: #fff; }
   .mobile-filter-range { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
   .mobile-filter-range > span { grid-column: 1 / -1; }
-  .mobile-filter-range input { width: 100%; accent-color: #f16510; }
+  .mobile-filter-range input { width: 100%; accent-color: var(--orange); }
 
   .mobile-floor-plan-cta {
     display: flex;
@@ -2647,7 +2647,7 @@
     padding: 0.6rem 0.9rem;
     border: 0;
     border-radius: 0.8rem;
-    background: #f16510;
+    background: var(--orange);
     color: #fff;
     font: inherit;
     font-size: 0.68rem;
@@ -2684,7 +2684,7 @@
   }
 
   .mobile-residence-dock:focus-visible {
-    outline: 2px solid #f16510;
+    outline: 2px solid var(--orange);
     outline-offset: 3px;
   }
 
@@ -2838,7 +2838,7 @@
 
   .mobile-drawer-heading .mobile-sheet-kicker {
     overflow: hidden;
-    color: #f16510;
+    color: var(--orange);
     font-size: 0.53rem;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -2894,7 +2894,7 @@
   .mobile-sheet-tools button:focus-visible,
   .mobile-filter-buttons button:focus-visible,
   .mobile-floor-plan-cta:focus-visible {
-    outline: 2px solid #f16510;
+    outline: 2px solid var(--orange);
     outline-offset: 2px;
   }
 
