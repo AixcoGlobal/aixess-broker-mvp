@@ -175,6 +175,18 @@
   object-fit: cover;
 }
 
+/* Photo and copy fade in together once the photo has loaded (see HomeHero). */
+.lasha-hero :is(.lasha-hero-media, .lasha-hero-copy) {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.lasha-hero-frame::after { opacity: 0; transition: opacity 0.6s ease; }
+.lasha-hero[data-media-ready] :is(.lasha-hero-media, .lasha-hero-copy),
+.lasha-hero[data-media-ready] .lasha-hero-frame::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .lasha-hero :is(.lasha-hero-media, .lasha-hero-copy) { transition: none; }
+}
+
 .lasha-hero-copy {
   /* Width of the poster block; the reference's gaps are fractions of it. */
   --poster-w: calc(542 * var(--u));
@@ -852,13 +864,9 @@
   .lasha-hero-media { object-position: 34% 50%; }
   /* No white wash on phones (Kemo, 9 October 2026): the photo shows at full strength. */
   .lasha-hero-frame::after { content: none; }
-  /* Without the wash the text sits straight on the photo (Kemo: "now the text is hard to read"): a soft
-     light halo hugs only the letters, so the photo stays clear around them. */
-  .lasha-hero h1 { text-shadow: 0 0 0.12em rgb(255 255 255 / 0.45); }
-  .lasha-hero-copy p {
-    font-weight: 500;
-    text-shadow: 0 0 0.9rem rgb(255 255 255 / 0.95), 0 0 0.35rem rgb(255 255 255 / 0.9), 0 0 0.12rem rgb(255 255 255 / 0.8);
-  }
+  /* No glow behind the letters either (Kemo, 9 October 2026: "looks kinda ugly"): the title and
+     subtitle are plain black on the sky; the subtitle is a touch heavier to stay readable. */
+  .lasha-hero-copy p { font-weight: 500; }
   /* The copy block sits centred in the photo below the header (Kemo, October 7). */
   .lasha-hero-copy {
     top: 5.5rem;

@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { FittedHeading } from "./FittedHeading.jsx";
 import { NETWORK_COPY } from "../network-copy.js";
@@ -42,12 +43,22 @@ export function HomeHero({ children }) {
   const { locale } = useLanguage();
   const copy = LASHA_HOME_COPY[locale] || LASHA_HOME_COPY.en;
   const lines = HOME_HERO_LINES[locale] ?? HOME_HERO_LINES.en;
+  // The title waits for the photo so both fade in together instead of the text showing alone on an
+  // empty ground while the photo loads (Kemo, 9 October 2026). A slow or failed photo never hides it for long.
+  const mediaRef = useRef(null);
+  const [mediaReady, setMediaReady] = useState(false);
+  useEffect(() => {
+    if (mediaRef.current?.complete) setMediaReady(true);
+    const timer = window.setTimeout(() => setMediaReady(true), 2500);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   return (
-    <section className="lasha-hero" id="project">
+    <section className="lasha-hero" id="project" data-media-ready={mediaReady ? "" : undefined}>
       {children}
       <div className="lasha-hero-frame">
         <img
+          ref={mediaRef}
           className="lasha-hero-media"
           src="/assets/projects/reverance-skyline-1440.webp"
           srcSet="/assets/projects/reverance-skyline-720.webp 720w, /assets/projects/reverance-skyline-1440.webp 1440w, /assets/projects/reverance-skyline-2160.webp 2160w, /assets/projects/reverance-skyline-2700.webp 2700w"
@@ -57,6 +68,8 @@ export function HomeHero({ children }) {
           alt=""
           fetchPriority="high"
           decoding="async"
+          onLoad={() => setMediaReady(true)}
+          onError={() => setMediaReady(true)}
         />
         <div className="lasha-hero-copy">
           <FittedHeading as="h1" fillLines maxLineRatio={260 / 423}>{lines.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
