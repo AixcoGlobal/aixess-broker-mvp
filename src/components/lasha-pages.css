@@ -331,9 +331,9 @@
 
 .lasha-page :is(.network-backing, .network-client) { background: var(--l-ink); color: var(--l-paper); }
 .lasha-page :is(.network-backing, .network-client) .network-card { border-top-color: rgba(244, 244, 241, 0.25); }
-.lasha-page :is(.network-backing, .network-client) .network-stats dd { color: var(--l-blue); }
-.lasha-page :is(.network-backing, .network-client) .network-emphasis { color: var(--l-sage); }
-.lasha-page :is(.network-backing, .network-client) .network-badge { border-color: var(--l-sage); color: var(--l-sage); }
+.lasha-page :is(.network-backing, .network-client) .network-stats dd { color: var(--l-blue-light); }
+.lasha-page :is(.network-backing, .network-client) .network-emphasis { color: var(--l-blue-light); }
+.lasha-page :is(.network-backing, .network-client) .network-badge { border-color: var(--l-blue-light); color: var(--l-blue-light); }
 .lasha-page :is(.network-backing, .network-client) .button-ghost { border-color: #fff; color: var(--l-paper); }
 .lasha-page :is(.network-backing, .network-client) .button-ghost:hover { background: #fff; color: var(--l-ink); }
 

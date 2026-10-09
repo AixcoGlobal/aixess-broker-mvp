@@ -149,8 +149,8 @@
   align-content: start;
   justify-items: start;
   padding: calc(66 * var(--u)) calc(100 * var(--u)) calc(48 * var(--u)) calc(69 * var(--u));
-  background: var(--l-sage);
-  color: var(--l-paper);
+  background: var(--l-field);
+  color: var(--l-on-field);
 }
 
 .lnp-kicker {
@@ -186,7 +186,7 @@
 }
 
 .lnp-services-figure {
-  color: var(--l-sage);
+  color: var(--l-blue);
   font-family: var(--l-head);
   font-size: calc(212 * var(--u));
   line-height: 0.78;
@@ -201,7 +201,7 @@
 }
 
 .lnp-services-eyebrow {
-  color: var(--l-sage);
+  color: var(--l-blue);
   font-size: var(--v4-eyebrow);
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -407,5 +407,3 @@
   .lnp-steps p { max-width: 20rem; font-size: 1rem; line-height: 1.4; }
 }
 
-/* Afternoon already paints the hero panel sage, so the Advantage panel takes the theme's deep sage. */
-html:root[data-time-theme='afternoon'] .lnp-advantage-panel { background: var(--l-blue); }

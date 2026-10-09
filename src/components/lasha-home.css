@@ -318,7 +318,7 @@
   display: grid;
   align-content: start;
   padding: calc(52.5 * var(--u)) calc(10 * var(--u)) 0 calc(68 * var(--u));
-  color: var(--l-sage);
+  color: var(--l-blue-light);
   font-family: var(--l-tall);
   /* v4's claim size, capped by the frame column so the longest word still fits. */
   font-size: min(var(--v4-claim), calc(42 * var(--u)));
