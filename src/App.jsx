@@ -6,6 +6,7 @@ import { FittedHeading } from "./components/FittedHeading.jsx";
 import { NetworkSections } from "./components/NetworkSections.jsx";
 import { NETWORK_COPY } from "./network-copy.js";
 import { ProjectShowcase } from "./components/ProjectShowcase.jsx";
+import { AdvantagePageContent, BrokerAccessPageContent } from "./components/LashaNetworkPages.jsx";
 import { HomeAbout, HomeAccess, HomeHero, HomeMetrics, HomeStartingPoints, LashaPageHero } from "./components/LashaHomeSections.jsx";
 import { TimeThemeMenu } from "./components/TimeThemeMenu.jsx";
 import "./components/lasha-home.css";
@@ -318,24 +319,21 @@ function PageHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   return <SiteHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} pageHeader />;
 }
 
-function NetworkPage({ sections, pageTitleKey, heroImage, ...props }) {
-  const { locale, t } = useLanguage();
-  const c = NETWORK_COPY[locale];
-  const title = pageTitleKey ? t(pageTitleKey) : sections[0] === "introduction" ? c.identity : c[sections[0]][0];
+// Lasha's AiXESS Advantage and Broker Access frames (Figma, 9 October 2026).
+function WhyAixessPage(props) {
   return (
     <div className="route-page lasha-page">
-      <LashaPageHero header={<PageHeader {...props} />} eyebrow="AIXESS" title={title} image={heroImage} />
-      <NetworkSections sections={sections} onOpenModal={props.onOpenModal} />
+      <AdvantagePageContent header={<PageHeader {...props} />} />
     </div>
   );
 }
 
-function WhyAixessPage(props) {
-  return <NetworkPage {...props} pageTitleKey="aixessAdvantage" heroImage="sunset" sections={["introduction", "why", "advantage", "services", "backing", "closing"]} />;
-}
-
 function BrokerAccessPage(props) {
-  return <NetworkPage {...props} pageTitleKey="brokerAccess" heroImage="entrance" sections={["eligibility", "commercial", "process", "client", "closing"]} />;
+  return (
+    <div className="route-page lasha-page">
+      <BrokerAccessPageContent header={<PageHeader {...props} />} />
+    </div>
+  );
 }
 
 const insightDownloads = [
