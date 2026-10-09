@@ -12,6 +12,9 @@ import "./lasha-network-pages.css";
 // are not copied. Headlines keep the site's AIXCO v4 faces.
 
 const image = (name) => `/assets/projects/${name}.webp`;
+// Lasha's renders come out of Figma at 1x; each is upscaled 4x (EDSR super-resolution, no
+// retouching) and served at 1x, 2x and 3x so they stay sharp on Retina screens.
+const srcSet = (name, width) => [1, 2, 3].map((scale) => `${image(`${name}-${width * scale}`)} ${width * scale}w`).join(", ");
 const noStop = (text) => text.replace(/[.。]$/, "");
 const sentenceCase = (text, locale) => {
   const lower = text.toLocaleLowerCase(locale);
@@ -48,7 +51,7 @@ function SplitHero({ header, eyebrow, title, body, action, media, aside, classNa
         <p className="lnp-hero-body">{body}</p>
         {action}
       </div>
-      <div className="lnp-hero-media"><img src={image(media.src)} width={media.width} height={media.height} alt="" decoding="async" fetchPriority="high" /></div>
+      <div className="lnp-hero-media"><img src={image(`${media.src}-${media.width * 2}`)} srcSet={srcSet(media.src, media.width)} sizes={media.sizes} width={media.width} height={media.height} alt="" decoding="async" fetchPriority="high" /></div>
       {aside}
     </section>
   );
@@ -66,7 +69,7 @@ export function AdvantagePageContent({ header }) {
         title={network.hero}
         body={network.intro}
         action={<PageButton variant="dark" flow="register">{network.request}</PageButton>}
-        media={{ src: "reverance-courtyard-784", width: 784, height: 686 }}
+        media={{ src: "reverance-courtyard", width: 784, height: 686, sizes: "(max-width: 899px) 100vw, 55vw" }}
       />
 
       <section className="lnp-starting" aria-label={network.startingPointsTitle}>
@@ -84,7 +87,7 @@ export function AdvantagePageContent({ header }) {
       </section>
 
       <section className="lnp-advantage-split" aria-labelledby="lnp-advantage-title">
-        <img className="lnp-advantage-media" src={image("reverance-terrace-656")} width="656" height="679" alt="" loading="lazy" decoding="async" />
+        <img className="lnp-advantage-media" src={image("reverance-terrace-1312")} srcSet={srcSet("reverance-terrace", 656)} sizes="(max-width: 899px) 100vw, 46vw" width="656" height="679" alt="" loading="lazy" decoding="async" />
         <div className="lnp-advantage-panel">
           <p className="lnp-kicker">{network.advantage[0]}</p>
           <FittedHeading id="lnp-advantage-title" className="lnp-advantage-title">{splitBeforeLast(network.advantage[1]).map((line) => <span key={line}>{line}</span>)}</FittedHeading>
@@ -120,7 +123,7 @@ export function BrokerAccessPageContent({ header }) {
         eyebrow={home.aboutEyebrow}
         title={splitBrokerTitle(network.eligibility[1])}
         body={page.brokerIntro}
-        media={{ src: "broker-lounge-474", width: 474, height: 843 }}
+        media={{ src: "broker-lounge", width: 474, height: 843, sizes: "(max-width: 899px) 100vw, 27vw" }}
         aside={
           <ol className="lnp-people">
             {people.map(([title, line], index) => (
@@ -152,7 +155,7 @@ export function BrokerAccessPageContent({ header }) {
           <p className="lnp-figure">100%</p>
           <FittedHeading>{page.commissionUnlocked.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
         </div>
-        <img className="lnp-commercial-media" src={image("reverance-tower-995")} width="995" height="589" alt="" loading="lazy" decoding="async" />
+        <img className="lnp-commercial-media" src={image("reverance-tower-1990")} srcSet={srcSet("reverance-tower", 995)} sizes="(max-width: 899px) 100vw, 42vw" width="995" height="589" alt="" loading="lazy" decoding="async" />
       </section>
 
       <section className="lnp-process" aria-labelledby="lnp-process-title">
