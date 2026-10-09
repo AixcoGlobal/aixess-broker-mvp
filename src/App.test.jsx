@@ -42,9 +42,7 @@ describe("AIXESS navigation pages", () => {
     expect(container.querySelector(".project-ticker")).not.toBeInTheDocument();
     expect(container.querySelector("[data-content-section]")).not.toBeInTheDocument();
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
-    expect(container.querySelector('[data-content-section="eligibility"]')).toBeInTheDocument();
-    expect(container.querySelector('[data-content-section="introduction"]')).not.toBeInTheDocument();
-    expect(screen.getByText("COMING SOON")).toBeInTheDocument();
+    expect(container.querySelector(".lnp-broker")).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "REQUEST ACCESS" })[0]).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-signup?lang=en");
     expect(screen.getAllByRole("link", { name: "PARTNER SIGN IN" })[0]).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-login?lang=en");
     fireEvent.click(screen.getAllByRole("button", { name: "INSIGHTS" })[0]);
@@ -108,26 +106,37 @@ describe("AIXESS navigation pages", () => {
     );
   });
 
-  it("puts the supplied first-page copy on AiXESS Advantage and Broker Access corrections on Broker Access", () => {
+  it("builds AiXESS Advantage and Broker Access from Lasha's frames word for word", () => {
     window.history.replaceState({}, "", "/#why-aixess");
     render(<App />);
 
-    expect(screen.getByRole("heading", { name: "TURN YOUR NETWORK INTO OPPORTUNITY." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "TURN YOURNETWORK INTOOPPORTUNITY." })).toBeInTheDocument();
     expect(screen.getByText("AiXESS expands what you can offer your clients and connections — giving you access to selected international real estate opportunities, professional tools, ready-to-sell materials and direct AIXCO support.")).toBeInTheDocument();
-    expect(screen.getByText("YOUR CONNECTIONS. YOUR AMBITION. YOUR NEXT OPPORTUNITY.")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "DIFFERENT STARTING POINTS. ONE PLATFORM TO MOVE FORWARD." })).toBeInTheDocument();
+    expect(screen.getAllByText("Expand your offering with selected international real estate opportunities.")).toHaveLength(3);
+    expect(screen.getByRole("heading", { name: "YOUR AIXESSADVANTAGE" })).toBeInTheDocument();
+    expect(screen.getByText("International real estate opportunities for your clients and network")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "WE DON'T STOPAT THE SALE" })).toBeInTheDocument();
+    expect(screen.getByText("AIXCO SUPPORTS.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "REQUEST ACCESS" })).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-signup?lang=en");
+    expect(screen.getByRole("link", { name: "PARTNER SIGN IN" })).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-login?lang=en");
 
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
+    expect(screen.getByRole("heading", { level: 1, name: "YOU DON’TNEED TO BEA BROKER." })).toBeInTheDocument();
+    expect(screen.getByText("If you have the network and ambition, AiXESS gives you the opportunities, tools and support.")).toBeInTheDocument();
     expect(screen.getByText("ASPIRING PROFESSIONALS")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "10% DOWN PAYMENT. 100% COMMISSION UNLOCKED." })).toBeInTheDocument();
-    expect(screen.getByText("Your client secures the property with just 10% down payment, unlocking your full commission, paid within 72 hours.")).toBeInTheDocument();
+    expect(screen.getByText("Established brokers and agencies")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "HAVE THE NETWORK?" })).toBeInTheDocument();
+    expect(screen.getByText("THE COMMERCIAL ADVANTAGE")).toBeInTheDocument();
+    expect(screen.getByText("Your client secures the property with just 10% down payment, unlocking your full commission within 72 hours.")).toBeInTheDocument();
+    expect(screen.getByText("How it works")).toBeInTheDocument();
+    expect(screen.getByText("Request AiXESS access")).toBeInTheDocument();
+    expect(screen.getByText("Client pays the required 10%")).toBeInTheDocument();
   });
 
   it("renders the selected page from its shareable hash route", () => {
     render(<App />);
 
-    expect(screen.getByRole("heading", { name: /ACCESS → EARN → SELL → GROW/i })).toBeInTheDocument();
-    expect(screen.getByText("90+")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "YOUR AIXESSADVANTAGE" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "AIXESS ADVANTAGE" }).filter((button) => button.getAttribute("aria-current") === "page")).toHaveLength(2);
   });
 
@@ -206,6 +215,6 @@ describe("AIXESS navigation pages", () => {
     expect(document.documentElement.lang).toBe("de");
     expect(window.localStorage.getItem("aixess-language")).toBe("de");
     expect(screen.getAllByRole("button", { name: "AIXESS-VORTEIL" })).toHaveLength(2);
-    expect(screen.getByRole("heading", { name: /ZUGANG → VERDIENEN → VERKAUFEN → WACHSEN/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "IHRAIXESS-VORTEIL" })).toBeInTheDocument();
   });
 });

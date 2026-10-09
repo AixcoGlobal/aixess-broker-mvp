@@ -1,0 +1,409 @@
+/* AiXESS Advantage and Broker Access, built to Lasha's AIXESS ADVANTAGE (1440 × 1865) and
+   BROKER ACCESS (1440 × 1800) Figma frames, 9 October 2026. As on the homepage, from 900px up
+   positions are frame pixels (--u) so the composition keeps its proportions; below 900px the
+   sections restack into one readable column. Type uses the site's AIXCO v4 faces and the --v4-*
+   sizes; only the frames' oversized figures (360°, 10%, 100%) keep their drawn size. The site
+   header floats over the top of each page, so the first section starts below it. */
+
+.lnp {
+  --lnp-header: 6.3rem;
+  --lnp-gutter: calc(71 * var(--u));
+  color: var(--l-ink);
+}
+
+:where(.lnp) :is(h1, h2, h3, p, ol) { margin: 0; }
+:where(.lnp) ol { padding: 0; list-style: none; }
+
+:where(.lnp) :is(h1, h2, h3) {
+  font-family: var(--l-head);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.lnp h1 > span,
+.lnp h2 > span { display: block; }
+
+.lnp .lasha-index { font-family: var(--l-head); font-weight: 400; letter-spacing: 0; }
+
+.lnp-button {
+  justify-content: space-between;
+  width: auto;
+  min-width: max(calc(267 * var(--u)), 15rem);
+  white-space: nowrap;
+  height: calc(69 * var(--u));
+  min-height: 3.4rem;
+  padding: 0 calc(32 * var(--u));
+}
+
+.lnp-button .lasha-arrow { width: calc(47 * var(--u)); min-width: 2.2rem; height: 0.5rem; }
+.lnp .lasha-button-dark { border-color: currentColor; color: inherit; }
+.lnp .lasha-button-dark:hover { background: var(--l-on-field); color: var(--l-field); }
+
+/* Split hero: blue panel, render, and on Broker Access the "who can join" list. */
+.lnp-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(656 * var(--u)) minmax(0, 1fr);
+  min-height: calc(var(--lnp-header) + 600 * var(--u));
+}
+
+.lnp-hero > .site-header {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  right: 0;
+  left: 0;
+  background: transparent;
+  border-bottom-color: rgba(244, 244, 241, 0.35);
+  color: #fff;
+}
+
+.lnp-hero-panel {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  padding: calc(var(--lnp-header) + 44 * var(--u)) calc(70 * var(--u)) calc(52 * var(--u)) var(--lnp-gutter);
+  background: var(--l-field);
+  color: var(--l-on-field);
+}
+
+.lnp .lnp-eyebrow { color: inherit; font-size: var(--v4-eyebrow); }
+.lnp .lnp-eyebrow::after { background: currentColor; opacity: 0.55; }
+
+.lnp-hero-title {
+  width: 100%;
+  margin-top: calc(18 * var(--u));
+  font-size: var(--v4-page-title);
+  line-height: 0.86;
+}
+
+.lnp-hero-body {
+  max-width: max(calc(488 * var(--u)), 22rem);
+  margin-top: calc(26 * var(--u));
+  font-size: var(--v4-text);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.lnp-hero-panel .lnp-button { margin-top: calc(42 * var(--u)); }
+
+.lnp-hero-media { position: relative; min-width: 0; overflow: hidden; background: var(--l-sky); }
+.lnp-hero-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+
+/* A light shade under the header keeps the white navigation readable over pale renders. */
+.lnp-hero-media::after {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 9rem;
+  background: linear-gradient(180deg, rgba(23, 26, 29, 0.45), rgba(23, 26, 29, 0));
+  content: "";
+}
+
+/* Starting points band: frame 686–900, as on the homepage. */
+.lnp-starting {
+  display: grid;
+  grid-template-columns: calc(476 * var(--u)) calc(476 * var(--u)) minmax(0, 1fr);
+  min-height: calc(214 * var(--u));
+  padding: calc(20 * var(--u)) 0 calc(18 * var(--u)) var(--lnp-gutter);
+  background: var(--l-mist);
+}
+
+.lnp-starting article { position: relative; min-width: 0; padding-right: 1.5rem; }
+
+.lnp-starting article + article::before {
+  position: absolute;
+  top: calc(39 * var(--u));
+  left: calc(-122 * var(--u));
+  width: 1px;
+  height: calc(159 * var(--u));
+  background: #bfc4c9;
+  content: "";
+}
+
+.lnp-rule { display: flex; align-items: center; gap: calc(14 * var(--u)); color: var(--l-blue); }
+.lnp-rule .lasha-index { font-size: var(--v4-index); }
+.lnp-rule .lasha-arrow { width: calc(193 * var(--u)); }
+
+.lnp-starting h2 { margin-top: calc(22 * var(--u)); font-size: var(--v4-route); line-height: 0.95; }
+
+.lnp-starting p {
+  max-width: max(calc(210 * var(--u)), 13rem);
+  margin-top: calc(8 * var(--u));
+  font-size: var(--v4-text);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+/* Advantage: terrace render beside the sage panel, frame 900–1579. */
+.lnp-advantage-split {
+  display: grid;
+  grid-template-columns: calc(656 * var(--u)) minmax(0, 1fr);
+  min-height: calc(679 * var(--u));
+}
+
+.lnp-advantage-media { width: 100%; height: 100%; object-fit: cover; }
+
+.lnp-advantage-panel {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  padding: calc(66 * var(--u)) calc(100 * var(--u)) calc(48 * var(--u)) calc(69 * var(--u));
+  background: var(--l-field);
+  color: var(--l-on-field);
+}
+
+.lnp-kicker {
+  font-size: var(--v4-lead);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.lnp-advantage-title {
+  width: 100%;
+  margin-top: calc(22 * var(--u));
+  font-size: var(--v4-closing);
+  line-height: 0.86;
+}
+
+.lnp-advantage-subtitle {
+  max-width: max(calc(392 * var(--u)), 20rem);
+  margin-top: calc(24 * var(--u));
+  font-size: var(--v4-text);
+  line-height: 1.15;
+}
+
+.lnp-advantage-panel .lnp-button { margin-top: calc(56 * var(--u)); }
+
+/* 360°: frame 1579–1865. */
+.lnp-services {
+  display: grid;
+  grid-template-columns: calc(299 * var(--u)) calc(431 * var(--u)) minmax(0, 1fr);
+  align-items: start;
+  padding: calc(26 * var(--u)) var(--lnp-gutter) calc(32 * var(--u));
+}
+
+.lnp-services-figure {
+  color: var(--l-blue);
+  font-family: var(--l-head);
+  font-size: calc(212 * var(--u));
+  line-height: 0.78;
+  letter-spacing: -0.02em;
+}
+
+.lnp-services-copy,
+.lnp-services-claim {
+  align-self: stretch;
+  padding: calc(18 * var(--u)) 0 calc(8 * var(--u)) calc(80 * var(--u));
+  border-left: 1px solid var(--l-line);
+}
+
+.lnp-services-eyebrow {
+  color: var(--l-blue);
+  font-size: var(--v4-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lnp-services h2,
+.lnp-services-claim {
+  font-family: var(--l-head);
+  font-size: var(--v4-h2);
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+
+.lnp-services h2 { max-width: calc(351 * var(--u)); width: 100%; margin-top: calc(14 * var(--u)); }
+.lnp-services-claim { padding-top: calc(52 * var(--u)); }
+.lnp-services-claim > span { display: block; }
+
+/* Broker Access hero: panel 657, render 385, list. */
+.lnp-hero-broker { grid-template-columns: calc(657 * var(--u)) calc(385 * var(--u)) minmax(0, 1fr); }
+.lnp-hero-broker .lnp-hero-media img { object-position: 50% 60%; }
+
+/* The list column is paper, so the header's controls above it turn ink. */
+@media (min-width: 900px) {
+  .lnp-hero-broker > .site-header :is(.header-actions, .time-theme-menu, .menu-toggle) { color: var(--l-ink); }
+  .lnp-hero-broker > .site-header :is(.login-button, .menu-toggle, .language-switcher-trigger) { border-color: var(--l-ink) !important; color: var(--l-ink) !important; }
+  .lnp-hero-broker > .site-header .language-switcher-trigger { background: transparent; }
+  .lnp-hero-broker > .site-header .language-switcher-trigger svg:first-child { color: var(--l-ink) !important; }
+  .lnp-hero-broker > .site-header .time-theme-menu__button { color: var(--l-ink); }
+  .lnp-hero-broker > .site-header .time-theme-menu__button:is(:hover, [aria-expanded='true']) { border-color: var(--l-ink); }
+  .lnp-hero-broker > .site-header .login-button:hover { background: var(--l-ink); color: var(--l-paper) !important; }
+}
+
+.lnp-people {
+  display: grid;
+  align-content: start;
+  padding: calc(var(--lnp-header) + 4 * var(--u)) calc(70 * var(--u)) calc(24 * var(--u)) calc(22 * var(--u));
+}
+
+.lnp-people li {
+  display: grid;
+  grid-template-columns: calc(38 * var(--u)) minmax(0, 1fr);
+  column-gap: calc(8 * var(--u));
+  padding: calc(26 * var(--u)) 0 calc(28 * var(--u));
+}
+
+.lnp-people li + li { border-top: 1px solid var(--l-line); margin-left: calc(5 * var(--u)); }
+.lnp-people .lasha-index { color: var(--l-blue); font-size: var(--v4-h3); line-height: 1; }
+.lnp-people h2 { font-size: var(--v4-h3); line-height: 1; }
+.lnp-people p { margin-top: calc(10 * var(--u)); max-width: 17rem; font-size: var(--v4-small); line-height: 1.2; letter-spacing: 0.02em; }
+
+/* Have the network?: frame 677–960. */
+.lnp-network {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: calc(70 * var(--u));
+  align-items: center;
+  padding: calc(82 * var(--u)) var(--lnp-gutter) calc(86 * var(--u)) calc(67 * var(--u));
+}
+
+.lnp-network h2 { font-size: var(--v4-h2); line-height: 0.88; }
+.lnp-network-actions { display: flex; gap: calc(61 * var(--u)); }
+
+/* Commercial advantage: frame 960–1432. */
+.lnp-commercial {
+  display: grid;
+  grid-template-columns: calc(328 * var(--u)) calc(409 * var(--u)) minmax(0, 1fr);
+  column-gap: calc(31 * var(--u));
+  padding-left: calc(70 * var(--u));
+}
+
+.lnp-commercial-eyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: calc(14 * var(--u));
+  color: var(--l-blue);
+  font-size: var(--v4-lead);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.lnp-commercial-down,
+.lnp-commercial-commission { display: grid; align-content: start; min-height: calc(422 * var(--u)); }
+
+.lnp-figure {
+  font-family: var(--l-head);
+  font-size: calc(204 * var(--u));
+  line-height: 0.82;
+  letter-spacing: -0.015em;
+}
+
+.lnp-commercial h2 { width: 100%; margin-top: calc(26 * var(--u)); font-size: calc(66 * var(--u)); line-height: 0.88; }
+.lnp-commercial-body { max-width: max(calc(281 * var(--u)), 16rem); margin-top: calc(26 * var(--u)); font-size: var(--v4-text); line-height: 1.1; }
+
+.lnp-commercial-commission {
+  margin-left: calc(-1 * var(--u));
+  padding: calc(26 * var(--u)) calc(26 * var(--u)) calc(30 * var(--u));
+  background: var(--l-field);
+  color: var(--l-on-field);
+}
+
+.lnp-commercial-down { padding-top: calc(26 * var(--u)); }
+.lnp-commercial-media { width: 100%; height: calc(422 * var(--u)); object-fit: cover; object-position: 60% 50%; }
+
+/* How it works: frame 1494–1800. */
+.lnp-process {
+  display: grid;
+  grid-template-columns: calc(441 * var(--u)) minmax(0, 1fr);
+  padding: calc(62 * var(--u)) 0 calc(60 * var(--u)) calc(69 * var(--u));
+}
+
+.lnp-process-eyebrow { color: var(--l-blue); font-size: var(--v4-lead); font-weight: 500; }
+.lnp-process-heading { min-width: 0; padding-right: calc(36 * var(--u)); }
+.lnp-process h2 { margin-top: calc(18 * var(--u)); font-size: var(--v4-h2); line-height: 0.88; }
+
+.lnp-steps {
+  display: grid;
+  grid-template-columns: calc(136 * var(--u)) calc(212 * var(--u)) calc(202 * var(--u)) calc(206 * var(--u)) minmax(0, 1fr);
+  margin-top: calc(40 * var(--u));
+}
+
+.lnp-steps li { min-width: 0; padding: calc(28 * var(--u)) calc(10 * var(--u)) calc(16 * var(--u)) calc(21 * var(--u)); }
+.lnp-steps li:first-child { padding-left: 0; }
+.lnp-steps li + li { border-left: 1px solid var(--l-line); }
+.lnp-steps .lasha-index { width: max-content; padding-bottom: calc(6 * var(--u)); border-bottom: 1px solid var(--l-line); color: var(--l-blue); font-size: var(--v4-index); }
+.lnp-steps .lasha-index::after { display: inline-block; width: calc(10 * var(--u)); content: ""; }
+.lnp-steps h3 { width: 100%; margin-top: calc(22 * var(--u)); font-size: min(var(--v4-number), calc(60 * var(--u))); line-height: 0.9; }
+.lnp-steps p { margin-top: calc(8 * var(--u)); max-width: 10rem; font-size: var(--v4-small); line-height: 1.2; letter-spacing: 0.02em; }
+
+@media (max-width: 1399px) {
+  .lnp { --lnp-header: 5.35rem; }
+}
+
+/* Phones and small tablets: one readable column in Lasha's colours. */
+@media (max-width: 899px) {
+  .lnp { --lnp-gutter: 1.25rem; }
+  .lnp-hero,
+  .lnp-hero-broker,
+  .lnp-advantage-split,
+  .lnp-starting,
+  .lnp-services,
+  .lnp-network,
+  .lnp-commercial,
+  .lnp-process,
+  .lnp-steps { grid-template-columns: minmax(0, 1fr); }
+
+  .lnp-hero { min-height: 0; }
+  .lnp-hero-panel { padding: calc(var(--lnp-header) + 2.4rem) var(--lnp-gutter) 2.6rem; }
+  .lnp-hero-title { margin-top: 1rem; }
+  .lnp-hero-body { margin-top: 1.2rem; font-size: 1rem; }
+  .lnp-hero-panel .lnp-button { margin-top: 1.8rem; }
+  .lnp-hero-media { aspect-ratio: 4 / 3; }
+  .lnp-hero-broker .lnp-hero-media { aspect-ratio: 4 / 5; }
+  .lnp-hero-media::after { content: none; }
+  .lnp-button { width: 100%; min-width: 0; padding-inline: 1.4rem; white-space: normal; }
+
+  .lnp-starting { padding: 0.4rem var(--lnp-gutter) 0.6rem; }
+  .lnp-starting article { padding: 1.4rem 0 1.5rem; }
+  .lnp-starting article + article { border-top: 1px solid #bfc4c9; }
+  .lnp-starting article + article::before { content: none; }
+  .lnp-rule { gap: 0.8rem; }
+  .lnp-rule .lasha-arrow { width: 8rem; height: 0.5rem; }
+  .lnp-starting h2 { margin-top: 0.9rem; }
+  .lnp-starting p { margin-top: 0.5rem; font-size: 1rem; line-height: 1.4; }
+
+  .lnp-advantage-media { aspect-ratio: 1; }
+  .lnp-advantage-panel { padding: 2.6rem var(--lnp-gutter) 2.8rem; }
+  .lnp-advantage-title { margin-top: 0.9rem; }
+  .lnp-advantage-subtitle { margin-top: 1rem; font-size: 1rem; line-height: 1.4; }
+  .lnp-advantage-panel .lnp-button { margin-top: 1.8rem; }
+
+  .lnp-services { padding: 2.6rem var(--lnp-gutter) 2.8rem; row-gap: 1.6rem; }
+  .lnp-services-figure { font-size: 9.5rem; }
+  .lnp-services-copy,
+  .lnp-services-claim { padding: 1.4rem 0 0; border-top: 1px solid var(--l-line); border-left: 0; }
+  .lnp-services h2 { max-width: none; margin-top: 0.7rem; }
+
+  .lnp-people { padding: 1rem var(--lnp-gutter) 1.6rem; }
+  .lnp-people li { grid-template-columns: 2.2rem minmax(0, 1fr); column-gap: 0.4rem; padding: 1.2rem 0 1.3rem; }
+  .lnp-people li + li { margin-left: 0; }
+  .lnp-people p { margin-top: 0.4rem; font-size: 1rem; line-height: 1.4; }
+
+  .lnp-network { padding: 3rem var(--lnp-gutter); row-gap: 1.6rem; }
+  .lnp-network-actions { display: grid; gap: 0.8rem; }
+
+  .lnp-commercial { padding: 0 0 0; row-gap: 0; }
+  .lnp-commercial-eyebrow { margin: 0 var(--lnp-gutter) 0.6rem; font-size: 0.86rem; }
+  .lnp-commercial-down { min-height: 0; padding: 0.6rem var(--lnp-gutter) 2.4rem; }
+  .lnp-commercial-commission { min-height: 0; margin: 0; padding: 1.8rem var(--lnp-gutter) 2rem; }
+  .lnp-figure { font-size: 8.5rem; }
+  .lnp-commercial h2 { width: 100%; margin-top: 0.9rem; font-size: 3.4rem; }
+  .lnp-commercial-body { margin-top: 1rem; font-size: 1rem; line-height: 1.4; }
+  .lnp-commercial-media { height: auto; aspect-ratio: 4 / 3; }
+
+  .lnp-process { padding: 3rem var(--lnp-gutter) 3.2rem; }
+  .lnp-process-heading { min-width: 0; padding-right: calc(36 * var(--u)); }
+.lnp-process h2 { margin-top: 0.6rem; }
+  .lnp-steps { margin-top: 1.4rem; }
+  .lnp-steps li,
+  .lnp-steps li:first-child { padding: 1.2rem 0 1.3rem; }
+  .lnp-steps li + li { border-top: 1px solid var(--l-line); border-left: 0; }
+  .lnp-steps h3 { width: 100%; margin-top: 0.8rem; font-size: 3.2rem; }
+  .lnp-steps p { max-width: 20rem; font-size: 1rem; line-height: 1.4; }
+}
+

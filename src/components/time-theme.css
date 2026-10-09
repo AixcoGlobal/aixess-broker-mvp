@@ -372,7 +372,7 @@ html:root[data-time-theme='afternoon'] .lasha-page .network-advantage .network-c
 
 /* Phones and tablets: the header shows the icon beside the menu button. */
 @media (max-width: 1399px) {
-  :is(.lasha-hero, .lasha-page-hero) > .site-header { grid-template-columns: 1fr auto auto; column-gap: 0.5rem; }
+  :is(.lasha-hero, .lasha-page-hero, .lnp-hero) > .site-header { grid-template-columns: 1fr auto auto; column-gap: 0.5rem; }
   .time-theme-menu--compact { display: block; }
   .time-theme-menu__panel { max-height: calc(100dvh - 5.35rem - 1rem); }
 }
