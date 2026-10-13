@@ -58,21 +58,19 @@ html:root[data-time-theme='night'] {
   --l-sky: #3a4047;
 }
 
-html:root.time-theme-animating,
-html:root.time-theme-animating * {
-  transition:
-    --l-blue 900ms var(--time-theme-ease),
-    --l-blue-deep 900ms var(--time-theme-ease),
-    --l-blue-light 900ms var(--time-theme-ease),
-    --l-field 900ms var(--time-theme-ease),
-    --l-on-field 900ms var(--time-theme-ease),
-    --l-mist 900ms var(--time-theme-ease),
-    --l-wash 900ms var(--time-theme-ease),
-    --l-wash-page 900ms var(--time-theme-ease),
-    --l-sky 900ms var(--time-theme-ease),
-    background-color 900ms var(--time-theme-ease),
-    color 900ms var(--time-theme-ease),
-    border-color 900ms var(--time-theme-ease) !important;
+/* Theme switch: one compositor cross-fade of the whole page (timeTheme.js), instead of
+   transitioning colours on every element, which recalculated the whole page each frame and
+   let colours change one after another (Kemo, 13 October 2026: "laggy"). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 380ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html:root.time-theme-switching *,
+html:root.time-theme-switching *::before,
+html:root.time-theme-switching *::after {
+  transition: none !important;
 }
 
 /* Ink grounds: the accent ink would vanish on graphite, so afternoon and night use v4's light tint

@@ -1,15 +1,45 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { themePhoto } from "../data/themePhotos.js";
-import { useTimeTheme } from "../timeTheme.js";
+import { registerThemePhoto, useTimeTheme } from "../timeTheme.js";
+
+/* Versions already decoded by this page view (keyed by srcset), and decodes in flight. */
+const decoded = new Set();
+const decoding = new Map();
+
+function decodeVersion(version, sizes) {
+  if (decoded.has(version.srcSet)) return Promise.resolve();
+  if (!decoding.has(version.srcSet)) {
+    const probe = new Image();
+    if (sizes) probe.sizes = sizes;
+    probe.srcset = version.srcSet;
+    probe.src = version.src;
+    const done = (typeof probe.decode === "function" ? probe.decode() : Promise.resolve()).then(
+      () => decoded.add(version.srcSet),
+      () => {},
+    );
+    decoding.set(version.srcSet, done);
+    done.then(() => decoding.delete(version.srcSet));
+  }
+  return decoding.get(version.srcSet);
+}
+
+const isLoaded = (node) => Boolean(node && node.complete && node.currentSrc);
+
+function nearViewport(node) {
+  const box = node.getBoundingClientRect();
+  const height = window.innerHeight || 0;
+  return box.bottom > -height && box.top < height * 2 && box.width > 0;
+}
 
 /* A brand photo that follows the time-of-day theme. It reads the same effective theme as the
    page colours, so photo and UI always agree, including on first paint (index.html and
    timeTheme.js resolve the theme the same way before React renders).
 
-   When the theme changes on a photo that is already showing, the new version is decoded
-   first and then swapped in, so the box never collapses or flashes empty. A photo that has
-   not loaded yet (a lazy card further down) just switches its source, so offscreen cards
-   never fetch more than the version they will show. */
+   A theme switch decodes the new version of each photo near the viewport before the page
+   cross-fades (timeTheme.js), so the photo changes in the same frame as the colours. A photo
+   whose new version is not decoded yet keeps the old one until it is, so the box never
+   collapses or flashes empty. A photo that has not loaded yet (a lazy card further down)
+   just switches its source, so offscreen cards never fetch more than the version they show. */
 export function ThemedImage({ family, defaultWidth = 1200, sizes, ref: externalRef, ...props }) {
   const { theme } = useTimeTheme();
   const [shown, setShown] = useState(() => ({ theme, family, ...themePhoto(family, theme, defaultWidth) }));
@@ -23,29 +53,34 @@ export function ThemedImage({ family, defaultWidth = 1200, sizes, ref: externalR
     [externalRef],
   );
 
+  const stale = shown.theme !== theme || shown.family !== family;
+  const next = stale ? { theme, family, ...themePhoto(family, theme, defaultWidth) } : shown;
+  // Swap during render when nothing visible would flash: no photo yet, or the new one is ready.
+  if (stale && (decoded.has(next.srcSet) || !isLoaded(element.current))) setShown(next);
+
+  useEffect(
+    () =>
+      registerThemePhoto({
+        prepare(target) {
+          const node = element.current;
+          if (!isLoaded(node) || !nearViewport(node)) return Promise.resolve();
+          return decodeVersion(themePhoto(family, target, defaultWidth), sizes);
+        },
+      }),
+    [family, defaultWidth, sizes],
+  );
+
   useEffect(() => {
-    if (shown.theme === theme && shown.family === family) return undefined;
-    const next = { theme, family, ...themePhoto(family, theme, defaultWidth) };
-    const current = element.current;
-    if (!current || !current.complete || !current.currentSrc) {
-      setShown(next);
-      return undefined;
-    }
+    if (!stale) return undefined;
     let cancelled = false;
-    const probe = new Image();
-    if (sizes) probe.sizes = sizes;
-    probe.srcset = next.srcSet;
-    probe.src = next.src;
-    const swap = () => {
-      if (!cancelled) setShown(next);
-    };
     // If the new version fails to load, keep the photo already showing rather than a broken one.
-    if (typeof probe.decode === "function") probe.decode().then(swap, () => {});
-    else swap();
+    decodeVersion(next, sizes).then(() => {
+      if (!cancelled && decoded.has(next.srcSet)) setShown(next);
+    });
     return () => {
       cancelled = true;
     };
-  }, [theme, family, defaultWidth, sizes, shown.theme, shown.family]);
+  }, [stale, next.srcSet, sizes]);
 
   // WebP only: Safari showed a broken hero with the AVIF versions (13 October 2026).
   return (

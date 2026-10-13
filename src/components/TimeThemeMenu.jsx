@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../i18n.jsx";
-import { setTimeThemeMode, useAutoClock, useTimeTheme } from "../timeTheme.js";
+import { TIME_THEMES, prepareTheme, setTimeThemeMode, useAutoClock, useTimeTheme } from "../timeTheme.js";
 
 /* AIXCO.Global v4's colour-theme menu (src/components/v4/TimeTheme.tsx): one icon in the
    header, a dropdown on hover, tap or keyboard. Icons are v4's "Structure" set: 24px grid,
@@ -78,7 +78,9 @@ export function TimeThemeMenu({ className = "", onOpen }) {
       if (!wasOpen) onOpen?.();
       return true;
     });
-  }, [onOpen]);
+    // Decode the other themes' photos while the visitor picks, so the switch is instant.
+    TIME_THEMES.filter((other) => other !== theme).forEach(prepareTheme);
+  }, [onOpen, theme]);
 
   const hideSoon = useCallback(() => {
     if (closeTimer.current) window.clearTimeout(closeTimer.current);

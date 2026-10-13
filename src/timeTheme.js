@@ -1,4 +1,5 @@
 import { useEffect, useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
 
 /* Time-of-day colour theme, copied from AIXCO.Global v4 (src/components/v4/TimeTheme.tsx and
    time-theme-boot.ts; Kemo, 8 October 2026). Day 06–14h cobalt, afternoon 14–19h sage,
@@ -37,23 +38,64 @@ function getState() {
   return state;
 }
 
+/* Theme photos on screen register here so a switch can decode their new versions first. */
+const photos = new Set();
+
+export function registerThemePhoto(photo) {
+  photos.add(photo);
+  return () => photos.delete(photo);
+}
+
+/** Starts decoding the given theme's version of every photo near the viewport. */
+export function prepareTheme(theme) {
+  return Promise.all([...photos].map((photo) => photo.prepare(theme)));
+}
+
+const notify = () => listeners.forEach((listener) => listener());
+let pendingSwitch = 0;
+
+/* Kemo (13 October 2026): switching felt laggy, with colours catching up one by one. The
+   switch is now one compositor cross-fade of the whole page (View Transitions), with every
+   colour and photo already in its new state underneath, so nothing trails behind. Browsers
+   without View Transitions (and reduced motion) switch instantly. */
 function applyTheme(mode, animate) {
   const root = document.documentElement;
   const theme = resolve(mode);
   const current = getState();
-  if (current.mode !== mode || current.theme !== theme) {
+  const unchanged = current.mode === mode && current.theme === theme
+    && root.dataset.timeTheme === theme && root.dataset.timeThemeMode === mode;
+  const ticket = ++pendingSwitch; // also cancels a switch still waiting on its photos
+  if (unchanged) return;
+
+  const commit = (sync) => {
+    if (ticket !== pendingSwitch) return;
     state = { mode, theme };
-    listeners.forEach((listener) => listener());
-  }
-  if (root.dataset.timeTheme === theme && root.dataset.timeThemeMode === mode) return;
+    root.dataset.timeTheme = theme;
+    root.dataset.timeThemeMode = mode;
+    if (sync) flushSync(notify);
+    else notify();
+  };
 
   const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  if (animate && !reduce && root.dataset.timeTheme !== theme) {
-    root.classList.add("time-theme-animating");
-    window.setTimeout(() => root.classList.remove("time-theme-animating"), 1000);
+  if (!animate || reduce || typeof document.startViewTransition !== "function" || root.dataset.timeTheme === theme) {
+    commit(false);
+    return;
   }
-  root.dataset.timeTheme = theme;
-  root.dataset.timeThemeMode = mode;
+  // Wait briefly for the new photos (usually already decoded when the menu opened), then fade.
+  const ready = Promise.race([prepareTheme(theme), new Promise((done) => window.setTimeout(done, 450))]);
+  ready.then(() => {
+    if (ticket !== pendingSwitch) return;
+    try {
+      // Hover-length colour transitions would trail the fade, so they pause until it ends.
+      const transition = document.startViewTransition(() => {
+        root.classList.add("time-theme-switching");
+        commit(true);
+      });
+      transition.finished.finally(() => root.classList.remove("time-theme-switching"));
+    } catch {
+      commit(false);
+    }
+  });
 }
 
 export function setTimeThemeMode(mode) {

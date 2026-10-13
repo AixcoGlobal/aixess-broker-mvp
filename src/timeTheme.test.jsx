@@ -116,4 +116,26 @@ describe("time-of-day theme (AIXCO.Global v4)", () => {
     expect(root.dataset.timeTheme).toBe("day");
     expect(root.dataset.timeThemeMode).toBe("auto");
   });
+
+  it("switches in one page cross-fade when the browser supports View Transitions", async () => {
+    let finish;
+    const startViewTransition = vi.fn((update) => {
+      update();
+      return { finished: new Promise((done) => { finish = done; }) };
+    });
+    document.startViewTransition = startViewTransition;
+    try {
+      window.localStorage.setItem(TIME_THEME_STORAGE_KEY, "day");
+      render(<TimeThemeMenu />);
+      fireEvent.click(screen.getByRole("button", { name: "Colour theme: Day" }));
+      fireEvent.click(screen.getByRole("radio", { name: /Night/ }));
+      await vi.waitFor(() => expect(startViewTransition).toHaveBeenCalledTimes(1));
+      expect(root.dataset.timeTheme).toBe("night");
+      expect(root.classList.contains("time-theme-switching")).toBe(true);
+      await act(async () => finish());
+      expect(root.classList.contains("time-theme-switching")).toBe(false);
+    } finally {
+      delete document.startViewTransition;
+    }
+  });
 });
