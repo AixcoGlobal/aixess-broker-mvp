@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { getAdaptiveRenderScale, getBlockCameraPose, getDefaultFov, requestRender, Reverance3D, syncCanvasResolution } from "./Reverance3D";
+import { getAdaptiveRenderScale, getBlockCameraPose, getDefaultFov, requestRender, Reverance3D, setMotionScaleCap, syncCanvasResolution } from "./Reverance3D";
 import {
   getFloorAtWorldPoint,
   getFloorWorldTransform,
@@ -49,6 +49,35 @@ describe("Reverance official 3D reconstruction", () => {
     expect(app.renderNextFrame).toBe(true);
     expect(syncCanvasResolution(app, canvas)).toBe(false);
     expect(app.setCanvasResolution).toHaveBeenCalledTimes(1);
+  });
+
+  it("drops to the motion cap while turning and restores full resolution at rest", () => {
+    const originalDpr = window.devicePixelRatio;
+    Object.defineProperty(window, "devicePixelRatio", { configurable: true, value: 2 });
+    const canvas = {
+      width: 0,
+      height: 0,
+      getBoundingClientRect: () => ({ width: 600, height: 700 }),
+    };
+    const app = {
+      renderNextFrame: false,
+      setCanvasResolution: vi.fn((mode, width, height) => {
+        canvas.width = width;
+        canvas.height = height;
+      }),
+    };
+    try {
+      syncCanvasResolution(app, canvas);
+      expect([canvas.width, canvas.height]).toEqual([1200, 1400]);
+      setMotionScaleCap(app, 1);
+      expect(syncCanvasResolution(app, canvas)).toBe(true);
+      expect([canvas.width, canvas.height]).toEqual([600, 700]);
+      setMotionScaleCap(app, Number.POSITIVE_INFINITY);
+      syncCanvasResolution(app, canvas);
+      expect([canvas.width, canvas.height]).toEqual([1200, 1400]);
+    } finally {
+      Object.defineProperty(window, "devicePixelRatio", { configurable: true, value: originalDpr });
+    }
   });
 
   it("renders touch phones at a lighter backing scale while desktop keeps 2x", () => {
