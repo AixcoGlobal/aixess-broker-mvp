@@ -15,6 +15,7 @@ import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { getWorkbookAvailableCount } from "./data/reveranceInventory.js";
+import { AixessLogo } from "./components/AixessLogo.jsx";
 
 const availableResidenceCount = getWorkbookAvailableCount();
 
@@ -67,7 +68,7 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   return (
     <header className={`site-header ${pageHeader ? "page-site-header" : ""}`}>
       <button className="brand" type="button" aria-label={t("homeAria")} onClick={() => navigate("home")}>
-        <img src="/assets/aixess-logo-white-cropped.webp" alt="AiXESS" width="2783" height="546" />
+        <AixessLogo />
       </button>
 
       <nav className="desktop-nav" aria-label={t("primaryNavigation")}>
@@ -112,7 +113,7 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
       <div className={`mobile-nav lasha-menu ${menuOpen ? "is-open" : ""}`} id="mobile-navigation">
         <div className="lasha-menu-bar">
           <button className="brand" type="button" aria-label={t("homeAria")} tabIndex={menuOpen ? 0 : -1} onClick={() => navigate("home")}>
-            <img src="/assets/aixess-logo-white-cropped.webp" alt="AiXESS" width="2783" height="546" />
+            <AixessLogo />
           </button>
           <button className="menu-toggle" type="button" aria-controls="mobile-navigation" aria-expanded={menuOpen} tabIndex={menuOpen ? 0 : -1} onClick={() => onToggleMenu(false)}>
             {t("close")}
@@ -427,7 +428,6 @@ function InsightsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenM
       <InsightsPageContent
         header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
         onOpenModal={onOpenModal}
-        availableResidences={availableResidenceCount}
       />
     </div>
   );
@@ -496,6 +496,34 @@ function AppContent() {
   const [activeModal, setActiveModal] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(routeFromLocation);
+
+  // The MENU panel exists only while the header is collapsed (below 1400px, the same breakpoint as
+  // the CSS). Widening the window past it, or pressing Escape, closes the panel so no stale open
+  // state or scroll lock is left behind. While it is open the page behind is inert, so keyboard
+  // focus stays in the panel, which sits outside #root.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const root = document.getElementById("root");
+    const wide = window.matchMedia?.("(min-width: 1400px)");
+    const closeIfWide = () => { if (wide?.matches) setMenuOpen(false); };
+    const closeOnEscape = (event) => {
+      if (event.key !== "Escape") return;
+      setMenuOpen(false);
+    };
+    closeIfWide();
+    if (root) root.inert = true;
+    document.querySelector(".lasha-menu .lasha-menu-bar .menu-toggle")?.focus({ preventScroll: true });
+    wide?.addEventListener?.("change", closeIfWide);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      if (root) root.inert = false;
+      wide?.removeEventListener?.("change", closeIfWide);
+      document.removeEventListener("keydown", closeOnEscape);
+      const toggle = document.querySelector(".site-header .menu-toggle");
+      const active = document.activeElement;
+      if (toggle?.offsetParent && (!active || active === document.body || active.closest(".lasha-menu"))) toggle.focus({ preventScroll: true });
+    };
+  }, [menuOpen]);
 
   const openModal = (type) => {
     setMenuOpen(false);

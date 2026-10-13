@@ -1,9 +1,10 @@
-import { BookOpenText, Buildings, Calculator, ChartBar, ChartLineUp, FilePdf, FolderOpen, UsersThree } from "@phosphor-icons/react";
+import { BookOpenText, Buildings, ChartBar, ChartLineUp, FilePdf, FolderOpen, TreeStructure, UsersThree } from "@phosphor-icons/react";
 import { useLanguage } from "../i18n.jsx";
-import { NETWORK_COPY } from "../network-copy.js";
+import { AIXCO_FAQ } from "../aixco-faq-copy.js";
 import { INSIGHTS_TOOLS_COPY } from "../insights-tools-copy.js";
 import { LashaArrow, LashaPageHero } from "./LashaHomeSections.jsx";
 import "./insights-tools.css";
+import { genericPhoto } from "../data/genericPhotos.js";
 
 const asset = (path) => `/assets/${path}`;
 
@@ -28,30 +29,20 @@ function SectionHeading({ id, eyebrow, title, copy, children }) {
 // Insights, from the left half of Klem's 12 October picture. Only Batumi has approved
 // imagery, so the Dubai and Switzerland briefs are typographic until their pictures exist,
 // and briefs without a published article say so instead of linking nowhere.
-export function InsightsPageContent({ header, onOpenModal, availableResidences }) {
-  const { t, locale } = useLanguage();
+export function InsightsPageContent({ header, onOpenModal }) {
+  const { locale } = useLanguage();
   const { insights: c } = useCopy();
-  const network = NETWORK_COPY[locale] || NETWORK_COPY.en;
-  const faqs = [
-    [t("foreignersOwnQuestion"), t("foreignersOwnAnswer")],
-    [t("minimumInvestmentQuestion"), `${network.start}. ${network.terms}`],
-    [t("reveranceOfferQuestion"), t("reveranceOfferAnswer", { count: availableResidences })],
-    [c.paymentQuestion, c.paymentAnswer],
-    [c.financingQuestion, c.financingAnswer],
-    [c.costsQuestion, c.costsAnswer],
-    [c.completionQuestion, c.completionAnswer],
-    [c.rentQuestion, c.rentAnswer],
-  ];
+  const faqs = AIXCO_FAQ[locale] || AIXCO_FAQ.en;
   const articleMedia = [
     { src: asset("projects/reverance-aerial-600.webp"), srcSet: `${asset("projects/reverance-aerial-600.webp")} 600w, ${asset("projects/reverance-aerial-1200.webp")} 1200w` },
-    null,
-    null,
+    genericPhoto("dubai-skyline", 800),
+    { ...genericPhoto("switzerland-lake", 800), position: "70% 50%" },
   ];
   const resourceMedia = [
     { src: asset("projects/reverance-front-700.webp") },
     { icon: BookOpenText },
     { icon: ChartLineUp },
-    { src: asset("projects/reverance-terrace-656.webp") },
+    { ...genericPhoto("coastal-terrace", 800), position: "62% 50%" },
   ];
   // Brochures and the lifestyle guide go through the existing materials request;
   // buyer guides and market reports are not published yet.
@@ -59,12 +50,7 @@ export function InsightsPageContent({ header, onOpenModal, availableResidences }
 
   return (
     <>
-      <LashaPageHero header={header} eyebrow={c.eyebrow} title={c.title} image="aerial" copy={c.copy}>
-        <div className="page-cta-row it-hero-actions">
-          <a className="button button-primary" href="#market-insights">{c.explore}<LashaArrow length={24} /></a>
-          <button className="button button-ghost" type="button" onClick={() => onOpenModal("register")}>{c.partner}</button>
-        </div>
-      </LashaPageHero>
+      <LashaPageHero header={header} eyebrow={c.eyebrow} title={c.title} image="coastal-city" copy={c.copy} />
       <main className="page-main it-main">
         <section className="it-section it-ink" id="market-insights" aria-labelledby="it-market-title">
           <SectionHeading id="it-market-title" eyebrow={c.marketEyebrow} title={c.marketTitle} copy={c.marketCopy}>
@@ -108,25 +94,21 @@ export function InsightsPageContent({ header, onOpenModal, availableResidences }
 
         <section className="it-section it-mist" aria-labelledby="it-faq-title">
           <SectionHeading id="it-faq-title" eyebrow={c.faqEyebrow} title={c.faqTitle} />
+          {/* Two independent columns in source order, so opening an answer never stretches the other column. */}
           <div className="it-faq">
-            {faqs.map(([question, answer]) => (
-              <details key={question}>
-                <summary>{question}<span aria-hidden="true">+</span></summary>
-                <p>{answer}</p>
-              </details>
+            {[faqs.slice(0, Math.ceil(faqs.length / 2)), faqs.slice(Math.ceil(faqs.length / 2))].map((column, index) => (
+              <div className="it-faq-column" key={index}>
+                {column.map(([question, answer]) => (
+                  <details key={question}>
+                    <summary>{question}<span aria-hidden="true">+</span></summary>
+                    <p>{answer}</p>
+                  </details>
+                ))}
+              </div>
             ))}
           </div>
         </section>
 
-        <section className="it-cta" aria-labelledby="it-cta-title">
-          <img src={asset("projects/reverance-terrace-1312.webp")} alt="" loading="lazy" decoding="async" />
-          <div>
-            <p className="it-eyebrow">{c.ctaEyebrow}</p>
-            <h2 id="it-cta-title">{c.ctaTitle}</h2>
-            <p className="it-lead">{c.ctaCopy}</p>
-            <button className="button button-primary" type="button" onClick={() => onOpenModal("register")}>{c.partner}<LashaArrow length={24} /></button>
-          </div>
-        </section>
       </main>
     </>
   );
@@ -140,12 +122,12 @@ function CardMedia({ media, label }) {
   }
   return (
     <div className="it-card-media">
-      <img src={media.src} srcSet={media.srcSet} sizes="(max-width: 899px) 100vw, 30vw" alt="" loading="lazy" decoding="async" />
+      <img src={media.src} srcSet={media.srcSet} sizes="(max-width: 899px) 100vw, 30vw" width={media.width} height={media.height} style={media.position ? { objectPosition: media.position } : undefined} alt="" loading="lazy" decoding="async" />
     </div>
   );
 }
 
-const FEATURE_ICONS = [Buildings, FilePdf, Calculator, UsersThree, ChartBar, FolderOpen];
+const FEATURE_ICONS = [Buildings, FilePdf, TreeStructure, UsersThree, ChartBar, FolderOpen];
 
 // Previews are approved project imagery or neutral sketches with no figures, names or
 // records: the real tools live behind the broker login, not on this public page.
@@ -163,7 +145,7 @@ function FeaturePreview({ index, label }) {
   return (
     <div className={`it-preview-sketch it-preview-sketch-${index}`} aria-hidden="true">
       <span className="it-preview-label">{label}</span>
-      {index === 2 && <><i /><i /><i /><b /></>}
+      {index === 2 && <svg className="it-preview-network" viewBox="0 0 200 110" aria-hidden="true"><path d="M100 26 L46 62 M100 26 L100 62 M100 26 L154 62 M46 62 L22 94 M46 62 L70 94 M154 62 L130 94 M154 62 L178 94" /><circle cx="100" cy="26" r="11" /><circle cx="46" cy="62" r="8" /><circle cx="100" cy="62" r="8" /><circle cx="154" cy="62" r="8" />{[22, 70, 130, 178].map((x) => <circle key={x} cx={x} cy="94" r="6" />)}</svg>}
       {index === 3 && <><i /><i /><i /><i /></>}
       {index === 4 && <div className="it-preview-bars">{[38, 52, 46, 64, 72, 88].map((height) => <i key={height} style={{ height: `${height}%` }} />)}</div>}
     </div>
@@ -177,7 +159,7 @@ export function BrokerToolsPageContent({ header, onOpenModal }) {
   const { tools: c } = useCopy();
   return (
     <>
-      <LashaPageHero header={header} eyebrow={c.eyebrow} title={c.title} image="tower" copy={c.copy}>
+      <LashaPageHero header={header} eyebrow={c.eyebrow} title={c.title} image="marina-towers" copy={c.copy}>
         <div className="page-cta-row it-hero-actions">
           <button className="button button-primary" type="button" onClick={() => onOpenModal("register")}>{c.partner}<LashaArrow length={24} /></button>
           <button className="button button-ghost" type="button" onClick={() => onOpenModal("login")}>{c.login}</button>

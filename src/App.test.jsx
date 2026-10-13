@@ -1,9 +1,10 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import { NETWORK_COPY } from "./network-copy";
 import { HOME_HERO_LINES } from "./project-showcase-copy";
 import { LASHA_HOME_COPY } from "./lasha-home-copy";
+import { AIXCO_FAQ } from "./aixco-faq-copy";
 
 beforeEach(() => {
   window.history.replaceState({}, "", "/#why-aixess");
@@ -27,6 +28,72 @@ describe("AIXESS navigation pages", () => {
       "INSIGHTS",
       "BROKER TOOLS",
     ]);
+  });
+
+  it("draws Lasha's vector wordmark as the home link on every header", () => {
+    window.history.replaceState({}, "", "/#insights");
+    render(<App />);
+    const logos = document.querySelectorAll(".brand svg[role='img'][aria-label='AiXESS']");
+    expect(logos.length).toBeGreaterThanOrEqual(1);
+    logos.forEach((logo) => {
+      expect(logo.getAttribute("viewBox")).toBe("0 0 1136.2 359");
+      expect(logo.querySelectorAll("path")).toHaveLength(6);
+    });
+    expect(document.querySelector("img[src*='aixess-logo']")).toBeNull();
+  });
+
+  it("styles the open MENU panel at every width where the header collapses to MENU", async () => {
+    // Klem, 13 October: in a part-width desktop window MENU opened an unstyled black panel with
+    // dark labels, because the header collapsed below 1400px but the panel styles began at 1220px.
+    const { readFile } = await import("node:fs/promises");
+    const header = await readFile("src/styles.css", "utf8");
+    const menu = await readFile("src/components/lasha-pages.css", "utf8");
+    const collapse = header.match(/@media \(max-width: (\d+)px\) \{[^@]*?\.desktop-nav,\s*\.header-actions \{ display: none; \}/);
+    expect(collapse).not.toBeNull();
+    // The panel's own styles (ink ground, paper labels) and the Reverance sub-entry, not the
+    // narrower phone refinements.
+    const panelBreakpoints = [...menu.matchAll(/@media \(max-width: (\d+)px\) \{\s*\.mobile-nav\.lasha-menu(?: > button\.lasha-menu-sub)? \{\s*(?:z-index|min-height)/g)].map((m) => m[1]);
+    expect(panelBreakpoints).toHaveLength(2);
+    panelBreakpoints.forEach((width) => expect(width).toBe(collapse[1]));
+  });
+
+  it("closes the MENU panel with Escape or when the window widens past the collapsed header", () => {
+    const listeners = new Set();
+    const query = { matches: false, addEventListener: (_, fn) => listeners.add(fn), removeEventListener: (_, fn) => listeners.delete(fn) };
+    const original = window.matchMedia;
+    window.matchMedia = (media) => (media === "(min-width: 1400px)" ? query : original(media));
+    try {
+      window.history.replaceState({}, "", "/#insights");
+      render(<App />);
+      const panel = document.getElementById("mobile-navigation");
+      const toggle = document.querySelector(".site-header .menu-toggle");
+      fireEvent.click(toggle);
+      expect(panel).toHaveClass("is-open");
+      expect(within(panel).getAllByRole("button").map((button) => button.textContent)).toEqual(expect.arrayContaining(["AIXESS ADVANTAGE", "BROKER ACCESS", "SELECTED OPPORTUNITIES", "Georgia Batumi - Reverance", "INSIGHTS", "BROKER TOOLS"]));
+      fireEvent.keyDown(document, { key: "Escape" });
+      expect(panel).not.toHaveClass("is-open");
+
+      fireEvent.click(toggle);
+      expect(panel).toHaveClass("is-open");
+      query.matches = true;
+      act(() => listeners.forEach((fn) => fn()));
+      expect(panel).not.toHaveClass("is-open");
+      expect(listeners.size).toBe(0);
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
+  it("shows Klem's brand photos on the Dubai, Switzerland and Lifestyle cards instead of colour blocks", () => {
+    window.history.replaceState({}, "", "/#insights");
+    render(<App />);
+    const sources = Array.from(document.querySelectorAll(".it-card-media img")).map((img) => img.getAttribute("src"));
+    expect(sources).toEqual(expect.arrayContaining([
+      expect.stringContaining("/assets/generic/dubai-skyline-"),
+      expect.stringContaining("/assets/generic/switzerland-lake-"),
+      expect.stringContaining("/assets/generic/coastal-terrace-"),
+    ]));
+    expect(document.querySelector(".lasha-page-hero-media").getAttribute("src")).toContain("/assets/generic/coastal-city-");
   });
 
   it("puts the newer first-page brief on the homepage while retaining the existing structure", () => {
@@ -171,14 +238,34 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { name: /request project materials/i })).toBeInTheDocument();
   });
 
-  it("answers the eight Insights questions in a native accordion", () => {
+  it("answers the twelve AIXCO.Global FAQ entries in a native accordion, in source order", () => {
     window.history.replaceState({}, "", "/#insights");
     const { container } = render(<App />);
 
-    const items = container.querySelectorAll(".it-faq details");
-    expect(items).toHaveLength(8);
-    expect(Array.from(items).every((item) => !item.open)).toBe(true);
-    expect(within(items[0]).getByText("Can foreigners own property in Georgia?").tagName).toBe("SUMMARY");
+    const items = Array.from(container.querySelectorAll(".it-faq details"));
+    expect(items).toHaveLength(12);
+    expect(items.every((item) => !item.open)).toBe(true);
+    expect(items.map((item) => item.querySelector("summary").textContent.replace("+", ""))).toEqual(AIXCO_FAQ.en.map(([question]) => question));
+    expect(within(items[1]).getByText("The minimum investment amount is €5,000.")).toBeInTheDocument();
+  });
+
+  it("drops the Insights hero actions and the closing partner banner", () => {
+    window.history.replaceState({}, "", "/#insights");
+    const { container } = render(<App />);
+
+    expect(container.querySelector(".lasha-page-hero-copy .button")).not.toBeInTheDocument();
+    expect(screen.queryByText("JOIN THE AIXESS BROKER NETWORK.")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /EXPLORE INSIGHTS/ })).not.toBeInTheDocument();
+  });
+
+  it("describes Broker Network & Team Management as the third broker tool", () => {
+    window.history.replaceState({}, "", "/#broker-tools");
+    const { container } = render(<App />);
+
+    const cards = container.querySelectorAll(".it-feature");
+    expect(cards).toHaveLength(6);
+    expect(cards[2]).toHaveTextContent("03. BROKER NETWORK & TEAM MANAGEMENT");
+    expect(screen.queryByText(/SMART SALES CALCULATIONS/)).not.toBeInTheDocument();
   });
 
   it("keeps the calculators and client PDF generator off the public Broker Tools page", async () => {
