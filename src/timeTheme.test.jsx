@@ -138,4 +138,28 @@ describe("time-of-day theme (AIXCO.Global v4)", () => {
       delete document.startViewTransition;
     }
   });
+
+  it("keeps a manual choice when the automatic clock ticks while it fades in", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 9, 8, 15, 0));
+    const startViewTransition = vi.fn((update) => {
+      update();
+      return { finished: Promise.resolve() };
+    });
+    document.startViewTransition = startViewTransition;
+    try {
+      render(<TimeThemeMenu />);
+      expect(root.dataset.timeTheme).toBe("afternoon");
+      fireEvent.click(screen.getByRole("button", { name: "Colour theme: Auto" }));
+      fireEvent.click(screen.getByRole("radio", { name: /Night/ }));
+      // The clock re-checks (tab returns) before the fade has started.
+      document.dispatchEvent(new Event("visibilitychange"));
+      await vi.waitFor(() => expect(startViewTransition).toHaveBeenCalled());
+      await act(async () => {});
+      expect(root.dataset.timeTheme).toBe("night");
+      expect(root.dataset.timeThemeMode).toBe("night");
+    } finally {
+      delete document.startViewTransition;
+    }
+  });
 });

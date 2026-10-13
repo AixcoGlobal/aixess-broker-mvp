@@ -53,6 +53,10 @@ export function prepareTheme(theme) {
 
 const notify = () => listeners.forEach((listener) => listener());
 let pendingSwitch = 0;
+let pending = null; // the { mode, theme } a fade is still preparing
+
+/** The mode the visitor asked for, counting a switch that has not committed yet. */
+const intendedMode = () => (pending ?? getState()).mode;
 
 /* Kemo (13 October 2026): switching felt laggy, with colours catching up one by one. The
    switch is now one compositor cross-fade of the whole page (View Transitions), with every
@@ -64,11 +68,14 @@ function applyTheme(mode, animate) {
   const current = getState();
   const unchanged = current.mode === mode && current.theme === theme
     && root.dataset.timeTheme === theme && root.dataset.timeThemeMode === mode;
+  if (pending && pending.mode === mode && pending.theme === theme) return; // already on its way
   const ticket = ++pendingSwitch; // also cancels a switch still waiting on its photos
+  pending = null;
   if (unchanged) return;
 
   const commit = (sync) => {
     if (ticket !== pendingSwitch) return;
+    pending = null;
     state = { mode, theme };
     root.dataset.timeTheme = theme;
     root.dataset.timeThemeMode = mode;
@@ -81,6 +88,7 @@ function applyTheme(mode, animate) {
     commit(false);
     return;
   }
+  pending = { mode, theme };
   // Wait briefly for the new photos (usually already decoded when the menu opened), then fade.
   const ready = Promise.race([prepareTheme(theme), new Promise((done) => window.setTimeout(done, 450))]);
   ready.then(() => {
@@ -120,11 +128,14 @@ export function useTimeTheme() {
 /** Keeps "auto" in step with the clock while the page stays open. */
 export function useAutoClock(mode) {
   useEffect(() => {
-    const actual = getState().mode;
+    const actual = intendedMode();
     applyTheme(actual, false);
     if (actual !== "auto") return undefined;
 
-    const tick = () => applyTheme("auto", true);
+    // A manual choice still fading in must not be overridden by the clock.
+    const tick = () => {
+      if (intendedMode() === "auto") applyTheme("auto", true);
+    };
     const interval = window.setInterval(tick, 60_000);
     const onVisible = () => {
       if (document.visibilityState === "visible") tick();
@@ -140,4 +151,5 @@ export function useAutoClock(mode) {
 /** Test hook: forget the cached state so the next read starts from storage again. */
 export function resetTimeThemeForTests() {
   state = null;
+  pending = null;
 }
