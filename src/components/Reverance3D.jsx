@@ -101,6 +101,16 @@ const SPLAT_MIN_PIXEL_SIZE_PHONE = 1;
 // and any damped camera motion land on screen, then let the GPU idle.
 const RENDER_TAIL_MS = 600;
 const RENDER_TAIL_LOADING_MS = 1500;
+// Motion resolution: every Gaussian is a blended quad, so a 2x backing buffer
+// costs four times the fill of 1x. While the camera turns, the governor drops
+// to the next cap whenever frames run slower than about 48 fps, and restores
+// the full resolution once the camera has rested. Fast GPUs never leave full
+// resolution; the level a slow device needed is remembered for the next turn.
+const MOTION_SCALE_CAPS = [1.5, 1.25, 1, 0.8];
+const MOTION_SLOW_FRAME_MS = 21;
+const MOTION_FAST_FRAME_MS = 13;
+const MOTION_SAMPLE_FRAMES = 5;
+const MOTION_REST_MS = 220;
 const POSE_EPSILON = 1e-6;
 const CANVAS_STYLE = { width: "100%", height: "100%" };
 const SPLAT_DEVICE_TYPES = [DEVICETYPE_WEBGL2, DEVICETYPE_WEBGPU];
@@ -355,10 +365,21 @@ export function requestRender(app) {
   app.fire?.(RENDER_REQUEST_EVENT);
 }
 
+// Per-app render-scale cap applied while the camera moves (Infinity at rest).
+const motionScaleCaps = new WeakMap();
+
+export function setMotionScaleCap(app, cap) {
+  if (!app) return;
+  motionScaleCaps.set(app, cap);
+}
+
 export function syncCanvasResolution(app, canvas) {
   const bounds = canvas.getBoundingClientRect();
   if (bounds.width <= 0 || bounds.height <= 0) return false;
-  const scale = getAdaptiveRenderScale(bounds.width, bounds.height);
+  const scale = Math.min(
+    getAdaptiveRenderScale(bounds.width, bounds.height),
+    motionScaleCaps.get(app) ?? Number.POSITIVE_INFINITY,
+  );
   const width = Math.max(1, Math.round(bounds.width * scale));
   const height = Math.max(1, Math.round(bounds.height * scale));
   if (canvas.width === width && canvas.height === height) return false;
@@ -590,6 +611,18 @@ function RenderGovernor({ splatReady }) {
     const canvas = app.graphicsDevice.canvas;
     const now = () => window.performance?.now?.() ?? Date.now();
     const lastPose = new Float64Array(10).fill(Number.NaN);
+    // Motion resolution state; see MOTION_SCALE_CAPS.
+    const motion = {
+      level: 0,
+      maxLevel: MOTION_SCALE_CAPS.length,
+      trial: null,
+      applied: 0,
+      lastTick: 0,
+      lastMove: 0,
+      wasMoving: false,
+      frameMs: 0,
+      samples: 0,
+    };
     let visible = true;
     let sortArrived = false;
     let renderUntil = now() + RENDER_TAIL_LOADING_MS;
@@ -599,16 +632,95 @@ function RenderGovernor({ splatReady }) {
     };
     keepAliveRef.current = keepAlive;
 
+    const applyMotionLevel = (level) => {
+      if (motion.applied === level) return;
+      motion.applied = level;
+      setMotionScaleCap(app, level > 0 ? MOTION_SCALE_CAPS[level - 1] : Number.POSITIVE_INFINITY);
+      // Resizing here, before this tick draws, means the cleared canvas is
+      // redrawn in the same frame and never shows blank.
+      syncCanvasResolution(app, canvas);
+    };
+
+    // The next cap that is a real step below the current scale; a cap within
+    // 10% of it would cost a resize without saving any work.
+    const nextMotionLevel = (level) => {
+      const bounds = canvas.getBoundingClientRect();
+      const current = Math.min(
+        getAdaptiveRenderScale(bounds.width, bounds.height),
+        level > 0 ? MOTION_SCALE_CAPS[level - 1] : Number.POSITIVE_INFINITY,
+      );
+      let next = level + 1;
+      while (next <= MOTION_SCALE_CAPS.length && MOTION_SCALE_CAPS[next - 1] > current * 0.9) next += 1;
+      return next;
+    };
+
+    // Runs every tick. `moving` is whether the camera pose changed this tick.
+    const updateMotionResolution = (moving, time) => {
+      const sinceLastTick = time - motion.lastTick;
+      motion.lastTick = time;
+      const continuing = motion.wasMoving;
+      motion.wasMoving = moving;
+      if (!moving) {
+        motion.samples = 0;
+        if (motion.applied && time - motion.lastMove >= MOTION_REST_MS) {
+          applyMotionLevel(0);
+          keepAlive();
+        }
+        return;
+      }
+      motion.lastMove = time;
+      if (!continuing) {
+        // A new turn starts at the level the last one needed.
+        motion.samples = 0;
+        motion.trial = null;
+        applyMotionLevel(motion.level);
+        return;
+      }
+      // rAF intervals stretch when the GPU cannot keep up, so the interval
+      // between consecutive moving ticks is the frame time the visitor sees.
+      motion.frameMs = motion.samples
+        ? motion.frameMs + (sinceLastTick - motion.frameMs) * 0.35
+        : sinceLastTick;
+      motion.samples += 1;
+      if (motion.samples < MOTION_SAMPLE_FRAMES) return;
+      if (motion.trial) {
+        // A step that did not make frames faster means the GPU was not the
+        // limit (a 30 Hz low-power cap, a busy main thread): undo it and never
+        // go that low again, so sharpness is not traded for nothing.
+        if (motion.frameMs > motion.trial.frameMs * 0.85) {
+          motion.level = motion.trial.level;
+          motion.maxLevel = motion.trial.level;
+          applyMotionLevel(motion.level);
+        }
+        motion.trial = null;
+        motion.samples = 0;
+        return;
+      }
+      const next = nextMotionLevel(motion.level);
+      if (motion.frameMs > MOTION_SLOW_FRAME_MS && next <= motion.maxLevel) {
+        motion.trial = { level: motion.level, frameMs: motion.frameMs };
+        motion.level = next;
+        motion.samples = 0;
+        applyMotionLevel(motion.level);
+      } else if (motion.frameMs < MOTION_FAST_FRAME_MS && motion.level > 0 && motion.samples > 60) {
+        // Consistently fast for a second: try one step sharper next turn.
+        motion.level -= 1;
+        motion.samples = 0;
+      }
+    };
+
     const poseChanged = () => {
       const cameras = app.systems.camera?.cameras;
       const camera = cameras?.[0];
       if (!camera?.entity) return false;
       const position = camera.entity.getPosition();
       const rotation = camera.entity.getRotation();
+      // The backing size is deliberately not part of the pose: motion
+      // resolution changes it, and that must not count as camera movement.
       const next = [
         position.x, position.y, position.z,
         rotation.x, rotation.y, rotation.z, rotation.w,
-        camera.fov, app.graphicsDevice.width, app.graphicsDevice.height,
+        camera.fov, 0, 0,
       ];
       let changed = false;
       for (let index = 0; index < next.length; index += 1) {
@@ -631,7 +743,9 @@ function RenderGovernor({ splatReady }) {
       }
       if (app.renderNextFrame) keepAlive();
       if (!splatReadyRef.current) keepAlive(RENDER_TAIL_LOADING_MS);
-      if (poseChanged()) keepAlive();
+      const moving = poseChanged();
+      if (moving) keepAlive();
+      updateMotionResolution(moving && splatReadyRef.current, now());
       if (sortArrived || now() < renderUntil) app.renderNextFrame = true;
       sortArrived = false;
     };
@@ -674,6 +788,7 @@ function RenderGovernor({ splatReady }) {
 
     return () => {
       observer?.disconnect();
+      setMotionScaleCap(app, Number.POSITIVE_INFINITY);
       app.off("framerender", handleFrameRender);
       app.off(RENDER_REQUEST_EVENT, handleRenderRequest);
       app.scene?.off?.("gsplat:sorted", handleSorted);
@@ -898,7 +1013,10 @@ function CameraRig({ apiRef, fov, interactive, manualCameraRef, onCameraReady, p
         rotateSpeed={0.12}
         zoomSpeed={0}
         moveDamping={0.96}
-        rotateDamping={0.9}
+        // About 33 ms of smoothing: mouse and touch events arrive off the
+        // display's frame grid, and 0.9 (10 ms) passed that jitter straight to
+        // the camera. This glides without feeling detached from the pointer.
+        rotateDamping={0.97}
         zoomDamping={0.965}
         focusDamping={CAMERA_FOCUS_DAMPING}
       />
