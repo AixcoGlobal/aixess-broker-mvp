@@ -1,4 +1,5 @@
 import { useEffect, useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
 
 /* Time-of-day colour theme, copied from AIXCO.Global v4 (src/components/v4/TimeTheme.tsx and
    time-theme-boot.ts; Kemo, 8 October 2026). Day 06–14h cobalt, afternoon 14–19h sage,
@@ -37,23 +38,72 @@ function getState() {
   return state;
 }
 
+/* Theme photos on screen register here so a switch can decode their new versions first. */
+const photos = new Set();
+
+export function registerThemePhoto(photo) {
+  photos.add(photo);
+  return () => photos.delete(photo);
+}
+
+/** Starts decoding the given theme's version of every photo near the viewport. */
+export function prepareTheme(theme) {
+  return Promise.all([...photos].map((photo) => photo.prepare(theme)));
+}
+
+const notify = () => listeners.forEach((listener) => listener());
+let pendingSwitch = 0;
+let pending = null; // the { mode, theme } a fade is still preparing
+
+/** The mode the visitor asked for, counting a switch that has not committed yet. */
+const intendedMode = () => (pending ?? getState()).mode;
+
+/* Kemo (13 October 2026): switching felt laggy, with colours catching up one by one. The
+   switch is now one compositor cross-fade of the whole page (View Transitions), with every
+   colour and photo already in its new state underneath, so nothing trails behind. Browsers
+   without View Transitions (and reduced motion) switch instantly. */
 function applyTheme(mode, animate) {
   const root = document.documentElement;
   const theme = resolve(mode);
   const current = getState();
-  if (current.mode !== mode || current.theme !== theme) {
+  const unchanged = current.mode === mode && current.theme === theme
+    && root.dataset.timeTheme === theme && root.dataset.timeThemeMode === mode;
+  if (pending && pending.mode === mode && pending.theme === theme) return; // already on its way
+  const ticket = ++pendingSwitch; // also cancels a switch still waiting on its photos
+  pending = null;
+  if (unchanged) return;
+
+  const commit = (sync) => {
+    if (ticket !== pendingSwitch) return;
+    pending = null;
     state = { mode, theme };
-    listeners.forEach((listener) => listener());
-  }
-  if (root.dataset.timeTheme === theme && root.dataset.timeThemeMode === mode) return;
+    root.dataset.timeTheme = theme;
+    root.dataset.timeThemeMode = mode;
+    if (sync) flushSync(notify);
+    else notify();
+  };
 
   const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  if (animate && !reduce && root.dataset.timeTheme !== theme) {
-    root.classList.add("time-theme-animating");
-    window.setTimeout(() => root.classList.remove("time-theme-animating"), 1000);
+  if (!animate || reduce || typeof document.startViewTransition !== "function" || root.dataset.timeTheme === theme) {
+    commit(false);
+    return;
   }
-  root.dataset.timeTheme = theme;
-  root.dataset.timeThemeMode = mode;
+  pending = { mode, theme };
+  // Wait briefly for the new photos (usually already decoded when the menu opened), then fade.
+  const ready = Promise.race([prepareTheme(theme), new Promise((done) => window.setTimeout(done, 450))]);
+  ready.then(() => {
+    if (ticket !== pendingSwitch) return;
+    try {
+      // Hover-length colour transitions would trail the fade, so they pause until it ends.
+      const transition = document.startViewTransition(() => {
+        root.classList.add("time-theme-switching");
+        commit(true);
+      });
+      transition.finished.finally(() => root.classList.remove("time-theme-switching"));
+    } catch {
+      commit(false);
+    }
+  });
 }
 
 export function setTimeThemeMode(mode) {
@@ -78,11 +128,14 @@ export function useTimeTheme() {
 /** Keeps "auto" in step with the clock while the page stays open. */
 export function useAutoClock(mode) {
   useEffect(() => {
-    const actual = getState().mode;
+    const actual = intendedMode();
     applyTheme(actual, false);
     if (actual !== "auto") return undefined;
 
-    const tick = () => applyTheme("auto", true);
+    // A manual choice still fading in must not be overridden by the clock.
+    const tick = () => {
+      if (intendedMode() === "auto") applyTheme("auto", true);
+    };
     const interval = window.setInterval(tick, 60_000);
     const onVisible = () => {
       if (document.visibilityState === "visible") tick();
@@ -98,4 +151,5 @@ export function useAutoClock(mode) {
 /** Test hook: forget the cached state so the next read starts from storage again. */
 export function resetTimeThemeForTests() {
   state = null;
+  pending = null;
 }
