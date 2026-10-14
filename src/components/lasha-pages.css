@@ -892,4 +892,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
   .lasha-page .purchase-benefit-tiers { grid-template-columns: minmax(0, 1fr); }
   .lasha-page .purchase-benefit-tiers li { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); grid-template-rows: auto; align-items: center; }
   .lasha-page .purchase-benefit-arrow { transform: none; }
+  /* Long labels (Russian ПЕРВОНАЧАЛЬНЫЙ) must stay inside their tier on 320px phones. */
+  .lasha-page .purchase-benefit-tiers p { min-width: 0; }
+  .lasha-page .purchase-benefit-tiers p span { hyphens: manual; overflow-wrap: anywhere; }
 }
