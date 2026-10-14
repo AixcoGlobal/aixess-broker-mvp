@@ -17,6 +17,7 @@ import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { getWorkbookAvailableCount } from "./data/reveranceInventory.js";
 import { AixessLogo } from "./components/AixessLogo.jsx";
+import { CONTACT } from "./contact-copy.js";
 
 const availableResidenceCount = getWorkbookAvailableCount();
 
@@ -239,8 +240,17 @@ function LanguageSwitcher({ languageOpen, setLanguageOpen }) {
     const onKeyDown = (event) => {
       if (event.key === "Escape") setLanguageOpen(false);
     };
+    // A click anywhere else closes the list, like the theme menu and the projects dropdown. The
+    // header and the phone menu each render a switcher sharing this state, so any switcher counts.
+    const onPointerDown = (event) => {
+      if (!event.target.closest?.(".language-switcher")) setLanguageOpen(false);
+    };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
   }, [languageOpen, setLanguageOpen]);
 
   const chooseLanguage = (code) => {
@@ -291,17 +301,36 @@ function Modal({ type, onClose, onSwitch }) {
   const [submitError, setSubmitError] = useState(false);
   const [requestId] = useState(() => crypto.randomUUID());
 
+  const panelRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // Focus moves into the dialog, Tab stays inside it, and closing returns focus to the button
+  // that opened it, so keyboard and screen-reader users are not left on the page behind.
   useEffect(() => {
+    const previouslyFocused = document.activeElement;
+    const focusable = () => [...(panelRef.current?.querySelectorAll("button:not([disabled]), input:not([tabindex='-1']), a[href]") || [])]
+      .filter((element) => element.offsetParent !== null);
     const onKeyDown = (event) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") { onCloseRef.current(); return; }
+      if (event.key !== "Tab") return;
+      const items = focusable();
+      if (!items.length) return;
+      const first = items[0];
+      const last = items.at(-1);
+      if (!panelRef.current.contains(document.activeElement)) { event.preventDefault(); first.focus(); }
+      else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     };
     document.body.classList.add("modal-open");
     window.addEventListener("keydown", onKeyDown);
+    (panelRef.current?.querySelector("input:not([tabindex='-1'])") || panelRef.current)?.focus({ preventScroll: true });
     return () => {
       document.body.classList.remove("modal-open");
       window.removeEventListener("keydown", onKeyDown);
+      if (previouslyFocused instanceof HTMLElement && previouslyFocused.isConnected) previouslyFocused.focus({ preventScroll: true });
     };
-  }, [onClose]);
+  }, []);
 
   const content = {
     register: {
@@ -328,6 +357,8 @@ function Modal({ type, onClose, onSwitch }) {
     <div className="modal-backdrop" role="presentation" onMouseDown={onClose}>
       <section
         className="modal-panel"
+        ref={panelRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -546,7 +577,14 @@ function AppContent() {
       window.location.assign(workwiseBrokerUrl(type, locale));
       return;
     }
-    track("materials_open");
+    if (type === "materials") {
+      // The Vercel site has no server to store a form, so a request for materials is an email to
+      // AIXCO's verified address (the form only ever answered "We couldn't save your request").
+      track("materials_open");
+      const subject = `AiXESS · Project Reverance: ${t("projectMaterials").replace(/[.。]$/, "")}`;
+      window.location.assign(`mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}`);
+      return;
+    }
     setActiveModal(type);
   };
 
