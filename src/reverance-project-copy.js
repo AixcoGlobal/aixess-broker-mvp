@@ -105,7 +105,7 @@ export const REVERANCE_PROJECT_COPY = {
     benefitEyebrow: "ЭКСКЛЮЗИВНОЕ ПРЕИМУЩЕСТВО ПРИ ПОКУПКЕ",
     benefitTitle: "Больше взнос. Больше выгода.",
     benefitCopy: "Увеличьте первоначальный взнос и получите эксклюзивную экономию при покупке недвижимости.",
-    downPayment: "ПЕРВОНАЧАЛЬНЫЙ ВЗНОС",
+    downPayment: "ПЕРВО\u00adНАЧАЛЬНЫЙ ВЗНОС", // soft hyphen: the word is wider than a tier on 320px phones
     discount: "СКИДКА",
     benefitClosing: "Вложите больше. Сэкономьте больше.",
   },
