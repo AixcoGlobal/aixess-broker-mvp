@@ -1948,29 +1948,32 @@ export function Reverance3D({ snapshot, onSelectFloor, highlightedFloor = null, 
 
       {canRenderSplat && loadState.status === "ready" && (
         <>
-          <button
-            className={`model-reset-view ${interactive ? "is-visible" : ""}`}
-            type="button"
-            tabIndex={interactive ? 0 : -1}
-            onClick={handleResetView}
-          >
-            {t("resetView")}
-          </button>
-          {blocks.length > 1 && (
-            <div className="model-block-switcher" aria-label={t("selectBuildingBlock")}>
-              {blocks.map((block) => (
-                <button
-                  key={block.id}
-                  type="button"
-                  className={activeBlock?.id === block.id ? "is-active" : ""}
-                  aria-pressed={activeBlock?.id === block.id}
-                  onClick={() => handleBlockSelect(block.id)}
-                >
-                  {block.code || block.name}
-                </button>
-              ))}
-            </div>
-          )}
+          {/* One row, so a long translated Reset View label pushes the A/B switch left instead of sliding under it. */}
+          <div className="model-top-controls">
+            <button
+              className={`model-reset-view ${interactive ? "is-visible" : ""}`}
+              type="button"
+              tabIndex={interactive ? 0 : -1}
+              onClick={handleResetView}
+            >
+              {t("resetView")}
+            </button>
+            {blocks.length > 1 && (
+              <div className="model-block-switcher" aria-label={t("selectBuildingBlock")}>
+                {blocks.map((block) => (
+                  <button
+                    key={block.id}
+                    type="button"
+                    className={activeBlock?.id === block.id ? "is-active" : ""}
+                    aria-pressed={activeBlock?.id === block.id}
+                    onClick={() => handleBlockSelect(block.id)}
+                  >
+                    {block.code || block.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <div ref={railRef} className={`model-floor-rail ${interactive ? "is-visible" : ""}`} aria-label={t("selectBuildingFloor")}>
             {orderedFloors.map((floor) => {
               const summary = getFloorSummary(floor);

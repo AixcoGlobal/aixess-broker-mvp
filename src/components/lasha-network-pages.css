@@ -341,6 +341,10 @@
 .lnp-steps .lasha-index::after { display: inline-block; width: calc(10 * var(--u)); content: ""; }
 .lnp-steps h3 { width: 100%; margin-top: calc(22 * var(--u)); font-size: min(var(--v4-number), calc(60 * var(--u))); line-height: 0.9; }
 .lnp-steps p { margin-top: calc(8 * var(--u)); max-width: 10rem; font-size: var(--v4-small); line-height: 1.2; letter-spacing: 0.02em; }
+/* The frame's narrow columns can't hold long German and Russian words (GESCHÄFTSNETZWERKE,
+   Projektinformationen, обязательные) from 900px up: hyphenate rather than spill. */
+.lnp-steps :is(h3, p),
+.lnp-people h2 { hyphens: auto; overflow-wrap: break-word; }
 
 @media (max-width: 1399px) {
   .lnp { --lnp-header: 5.35rem; }

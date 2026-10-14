@@ -163,6 +163,8 @@
 
 .lasha-home .project-card-actions .lasha-button-dark { width: calc(216 * var(--u)); }
 .lasha-home .project-card-actions .lasha-arrow { width: calc(26 * var(--u)); }
+/* Russian КАЛЬКУЛЯТОР / СМОТРЕТЬ ПРОЕКТ are wider than the frame's buttons at 900-1100px. */
+html[lang="ru"] .lasha-home .project-card-actions .lasha-button { letter-spacing: 0.06em; }
 
 .project-upcoming {
   display: grid;
