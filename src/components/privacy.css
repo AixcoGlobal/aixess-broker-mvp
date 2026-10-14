@@ -79,6 +79,10 @@
 .privacy-footer-panel nav a:hover,
 .privacy-footer-panel nav button:hover { color: var(--orange); }
 .privacy-footer-panel nav span { color: var(--orange); }
+/* Clear the residence dock wherever it shows (portrait up to 1100px). */
+@media (max-width: 1100px) and (orientation: portrait) {
+  .privacy-footer.has-explorer { bottom: calc(6rem + env(safe-area-inset-bottom)); }
+}
 @media (max-width: 700px) {
   .privacy-footer.has-explorer { bottom: calc(6rem + env(safe-area-inset-bottom)); }
   .privacy-footer-panel { max-height: calc(100dvh - 11rem); }
