@@ -696,6 +696,12 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 :is(.lasha-home, .lasha-page) .explorer-step-separator { display: none; }
 :is(.lasha-home, .lasha-page) .explorer-step-number { margin-right: 0.5em; }
 
+/* Steps narrate the scroll; they fade out as the filter panel takes the left half. From 900px,
+   not only 1181px: on 900–1180px windows they stayed at full strength behind the result list. */
+@media (min-width: 900px) {
+  :is(.lasha-home, .lasha-page) .explorer-motion-caption { opacity: clamp(0, calc(1 - var(--filter-progress) * 2.5), 1); }
+}
+
 /* Desktop explorer copy follows Lasha's frame (2960–3830): type sizes in frame pixels.
    The sticky stage, model framing and filter behaviour stay as accepted. */
 @media (min-width: 1181px) {
@@ -712,8 +718,6 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
     border: 0;
     box-shadow: none;
   }
-  /* Steps narrate the scroll; they fade out as the filter panel takes the left half. */
-  :is(.lasha-home, .lasha-page) .explorer-motion-caption { opacity: clamp(0, calc(1 - var(--filter-progress) * 2.5), 1); }
   :is(.lasha-home, .lasha-page) .explorer-intro-panel {
     justify-content: flex-start;
     padding: calc(118 * var(--u)) calc(30 * var(--u)) 0 calc(70 * var(--u));

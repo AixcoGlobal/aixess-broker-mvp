@@ -269,15 +269,20 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM." })).toBeInTheDocument();
   });
 
-  it("keeps resource CTAs connected to the working materials request dialog", () => {
+  it("sends material requests to AIXCO's email, since the Vercel site has no form server", () => {
     window.history.replaceState({}, "", "/#insights");
-    render(<App />);
-
-    const brochures = screen.getByRole("heading", { name: "Project Brochures" }).closest("article");
-    fireEvent.click(within(brochures).getByRole("button", { name: /^request/i }));
-
-    expect(screen.getByRole("dialog", { name: /request project materials/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /request project materials/i })).toBeInTheDocument();
+    const assign = vi.fn();
+    const original = window.location;
+    Object.defineProperty(window, "location", { configurable: true, value: { ...original, href: original.href, hash: original.hash, pathname: original.pathname, assign } });
+    try {
+      render(<App />);
+      const brochures = screen.getByRole("heading", { name: "Project Brochures" }).closest("article");
+      fireEvent.click(within(brochures).getByRole("button", { name: /^request/i }));
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(assign).toHaveBeenCalledWith(`mailto:info@aixco.global?subject=${encodeURIComponent("AiXESS · Project Reverance: Request project materials")}`);
+    } finally {
+      Object.defineProperty(window, "location", { configurable: true, value: original });
+    }
   });
 
   it("answers the twelve AIXCO.Global FAQ entries in a native accordion, in source order", () => {
