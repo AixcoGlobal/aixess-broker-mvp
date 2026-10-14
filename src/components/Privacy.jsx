@@ -35,7 +35,7 @@ export function PrivacyControls({ page }) {
   }, [detailsOpen]);
   const choose = (value) => { setConsent(value); setOpen(false); };
   return <>
-    <footer className={`privacy-footer ${page === "home" || page === "residences" ? "has-explorer" : ""}`} ref={footerRef}>
+    <footer className={`privacy-footer ${page === "residences" ? "has-explorer" : ""}`} ref={footerRef}>
       <div className="privacy-footer-panel" id="privacy-footer-panel" hidden={!detailsOpen}>
         <div className="privacy-footer-brand"><AixessLogo className="privacy-footer-logo" /><span>© {new Date().getFullYear()}</span></div>
         <nav aria-label={copy.siteInfo}>
