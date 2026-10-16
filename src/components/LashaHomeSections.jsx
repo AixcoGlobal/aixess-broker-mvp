@@ -59,9 +59,9 @@ export function HomeHero({ children, onNavigate }) {
           className="lasha-hero-media"
           // Dubai skyline in the current theme's light (Benji and Giorgi, 13 October 2026); see themePhotos.js.
           family="dubai-skyline"
-          // Portrait phones draw the photo 1.4 × the hero's height (lasha-home.css), so it is about
-          // 2 × the screen height wide; asking for 100vw there picked an upscaled, soft image.
-          sizes="(max-width: 899px) and (orientation: portrait) 205vh, 100vw"
+          // Portrait phones draw the photo 1.4 × the hero's height and portrait tablets 1.75 ×
+          // (lasha-home.css), so it is about 2–2.5 × the screen height wide; 100vw would pick a soft file.
+          sizes="(max-width: 899px) and (orientation: portrait) and (min-width: 600px) 255vh, (max-width: 899px) and (orientation: portrait) 205vh, 100vw"
           fetchPriority="high"
           decoding="async"
           onLoad={() => setMediaReady(true)}

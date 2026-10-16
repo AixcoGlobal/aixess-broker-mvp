@@ -43,22 +43,32 @@ function PageButton({ variant, flow, children }) {
   );
 }
 
-// Header controls that sit over the coloured hero panel take the panel's text colour, the rest
-// stay white over the photo (16 October 2026 audit: in the afternoon the panel is sage, and white
-// AIXESS, nav and MENU over it read at 2.2:1). Which ones overlap depends on width and language.
+// Header controls take the colour of the ground under most of their width: the coloured hero
+// panel's text colour over the panel, white over the render, ink over Broker Access's paper list
+// column (16 October 2026 audits: in the afternoon the panel is sage, and white AIXESS, nav and
+// MENU over it read at 2.2:1; at 1920px and in Polish some labels sat mostly on the paper or the
+// render while their centre said otherwise). Which ones overlap depends on width and language.
 const OVER_FIELD = ".brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle";
+const overlap = (r, box) => Math.max(0, Math.min(r.right, box.right) - Math.max(r.left, box.left));
 function useHeaderOverField(ref, locale) {
   useLayoutEffect(() => {
     const hero = ref.current;
     const panel = hero?.querySelector(":scope > .lnp-hero-panel");
     if (!panel) return undefined;
+    const media = hero.querySelector(":scope > .lnp-hero-media");
+    const paperAfterMedia = hero.classList.contains("lnp-hero-broker");
     const mark = () => {
       const box = panel.getBoundingClientRect();
+      const photo = media?.getBoundingClientRect();
+      const stacked = photo && photo.top >= box.bottom - 1;
       hero.querySelectorAll(`:scope > .site-header :is(${OVER_FIELD})`).forEach((item) => {
         const r = item.getBoundingClientRect();
-        const x = r.left + r.width / 2;
         const y = r.top + r.height / 2;
-        item.classList.toggle("is-over-field", r.width > 0 && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
+        const onPanelRow = y >= box.top && y <= box.bottom;
+        const onField = r.width > 0 && onPanelRow && overlap(r, box) > r.width / 2;
+        const onPaper = r.width > 0 && paperAfterMedia && !stacked && photo && r.right - Math.max(r.left, photo.right) > r.width / 2;
+        item.classList.toggle("is-over-field", onField);
+        item.classList.toggle("is-over-paper", onPaper);
       });
     };
     mark();

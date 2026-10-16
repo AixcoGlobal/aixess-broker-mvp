@@ -885,9 +885,13 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   /* Portrait: the photo is drawn 1.4× taller from its top edge, so the skyline sits below the
      subtitle and the title and subtitle read on open sky (Kemo, 16 October 2026: "some texts are
      hard to read"; black text over the towers read at 1.6:1). The Burj Khalifa still stands
-     beside the title. Keep the 205vh `sizes` in HomeHero and index.html in step. */
+     beside the title. Keep the 205vh / 255vh `sizes` in HomeHero and index.html in step. */
   @media (orientation: portrait) {
     .lasha-hero-media { height: 140%; object-position: 66% 0; }
+  }
+  /* Portrait tablets set a larger title, so the skyline is pushed further down (1.75×). */
+  @media (orientation: portrait) and (min-width: 600px) {
+    .lasha-hero-media { height: 175%; }
   }
   /* No white wash on phones (Kemo, 9 October 2026): the photo shows at full strength. */
   .lasha-hero-frame::after { content: none; }

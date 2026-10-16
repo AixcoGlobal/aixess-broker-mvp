@@ -63,6 +63,9 @@
 .lnp-hero > .site-header .is-over-field { color: var(--l-on-field) !important; }
 .lnp-hero > .site-header .desktop-nav button.is-over-field::after { background: var(--l-on-field); }
 .lnp-hero > .site-header :is(.menu-toggle, .login-button, .language-switcher-trigger).is-over-field { border-color: color-mix(in srgb, var(--l-on-field) 70%, transparent) !important; }
+/* Nav labels that sit mostly over Broker Access's paper list column (wide screens, long languages) take ink. */
+.lnp-hero > .site-header .is-over-paper { color: var(--l-ink) !important; }
+.lnp-hero > .site-header .desktop-nav button.is-over-paper::after { background: var(--l-ink); }
 
 .lnp-hero-panel {
   display: grid;
