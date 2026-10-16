@@ -850,7 +850,9 @@
 
 .model-instruction-index {
   display: inline-grid;
+  flex-shrink: 0;
   min-width: 3.35rem;
+  padding-inline: 0.45rem;
   min-height: 1.7rem;
   place-items: center;
   background: var(--orange);
@@ -3033,7 +3035,9 @@
 .explorer-copy h2 { line-height: 1.04; letter-spacing: -0.04em; }
 .residence-filter-heading { flex-wrap: wrap; gap: 0.6rem 1rem; }
 .residence-filter-heading-actions { flex-wrap: wrap; }
-.residence-choice-field button { overflow-wrap: anywhere; hyphens: auto; line-height: 1.3; }
+/* Each choice takes the width its label needs, then shares what is left (16 October 2026 audit:
+   equal quarters split ZAREZERWOWANY and VERFÜGBAR mid-word); a break is the last resort. */
+.residence-choice-field button { flex: 1 1 auto; padding-inline: 0.3rem; overflow-wrap: anywhere; hyphens: auto; line-height: 1.3; }
 .availability-legend { flex-wrap: wrap; }
 .inventory-heading { flex-wrap: wrap; gap: 1rem; }
 .inventory-filters { flex-wrap: wrap; }
@@ -3130,4 +3134,20 @@
   .residence-filter-controls { grid-template-columns: 1fr; }
   .residence-filter-results-head,
   .residence-filter-result { grid-template-columns: minmax(0, 1fr) 5rem 6rem 1rem; gap: 0.5rem; padding-inline: 0.5rem; }
+}
+
+/* Landscape phones (16 October 2026 audit): side-by-side filter fields left ALL / STUDIO / SOLD
+   split mid-word in the narrow column. One field per row, as from 701px, and the panel scrolls. */
+/* In the narrow landscape column the four availability labels (VERFÜGBAR, ZAREZERWOWANY …)
+   cannot share one row, so they take two. */
+@media (max-width: 1200px) and (orientation: landscape) and (max-height: 540px) {
+  .residence-status-field > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .residence-status-field button:nth-child(odd) { border-left-style: solid; border-left-width: 1px; }
+  .residence-status-field button:nth-child(n + 3) { border-top-width: 0; }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  .residence-filter-controls { grid-template-columns: 1fr; }
+  .residence-filter-controls > * { grid-column: 1; }
+  .residence-filter-panel { overflow-y: auto; justify-content: safe center; scrollbar-width: none; }
 }

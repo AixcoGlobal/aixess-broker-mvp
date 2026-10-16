@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { FittedHeading } from "./FittedHeading.jsx";
 import { LashaArrow } from "./LashaHomeSections.jsx";
@@ -42,9 +43,39 @@ function PageButton({ variant, flow, children }) {
   );
 }
 
+// Header controls that sit over the coloured hero panel take the panel's text colour, the rest
+// stay white over the photo (16 October 2026 audit: in the afternoon the panel is sage, and white
+// AIXESS, nav and MENU over it read at 2.2:1). Which ones overlap depends on width and language.
+const OVER_FIELD = ".brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle";
+function useHeaderOverField(ref, locale) {
+  useLayoutEffect(() => {
+    const hero = ref.current;
+    const panel = hero?.querySelector(":scope > .lnp-hero-panel");
+    if (!panel) return undefined;
+    const mark = () => {
+      const box = panel.getBoundingClientRect();
+      hero.querySelectorAll(`:scope > .site-header :is(${OVER_FIELD})`).forEach((item) => {
+        const r = item.getBoundingClientRect();
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        item.classList.toggle("is-over-field", r.width > 0 && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
+      });
+    };
+    mark();
+    document.fonts?.ready.then(mark);
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(mark);
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [ref, locale]);
+}
+
 function SplitHero({ header, eyebrow, title, body, action, media, aside, className }) {
+  const ref = useRef(null);
+  const { locale } = useLanguage();
+  useHeaderOverField(ref, locale);
   return (
-    <section className={`lnp-hero ${className}`}>
+    <section ref={ref} className={`lnp-hero ${className}`}>
       {header}
       <div className="lnp-hero-panel">
         <p className="lasha-eyebrow lnp-eyebrow">{eyebrow}</p>
@@ -78,15 +109,15 @@ export function AdvantagePageContent({ header }) {
       />
 
       <section className="lnp-starting" aria-label={network.startingPointsTitle}>
-        {/* As on the homepage, Lasha's frame repeats the first card's line under all three titles. */}
-        {network.startingPoints.map(([title], index) => (
+        {/* As on the homepage, each card has its own line rather than the frame's repeated first line. */}
+        {network.startingPoints.map(([title, line], index) => (
           <article key={title}>
             <span className="lnp-rule" aria-hidden="true">
               <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
               <LashaArrow length={193} />
             </span>
             <h2>{title}</h2>
-            <p>{network.startingPoints[0][1]}</p>
+            <p>{line}</p>
           </article>
         ))}
       </section>
@@ -118,8 +149,9 @@ export function AdvantagePageContent({ header }) {
 export function BrokerAccessPageContent({ header }) {
   const { locale, network, home, page } = useCopy();
   const [haveNetwork] = network.network.split(/(?<=\?)\s/);
-  // Lasha's list repeats the sales line under CONNECTORS and drops the full stop on the first three.
-  const people = network.people.map(([title, line], index) => [title, index === 3 ? network.people[1][1] : index < 3 ? noStop(line) : line]);
+  // Lasha's list drops the full stop on the first three. CONNECTORS keeps its own line, not the
+  // frame's repeat of the sales line (Kemo, 16 October 2026: no repeated text on a page).
+  const people = network.people.map(([title, line], index) => [title, index < 3 ? noStop(line) : line]);
   const [lastTitle, lastLine] = network.steps[4];
   const steps = [...network.steps.slice(0, 4).map(([title, line]) => [title, noStop(line)]), [lastTitle, lastLine.split(/(?<=[.!?])\s/)[0].replace(/\.$/, "")]];
   return (

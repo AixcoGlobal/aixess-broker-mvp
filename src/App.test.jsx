@@ -172,8 +172,8 @@ describe("AIXESS navigation pages", () => {
     for (const [title] of c.startingPoints) {
       expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
     }
-    // Lasha's frame repeats the first card's line under all three starting points.
-    expect(screen.getAllByText(c.startingPoints[0][1])).toHaveLength(3);
+    // Each starting point has its own line; no text repeats on the page (Kemo, 16 October 2026).
+    for (const [, line] of c.startingPoints) expect(screen.getAllByText(line)).toHaveLength(1);
   });
 
   it("shows Reverance as the featured homepage project with working project actions", () => {
@@ -280,7 +280,9 @@ describe("AIXESS navigation pages", () => {
 
     expect(screen.getByRole("heading", { level: 1, name: "TURN YOURNETWORK INTOOPPORTUNITY." })).toBeInTheDocument();
     expect(screen.getByText("AiXESS expands what you can offer your clients and connections — giving you access to selected international real estate opportunities, professional tools, ready-to-sell materials and direct AIXCO support.")).toBeInTheDocument();
-    expect(screen.getAllByText("Expand your offering with selected international real estate opportunities.")).toHaveLength(3);
+    // Each starting point keeps its own line rather than the frame's repeated first line.
+    expect(screen.getAllByText("Expand your offering with selected international real estate opportunities.")).toHaveLength(1);
+    expect(screen.getByText("Turn trusted connections into new business opportunities.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "YOUR AIXESSADVANTAGE" })).toBeInTheDocument();
     expect(screen.getByText("International real estate opportunities for your clients and network")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "WE DON'T STOPAT THE SALE" })).toBeInTheDocument();
@@ -293,6 +295,7 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByText("If you have the network and ambition, AiXESS gives you the opportunities, tools and support.")).toBeInTheDocument();
     expect(screen.getByText("ASPIRING PROFESSIONALS")).toBeInTheDocument();
     expect(screen.getByText("Established brokers and agencies")).toBeInTheDocument();
+    expect(screen.getByText("Well-connected individuals who can introduce the right people.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "HAVE THE NETWORK?" })).toBeInTheDocument();
     expect(screen.getByText("THE COMMERCIAL ADVANTAGE")).toBeInTheDocument();
     expect(screen.getByText("Your client secures the property with just 10% down payment, unlocking your full commission within 72 hours.")).toBeInTheDocument();

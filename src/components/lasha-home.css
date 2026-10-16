@@ -981,3 +981,24 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   .lasha-access-actions .lasha-button { width: 100%; height: 3.5rem; padding: 0 1.1rem 0 1.25rem; }
   .lasha-access-actions .lasha-arrow { width: 2.4rem; }
 }
+
+/* Landscape phones (16 October 2026 audit): the portrait hero's 36rem minimum, and from 900px the
+   scaled desktop frame, pushed the subtitle and Explore investments below a 375–430px-tall screen. Here the hero is the screen's height and
+   the subtitle and button sit beside the title, aligned to its foot, so the whole hero fits. */
+@media (max-width: 1199px) and (orientation: landscape) and (max-height: 540px) {
+  .lasha-hero-frame { aspect-ratio: auto; width: 100%; height: max(100svh, 20rem); }
+  .lasha-hero-copy {
+    top: 5.25rem;
+    bottom: 1rem;
+    grid-template-columns: auto minmax(0, 22rem);
+    grid-template-rows: auto auto;
+    column-gap: 2rem;
+    align-content: center;
+  }
+  .lasha-home .lasha-hero h1[data-fitted-heading] {
+    grid-row: 1 / span 2;
+    width: min(38vw, calc((100svh - 8.5rem) / 0.92));
+  }
+  .lasha-hero-copy p { grid-area: 1 / 2; align-self: end; margin-top: 0; }
+  .lasha-hero-cta { grid-area: 2 / 2; align-self: start; justify-self: start; margin-top: 1.1rem; }
+}

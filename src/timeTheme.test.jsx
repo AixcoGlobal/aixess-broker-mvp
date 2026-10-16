@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TimeThemeMenu } from "./components/TimeThemeMenu.jsx";
-import { TIME_THEME_STORAGE_KEY, resetTimeThemeForTests, themeForHour } from "./timeTheme.js";
+import { THEME_BAR_COLORS, TIME_THEME_STORAGE_KEY, resetTimeThemeForTests, themeForHour } from "./timeTheme.js";
 
 const root = document.documentElement;
 
@@ -22,6 +22,22 @@ describe("time-of-day theme (AIXCO.Global v4)", () => {
     expect([5, 6, 13, 14, 18, 19, 23, 0].map(themeForHour)).toEqual([
       "night", "day", "day", "afternoon", "afternoon", "night", "night", "night",
     ]);
+  });
+
+  it("sets the browser bar colour from the theme before paint, like the app does", () => {
+    const html = readFileSync("index.html", "utf8");
+    const script = html.match(/<script>(\(function\(\)\{var m="auto".*?)<\/script>/)?.[1];
+    const meta = document.createElement("meta");
+    meta.name = "theme-color";
+    document.head.appendChild(meta);
+    for (const hour of [3, 9, 16, 21]) {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date(2026, 9, 8, hour, 0));
+      new Function(script)();
+      expect(meta.content, `${hour}h`).toBe(THEME_BAR_COLORS[themeForHour(hour)]);
+      vi.useRealTimers();
+    }
+    meta.remove();
   });
 
   it("uses the same rules and storage key in the pre-paint script", () => {
