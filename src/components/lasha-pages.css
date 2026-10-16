@@ -362,7 +362,7 @@
 
 .lasha-page .resource-card:first-child { padding-left: 0; border-left: 0; }
 
-.lasha-page .resource-card-top { color: color-mix(in srgb, var(--l-ink, #171a1d) 60%, transparent); }
+.lasha-page .resource-card-top { color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); }
 .lasha-page .resource-card-top span:first-child { color: var(--l-blue); font-family: var(--l-num); font-size: var(--v4-index); font-weight: 500; letter-spacing: 0; }
 
 .lasha-page .resource-card h3 {
