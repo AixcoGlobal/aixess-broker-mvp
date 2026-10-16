@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { FittedHeading } from "./FittedHeading.jsx";
 import { LashaArrow } from "./LashaHomeSections.jsx";
@@ -42,9 +43,39 @@ function PageButton({ variant, flow, children }) {
   );
 }
 
+// Header controls that sit over the coloured hero panel take the panel's text colour, the rest
+// stay white over the photo (16 October 2026 audit: in the afternoon the panel is sage, and white
+// AIXESS, nav and MENU over it read at 2.2:1). Which ones overlap depends on width and language.
+const OVER_FIELD = ".brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle";
+function useHeaderOverField(ref, locale) {
+  useLayoutEffect(() => {
+    const hero = ref.current;
+    const panel = hero?.querySelector(":scope > .lnp-hero-panel");
+    if (!panel) return undefined;
+    const mark = () => {
+      const box = panel.getBoundingClientRect();
+      hero.querySelectorAll(`:scope > .site-header :is(${OVER_FIELD})`).forEach((item) => {
+        const r = item.getBoundingClientRect();
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        item.classList.toggle("is-over-field", r.width > 0 && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
+      });
+    };
+    mark();
+    document.fonts?.ready.then(mark);
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(mark);
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [ref, locale]);
+}
+
 function SplitHero({ header, eyebrow, title, body, action, media, aside, className }) {
+  const ref = useRef(null);
+  const { locale } = useLanguage();
+  useHeaderOverField(ref, locale);
   return (
-    <section className={`lnp-hero ${className}`}>
+    <section ref={ref} className={`lnp-hero ${className}`}>
       {header}
       <div className="lnp-hero-panel">
         <p className="lasha-eyebrow lnp-eyebrow">{eyebrow}</p>

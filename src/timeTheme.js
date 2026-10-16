@@ -51,6 +51,14 @@ export function prepareTheme(theme) {
   return Promise.all([...photos].map((photo) => photo.prepare(theme)));
 }
 
+/* The browser bar colour (Safari's tab bar, Android's toolbar) follows the page ground: paper by
+   day and afternoon, black at night. It was a fixed dark brown (16 October 2026 audit). */
+export const THEME_BAR_COLORS = { day: "#f4f4f1", afternoon: "#f4f4f1", night: "#000000" };
+function syncThemeColor(theme) {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = THEME_BAR_COLORS[theme] || THEME_BAR_COLORS.day;
+}
+
 const notify = () => listeners.forEach((listener) => listener());
 let pendingSwitch = 0;
 let pending = null; // the { mode, theme } a fade is still preparing
@@ -79,6 +87,7 @@ function applyTheme(mode, animate) {
     state = { mode, theme };
     root.dataset.timeTheme = theme;
     root.dataset.timeThemeMode = mode;
+    syncThemeColor(theme);
     if (sync) flushSync(notify);
     else notify();
   };
