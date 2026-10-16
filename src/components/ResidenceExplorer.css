@@ -3138,6 +3138,14 @@
 
 /* Landscape phones (16 October 2026 audit): side-by-side filter fields left ALL / STUDIO / SOLD
    split mid-word in the narrow column. One field per row, as from 701px, and the panel scrolls. */
+/* In the narrow landscape column the four availability labels (VERFÜGBAR, ZAREZERWOWANY …)
+   cannot share one row, so they take two. */
+@media (max-width: 1200px) and (orientation: landscape) and (max-height: 540px) {
+  .residence-status-field > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .residence-status-field button:nth-child(odd) { border-left-style: solid; border-left-width: 1px; }
+  .residence-status-field button:nth-child(n + 3) { border-top-width: 0; }
+}
+
 @media (max-width: 700px) and (orientation: landscape) {
   .residence-filter-controls { grid-template-columns: 1fr; }
   .residence-filter-controls > * { grid-column: 1; }

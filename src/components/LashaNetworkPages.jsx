@@ -109,15 +109,15 @@ export function AdvantagePageContent({ header }) {
       />
 
       <section className="lnp-starting" aria-label={network.startingPointsTitle}>
-        {/* As on the homepage, Lasha's frame repeats the first card's line under all three titles. */}
-        {network.startingPoints.map(([title], index) => (
+        {/* As on the homepage, each card has its own line rather than the frame's repeated first line. */}
+        {network.startingPoints.map(([title, line], index) => (
           <article key={title}>
             <span className="lnp-rule" aria-hidden="true">
               <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
               <LashaArrow length={193} />
             </span>
             <h2>{title}</h2>
-            <p>{network.startingPoints[0][1]}</p>
+            <p>{line}</p>
           </article>
         ))}
       </section>
@@ -149,8 +149,9 @@ export function AdvantagePageContent({ header }) {
 export function BrokerAccessPageContent({ header }) {
   const { locale, network, home, page } = useCopy();
   const [haveNetwork] = network.network.split(/(?<=\?)\s/);
-  // Lasha's list repeats the sales line under CONNECTORS and drops the full stop on the first three.
-  const people = network.people.map(([title, line], index) => [title, index === 3 ? network.people[1][1] : index < 3 ? noStop(line) : line]);
+  // Lasha's list drops the full stop on the first three. CONNECTORS keeps its own line, not the
+  // frame's repeat of the sales line (Kemo, 16 October 2026: no repeated text on a page).
+  const people = network.people.map(([title, line], index) => [title, index < 3 ? noStop(line) : line]);
   const [lastTitle, lastLine] = network.steps[4];
   const steps = [...network.steps.slice(0, 4).map(([title, line]) => [title, noStop(line)]), [lastTitle, lastLine.split(/(?<=[.!?])\s/)[0].replace(/\.$/, "")]];
   return (

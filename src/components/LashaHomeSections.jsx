@@ -205,15 +205,16 @@ export function HomeStartingPoints() {
       <p className="lasha-eyebrow">{network.introTagline.replace(/\.$/, "")}</p>
       <h2 id="lasha-starting-title"><span>{keepPhraseTogether(lead)}</span> <span className="lasha-accent">{accent}</span></h2>
       <div className="lasha-starting-grid">
-        {/* Lasha's frame repeats the first card's line under all three titles. */}
-        {network.startingPoints.map(([title], index) => (
+        {/* Each card has its own line (Kemo, 16 October 2026: no repeated text on a page), though
+            Lasha's frame repeated the first card's line under all three titles. */}
+        {network.startingPoints.map(([title, line], index) => (
           <article key={title}>
             <span className="lasha-starting-rule" aria-hidden="true">
               <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
               <LashaArrow length={193} />
             </span>
             <h3>{title}</h3>
-            <p>{network.startingPoints[0][1]}</p>
+            <p>{line}</p>
           </article>
         ))}
       </div>
