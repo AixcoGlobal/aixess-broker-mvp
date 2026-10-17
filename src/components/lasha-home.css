@@ -276,6 +276,17 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 .lasha-hero-cta:hover { background: var(--l-blue-deep); }
 .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
 
+/* From 900px the title, subtitle and button sit centred between the header and the photo's bottom
+   edge, with equal space above the capitals and below the button (Kemo, 17 October 2026: "now its too
+   up ... place this texts perfectly"). HomeHero measures the header into --hero-header. */
+@media (min-width: 900px) {
+  .lasha-hero-copy {
+    top: var(--hero-header, 6.3rem);
+    bottom: 0;
+    align-content: center;
+  }
+}
+
 /* A soft sky wash behind the copy column keeps the black poster type and the subtitle crisp
    where the photo turns to sea and trees. */
 .lasha-hero-frame::after {
