@@ -49,9 +49,22 @@ export function HomeHero({ children, onNavigate }) {
     const timer = window.setTimeout(() => setMediaReady(true), 2500);
     return () => window.clearTimeout(timer);
   }, []);
+  // The copy is centred in the photo below the floating header (Kemo, 17 October 2026: the title sat
+  // jammed under the menu), so the CSS needs the header's real height, which changes with the window.
+  const sectionRef = useRef(null);
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    const header = section?.querySelector(":scope > .site-header");
+    if (!header) return undefined;
+    const mark = () => section.style.setProperty("--hero-header", `${header.offsetHeight}px`);
+    mark();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(mark);
+    observer?.observe(header);
+    return () => observer?.disconnect();
+  }, []);
 
   return (
-    <section className="lasha-hero" id="project" data-media-ready={mediaReady ? "" : undefined}>
+    <section ref={sectionRef} className="lasha-hero" id="project" data-media-ready={mediaReady ? "" : undefined}>
       {children}
       <div className="lasha-hero-frame">
         <ThemedImage
