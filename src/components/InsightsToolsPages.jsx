@@ -135,11 +135,15 @@ function CardMedia({ media, label }) {
 // Broker Tools, from the right half of Klem's picture. The working calculators and the
 // client PDF offer are broker-only (Klem's voice note, 12 October 2026), so this page only
 // describes them and sends brokers to sign in or apply.
+// By day the photo's sky (left of the hanging plants) and its pale stone terrace (right of them)
+// carry ink header labels; labels over the plants stay white (see useHeaderOnLightSky).
+const BROKER_TOOLS_LIGHT_SKY = { themes: "day", ranges: [[0, 0.68], [0.84, 1]] };
+
 export function BrokerToolsPageContent({ header, onOpenModal }) {
   const { tools: c } = useCopy();
   return (
     <>
-      <LashaPageHero header={header} eyebrow={c.eyebrow} title={c.title.map((line, index) => (index === c.title.length - 1 ? line.replace(/ (?=\S+$)/, "\u00a0") : line))} image="broker-tools-refined" copy={c.copy} variant="coastal">
+      <LashaPageHero header={header} eyebrow={c.eyebrow} title={c.title.map((line, index) => (index === c.title.length - 1 ? line.replace(/ (?=\S+$)/, "\u00a0") : line))} image="broker-tools-refined" copy={c.copy} variant="coastal" lightSky={BROKER_TOOLS_LIGHT_SKY}>
         <div className="page-cta-row it-hero-actions">
           <button className="button button-primary" type="button" onClick={() => onOpenModal("register")}>{c.partner}<LashaArrow length={24} /></button>
           <button className="button button-ghost" type="button" onClick={() => onOpenModal("login")}>{c.login}</button>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { FittedHeading } from "./FittedHeading.jsx";
 import { NETWORK_COPY } from "../network-copy.js";
@@ -59,9 +59,9 @@ export function HomeHero({ children, onNavigate }) {
           className="lasha-hero-media"
           // Dubai skyline in the current theme's light (Benji and Giorgi, 13 October 2026); see themePhotos.js.
           family="dubai-skyline"
-          // Phones crop the photo to the hero's full height, so it is drawn about 1.45 × the
-          // screen height wide; asking for 100vw there picked an upscaled, soft image.
-          sizes="(max-width: 899px) and (orientation: portrait) 145vh, 100vw"
+          // Portrait phones draw the photo 1.4 × the hero's height and portrait tablets 1.75 ×
+          // (lasha-home.css), so it is about 2–2.5 × the screen height wide; 100vw would pick a soft file.
+          sizes="(max-width: 899px) and (orientation: portrait) and (min-width: 600px) 255vh, (max-width: 899px) and (orientation: portrait) 205vh, 100vw"
           fetchPriority="high"
           decoding="async"
           onLoad={() => setMediaReady(true)}
@@ -110,14 +110,53 @@ const pageHeroSources = (media) => ({ src: projectImage(media.src), srcSet: medi
 // photo that tall and aspect × as wide; 100vw there would pick a soft, upscaled file.
 const pageHeroSizes = (aspect) => `(max-aspect-ratio: 1/1) ${Math.ceil(70 * aspect)}vh, 100vw`;
 
+// Header labels over a pale part of the hero photo take ink there (16 October 2026 readability
+// audit), the rest stay white. `ranges` are the photo's light spans as fractions of its own
+// width; each label's centre is mapped onto the photo through its cover crop, so the choice
+// follows the crop at every width. time-theme.css styles .is-on-light-sky for the themes listed
+// in data-light-sky.
+const HEADER_ITEMS = ".brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle";
+function useHeaderOnLightSky(ref, ranges, locale) {
+  useLayoutEffect(() => {
+    const hero = ref.current;
+    const media = hero?.querySelector(":scope > .lasha-page-hero-media");
+    if (!media || !ranges) return undefined;
+    const mark = () => {
+      const box = media.getBoundingClientRect();
+      const { naturalWidth: w, naturalHeight: h } = media;
+      if (!w || !h || !box.width) return;
+      const drawn = w * Math.max(box.width / w, box.height / h);
+      const posX = parseFloat(getComputedStyle(media).objectPosition) / 100 || 0;
+      const left = box.left + (box.width - drawn) * posX;
+      hero.querySelectorAll(`:scope > .site-header :is(${HEADER_ITEMS})`).forEach((item) => {
+        const r = item.getBoundingClientRect();
+        const u = (r.left + r.width / 2 - left) / drawn;
+        item.classList.toggle("is-on-light-sky", r.width > 0 && ranges.some(([from, to]) => u >= from && u < to));
+      });
+    };
+    mark();
+    media.addEventListener("load", mark);
+    document.fonts?.ready.then(mark);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(mark);
+    observer?.observe(hero);
+    return () => {
+      media.removeEventListener("load", mark);
+      observer?.disconnect();
+    };
+  }, [ref, ranges, locale]);
+}
+
 // Inner pages open with the homepage's language: the site header floating over a
 // Reverance render, a blue eyebrow and an oversized headline.
-export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", copy, image = "skyline", imageAlt = "", variant, children }) {
+export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", copy, image = "skyline", imageAlt = "", variant, lightSky, children }) {
   const lines = Array.isArray(title) ? title : [title];
   const media = PAGE_HERO_IMAGES[image] ?? PAGE_HERO_IMAGES.skyline;
   const style = { "--hero-position": media.position, "--hero-position-phone": media.phonePosition ?? media.position };
+  const ref = useRef(null);
+  const { locale } = useLanguage();
+  useHeaderOnLightSky(ref, lightSky?.ranges, locale);
   return (
-    <section className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`}>
+    <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes}>
       {header}
       {media.family ? (
         <ThemedImage className="lasha-page-hero-media" family={media.family} sizes={media.sizes ?? pageHeroSizes(media.aspect)} style={style} alt={imageAlt} fetchPriority="high" decoding="async" />

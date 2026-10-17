@@ -668,13 +668,13 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 :is(.lasha-home, .lasha-page) .residence-area-field { border-right-color: var(--l-line); border-bottom-color: var(--l-line); }
 :is(.lasha-home, .lasha-page) .residence-select-field > span,
 :is(.lasha-home, .lasha-page) .residence-choice-field legend,
-:is(.lasha-home, .lasha-page) .residence-area-field legend { color: color-mix(in srgb, var(--l-ink, #171a1d) 60%, transparent); }
+:is(.lasha-home, .lasha-page) .residence-area-field legend { color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-select-field select { color: var(--l-ink); color-scheme: light; }
 :is(.lasha-home, .lasha-page) .residence-select-field select option { background: var(--l-card, #fff); color: var(--l-ink); }
 :is(.lasha-home, .lasha-page) .residence-choice-field button { border-color: color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent); color: color-mix(in srgb, var(--l-ink, #171a1d) 72%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-choice-field button.is-active { border-color: var(--l-blue); background: var(--l-blue); color: #fff; }
 :is(.lasha-home, .lasha-page) .residence-area-readout output { color: var(--l-ink); }
-:is(.lasha-home, .lasha-page) .residence-area-readout span { color: color-mix(in srgb, var(--l-ink, #171a1d) 55%, transparent); }
+:is(.lasha-home, .lasha-page) .residence-area-readout span { color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-area-ranges input::-webkit-slider-runnable-track { border-color: color-mix(in srgb, var(--l-ink, #171a1d) 20%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-area-ranges input::-webkit-slider-thumb { border-color: var(--l-paper); background: var(--l-blue); }
 :is(.lasha-home, .lasha-page) .residence-area-ranges input::-moz-range-track { border-color: color-mix(in srgb, var(--l-ink, #171a1d) 20%, transparent); background: color-mix(in srgb, var(--l-ink, #171a1d) 30%, transparent); }
@@ -683,7 +683,7 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 :is(.lasha-home, .lasha-page) .residence-filter-results { border-top-color: var(--l-line); scrollbar-color: var(--l-blue) color-mix(in srgb, var(--l-ink, #171a1d) 8%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-filter-results::-webkit-scrollbar-track { background: color-mix(in srgb, var(--l-ink, #171a1d) 7%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-filter-results::-webkit-scrollbar-thumb { background: var(--l-blue); }
-:is(.lasha-home, .lasha-page) .residence-filter-results-head { border-bottom-color: var(--l-line); color: color-mix(in srgb, var(--l-ink, #171a1d) 55%, transparent); }
+:is(.lasha-home, .lasha-page) .residence-filter-results-head { border-bottom-color: var(--l-line); color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-filter-result { border-bottom-color: var(--l-line); color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-filter-result > span:first-child,
 :is(.lasha-home, .lasha-page) .residence-filter-result strong { color: var(--l-ink); }
@@ -691,7 +691,7 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 :is(.lasha-home, .lasha-page) .residence-filter-result.is-unavailable { background: rgba(122, 118, 114, 0.14); color: #6a6560; }
 :is(.lasha-home, .lasha-page) .residence-filter-result.is-unavailable > span:first-child,
 :is(.lasha-home, .lasha-page) .residence-filter-result.is-unavailable strong { color: #6a6560; }
-:is(.lasha-home, .lasha-page) .residence-filter-empty { color: color-mix(in srgb, var(--l-ink, #171a1d) 60%, transparent); }
+:is(.lasha-home, .lasha-page) .residence-filter-empty { color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-filter-empty strong { color: var(--l-blue); }
 :is(.lasha-home, .lasha-page) .explorer-step-separator { display: none; }
 :is(.lasha-home, .lasha-page) .explorer-step-number { margin-right: 0.5em; }
@@ -882,6 +882,17 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
     height: clamp(36rem, 100svh, 52rem);
   }
   .lasha-hero-media { object-position: 66% 50%; }
+  /* Portrait: the photo is drawn 1.4× taller from its top edge, so the skyline sits below the
+     subtitle and the title and subtitle read on open sky (Kemo, 16 October 2026: "some texts are
+     hard to read"; black text over the towers read at 1.6:1). The Burj Khalifa still stands
+     beside the title. Keep the 205vh / 255vh `sizes` in HomeHero and index.html in step. */
+  @media (orientation: portrait) {
+    .lasha-hero-media { height: 140%; object-position: 66% 0; }
+  }
+  /* Portrait tablets set a larger title, so the skyline is pushed further down (1.75×). */
+  @media (orientation: portrait) and (min-width: 600px) {
+    .lasha-hero-media { height: 175%; }
+  }
   /* No white wash on phones (Kemo, 9 October 2026): the photo shows at full strength. */
   .lasha-hero-frame::after { content: none; }
   /* No glow behind the letters either (Kemo, 9 October 2026: "looks kinda ugly"): the title and

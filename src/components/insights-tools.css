@@ -161,7 +161,7 @@
 .it-card .it-text-link { justify-self: start; margin-top: 0.5rem; }
 
 .it-card-status {
-  color: color-mix(in srgb, var(--l-ink, #171a1d) 60%, transparent);
+  color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent);
   font-size: var(--v4-label);
   font-weight: 600;
   letter-spacing: 0.18em;

@@ -267,7 +267,7 @@ html:root[data-time-theme='afternoon'] .lasha-page .network-advantage .network-c
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgb(23 26 29 / 0.6);
+  color: rgb(23 26 29 / 0.72);
 }
 
 .time-theme-menu__option {
@@ -326,7 +326,7 @@ html:root[data-time-theme='afternoon'] .lasha-page .network-advantage .network-c
 
 .time-theme-menu__label small {
   font-size: 0.7rem;
-  color: rgb(23 26 29 / 0.55);
+  color: rgb(23 26 29 / 0.72);
   font-variant-numeric: tabular-nums;
 }
 
@@ -592,7 +592,7 @@ html:root:not([data-time-theme='night']) .it-step-list li { border-top-color: va
 html:root:not([data-time-theme='night']) :is(.residence-explorer, .floor-modal-backdrop) {
   --x-glass: color-mix(in srgb, #f7f7f4 86%, transparent);
   --x-text: #171a1d;
-  --x-muted: rgb(23 26 29 / 0.64);
+  --x-muted: rgb(23 26 29 / 0.74);
   --x-line: rgb(23 26 29 / 0.18);
 }
 html:root[data-time-theme='afternoon'] :is(.residence-explorer, .floor-modal-backdrop) {
@@ -614,6 +614,7 @@ html:root:not([data-time-theme='night']) .model-reset-view:is(:hover, :focus-vis
 html:root:not([data-time-theme='night']) .model-floor-rail button { border-bottom-color: var(--x-line); color: var(--x-muted); }
 html:root:not([data-time-theme='night']) .model-floor-rail button:is(:hover, :focus-visible, .is-active, .is-filter-match) { background: color-mix(in srgb, var(--orange) 18%, transparent); color: var(--x-text); }
 html:root:not([data-time-theme='night']) .model-block-switcher button { border-right-color: var(--x-line); color: var(--x-muted); }
+html:root[data-time-theme='day'] .model-block-switcher button:is(:hover, :focus-visible, .is-active) { color: #15110f; }
 html:root[data-time-theme='afternoon'] :is(.model-block-switcher button:is(:hover, :focus-visible, .is-active), .model-instruction-index, .inventory-filters button.is-active, .unit-preview-tabs button.is-active) { color: #fff; }
 
 /* Phone dock and floor chip. */
@@ -626,7 +627,7 @@ html:root[data-time-theme='afternoon'] :is(.model-block-switcher button:is(:hove
   }
   html:root:not([data-time-theme='night']) :is(.mobile-dock-summary small, .mobile-dock-scope span, .mobile-floor-chip span) { color: var(--x-muted); }
   html:root:not([data-time-theme='night']) :is(.mobile-dock-summary strong, .mobile-dock-scope b) { color: var(--x-text); }
-  html:root:not([data-time-theme='night']) .mobile-dock-summary em { color: #1b7d55; }
+  html:root:not([data-time-theme='night']) .mobile-dock-summary em { color: #156745; }
   html:root:not([data-time-theme='night']) .mobile-dock-scope { border-color: var(--x-line); }
   html:root:not([data-time-theme='night']) .mobile-floor-chip option { background: #f7f7f4; color: #171a1d; }
   html:root:not([data-time-theme='night']) :is(.lasha-home, .lasha-page) .mobile-floor-chip :is(select, svg) { color: var(--l-blue); }
@@ -661,7 +662,7 @@ html:root:not([data-time-theme='night']) .unit-row:is(:hover, .is-active) { colo
 html:root:not([data-time-theme='night']) .unit-row.is-unavailable,
 html:root:not([data-time-theme='night']) .unit-row.is-unavailable > span:first-child { color: #77736f; }
 html:root:not([data-time-theme='night']) .unit-row.is-unavailable:is(:hover, .is-active) { color: #5f5b57; }
-html:root:not([data-time-theme='night']) .unit-status.is-available { color: #1b7d55; }
+html:root:not([data-time-theme='night']) .unit-status.is-available { color: #156745; }
 html:root:not([data-time-theme='night']) .unit-status.is-reserved { color: #8a6526; }
 html:root:not([data-time-theme='night']) :is(.unit-status.is-sold, .unit-status.is-unavailable) { color: #2f6f9f; }
 html:root:not([data-time-theme='night']) :is(.golden-premium-unit-label, .golden-premium-unit-meta strong) { color: #8a6a12; }
@@ -688,3 +689,50 @@ html:root:not([data-time-theme='night']) .explorer-loading span { border-color: 
 html:root:not([data-time-theme='night']) .unit-row.is-sold,
 html:root:not([data-time-theme='night']) .unit-row.is-sold:is(:hover, .is-active) { color: #f5fbff; }
 html:root:not([data-time-theme='night']) .unit-row.is-sold > span:first-child { color: #fff; }
+
+
+/* ---------- Header over light photographs (Kemo, 16 October 2026: "some texts are hard to read") ----------
+   Where the photo behind the header is pale sky, white labels read at about 2:1, so they turn ink
+   there, with nothing drawn behind them: the whole header on the homepage by day and in the
+   afternoon and on Insights by day; on Broker Tools by day and on Privacy by day and in the
+   afternoon only the labels over the photo's pale parts (.is-on-light-sky, set by LashaPageHero's
+   lightSky). Chosen by measuring the photo behind each label per page, theme and width; everywhere
+   else the header stays white. */
+html:root[data-time-theme='day'] :is(.lasha-hero, .lasha-page-hero-coastal:not([data-light-sky])) > .site-header,
+html:root[data-time-theme='afternoon'] .lasha-hero > .site-header { border-bottom-color: rgb(23 26 29 / 0.3); }
+html:root[data-time-theme='day'] :is(.lasha-hero, .lasha-page-hero-coastal:not([data-light-sky])) > .site-header :is(.brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle),
+html:root[data-time-theme='afternoon'] .lasha-hero > .site-header :is(.brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle),
+html:root[data-time-theme='day'] .lasha-page-hero[data-light-sky~='day'] > .site-header :is(.brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle).is-on-light-sky,
+html:root[data-time-theme='afternoon'] .lasha-page-hero[data-light-sky~='afternoon'] > .site-header :is(.brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle).is-on-light-sky,
+html:root[data-time-theme='day'] :is(.lasha-hero, .lasha-page-hero-coastal:not([data-light-sky])) > .site-header .language-switcher-trigger svg:first-child,
+html:root[data-time-theme='afternoon'] .lasha-hero > .site-header .language-switcher-trigger svg:first-child,
+html:root[data-time-theme='day'] .lasha-page-hero[data-light-sky~='day'] > .site-header .language-switcher-trigger.is-on-light-sky svg:first-child,
+html:root[data-time-theme='afternoon'] .lasha-page-hero[data-light-sky~='afternoon'] > .site-header .language-switcher-trigger.is-on-light-sky svg:first-child { color: #171a1d; }
+html:root[data-time-theme='day'] :is(.lasha-hero, .lasha-page-hero-coastal:not([data-light-sky])) > .site-header .desktop-nav button::after,
+html:root[data-time-theme='afternoon'] .lasha-hero > .site-header .desktop-nav button::after,
+html:root[data-time-theme='day'] .lasha-page-hero[data-light-sky~='day'] > .site-header .desktop-nav button.is-on-light-sky::after,
+html:root[data-time-theme='afternoon'] .lasha-page-hero[data-light-sky~='afternoon'] > .site-header .desktop-nav button.is-on-light-sky::after { background: #171a1d; }
+html:root[data-time-theme='day'] :is(.lasha-hero, .lasha-page-hero-coastal:not([data-light-sky])) > .site-header :is(.login-button, .menu-toggle),
+html:root[data-time-theme='afternoon'] .lasha-hero > .site-header :is(.login-button, .menu-toggle),
+html:root[data-time-theme='day'] .lasha-page-hero[data-light-sky~='day'] > .site-header :is(.login-button, .menu-toggle).is-on-light-sky,
+html:root[data-time-theme='afternoon'] .lasha-page-hero[data-light-sky~='afternoon'] > .site-header :is(.login-button, .menu-toggle).is-on-light-sky,
+html:root[data-time-theme='day'] :is(.lasha-hero, .lasha-page-hero-coastal:not([data-light-sky])) > .site-header .time-theme-menu__button:is(:hover, [aria-expanded='true']),
+html:root[data-time-theme='afternoon'] .lasha-hero > .site-header .time-theme-menu__button:is(:hover, [aria-expanded='true']),
+html:root[data-time-theme='day'] .lasha-page-hero[data-light-sky~='day'] > .site-header .time-theme-menu__button.is-on-light-sky:is(:hover, [aria-expanded='true']),
+html:root[data-time-theme='afternoon'] .lasha-page-hero[data-light-sky~='afternoon'] > .site-header .time-theme-menu__button.is-on-light-sky:is(:hover, [aria-expanded='true']) { border-color: rgb(23 26 29 / 0.8); }
+/* The language button's dark tint is dropped there, as on the Broker Access phone header. */
+html:root[data-time-theme='day'] :is(.lasha-hero, .lasha-page-hero-coastal:not([data-light-sky])) > .site-header .language-switcher-trigger,
+html:root[data-time-theme='afternoon'] .lasha-hero > .site-header .language-switcher-trigger,
+html:root[data-time-theme='day'] .lasha-page-hero[data-light-sky~='day'] > .site-header .language-switcher-trigger.is-on-light-sky,
+html:root[data-time-theme='afternoon'] .lasha-page-hero[data-light-sky~='afternoon'] > .site-header .language-switcher-trigger.is-on-light-sky { border-color: rgb(23 26 29 / 0.35); background: transparent; }
+html:root[data-time-theme='day'] :is(.lasha-hero, .lasha-page-hero-coastal:not([data-light-sky])) > .site-header .login-button:hover,
+html:root[data-time-theme='afternoon'] .lasha-hero > .site-header .login-button:hover,
+html:root[data-time-theme='day'] .lasha-page-hero[data-light-sky~='day'] > .site-header .login-button.is-on-light-sky:hover,
+html:root[data-time-theme='afternoon'] .lasha-page-hero[data-light-sky~='afternoon'] > .site-header .login-button.is-on-light-sky:hover { background: #171a1d; color: #fff; }
+
+/* Filter results by day and in the afternoon: a deeper green on the pale green row. */
+html:root:not([data-time-theme='night']) :is(.lasha-home, .lasha-page) .residence-filter-result:is(:hover, :focus-visible, .is-active) { color: #1f6136; }
+/* Afternoon eyebrows on the pale sage bands use the deeper sage (4.3:1 → 5.6:1). */
+html:root[data-time-theme='afternoon'] .lasha-page .rp-mist .section-eyebrow { color: #3c5a41; }
+/* By day the orange LIVE 3D / SCROLL chip takes dark text, as the orange A/B switch does (white read 3:1). */
+html:root[data-time-theme='day'] .model-instruction-index { color: #15110f; }

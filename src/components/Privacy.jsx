@@ -57,11 +57,15 @@ function SiteFooter({ onCookieSettings }) {
   );
 }
 
+// The skyline render's sky is pale left of its tower, so header labels there turn ink by day and
+// in the afternoon (see useHeaderOnLightSky).
+const PRIVACY_LIGHT_SKY = { themes: "day afternoon", ranges: [[0, 0.55]] };
+
 export function PrivacyPage({ header }) {
   const { locale } = useLanguage(); const copy = PRIVACY_COPY[locale];
   return (
     <div className="route-page lasha-page privacy-route">
-      <LashaPageHero header={header} eyebrow="AIXESS · 04.09.2026" title={copy.policy} />
+      <LashaPageHero header={header} eyebrow="AIXESS · 04.09.2026" title={copy.policy} lightSky={PRIVACY_LIGHT_SKY} />
       <article className="privacy-page lasha-page">{copy.sections.map(([heading, body]) => <section key={heading}><h2>{heading}</h2><p>{body}</p></section>)}</article>
     </div>
   );
