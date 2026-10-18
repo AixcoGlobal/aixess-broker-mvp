@@ -263,7 +263,7 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   gap: 1rem;
   box-sizing: border-box;
   min-width: min(100%, calc(417 * var(--u)));
-  height: max(calc(67 * var(--u)), 3rem);
+  height: max(calc(67 * var(--u)), 22px);
   margin-top: calc(34 * var(--u));
   padding: 0 calc(21 * var(--u)) 0 calc(31 * var(--u));
   background: var(--l-blue);
