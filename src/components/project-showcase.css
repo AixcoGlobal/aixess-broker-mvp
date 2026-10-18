@@ -1,33 +1,25 @@
 /* "Current project in Batumi" section, following Lasha's Figma frame (HOME page, 1440 wide;
-   Kemo, 17 October 2026: "has to look exactly like me in figma"). From 900px every size and
-   position is the frame's, in frame pixels (--u): the title, figures and project name are
-   Morganite (the hero's "AiXESS Hero" face, --l-poster) at Figma's 156 / 90 / 80px with 1%
-   tracking, body text Inter Medium 13 / 16px at 1.08 leading. The render with its thumbnail strip
-   and the right column (figures 319px over the 514 × 374 project card) both run from frame y 2245
-   to y 2938. Display lines use the hero's trick so their box starts at the capitals: line-height
-   0.75 puts the baseline 0.625em down and 0.074em of padding brings the cap top (0.699em) to 0. */
+   Kemo, 17 October 2026: "has to look exactly like me in figma"). From 900px every position is
+   the frame's, in frame pixels (--u). Headlines stay in AiXESS Head like every other page (Kemo,
+   18 October 2026, asked whether the Figma font was consistent with the rest of the site); it is
+   wider than Figma's Morganite, so the title keeps the frame's 893px width, the figures keep its
+   63px capitals and PROJECT REVERANCE fills the card's text column. Body text is Inter Medium
+   13 / 16px at 1.08 leading. The render with its thumbnail strip and the right column (figures
+   319px over the 514 × 374 project card) both run from frame y 2245 to y 2938. AiXESS Head's
+   line box is 900/300 with 655 capitals, so line-height 0.71 starts each display line's box at
+   its capitals and leaves 0.055em below them. */
 .lasha-home .project-showcase { padding: calc(48 * var(--u)) calc(70 * var(--u)) calc(22 * var(--u)); }
 
-.lasha-home .project-showcase-head .lasha-eyebrow {
-  font-size: max(calc(16 * var(--u)), 0.75rem);
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 1.08;
-  text-transform: none;
-}
-
 .lasha-home .project-showcase {
-  --title-size: calc(156 * var(--u));
+  --title-size: calc(102 * var(--u));
 }
 
 .lasha-home .project-showcase h2 {
   margin-top: calc(20 * var(--u));
-  padding-top: 0.074em;
-  font-family: var(--l-poster);
+  font-family: var(--l-head);
   font-size: var(--title-size);
-  font-weight: 800;
-  line-height: 0.75;
-  letter-spacing: 0.01em;
+  font-weight: 700;
+  line-height: 0.71;
   white-space: nowrap;
 }
 
@@ -36,8 +28,8 @@
   grid-template-columns: calc(746 * var(--u)) calc(514 * var(--u));
   column-gap: calc(39 * var(--u));
   align-items: start;
-  /* 35px from the title's capitals to the render, less the line box's 0.125em below them. */
-  margin-top: calc(35 * var(--u) - 0.125 * var(--title-size, calc(156 * var(--u))));
+  /* 35px from the title's capitals to the render, less the line box's 0.055em below them. */
+  margin-top: calc(35 * var(--u) - 0.055 * var(--title-size, calc(102 * var(--u))));
 }
 
 .lasha-home .project-feature-gallery { display: grid; row-gap: calc(17 * var(--u)); min-width: 0; }
@@ -117,22 +109,17 @@
 .lasha-home .project-facts > div:nth-child(n + 3) { padding-top: calc(21 * var(--u)); }
 
 .lasha-home .project-facts dd {
-  padding-top: 0.074em;
   color: var(--l-blue);
-  font-family: var(--l-poster);
-  font-size: calc(90 * var(--u));
-  font-weight: 800;
-  line-height: 0.75;
-  letter-spacing: 0.01em;
+  font-family: var(--l-head);
+  font-size: calc(96 * var(--u));
+  font-weight: 700;
+  line-height: 0.71;
   white-space: nowrap;
 }
 
-/* Figma sets 60%+ in one size. */
-.lasha-home .project-facts dd .lasha-plus { margin-left: 0; font-family: inherit; font-weight: inherit; font-size: inherit; vertical-align: baseline; }
-
 .lasha-home .project-facts dt {
-  /* 20px under the capitals, less the 0.125em below them in the figure's line box. */
-  margin: calc(20 * var(--u) - 0.125 * 90 * var(--u)) 0 0 calc(2 * var(--u));
+  /* 20px under the capitals, less the 0.055em below them in the figure's line box. */
+  margin: calc(20 * var(--u) - 0.055 * 96 * var(--u)) 0 0 calc(2 * var(--u));
   max-width: max(calc(135 * var(--u)), 6.5rem);
   overflow-wrap: anywhere;
   /* Figma's #505050, following the theme: a fixed grey was 2.6:1 on the true-black night page. */
@@ -142,43 +129,42 @@
   line-height: 1.08;
 }
 
-/* The card: 514 × 374, name 35px under its top edge (frame y 2599), body at y 2676 (447 wide),
-   the rule at y 2763 (444 wide), the location line at y 2780 and the 217 × 69 buttons at y 2832,
-   37px above the bottom edge. */
+/* The card (Kemo, 18 October 2026: the buttons must sit level with the thumbnails, as they read in
+   Figma). Its 67px buttons share the thumbnail row, frame y 2868 to 2935, and the card ends 32px
+   below them, its side padding. The facts block is 319px plus its 1px top rule, so the card runs
+   304px to the buttons' top. The extra height over Figma's 374px is spread between the name, body,
+   rule and buttons rather than left as one gap above the buttons. */
 .lasha-home .project-card {
-  display: grid;
-  justify-items: start;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   /* Grows only where a long translation needs more lines near 900px. */
-  min-height: calc(374 * var(--u));
-  padding: calc(35 * var(--u)) calc(32 * var(--u)) calc(37 * var(--u));
+  min-height: calc(403 * var(--u) - 1px);
+  padding: calc(46 * var(--u)) calc(32 * var(--u)) calc(32 * var(--u));
   background: var(--l-ink);
   color: var(--l-paper);
 }
 
 .lasha-home .project-card h3 {
-  padding-top: 0.074em;
-  font-family: var(--l-poster);
-  font-size: calc(80 * var(--u));
-  font-weight: 800;
-  line-height: 0.75;
-  letter-spacing: 0.01em;
+  font-family: var(--l-head);
+  font-size: calc(70 * var(--u));
+  font-weight: 700;
+  line-height: 0.71;
   white-space: nowrap;
 }
 
 .lasha-home .project-card p {
   max-width: calc(447 * var(--u));
-  margin-top: calc(21 * var(--u) - 0.125 * 80 * var(--u));
+  margin-top: calc(29 * var(--u) - 0.055 * 70 * var(--u));
   font-size: max(calc(16 * var(--u)), 0.8125rem);
   font-weight: 500;
   line-height: 1.08;
 }
 
 .lasha-home .project-card .project-card-meta {
-  justify-self: stretch;
+  align-self: stretch;
   margin-right: calc(4 * var(--u));
-  /* The body keeps Figma's four-line height, so the rule stays at frame y 2763. */
-  margin-top: 0;
+  margin-top: calc(10 * var(--u));
   padding-top: calc(17 * var(--u));
   border-top: 1px solid #858787;
   letter-spacing: 0;
@@ -189,12 +175,15 @@
 .lasha-home .project-card-actions {
   display: flex;
   gap: calc(14 * var(--u));
-  margin-top: calc(34 * var(--u));
+  /* At least Figma's 34px under the location line; the rest of the card's height goes here, so
+     the buttons stay on the thumbnail row. */
+  margin-top: auto;
+  padding-top: calc(34 * var(--u));
 }
 
 .lasha-home .project-card-actions .lasha-button {
   width: calc(217 * var(--u));
-  height: calc(69 * var(--u));
+  height: calc(67 * var(--u));
   min-height: 22px;
   padding: 0 calc(10 * var(--u)) 0 calc(13 * var(--u));
   font-size: max(calc(14 * var(--u)), 0.66rem);
@@ -206,9 +195,9 @@
 
 .lasha-home .project-card-actions .lasha-arrow { flex-shrink: 1; width: calc(25 * var(--u)); min-width: 0.7rem; }
 /* Longer translations (PROJEKT ENTDECKEN, RAZIŠČITE PROJEKT, СМОТРЕТЬ ПРОЕКТ) close up to fit the
-   frame's 217px buttons; the Cyrillic title face is wider than Morganite. */
+   frame's 217px buttons. */
 html:is([lang="de"], [lang="sl"], [lang="ru"]) .lasha-home .project-card-actions .lasha-button { font-size: max(calc(14 * var(--u)), 0.6rem); letter-spacing: 0.01em; }
-html[lang="ru"] .lasha-home .project-showcase { --title-size: calc(138 * var(--u)); }
+
 
 .project-upcoming {
   display: grid;
@@ -258,10 +247,8 @@ html[lang="ru"] .lasha-home .project-showcase { --title-size: calc(138 * var(--u
    faces as the frame. */
 @media (max-width: 899px) {
   .lasha-home .project-showcase { padding: 3.4rem 1.25rem 2.6rem; }
-  .lasha-home .project-showcase-head .lasha-eyebrow { font-size: 0.9rem; }
-  .lasha-home .project-showcase,
-  html[lang="ru"] .lasha-home .project-showcase { --title-size: min(4.6rem, 19vw); }
-  .lasha-home .project-showcase h2 { margin-top: 0.8rem; white-space: normal; }
+  .lasha-home .project-showcase { --title-size: var(--v4-h2); }
+  .lasha-home .project-showcase h2 { margin-top: 0.8rem; line-height: 0.88; white-space: normal; }
   .lasha-home .project-feature { grid-template-columns: minmax(0, 1fr); row-gap: 1.6rem; margin-top: 1.2rem; }
   .lasha-home .project-feature-gallery { row-gap: 0.5rem; }
   .lasha-home .project-feature-media { height: auto; aspect-ratio: 4 / 3; }
@@ -275,14 +262,14 @@ html[lang="ru"] .lasha-home .project-showcase { --title-size: calc(138 * var(--u
   .lasha-home .project-facts > div,
   .lasha-home .project-facts > div:nth-child(n + 3) { padding: 1.1rem 0.75rem 1.1rem 0; }
   .lasha-home .project-facts > div:nth-child(even) { padding-left: 1.1rem; }
-  .lasha-home .project-facts dd { font-size: min(4rem, 17vw); }
+  .lasha-home .project-facts dd { font-size: min(3.4rem, 14vw); }
   .lasha-home .project-facts dt { max-width: none; margin: 0.45rem 0 0; font-size: 0.875rem; line-height: 1.3; }
   .lasha-home .project-card { min-height: 0; margin-top: 0.4rem; padding: 1.8rem 1.25rem 1.6rem; }
-  .lasha-home .project-card h3 { font-size: min(3.4rem, 15vw); white-space: normal; }
+  .lasha-home .project-card h3 { font-size: var(--v4-h3-xl); white-space: normal; }
   .lasha-home .project-card p { max-width: none; margin-top: 0.9rem; font-size: 1rem; line-height: 1.4; }
   .lasha-home .project-card > p:not(.project-card-meta) { min-height: 0; }
   .lasha-home .project-card .project-card-meta { margin-top: 1.1rem; padding-top: 0.9rem; }
-  .lasha-home .project-card-actions { flex-wrap: wrap; gap: 0.6rem; margin-top: 1.4rem; justify-self: stretch; }
+  .lasha-home .project-card-actions { flex-wrap: wrap; gap: 0.6rem; margin-top: 1.4rem; padding-top: 0; align-self: stretch; }
   .lasha-home .project-card-actions .lasha-button,
   html:is([lang="de"], [lang="sl"], [lang="ru"]) .lasha-home .project-card-actions .lasha-button { flex: 1 1 9rem; width: auto; height: 3.3rem; padding: 0 0.9rem 0 1rem; font-size: var(--v4-btn); letter-spacing: 0.08em; white-space: normal; }
   .lasha-home .project-card-actions .lasha-button { gap: 0.8rem; }
