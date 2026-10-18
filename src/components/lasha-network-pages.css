@@ -342,6 +342,13 @@
   margin-top: calc(40 * var(--u));
 }
 
+/* Lasha's columns fit the English verbs (JOIN in the narrowest). Translations have their longest
+   verb anywhere (ПРИСОЕДИНЯЙТЕСЬ, BEITRETEN first), so they share the width equally; the five
+   titles then take one common size (fitGroup) instead of five different ones. */
+@media (min-width: 900px) {
+  html:not([lang='en']) .lnp-steps { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
 .lnp-steps li { min-width: 0; padding: calc(28 * var(--u)) calc(10 * var(--u)) calc(16 * var(--u)) calc(21 * var(--u)); }
 .lnp-steps li:first-child { padding-left: 0; }
 .lnp-steps li + li { border-left: 1px solid var(--l-line); }
