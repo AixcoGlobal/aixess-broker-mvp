@@ -746,7 +746,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
 }
 
 .desktop-nav .nav-group-toggle::after { content: none; }
-.desktop-nav .nav-group-toggle svg { width: 0.7rem; height: 0.7rem; transition: transform 160ms ease; }
+.desktop-nav .nav-group-toggle svg { width: 12px; height: 12px; transition: transform 160ms ease; }
 .desktop-nav .nav-group.is-open .nav-group-toggle svg { transform: rotate(180deg); }
 
 .desktop-nav .nav-group-menu {

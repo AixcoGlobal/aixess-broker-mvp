@@ -986,7 +986,7 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
   .lasha-hero-cta { justify-content: space-between; gap: 0.8rem; min-width: 0; height: 3.3rem; margin-top: 1.7rem; padding: 0 0.9rem 0 1rem; font-size: var(--v4-btn); letter-spacing: 0.08em; background: var(--l-blue); color: var(--l-paper); }
   .lasha-hero-cta:hover { background: var(--l-blue-deep); text-decoration: none; }
   .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
-  .lasha-hero-cta .lasha-arrow { width: 1.8rem; height: 0.8rem; }
+  .lasha-hero-cta .lasha-arrow { width: 29px; height: 13px; }
 
   /* Metrics: two by two, the tagline takes the fourth cell. */
   .lasha-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 0; }
