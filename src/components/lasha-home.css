@@ -252,13 +252,20 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   color: #000;
 }
 
-/* A solid blue button, as on phones: the link sits over the tree line on every screen size. */
+/* A solid blue button, as on phones: the link sits over the tree line on every screen size. It has
+   the size of the homepage's other buttons (Kemo, 18 October 2026: "same size as the other
+   buttons"): the Batumi card's 67px height and the broker access buttons' 417px width, padding and
+   arrow at the right edge. */
 .lasha-hero-cta {
   display: inline-flex;
   align-items: center;
-  gap: calc(16 * var(--u));
-  margin-top: calc(30 * var(--u));
-  padding: calc(18 * var(--u)) calc(22 * var(--u)) calc(18 * var(--u)) calc(26 * var(--u));
+  justify-content: space-between;
+  gap: 1rem;
+  box-sizing: border-box;
+  min-width: min(100%, calc(417 * var(--u)));
+  height: max(calc(67 * var(--u)), 3rem);
+  margin-top: calc(34 * var(--u));
+  padding: 0 calc(21 * var(--u)) 0 calc(31 * var(--u));
   background: var(--l-blue);
   color: var(--l-paper);
   font-size: var(--v4-btn);
@@ -939,7 +946,7 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   }
   .lasha-hero-copy p { margin-top: 1.5rem; max-width: 23rem; }
   /* Kemo, October 7: the blue text link was unreadable over the trees, so phones get a solid button. */
-  .lasha-hero-cta { justify-content: space-between; gap: 0.9rem; min-height: 3.4rem; margin-top: 1.7rem; padding: 0 1.1rem 0 1.25rem; background: var(--l-blue); color: var(--l-paper); }
+  .lasha-hero-cta { justify-content: space-between; gap: 0.9rem; min-width: 0; height: 3.5rem; margin-top: 1.7rem; padding: 0 1.1rem 0 1.25rem; background: var(--l-blue); color: var(--l-paper); }
   .lasha-hero-cta:hover { background: var(--l-blue-deep); text-decoration: none; }
   .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
   .lasha-hero-cta .lasha-arrow { width: 1.8rem; height: 0.8rem; }
