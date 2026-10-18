@@ -207,8 +207,10 @@ html:root[data-time-theme='afternoon'] .lasha-page .network-advantage .network-c
 .time-theme-menu__button .ax-icon { --ax-accent: currentColor; }
 
 .time-theme-menu__button svg {
-  width: 1.15rem;
-  height: 1.15rem;
+  /* Whole-pixel size and 1.5px strokes (1.8 of 24 units) keep the icon crisp on 1x and Retina. */
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.8;
   transition: transform 700ms var(--time-theme-ease);
 }
 
@@ -216,20 +218,21 @@ html:root[data-time-theme='afternoon'] .lasha-page .network-advantage .network-c
   transform: rotate(-20deg);
 }
 
+/* Automatic mode: a small A in the button's empty lower-right corner, clear of every icon. */
 .time-theme-menu__badge {
   position: absolute;
-  top: 0.35rem;
-  right: 0.3rem;
+  right: 2px;
+  bottom: 2px;
   display: flex;
-  width: 0.85rem;
-  height: 0.85rem;
+  width: 12px;
+  height: 12px;
   align-items: center;
   justify-content: center;
   background: var(--l-field);
   color: var(--l-on-field);
   font-family: "Inter", system-ui, sans-serif;
-  font-size: 0.5rem;
-  font-weight: 800;
+  font-size: 9px;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -314,8 +317,9 @@ html:root[data-time-theme='afternoon'] .lasha-page .network-advantage .network-c
 }
 
 .time-theme-menu__icon svg {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.8;
 }
 
 .time-theme-menu__auto {

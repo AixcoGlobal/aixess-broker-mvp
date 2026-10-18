@@ -14,8 +14,9 @@ it("centers the notice along the bottom and keeps short-screen overflow accessib
   const style = getComputedStyle(screen.getByRole("region", { name: "Your privacy, your choice." }));
   expect(style.position).toBe("fixed");
   expect(styles).toMatch(/\.cookie-notice\s*\{[^}]*bottom:\s*max\(16px/);
-  expect(style.left).toBe("50%");
-  expect(style.transform).toBe("translateX(-50%)");
+  expect(style.left).toBe("0px");
+  expect(style.right).toBe("0px");
+  expect(style.marginInline).toBe("auto");
   expect(style.maxHeight).toBe("calc(100dvh - 32px)");
   expect(style.overflow).toBe("auto");
 });
