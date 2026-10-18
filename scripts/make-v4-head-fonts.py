@@ -17,6 +17,9 @@ proportion of its brand sheet. AiXESS uses the same type, so this script ships:
                    and the gap between the lines is set exactly in CSS. Building the stretch into
                    the font keeps real line boxes, so the lines can be measured and fitted without
                    a CSS transform.
+  "AiXESS Head Tall"  AiXESS Head stretched HEAD_TALL_Y times vertically, same widths and letter
+                   gaps, for the homepage broker band (Kemo, 18 October 2026: "same font but
+                   increase its height"), so it reaches the height of Lasha's Morganite there.
 
 Both are modified versions of an OFL font and ship under new family names, with the OFL text.
 Sofia Sans covers Latin, Latin Extended and Cyrillic, so every locale gets the same face.
@@ -41,6 +44,8 @@ POSTER_WEIGHT = 1000
 # hero's letter-spacing (0.008em and 0.03em).
 POSTER_TALL_Y = 2.59
 POSTER_Y = 2.42
+# Morganite's capitals are 1.75x as tall as AiXESS Head's at the same width (YOUR ACCESS, 163).
+HEAD_TALL_Y = 1.75
 
 SUBSETS = {
     "latin": [*range(0x20, 0x100), 0x131, 0x152, 0x153, 0x2BB, 0x2BC, 0x2C6, 0x2DA, 0x2DC, 0x304, 0x308,
@@ -109,6 +114,7 @@ def build(dest, family, weight, unicodes, sy=1.0, trim=False, morganite_metrics=
 
 for name, unicodes in SUBSETS.items():
     build(f"aixess-head-{name}.woff2", "AiXESS Head", HEAD_WEIGHT, unicodes)
+    build(f"aixess-head-tall-{name}.woff2", "AiXESS Head Tall", HEAD_WEIGHT, unicodes, sy=HEAD_TALL_Y)
     build(f"aixess-poster-{name}.woff2", "AiXESS Poster", POSTER_WEIGHT, unicodes, sy=POSTER_Y, trim=True)
 # AIXESS is never translated, so the tall cut only needs Latin.
 build("aixess-poster-tall-latin.woff2", "AiXESS Poster Tall", POSTER_WEIGHT, SUBSETS["latin"], sy=POSTER_TALL_Y, trim=True)
