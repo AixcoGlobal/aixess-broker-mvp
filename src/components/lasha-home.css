@@ -575,14 +575,15 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   padding-right: calc(70 * var(--u));
 }
 
-/* Title, count and label sit exactly as in Lasha's frame (Kemo, 18 October 2026: "in figma texts are
-   placed so that its aligned with buttons"): all three end on one baseline, level with the bottom of
-   DOWNLOAD PROJECT MATERIALS (frame y 270 in the band), and the title and the count rise to y 83, just
-   under the top of REGISTER AS A BROKER. That needs Figma's own face, Morganite ExtraBold (the hero's
-   AiXESS Hero, with its Cyrillic fallback): AiXESS Head is too wide to reach that height in the
-   column. Every line box is its capitals, as in the hero: a 0.5em line puts the baseline at the box
-   bottom and 0.199em of padding reaches the 0.699em cap height. Frame sizes: title capitals 88px with
-   12px between the lines, 163 capitals 187px, label capitals 37px with 9px between the lines. */
+/* Title, count and label end on one baseline level with the bottom of DOWNLOAD PROJECT MATERIALS
+   (frame y 270 in the band), and the title and the count rise towards REGISTER AS A BROKER, as in
+   Lasha's frame (Kemo, 18 October 2026: "in figma texts are placed so that its aligned with buttons").
+   They use the site's heading face, AiXESS Head, like every heading but the hero (Kemo, 18 October
+   2026: Morganite here "looks different"); it is wider than Figma's Morganite, so FittedHeading may
+   set the title a little shorter to fit the column. Every line box is its capitals: in AiXESS Head
+   (ascent 0.9em, descent 0.3em, capitals 0.655em) a 0.6em line puts the baseline at the box bottom and
+   0.055em of padding reaches the capitals. Frame sizes: title capitals 88px with 12px between the
+   lines, 163 capitals 187px, label capitals 37px with 9px between the lines. */
 .lasha-access-copy {
   display: flex;
   flex-direction: column;
@@ -599,16 +600,17 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   justify-items: start;
   /* Bottom of the column: a narrower FittedHeading size for a long translation keeps the baseline. */
   margin-top: auto;
-  font-family: var(--l-poster);
-  font-size: calc(126 * var(--u));
-  font-weight: 800;
+  font-family: var(--l-head);
+  font-size: calc(88 / 0.655 * var(--u));
+  font-weight: 700;
   letter-spacing: 0;
-  line-height: 0.5;
+  line-height: 0.6;
   white-space: nowrap;
 }
 
-.lasha-access h2 > span { display: block; padding-top: 0.199em; line-height: 0.5; }
-.lasha-access h2 > span + span { margin-top: calc(12 / 126 * 1em); }
+.lasha-access h2 > span { display: block; padding-top: 0.055em; line-height: 0.6; }
+/* Room for accents and descenders between the lines (Č, Ę, Д), wider than the frame's 12px. */
+.lasha-access h2 > span + span { margin-top: 0.24em; }
 
 .lasha-access-count,
 .lasha-access-actions { position: relative; }
@@ -633,15 +635,15 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 }
 
 .lasha-access-count strong {
-  padding-top: 0.199em;
+  padding-top: 0.055em;
   color: var(--l-blue);
-  font-family: var(--l-poster);
-  font-size: calc(187 / 0.699 * var(--u));
-  font-weight: 800;
-  line-height: 0.5;
+  font-family: var(--l-head);
+  font-size: calc(110 / 0.655 * var(--u));
+  font-weight: 700;
+  line-height: 0.6;
 }
 
-/* Russian takes the wider Cyrillic cut: НАЧИНАЕТСЯ ЗДЕСЬ breaks into two lines so the three-line title
+/* Russian (always AiXESS Head's Cyrillic): НАЧИНАЕТСЯ ЗДЕСЬ breaks into two lines so the three-line title
    still spans the frame's 188px of capitals (82px capitals' size), and the label closes up to match
    the Latin label's width. */
 html[lang="ru"] .lasha-access h2 { font-size: calc(82 * var(--u)); }
@@ -649,20 +651,20 @@ html[lang="ru"] .lasha-access h2 > span:last-child { width: min-content; white-s
 /* A wrapped line needs a real line pitch (capitals plus the 12px gap, 0.794em); the padding and margins
    keep the box on the capitals and the baseline, as above. */
 html[lang="ru"] .lasha-access h2 > span { padding-top: 0.052em; margin-bottom: -0.147em; line-height: 0.794; }
-html[lang="ru"] .lasha-access h2 > span + span { margin-top: 0; }
+html[lang="ru"] .lasha-access h2 > span + span { margin-top: 0.1em; }
 html[lang="ru"] .lasha-access h2 { line-height: 0.794; }
-html[lang="ru"] .lasha-access-count span { font-size: calc(30 / 0.699 * var(--u)); }
+html[lang="ru"] .lasha-access-count span { font-size: calc(30 / 0.655 * var(--u)); }
 
-/* Two lines 46px apart (0.868em); the last line box ends 0.184em under its baseline, so the label
-   drops by that much to put its baseline on the count's. */
+/* Two lines 0.92em apart, room for Polish and Czech accents; the last line box ends 0.16em under its
+   baseline, so the label drops by that much to put its baseline on the count's. */
 .lasha-access-count span {
   /* One word a line, as drawn, so the box is no wider than its text. */
   width: min-content;
-  margin-bottom: -0.184em;
-  font-family: var(--l-poster);
-  font-size: calc(37 / 0.699 * var(--u));
-  font-weight: 800;
-  line-height: 0.868;
+  margin-bottom: -0.16em;
+  font-family: var(--l-head);
+  font-size: calc(28 / 0.655 * var(--u));
+  font-weight: 700;
+  line-height: 0.92;
   text-transform: uppercase;
 }
 
