@@ -5,7 +5,9 @@ import { useLanguage } from "../i18n.jsx";
 // With fillLines, every line is sized on its own to the heading's full width (Kemo's AIXESS /
 // TO MARKET poster, 7 October 2026), and later lines stay at most maxLineRatio of the first
 // line's size so a short translation cannot outgrow it.
-export function FittedHeading({ as: Tag = "h2", children, fillLines = false, maxLineRatio = Infinity, ...props }) {
+// Headings that share a fitGroup (a Map) all take the smallest fitted size, so a row of step
+// titles stays one size when one translation is long (ПРИСОЕДИНЯЙТЕСЬ, 18 October 2026).
+export function FittedHeading({ as: Tag = "h2", children, fillLines = false, maxLineRatio = Infinity, fitGroup, ...props }) {
   const ref = useRef(null);
   const { locale } = useLanguage();
 
@@ -39,8 +41,13 @@ export function FittedHeading({ as: Tag = "h2", children, fillLines = false, max
       const maxSize = parseFloat(getComputedStyle(heading).fontSize);
       const available = heading.clientWidth;
       const longest = Math.max(...Array.from(heading.children, (line) => line.getBoundingClientRect().width));
-      if (longest > available - 2) {
-        heading.style.fontSize = `${Math.floor(maxSize * (available - 2) / longest * 100) / 100}px`;
+      const size = longest > available - 2 ? Math.floor(maxSize * (available - 2) / longest * 100) / 100 : maxSize;
+      if (fitGroup) {
+        fitGroup.set(heading, size);
+        const smallest = Math.min(...fitGroup.values());
+        fitGroup.forEach((_, member) => { member.style.fontSize = `${smallest}px`; });
+      } else if (size < maxSize) {
+        heading.style.fontSize = `${size}px`;
       }
       heading.dataset.fitReady = "true";
     };
@@ -85,6 +92,7 @@ export function FittedHeading({ as: Tag = "h2", children, fillLines = false, max
     window.addEventListener("load", scheduleFit);
     return () => {
       active = false;
+      fitGroup?.delete(heading);
       cancelAnimationFrame(frame);
       window.clearTimeout(fontTimeout);
       observer?.disconnect();
@@ -93,7 +101,7 @@ export function FittedHeading({ as: Tag = "h2", children, fillLines = false, max
       lineObserver?.disconnect();
       window.removeEventListener("load", scheduleFit);
     };
-  }, [locale, fillLines, maxLineRatio]);
+  }, [locale, fillLines, maxLineRatio, fitGroup]);
 
   return <Tag {...props} ref={ref} data-fitted-heading data-fit-ready="false">{children}</Tag>;
 }

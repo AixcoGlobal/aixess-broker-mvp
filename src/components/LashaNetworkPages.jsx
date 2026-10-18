@@ -164,6 +164,7 @@ export function BrokerAccessPageContent({ header }) {
   const people = network.people.map(([title, line], index) => [title, index < 3 ? noStop(line) : line]);
   const [lastTitle, lastLine] = network.steps[4];
   const steps = [...network.steps.slice(0, 4).map(([title, line]) => [title, noStop(line)]), [lastTitle, lastLine.split(/(?<=[.!?])\s/)[0].replace(/\.$/, "")]];
+  const stepTitles = useRef(new Map()).current;
   return (
     <div className="lnp lnp-broker">
       <SplitHero
@@ -216,7 +217,7 @@ export function BrokerAccessPageContent({ header }) {
           {steps.map(([title, line], index) => (
             <li key={title}>
               <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
-              <FittedHeading as="h3"><span>{title}</span></FittedHeading>
+              <FittedHeading as="h3" fitGroup={stepTitles}><span>{title}</span></FittedHeading>
               <p>{line}</p>
             </li>
           ))}

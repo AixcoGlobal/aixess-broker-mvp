@@ -63,8 +63,11 @@
 
 .lasha-page-hero-copy {
   display: grid;
-  flex: 1;
+  /* Grows from its own content height (never from a zero basis), so the hero always grows with
+     the copy instead of clipping it (Kemo's MacBook Safari cut the Insights subtitle, 18 October 2026). */
+  flex: 1 0 auto;
   align-content: center;
+  align-content: safe center;
   justify-items: start;
   max-width: min(100%, 62rem);
   padding: clamp(2.5rem, 6vw, 5rem) var(--page-gutter) clamp(3rem, 7vw, 5.5rem);
