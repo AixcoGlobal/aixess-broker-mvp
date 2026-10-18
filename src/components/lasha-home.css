@@ -582,8 +582,9 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
    2026: Morganite here "looks different"); it is wider than Figma's Morganite, so FittedHeading may
    set the title a little shorter to fit the column. Every line box is its capitals: in AiXESS Head
    (ascent 0.9em, descent 0.3em, capitals 0.655em) a 0.6em line puts the baseline at the box bottom and
-   0.055em of padding reaches the capitals. Frame sizes: title capitals 88px with 12px between the
-   lines, 163 capitals 187px, label capitals 37px with 9px between the lines. */
+   0.055em of padding reaches the capitals. The title asks for Figma's 88px capitals and FittedHeading
+   narrows it to its column. AiXESS Head's 163 at Figma's 187px capitals would squeeze the buttons, so
+   163 takes 110px capitals (about the fitted title's height) and its label 28px. */
 .lasha-access-copy {
   display: flex;
   flex-direction: column;
