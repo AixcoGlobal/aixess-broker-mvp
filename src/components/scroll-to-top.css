@@ -1,0 +1,77 @@
+/* AIXCO.Global v4's scroll-to-top button (.scroll-to-top-button in v4.css and index.css): square,
+   48px (56px from 768px), bottom-left, theme blue with white icon, ink on hover. */
+
+.scroll-top-button {
+  position: fixed;
+  z-index: 80;
+  bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  left: max(1.25rem, env(safe-area-inset-left, 0px));
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--l-blue, #2557d6);
+  border-radius: 0;
+  background: var(--l-blue, #2557d6);
+  box-shadow: 0 22px 62px -38px rgb(23 26 29 / 0.3);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    translate 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-top-button svg { width: 20px; height: 20px; }
+
+.scroll-top-button:hover {
+  border-color: #171a1d;
+  background: #171a1d;
+  translate: 0 -1px;
+}
+
+.scroll-top-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--l-paper, #f4f4f1), 0 0 0 4px color-mix(in srgb, var(--l-blue, #2557d6) 35%, transparent);
+}
+
+.scroll-top-button[data-visible='false'],
+body:has(.cookie-notice, .lasha-menu.is-open, .floor-modal) .scroll-top-button {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .scroll-top-button {
+    bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
+    left: max(1.5rem, env(safe-area-inset-left, 0px));
+    width: 56px;
+    height: 56px;
+  }
+
+  .scroll-top-button svg { width: 24px; height: 24px; }
+}
+
+/* At night it is the site's cobalt button, lightening on hover (Kemo, 17 October 2026). */
+html:root[data-time-theme='night'] .scroll-top-button {
+  border-color: var(--l-night-button);
+  background: var(--l-night-button);
+  box-shadow: none;
+}
+
+html:root[data-time-theme='night'] .scroll-top-button:hover {
+  border-color: var(--l-night-button-hover);
+  background: var(--l-night-button-hover);
+}
+
+html:root[data-time-theme='night'] .scroll-top-button:focus-visible {
+  box-shadow: 0 0 0 2px #000, 0 0 0 4px color-mix(in srgb, var(--l-blue) 55%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-top-button { transition: none; }
+  .scroll-top-button:hover { translate: none; }
+}
