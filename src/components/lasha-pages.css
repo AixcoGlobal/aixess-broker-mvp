@@ -780,8 +780,12 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
 }
 
 :is(.lasha-home, .lasha-page) .site-header .desktop-nav .nav-group-menu button::after { content: none; }
-.desktop-nav .nav-group-menu button:hover,
-.desktop-nav .nav-group-menu button.is-active { color: var(--l-blue); }
+/* Same hover as the language list: a tint of the theme's blue behind the row, blue text. */
+:is(.lasha-home, .lasha-page) .site-header .desktop-nav .nav-group-menu button { transition: background-color 160ms ease, color 160ms ease; }
+:is(.lasha-home, .lasha-page) .site-header .desktop-nav .nav-group-menu button:is(:hover, :focus-visible) { background: color-mix(in srgb, var(--l-blue) 12%, transparent); color: var(--l-blue); }
+:is(.lasha-home, .lasha-page) .site-header .desktop-nav .nav-group-menu button.is-active { color: var(--l-blue); }
+/* At night the pale cobalt tint is too faint on black, so the row takes the night buttons' cobalt. */
+html:root[data-time-theme='night'] :is(.lasha-home, .lasha-page) .site-header .desktop-nav .nav-group-menu button:is(:hover, :focus-visible) { background: #2557d6; color: #fff; }
 .desktop-nav .nav-group-menu button:focus-visible { outline: 2px solid var(--l-blue); outline-offset: -2px; }
 
 @media (max-width: 1399px) {
