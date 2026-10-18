@@ -3172,6 +3172,14 @@
   .model-instruction-index { min-width: 0; min-height: 1.5rem; }
   .building-model-instruction strong { font-size: 0.6rem; letter-spacing: 0.06em; }
 }
+/* From 1181px the model fills the right half and is as tall as the window, so on very short
+   windows (1280 × 430) the same compact controls follow the window height. */
+@media (min-width: 1181px) and (max-height: 560px) {
+  .building-model-badge { display: none; }
+  .model-top-controls { top: 0.5rem; right: 0.5rem; }
+  .model-floor-rail { top: calc(50% + 1.1rem); right: 0.4rem; width: 2.55rem; padding: 0.2rem; }
+  .model-floor-rail button { height: min(1.54rem, calc((100svh - 6.2rem) / 15)); grid-template-columns: 1.05rem 1fr; gap: 0.2rem; }
+}
 @media (pointer: coarse) {
   @container model (max-width: 34rem) {
     .model-instruction-desktop { display: none; }
