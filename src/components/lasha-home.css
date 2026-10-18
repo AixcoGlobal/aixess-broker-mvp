@@ -252,18 +252,26 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   color: #000;
 }
 
-/* A solid blue button, as on phones: the link sits over the tree line on every screen size. */
+/* A solid blue button, as on phones: the link sits over the tree line on every screen size. It is
+   the Batumi card's Explore project button (Kemo, 18 October 2026: "same size as the other
+   buttons"): 217 × 67 frame px, Inter Medium 14px, the arrow after the text. It scales with the page
+   width like that button (`--cta-u`), not with the hero's height-capped `--u`; a longer translation
+   widens it rather than squeezing the letters. */
 .lasha-hero-cta {
+  --cta-u: calc(min(100vw, 1920px) / 1440);
   display: inline-flex;
   align-items: center;
-  gap: calc(16 * var(--u));
-  margin-top: calc(30 * var(--u));
-  padding: calc(18 * var(--u)) calc(22 * var(--u)) calc(18 * var(--u)) calc(26 * var(--u));
+  gap: calc(10 * var(--cta-u));
+  box-sizing: border-box;
+  min-width: calc(217 * var(--cta-u));
+  height: calc(67 * var(--cta-u));
+  margin-top: calc(34 * var(--u));
+  padding: 0 calc(10 * var(--cta-u)) 0 calc(13 * var(--cta-u));
   background: var(--l-blue);
   color: var(--l-paper);
-  font-size: var(--v4-btn);
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-size: max(calc(14 * var(--cta-u)), 0.66rem);
+  font-weight: 500;
+  letter-spacing: 0.05em;
   line-height: 1;
   text-transform: uppercase;
   text-decoration: none;
@@ -271,7 +279,7 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   transition: background 160ms ease;
 }
 
-.lasha-hero-cta .lasha-arrow { width: calc(30 * var(--u)); height: calc(11 * var(--u)); }
+.lasha-hero-cta .lasha-arrow { width: calc(25 * var(--cta-u)); min-width: 0.7rem; }
 .lasha-hero-cta .lasha-arrow path { stroke-width: 1.5; }
 .lasha-hero-cta:hover { background: var(--l-blue-deep); }
 .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
@@ -939,7 +947,8 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   }
   .lasha-hero-copy p { margin-top: 1.5rem; max-width: 23rem; }
   /* Kemo, October 7: the blue text link was unreadable over the trees, so phones get a solid button. */
-  .lasha-hero-cta { justify-content: space-between; gap: 0.9rem; min-height: 3.4rem; margin-top: 1.7rem; padding: 0 1.1rem 0 1.25rem; background: var(--l-blue); color: var(--l-paper); }
+  /* As the phone Explore project button. */
+  .lasha-hero-cta { justify-content: space-between; gap: 0.8rem; min-width: 0; height: 3.3rem; margin-top: 1.7rem; padding: 0 0.9rem 0 1rem; font-size: var(--v4-btn); letter-spacing: 0.08em; background: var(--l-blue); color: var(--l-paper); }
   .lasha-hero-cta:hover { background: var(--l-blue-deep); text-decoration: none; }
   .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
   .lasha-hero-cta .lasha-arrow { width: 1.8rem; height: 0.8rem; }
