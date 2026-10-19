@@ -97,6 +97,19 @@
 }
 
 .lasha-page-hero .page-cta-row { margin-top: clamp(1.5rem, 2.6vw, 2.4rem); }
+
+/* From 900px the hero's copy fits the first screen of a short, wide window too (Kemo, 19 October
+   2026: the Insights subtitle ran off the bottom of his screen). The title also follows the window's
+   height (--hero-title-vh: the share of the height one title line may take) and the copy's top and
+   bottom padding shrink with it, so the eyebrow, title, text and buttons all show without scrolling. */
+@media (min-width: 900px) {
+  .lasha-page-hero { --hero-title-vh: 13svh; }
+  .lasha-page-hero-copy {
+    padding-top: min(clamp(2.5rem, 6vw, 5rem), 5svh);
+    padding-bottom: min(clamp(3rem, 7vw, 5.5rem), 6svh);
+  }
+  .lasha-page .lasha-page-hero-title { font-size: min(var(--v4-page-title), var(--hero-title-vh), var(--hero-title-fit, 100vw)); }
+}
 .lasha-page-hero .text-link { color: var(--l-blue); }
 
 /* Navigation over the photography: white labels, blue accents instead of orange. */
@@ -558,7 +571,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
 /* From 900px the title stops just short of v4's 8vw, so ONE PLATFORM's two lines end before the
    terrace at every width, as in 1A (at most about 5% smaller, only between 1440 and 1680px). */
 @media (min-width: 900px) {
-  .lasha-page .lasha-page-hero-coastal .lasha-page-hero-title { font-size: min(var(--v4-page-title), 7.6vw); }
+  .lasha-page .lasha-page-hero-coastal .lasha-page-hero-title { font-size: min(var(--v4-page-title), 7.6vw, var(--hero-title-vh), var(--hero-title-fit, 100vw)); }
   /* Longer translations wrap into even lines rather than leaving one word alone. */
   .lasha-page-hero-coastal .lasha-page-hero-title > span { text-wrap: balance; }
 }
@@ -609,7 +622,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
 .lasha-page-hero-towers .lasha-page-hero-copy { align-content: start; max-width: min(100%, max(30rem, 46vw)); padding-top: clamp(3rem, 7vh, 6rem); }
 /* Two title lines on the sky, clear of the towers (just under v4's 8vw between 1280 and 1440px). */
 @media (min-width: 900px) {
-  .lasha-page .lasha-page-hero-towers .lasha-page-hero-title { font-size: min(var(--v4-page-title), 7vw); }
+  .lasha-page .lasha-page-hero-towers .lasha-page-hero-title { font-size: min(var(--v4-page-title), 7vw, var(--hero-title-vh), var(--hero-title-fit, 100vw)); }
   .lasha-page-hero-towers .lasha-page-hero-title > span { text-wrap: balance; }
 }
 @media (max-width: 899px), (max-aspect-ratio: 1/1) {
