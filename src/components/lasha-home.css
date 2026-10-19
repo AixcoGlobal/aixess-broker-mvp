@@ -59,6 +59,7 @@
      label and number, and its vertically stretched cut for the hero. */
   --l-head: "AiXESS Head", "Arial Narrow", "Roboto Condensed", sans-serif;
   --l-head-tall: "AiXESS Head Tall", "AiXESS Head", "Arial Narrow", sans-serif;
+  --l-head-mid: "AiXESS Head Mid", "AiXESS Head", "Arial Narrow", sans-serif;
   /* Hero title: Morganite ExtraBold, as in Lasha's Figma (Benjamin via Kemo, 9 October 2026). */
   --l-poster: "AiXESS Hero", "AiXESS Head", "Arial Narrow", sans-serif;
   --l-poster-tall: var(--l-poster);
@@ -492,15 +493,31 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 
 .lasha-starting > .lasha-eyebrow::after { content: none; }
 
+/* Lasha's three lines at their drawn height and width (Kemo, 19 October 2026: "Font stays same just
+   size needs fix"): 104px capitals, 119px between baselines and lines 865 / 525 / 469px wide in the
+   HOME page export. AiXESS Head reaches those widths at 98.2px with no letter-spacing, and its
+   1.59x tall cut, AiXESS Head Mid (capitals 1.041em), reaches the height at the same size. Its first
+   capital sits on the eyebrow's edge, as drawn, so the box starts one side bearing further left. */
 .lasha-starting h2 {
-  margin-top: calc(18.2 * var(--u));
+  margin-top: calc(19.2 * var(--u));
+  margin-left: calc(70 * var(--u) - 0.03em);
   max-width: calc(1300 * var(--u));
-  font-size: var(--v4-h2);
-  letter-spacing: -0.012em;
-  line-height: 0.88;
+  font-family: var(--l-head-mid);
+  font-size: calc(98.2 * var(--u));
+  letter-spacing: 0;
+  line-height: 1.212;
 }
 
-.lasha-starting h2 > span:first-child { max-width: calc(1000 * var(--u)); }
+.lasha-starting h2 > span:first-child { max-width: calc(1300 * var(--u)); }
+/* Room for accents and descenders between the lines, only where a translation has them: Polish Ó Ż
+   over the eyebrow and Ś Ć under J and the comma, Slovenian Č Š over the eyebrow, Russian Д and the
+   comma over Ё. */
+html[lang="pl"] .lasha-starting h2,
+html[lang="sl"] .lasha-starting h2 { margin-top: calc(19.2 * var(--u) + 0.2em); }
+html[lang="pl"] .lasha-starting h2 > .lasha-accent,
+html[lang="ru"] .lasha-starting h2 > .lasha-accent { display: block; margin-top: 0.3em; }
+/* German: the comma after PLATTFORM over VORANZUKOMMEN. */
+html[lang="de"] .lasha-starting h2 > .lasha-accent { display: block; margin-top: 0.1em; }
 .lasha-starting .lasha-starting-line { display: block; }
 .lasha-starting .lasha-nowrap { white-space: nowrap; }
 
@@ -509,7 +526,7 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   display: grid;
   grid-template-columns: calc(477.7 * var(--u)) calc(476 * var(--u)) minmax(0, 1fr);
   min-height: calc(214 * var(--u));
-  margin-top: calc(41.1 * var(--u));
+  margin-top: calc(36.1 * var(--u));
   /* The bottom padding keeps longer translations (German at 1280px) inside the band. */
   padding: calc(19.7 * var(--u)) 0 calc(16 * var(--u)) calc(71 * var(--u));
   background: var(--l-mist);
@@ -1031,7 +1048,9 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
   .lasha-starting > .lasha-eyebrow,
   .lasha-starting > h2 { margin-inline: 1.25rem; }
   .lasha-starting > .lasha-eyebrow { line-height: 1.1; }
-  .lasha-starting h2 { margin-top: 0.8rem; }
+  .lasha-starting h2 { margin-top: 0.8rem; font-size: var(--v4-h2); letter-spacing: -0.012em; }
+  html[lang="pl"] .lasha-starting h2,
+  html[lang="sl"] .lasha-starting h2 { margin-top: calc(0.8rem + 0.2em); }
   .lasha-starting h2 > span:first-child { max-width: none; }
   /* "UNTERSCHIEDLICHE" is one unbreakable word. */
   .lasha-home:lang(de) .lasha-starting h2 { font-size: min(var(--v4-h2), calc((100vw - 2.5rem) / 6.2)); }
