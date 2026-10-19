@@ -640,13 +640,17 @@ html[lang="pl"] .lasha-access h2 > span + span { margin-top: 0.66em; }
   padding: 0 var(--access-gap);
 }
 
+/* 163 is set like Advantage's 360° (Kemo, 19 October 2026: "make 163 look like 360"): AiXESS Head
+   at the same 190px frame size and -0.02em tracking. A 0.6em line box puts the baseline at the box
+   bottom, level with the label's; 0.06em of padding reaches the capitals. */
 .lasha-access-count strong {
-  padding-top: 0.096em;
+  padding-top: 0.06em;
   color: var(--l-blue);
-  font-family: var(--l-head-tall);
-  font-size: calc(187 / 1.146 * var(--u));
+  font-family: var(--l-head);
+  font-size: calc(190 * var(--u));
   font-weight: 700;
-  line-height: 1.05;
+  letter-spacing: -0.02em;
+  line-height: 0.6;
 }
 
 
@@ -1055,7 +1059,7 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
   .lasha-access-count::before,
   .lasha-access-actions::before { content: none; }
   .lasha-home .lasha-access-count { gap: 0.8rem; height: auto; padding: 1.6rem 1.25rem 0; }
-  .lasha-access-count strong { font-size: min(10rem, 42vw); }
+  .lasha-access-count strong { font-size: min(9.5rem, 40vw); }
   .lasha-access-count span { font-size: min(2.6rem, 9vw); }
   html[lang="ru"] .lasha-access h2 { font-size: min(4.4rem, 19vw); }
   html[lang="ru"] .lasha-access-count span { font-size: min(2.2rem, 7.5vw); }
