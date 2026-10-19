@@ -9,10 +9,12 @@ import { AixcoOpportunity, Ownership, PaymentStructure, ProjectGallery, WhyBatum
 import { AdvantagePageContent, BrokerAccessPageContent } from "./components/LashaNetworkPages.jsx";
 import { HomeAbout, HomeAccess, HomeHero, HomeMetrics, HomeStartingPoints, LashaPageHero } from "./components/LashaHomeSections.jsx";
 import { TimeThemeMenu } from "./components/TimeThemeMenu.jsx";
+import { ScrollToTopButton } from "./components/ScrollToTopButton.jsx";
 import { BrokerToolsPageContent, InsightsPageContent } from "./components/InsightsToolsPages.jsx";
 import "./components/lasha-home.css";
 import "./components/lasha-pages.css";
 import "./components/time-theme.css";
+import "./components/scroll-to-top.css";
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
@@ -673,6 +675,7 @@ function AppContent() {
       {currentPage === "broker-tools" && <BrokerToolsPage {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />}
       {currentPage === "privacy" && <PrivacyPage header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu: setMenuOpen, onNavigate: navigatePage, onOpenModal: openModal }} />} />}
       {currentPage === "admin" && <Suspense fallback={<p role="status">{t("loadingAdmin")}</p>}><AdminDashboard /></Suspense>}
+      {currentPage !== "admin" && <ScrollToTopButton page={currentPage} />}
       <PrivacyControls page={currentPage} />
 
       {activeModal && (
