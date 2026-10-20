@@ -63,11 +63,14 @@
 
 .lasha-page-hero-copy {
   display: grid;
-  /* Grows from its own content height (never from a zero basis), so the hero always grows with
-     the copy instead of clipping it (Kemo's MacBook Safari cut the Insights subtitle, 18 October 2026). */
-  flex: 1 0 auto;
-  align-content: center;
-  align-content: safe center;
+  /* Its own content height (never a zero basis), so the hero always grows with the copy instead of
+     clipping it (Kemo's MacBook Safari cut the Insights subtitle, 18 October 2026). The block is
+     centred in the hero's spare height by auto margins, not by stretching it and centring its grid:
+     Safari 17.4 (Klem's MacBook, 20 October 2026) offsets a stretched grid's centred content by
+     far too much, pushing the subtitle and note past the photo's bottom edge. Auto margins never
+     go below zero, so they also keep "safe" centring. */
+  flex: 0 0 auto;
+  margin-block: auto;
   justify-items: start;
   max-width: min(100%, 62rem);
   padding: clamp(2.5rem, 6vw, 5rem) var(--page-gutter) clamp(3rem, 7vw, 5.5rem);
@@ -549,7 +552,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
   .lasha-page-hero::before {
     background: linear-gradient(180deg, color-mix(in srgb, var(--l-wash-page) 10%, transparent) 0%, color-mix(in srgb, var(--l-wash-page) 74%, transparent) 30%, color-mix(in srgb, var(--l-wash-page) 86%, transparent) 50%, color-mix(in srgb, var(--l-wash-page) 88%, transparent) 100%);
   }
-  .lasha-page-hero-copy { align-content: end; }
+  .lasha-page-hero-copy { margin-top: auto; margin-bottom: 0; }
 }
 
 /* Over a photo the small eyebrow takes the theme's deeper accent, and below 1100px, where the
@@ -592,7 +595,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
   /* Phones: the photo fills the hero and the copy sits between the header and the lower edge,
      over the sky, skyline and sea; the hero grows with the longest translation. */
   .lasha-page-hero-coastal { min-height: max(100svh, 40rem); }
-  .lasha-page-hero-coastal .lasha-page-hero-copy { align-content: center; padding-top: 2rem; padding-bottom: 2.5rem; }
+  .lasha-page-hero-coastal .lasha-page-hero-copy { margin-block: auto; padding-top: 2rem; padding-bottom: 2.5rem; }
   /* The two title lines run on as one sentence, so ONE PLATFORM stays together on a narrow screen. */
   .lasha-page-hero-coastal .lasha-page-hero-title > span { display: inline; }
   .lasha-page-hero-coastal .lasha-page-hero-title > span + span::before { content: " "; }
@@ -619,7 +622,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
 /* The small eyebrow over the blue sky takes a deep navy (4.5:1 over the sky's lightest part). */
 .lasha-page-hero-towers .lasha-eyebrow { color: #0a1a40; }
 /* The copy keeps to the upper half, on the open sky, above the coast and the trees. */
-.lasha-page-hero-towers .lasha-page-hero-copy { align-content: start; max-width: min(100%, max(30rem, 46vw)); padding-top: clamp(3rem, 7vh, 6rem); }
+.lasha-page-hero-towers .lasha-page-hero-copy { margin-top: 0; margin-bottom: auto; max-width: min(100%, max(30rem, 46vw)); padding-top: clamp(3rem, 7vh, 6rem); }
 /* Two title lines on the sky, clear of the towers (just under v4's 8vw between 1280 and 1440px). */
 @media (min-width: 900px) {
   .lasha-page .lasha-page-hero-towers .lasha-page-hero-title { font-size: min(var(--v4-page-title), 7vw, var(--hero-title-vh), var(--hero-title-fit, 100vw)); }
