@@ -7,6 +7,7 @@ import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { LASHA_PAGES_COPY } from "../lasha-pages-copy.js";
 import "./lasha-network-pages.css";
 import { ThemedImage } from "./ThemedImage.jsx";
+import { ScrollDownCue } from "./ScrollDownCue.jsx";
 
 // AiXESS Advantage and Broker Access, built to Lasha Bakashvili's Figma frames (AIXESS
 // ADVANTAGE 1440 × 1865 and BROKER ACCESS 1440 × 1800, shared by Kemo on 9 October 2026).
@@ -80,18 +81,37 @@ function useHeaderOverField(ref, locale) {
   }, [ref, locale]);
 }
 
+// Phones stack the panel over the render: the render takes the rest of the first screen, so the
+// hero fills it with the scroll-down cue at its foot (Kemo, 20 October 2026). CSS needs the panel's height.
+function usePanelHeight(ref) {
+  useLayoutEffect(() => {
+    const hero = ref.current;
+    const panel = hero?.querySelector(":scope > .lnp-hero-panel");
+    if (!panel) return undefined;
+    const mark = () => hero.style.setProperty("--lnp-panel-h", `${panel.offsetHeight}px`);
+    mark();
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(mark);
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, [ref]);
+}
+
 function SplitHero({ header, eyebrow, title, body, action, media, aside, className }) {
   const ref = useRef(null);
   const { locale } = useLanguage();
   useHeaderOverField(ref, locale);
+  usePanelHeight(ref);
   return (
     <section ref={ref} className={`lnp-hero ${className}`}>
       {header}
-      <div className="lnp-hero-panel">
+      {/* The panel ends where the render starts on phones, and with the hero on wider screens. */}
+      <div className="lnp-hero-panel" data-scroll-cue-end>
         <p className="lasha-eyebrow lnp-eyebrow">{eyebrow}</p>
         <FittedHeading as="h1" className="lnp-hero-title">{title.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
         <p className="lnp-hero-body">{body}</p>
         {action}
+        <ScrollDownCue className="lnp-hero-scroll-cue" />
       </div>
       <div className="lnp-hero-media">
         {media.family
