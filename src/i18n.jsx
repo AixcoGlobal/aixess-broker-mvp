@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useState } from "react";
+import { localizePrices } from "./currency.js";
 
 export const LANGUAGE_OPTIONS = [
   { code: "en", label: "English", shortLabel: "EN" },
@@ -95,7 +96,7 @@ const ENGLISH = {
   ourPhilosophy: "OUR PHILOSOPHY",
   internationalReach: "International reach.",
   localConviction: "Local conviction.",
-  philosophyCopy: "We select fewer opportunities, make the economics legible and stay close to every handover. That means transparent euro pricing, a real local team and a partner who remains accountable after the signature.",
+  philosophyCopy: "We select fewer opportunities, make the economics legible and stay close to every handover. That means transparent USD pricing, a real local team and a partner who remains accountable after the signature.",
   firstAcquisition: "FIRST ACQUISITION",
   valueTransacted: "VALUE TRANSACTED",
   skilledEmployees: "SKILLED EMPLOYEES",
@@ -140,7 +141,7 @@ const ENGLISH = {
   detailsClientsAsk: "The details",
   clientsAskFirst: "clients ask first.",
   minimumInvestmentQuestion: "What is the minimum investment?",
-  minimumInvestmentAnswer: "Secure a position from €5,000. The team will outline the right route for the client and the selected residence.",
+  minimumInvestmentAnswer: "Secure a position from {{usd:5900}}. The team will outline the right route for the client and the selected residence.",
   foreignersOwnQuestion: "Can foreigners own property in Georgia?",
   foreignersOwnAnswer: "Yes. Foreign buyers can purchase and own Georgian property with minimal restrictions; AIXCO coordinates the process with local partners.",
   reveranceOfferQuestion: "What does Reverance offer?",
@@ -417,7 +418,7 @@ const TRANSLATIONS = {
     detailsClientsAsk: "Die Details,",
     clientsAskFirst: "nach denen Kunden zuerst fragen.",
     minimumInvestmentQuestion: "Wie hoch ist die Mindestinvestition?",
-    minimumInvestmentAnswer: "Sichern Sie sich eine Position ab 5.000 €. Das Team erläutert den passenden Weg für den Kunden und die ausgewählte Residenz.",
+    minimumInvestmentAnswer: "Sichern Sie sich eine Position ab {{usd:5900}}. Das Team erläutert den passenden Weg für den Kunden und die ausgewählte Residenz.",
     foreignersOwnQuestion: "Können Ausländer in Georgien Eigentum erwerben?",
     foreignersOwnAnswer: "Ja. Ausländische Käufer können georgische Immobilien mit wenigen Einschränkungen erwerben und besitzen; AIXCO koordiniert den Prozess mit lokalen Partnern.",
     reveranceOfferQuestion: "Was bietet Reverance?",
@@ -650,7 +651,7 @@ const TRANSLATIONS = {
     ourPhilosophy: "NASZA FILOZOFIA",
     internationalReach: "Międzynarodowy zasięg.",
     localConviction: "Lokalne przekonanie.",
-    philosophyCopy: "Wybieramy mniej możliwości, jasno pokazujemy ekonomię projektu i jesteśmy blisko każdej transakcji. Oznacza to przejrzyste ceny w euro, prawdziwy lokalny zespół i partnera, który pozostaje odpowiedzialny także po podpisaniu umowy.",
+    philosophyCopy: "Wybieramy mniej możliwości, jasno pokazujemy ekonomię projektu i jesteśmy blisko każdej transakcji. Oznacza to przejrzyste ceny w dolarach amerykańskich, prawdziwy lokalny zespół i partnera, który pozostaje odpowiedzialny także po podpisaniu umowy.",
     firstAcquisition: "PIERWSZY ZAKUP",
     valueTransacted: "WARTOŚĆ TRANSAKCJI",
     skilledEmployees: "SPECJALIŚCI",
@@ -694,7 +695,7 @@ const TRANSLATIONS = {
     detailsClientsAsk: "Szczegóły, o które",
     clientsAskFirst: "klienci pytają najpierw.",
     minimumInvestmentQuestion: "Jaka jest minimalna inwestycja?",
-    minimumInvestmentAnswer: "Zarezerwuj pozycję od 5 000 €. Zespół przedstawi klientowi właściwą ścieżkę i wybrany apartament.",
+    minimumInvestmentAnswer: "Zarezerwuj pozycję od {{usd:5900}}. Zespół przedstawi klientowi właściwą ścieżkę i wybrany apartament.",
     foreignersOwnQuestion: "Czy cudzoziemcy mogą posiadać nieruchomość w Gruzji?",
     foreignersOwnAnswer: "Tak. Zagraniczni nabywcy mogą kupować i posiadać gruzińskie nieruchomości z niewielkimi ograniczeniami; AIXCO koordynuje proces z lokalnymi partnerami.",
     reveranceOfferQuestion: "Co oferuje Reverance?",
@@ -972,7 +973,7 @@ const TRANSLATIONS = {
     detailsClientsAsk: "Podrobnosti, ki jih",
     clientsAskFirst: "stranke najprej vprašajo.",
     minimumInvestmentQuestion: "Kakšna je minimalna naložba?",
-    minimumInvestmentAnswer: "Zavarujte si položaj od 5.000 €. Ekipa bo stranki predstavila pravo pot in izbrano rezidenco.",
+    minimumInvestmentAnswer: "Zavarujte si položaj od {{usd:5900}}. Ekipa bo stranki predstavila pravo pot in izbrano rezidenco.",
     foreignersOwnQuestion: "Ali lahko tujci posedujejo nepremičnino v Gruziji?",
     foreignersOwnAnswer: "Da. Tuji kupci lahko z malo omejitvami kupijo in posedujejo gruzijske nepremičnine; AIXCO postopek usklajuje z lokalnimi partnerji.",
     reveranceOfferQuestion: "Kaj ponuja Reverance?",
@@ -1206,7 +1207,7 @@ const TRANSLATIONS = {
     ourPhilosophy: "НАША ФИЛОСОФИЯ",
     internationalReach: "Международный охват.",
     localConviction: "Локальная экспертиза.",
-    philosophyCopy: "Мы выбираем меньше возможностей, делаем экономику понятной и сопровождаем каждую передачу. Это означает прозрачные цены в евро, настоящую местную команду и партнёра, который остаётся ответственным после подписания.",
+    philosophyCopy: "Мы выбираем меньше возможностей, делаем экономику понятной и сопровождаем каждую передачу. Это означает прозрачные цены в долларах США, настоящую местную команду и партнёра, который остаётся ответственным после подписания.",
     firstAcquisition: "ПЕРВАЯ ПОКУПКА",
     valueTransacted: "ОБЪЁМ СДЕЛОК",
     skilledEmployees: "СПЕЦИАЛИСТЫ",
@@ -1250,7 +1251,7 @@ const TRANSLATIONS = {
     detailsClientsAsk: "Детали, о которых",
     clientsAskFirst: "клиенты спрашивают прежде всего.",
     minimumInvestmentQuestion: "Какова минимальная инвестиция?",
-    minimumInvestmentAnswer: "Начните с суммы от 5 000 €. Команда поможет клиенту выбрать подходящий вариант и апартаменты.",
+    minimumInvestmentAnswer: "Начните с суммы от {{usd:5900}}. Команда поможет клиенту выбрать подходящий вариант и апартаменты.",
     foreignersOwnQuestion: "Могут ли иностранцы владеть недвижимостью в Грузии?",
     foreignersOwnAnswer: "Да. Иностранные покупатели могут приобретать и владеть недвижимостью в Грузии с минимальными ограничениями; AIXCO координирует процесс с местными партнёрами.",
     reveranceOfferQuestion: "Что предлагает Reverance?",
@@ -1440,7 +1441,7 @@ export function LanguageProvider({ children }) {
 
   const t = useCallback((key, variables = {}) => {
     const value = TRANSLATIONS[locale]?.[key] ?? ENGLISH[key] ?? key;
-    return String(value).replace(/\{\{(\w+)\}\}/g, (_, variable) => String(variables[variable] ?? ""));
+    return localizePrices(String(value), locale).replace(/\{\{(\w+)\}\}/g, (_, variable) => String(variables[variable] ?? ""));
   }, [locale]);
 
   const value = useMemo(() => ({ locale, setLocale, t, languages: LANGUAGE_OPTIONS }), [locale, setLocale, t]);
@@ -1450,6 +1451,6 @@ export function LanguageProvider({ children }) {
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (context) return context;
-  const t = (key, variables = {}) => String(ENGLISH[key] ?? key).replace(/\{\{(\w+)\}\}/g, (_, variable) => String(variables[variable] ?? ""));
+  const t = (key, variables = {}) => localizePrices(String(ENGLISH[key] ?? key), "en").replace(/\{\{(\w+)\}\}/g, (_, variable) => String(variables[variable] ?? ""));
   return { locale: "en", setLocale: () => {}, t, languages: LANGUAGE_OPTIONS };
 }

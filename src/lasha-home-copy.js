@@ -1,19 +1,21 @@
+import { withPrices } from "./currency.js";
+
 // Homepage copy from Lasha Bakashvili's Figma homepage frame (AIXESS / Frame 1),
 // copied word for word at Kemo's request (6 October 2026).
 //
 // The company and project figures below are taken from that draft as drawn.
 // They are not yet reconciled with AiXESS_Website_Content_Final.docx or the owner
-// stock workbook: clients/transaction/completed counts, the €5,000 reservation,
+// stock workbook: clients/transaction/completed counts, the initial down payment,
 // the 60% financing minimum and the 12% net yield are all pending confirmation
 // from Klem. Live availability (163) and the completion date come from project data.
-export const LASHA_HOME_COPY = {
+export const LASHA_HOME_COPY = withPrices({
   en: {
     heroSubtitle: "Disciplined real estate investment,\ndevelopment and long-term asset management",
     startingTitle: ["DIFFERENT STARTING POINTS. ONE PLATFORM TO", "MOVE FORWARD"],
     heroCta: "EXPLORE INVESTMENTS",
     metrics: [
       ["TRUSTED CLIENTS", "5,000+", "Clients supported across ownership, brokerage and administration"],
-      ["REAL ESTATE TRANSACTION", "$4.2B+", "Purchases, sales and brokerage mandates since 2009"],
+      ["REAL ESTATE TRANSACTION", "{{usd:4200000000:compact}}+", "Purchases, sales and brokerage mandates since 2009"],
       ["TRANSACTION COMPLETED", "2,000+", "Residential, commercial and development transactions."],
     ],
     metricsTagline: ["TURN YOUR", "NETWORK", "INTO", "OPPORTUNITY"],
@@ -24,8 +26,8 @@ export const LASHA_HOME_COPY = {
     projectEyebrow: "Emerging market opportunity",
     projectTitle: "CURRENT PROJECT IN BATUMI",
     projectFacts: [
-      ["€5K", "Secure your position from € 5,000"],
-      ["€45K", "Entry from €45,000"],
+      ["{{usd:5900:k}}", "Secure your position from {{usd:5900}}"],
+      ["{{usd:59000:k}}", "Entry from {{usd:59000}}"],
       ["60%+", "Minimum bank financing"],
       ["12%", "Approx. net rental yield"],
     ],
@@ -43,7 +45,7 @@ export const LASHA_HOME_COPY = {
     heroCta: "INVESTITIONEN ENTDECKEN",
     metrics: [
       ["BETREUTE KUNDEN", "5.000+", "Kunden in Eigentum, Vermittlung und Verwaltung betreut"],
-      ["IMMOBILIEN\u00ADTRANSAKTIONEN", "4,2 Mrd. $+", "Käufe, Verkäufe und Vermittlungs\u00ADmandate seit 2009"],
+      ["IMMOBILIEN\u00ADTRANSAKTIONEN", "{{usd:4200000000:compact}}+", "Käufe, Verkäufe und Vermittlungs\u00ADmandate seit 2009"],
       ["ABGESCHLOSSENE TRANSAKTIONEN", "2.000+", "Wohn-, Gewerbe- und Entwicklungs\u00ADtransaktionen."],
     ],
     metricsTagline: ["MACHEN SIE", "IHR NETZWERK", "ZUR", "CHANCE"],
@@ -54,8 +56,8 @@ export const LASHA_HOME_COPY = {
     projectEyebrow: "Chance in einem aufstrebenden Markt",
     projectTitle: "AKTUELLES PROJEKT IN BATUMI",
     projectFacts: [
-      ["€5K", "Sichern Sie sich Ihre Position ab 5.000 €"],
-      ["€45K", "Einstieg ab 45.000 €"],
+      ["{{usd:5900:k}}", "Sichern Sie sich Ihre Position ab {{usd:5900}}"],
+      ["{{usd:59000:k}}", "Einstieg ab {{usd:59000}}"],
       ["60%+", "Mindest-Bankfinanzierung"],
       ["12%", "Ca. Netto\u00ADmietrendite"],
     ],
@@ -73,7 +75,7 @@ export const LASHA_HOME_COPY = {
     heroCta: "POZNAJ INWESTYCJE",
     metrics: [
       ["ZAUFANI KLIENCI", "5 000+", "Klienci obsłużeni w zakresie własności, pośrednictwa i administracji"],
-      ["TRANSAKCJE NA RYNKU NIERUCHOMOŚCI", "4,2 mld $+", "Zakupy, sprzedaże i mandaty pośrednictwa od 2009 roku"],
+      ["TRANSAKCJE NA RYNKU NIERUCHOMOŚCI", "{{usd:4200000000:compact}}+", "Zakupy, sprzedaże i mandaty pośrednictwa od 2009 roku"],
       ["ZREALIZOWANE TRANSAKCJE", "2 000+", "Transakcje mieszkaniowe, komercyjne i deweloperskie."],
     ],
     metricsTagline: ["ZAMIEŃ SWOJĄ", "SIEĆ", "W", "SZANSĘ"],
@@ -84,8 +86,8 @@ export const LASHA_HOME_COPY = {
     projectEyebrow: "Okazja na wschodzącym rynku",
     projectTitle: "AKTUALNY PROJEKT W BATUMI",
     projectFacts: [
-      ["€5K", "Zarezerwuj swoją pozycję od 5 000 €"],
-      ["€45K", "Wejście od 45 000 €"],
+      ["{{usd:5900:k}}", "Zarezerwuj swoją pozycję od {{usd:5900}}"],
+      ["{{usd:59000:k}}", "Wejście od {{usd:59000}}"],
       ["60%+", "Minimalne finansowanie bankowe"],
       ["12%", "Ok. rentowność netto najmu"],
     ],
@@ -103,7 +105,7 @@ export const LASHA_HOME_COPY = {
     heroCta: "RAZIŠČITE NALOŽBE",
     metrics: [
       ["ZAUPANE STRANKE", "5.000+", "Strank, podprtih pri lastništvu, posredovanju in upravljanju"],
-      ["NEPREMIČNINSKE TRANSAKCIJE", "4,2 mrd. $+", "Nakupi, prodaje in posredniški mandati od leta 2009"],
+      ["NEPREMIČNINSKE TRANSAKCIJE", "{{usd:4200000000:compact}}+", "Nakupi, prodaje in posredniški mandati od leta 2009"],
       ["ZAKLJUČENE TRANSAKCIJE", "2.000+", "Stanovanjske, poslovne in razvojne transakcije."],
     ],
     metricsTagline: ["SPREMENITE SVOJO", "MREŽO", "V", "PRILOŽNOST"],
@@ -114,8 +116,8 @@ export const LASHA_HOME_COPY = {
     projectEyebrow: "Priložnost na trgu v vzponu",
     projectTitle: "AKTUALNI PROJEKT V BATUMIJU",
     projectFacts: [
-      ["€5K", "Zavarujte svoje mesto od 5.000 €"],
-      ["€45K", "Vstop od 45.000 €"],
+      ["{{usd:5900:k}}", "Zavarujte svoje mesto od {{usd:5900}}"],
+      ["{{usd:59000:k}}", "Vstop od {{usd:59000}}"],
       ["60%+", "Najmanjše bančno financiranje"],
       ["12%", "Pribl. neto donos najema"],
     ],
@@ -133,7 +135,7 @@ export const LASHA_HOME_COPY = {
     heroCta: "СМОТРЕТЬ ИНВЕСТИЦИИ",
     metrics: [
       ["КЛИЕНТОВ", "5 000+", "Клиентов, поддержанных в вопросах владения, брокериджа и администрирования"],
-      ["СДЕЛКИ С НЕДВИЖИМОСТЬЮ", "$4,2 млрд+", "Покупки, продажи и брокерские мандаты с 2009 года"],
+      ["СДЕЛКИ С НЕДВИЖИМОСТЬЮ", "{{usd:4200000000:compact}}+", "Покупки, продажи и брокерские мандаты с 2009 года"],
       ["ЗАВЕРШЁННЫХ СДЕЛОК", "2 000+", "Жилые, коммерческие и девелоперские сделки."],
     ],
     metricsTagline: ["ПРЕВРАТИТЕ СВЯЗИ", "В", "НОВЫЕ", "ВОЗМОЖНОСТИ"],
@@ -144,8 +146,8 @@ export const LASHA_HOME_COPY = {
     projectEyebrow: "Возможность на растущем рынке",
     projectTitle: "ТЕКУЩИЙ ПРОЕКТ В БАТУМИ",
     projectFacts: [
-      ["€5K", "Забронируйте позицию от 5 000 €"],
-      ["€45K", "Вход от 45 000 €"],
+      ["{{usd:5900:k}}", "Забронируйте позицию от {{usd:5900}}"],
+      ["{{usd:59000:k}}", "Вход от {{usd:59000}}"],
       ["60%+", "Минимальное банковское финансирование"],
       ["12%", "Примерная чистая доходность аренды"],
     ],
@@ -157,4 +159,4 @@ export const LASHA_HOME_COPY = {
     galleryImage: "Показать изображение Reverance {{n}}",
     openImage: "Открыть изображение в полном размере",
   },
-};
+});

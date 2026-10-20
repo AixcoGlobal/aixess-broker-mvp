@@ -1,12 +1,14 @@
+import { withPrices } from "./currency.js";
+
 // The FAQ essentials from www.aixco.global (Klem, 13 October 2026: "for FaQ use the same as we have on
 // Aixco.global website"). Copied from GiorgiKemo/aixco-global-website src/data/site.ts `faqGroups` and its
 // published translations, in the source order. Update it from that source, never by paraphrase.
 // One exception (Kemo, 16 October 2026: no figure repeated on a page): the equity answer says the rest
 // is bank-financed instead of repeating the 60% stated in the answer above it.
-export const AIXCO_FAQ = {
+export const AIXCO_FAQ = withPrices({
   en: [
     ["How do I get started?", "To get started, please register on our website. Once your account is created, you will receive all further information via email."],
-    ["What is the minimum investment amount?", "The minimum investment amount is €5,000."],
+    ["What is the minimum investment amount?", "The minimum investment amount is {{usd:5900}}."],
     ["Why is Batumi an attractive location for real estate investment?", "Batumi is one of the fastest-growing coastal cities in Eastern Europe, offering tourism growth, modern infrastructure, and investor-friendly policies."],
     ["Can foreigners buy property in Batumi, Georgia?", "Yes, foreigners can freely purchase and own real estate with minimal restrictions."],
     ["What is the process of buying property in Batumi?", "The process is simple: sign agreement and register ownership, often within days."],
@@ -20,7 +22,7 @@ export const AIXCO_FAQ = {
   ],
   de: [
     ["Wie starte ich?", "Um zu starten, registrieren Sie sich bitte auf unserer Website. Sobald Ihr Konto erstellt ist, erhalten Sie alle weiteren Informationen per E-Mail."],
-    ["Wie hoch ist der Mindestinvestitionsbetrag?", "Der Mindestinvestitionsbetrag beträgt 5.000 €."],
+    ["Wie hoch ist der Mindestinvestitionsbetrag?", "Der Mindestinvestitionsbetrag beträgt {{usd:5900}}."],
     ["Warum ist Batumi ein attraktiver Standort für Immobilieninvestitionen?", "Batumi ist eine der am schnellsten wachsenden Küstenstädte Osteuropas und bietet Tourismuswachstum, moderne Infrastruktur und investorenfreundliche Rahmenbedingungen."],
     ["Können Ausländer Immobilien in Batumi, Georgien, kaufen?", "Ja. Ausländer können Immobilien in Batumi grundsätzlich frei erwerben und besitzen; Einschränkungen betreffen vor allem bestimmte Grundstücksarten und gesetzliche Sonderfälle."],
     ["Wie läuft der Immobilienkauf in Batumi ab?", "Der Prozess ist einfach: Vertrag unterzeichnen und Eigentum innerhalb weniger Tage anmelden."],
@@ -34,7 +36,7 @@ export const AIXCO_FAQ = {
   ],
   pl: [
     ["Jak zacząć?", "Zarejestruj się na stronie. Po utworzeniu konta otrzymasz dalsze informacje e-mailem."],
-    ["Jaka jest minimalna kwota inwestycji?", "Minimalna kwota inwestycji wynosi 5 000 €."],
+    ["Jaka jest minimalna kwota inwestycji?", "Minimalna kwota inwestycji wynosi {{usd:5900}}."],
     ["Dlaczego Batumi jest atrakcyjnym miejscem do inwestowania?", "Batumi jest jednym z najszybciej rozwijających się miast nadmorskich Europy Wschodniej, z rosnącą turystyką, nowoczesną infrastrukturą i przyjaznymi zasadami."],
     ["Czy cudzoziemcy mogą kupować nieruchomości w Batumi?", "Tak, cudzoziemcy mogą swobodnie kupować i posiadać nieruchomości przy minimalnych ograniczeniach."],
     ["Jak wygląda zakup nieruchomości w Batumi?", "Proces jest prosty: podpisanie umowy i rejestracja własności, często w ciągu kilku dni."],
@@ -48,7 +50,7 @@ export const AIXCO_FAQ = {
   ],
   sl: [
     ["Kako začnem?", "Za začetek se prosimo registrirajte na naši spletni strani. Ko bo vaš račun ustvarjen, boste vse nadaljnje informacije prejeli po e-pošti."],
-    ["Kakšen je minimalni znesek naložbe?", "Minimalni znesek naložbe je €5.000."],
+    ["Kakšen je minimalni znesek naložbe?", "Minimalni znesek naložbe je {{usd:5900}}."],
     ["Zakaj je Batumi privlačna lokacija za naložbe v nepremičnine?", "Batumi je eno najhitreje rastočih obalnih mest v vzhodni Evropi, ki ponuja rast turizma, sodobno infrastrukturo in naložbam prijazno politiko."],
     ["Ali lahko tujci kupijo nepremičnino v Batumiju v Gruziji?", "Da, tujci lahko prosto kupujejo in imajo v lasti nepremičnine z minimalnimi omejitvami."],
     ["Kakšen je postopek nakupa nepremičnine v Batumiju?", "Postopek je preprost: podpis pogodbe in vpis lastništva, pogosto v nekaj dneh."],
@@ -62,7 +64,7 @@ export const AIXCO_FAQ = {
   ],
   ru: [
     ["Как начать?", "Чтобы начать, зарегистрируйтесь на нашем сайте. После создания аккаунта вы получите всю дальнейшую информацию по электронной почте."],
-    ["Какова минимальная сумма инвестиций?", "Минимальная сумма инвестиций составляет 5 000 евро."],
+    ["Какова минимальная сумма инвестиций?", "Минимальная сумма инвестиций составляет {{usd:5900}}."],
     ["Почему Батуми является привлекательным местом для инвестиций в недвижимость?", "Батуми является одним из самых быстрорастущих прибрежных городов Восточной Европы, предлагая рост туризма, современную инфраструктуру и политику, благоприятную для инвесторов."],
     ["Могут ли иностранцы покупать недвижимость в Батуми, Грузия?", "Да, иностранцы могут свободно покупать и владеть недвижимостью с минимальными ограничениями."],
     ["Каков процесс покупки недвижимости в Батуми?", "Процесс прост: подписать соглашение и зарегистрировать право собственности, часто в течение нескольких дней."],
@@ -74,4 +76,4 @@ export const AIXCO_FAQ = {
     ["Требуется ли кредитная проверка для банковского финансирования?", "Для финансирования на 60% традиционная кредитная проверка не требуется. Более высокие суммы финансирования могут потребовать стандартного одобрения банка и подтверждения дохода."],
     ["Сколько собственного капитала мне нужно для покупки квартиры?", "Обычно покупатели вносят 40% собственного капитала, а остальное покрывает банковское финансирование. В зависимости от вашего финансового профиля и структуры финансирования требуемый собственный взнос может быть ниже."],
   ],
-};
+});

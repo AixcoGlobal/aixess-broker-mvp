@@ -19,8 +19,8 @@ const galleryImage = (slug, sizes = [960, 1600, 2400]) => ({
 
 export const FEATURED_PROJECT = {
   id: "reverance",
-  startingPrice: 45000,
-  currency: "EUR",
+  startingPrice: 59000, // USD, the contract currency (Kemo, 20 October 2026); see src/currency.js
+  currency: "USD",
   availableResidences: getWorkbookAvailableCount(),
   completionYear: 2028,
   gallery: [

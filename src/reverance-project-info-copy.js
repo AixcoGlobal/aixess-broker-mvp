@@ -1,3 +1,5 @@
+import { withPrices } from "./currency.js";
+
 // Project Reverance information sections. English is AIXCO.Global v4's /reverance-batumi copy
 // (ReverancePageV2.tsx) word for word (Kemo, 16 October 2026: "dont leave out anything whats on
 // aixco global is correct and add it to aixess"), including its tax lines, the 24 available /
@@ -7,7 +9,7 @@
 // ownership disclaimer and the AIXCO attribution under the company figures. v4's wellness set
 // repeats the business lounge for "Private lounge"; the private-lounge render is used instead.
 // DE/PL/SL/RU come from AIXCO.Global v4's translation catalogues where the line exists there.
-export const REVERANCE_INFO_COPY = {
+export const REVERANCE_INFO_COPY = withPrices({
   "en": {
     "batumi": {
       "eyebrow": "WHY BATUMI",
@@ -18,7 +20,7 @@ export const REVERANCE_INFO_COPY = {
           "Apartments sold"
         ],
         [
-          "$1.3B",
+          "{{usd:1300000000:compact}}",
           "Residential market size"
         ],
         [
@@ -252,7 +254,7 @@ export const REVERANCE_INFO_COPY = {
         ],
         [
           "Rental case",
-          "$600/month average long-term rent, $80/night average short-stay rent, and 90% potential occupancy shown in the project deck."
+          "{{usd:600}}/month average long-term rent, {{usd:80}}/night average short-stay rent, and 90% potential occupancy shown in the project deck."
         ]
       ],
       "imageAlt": "Sunset over the residence facade",
@@ -270,7 +272,7 @@ export const REVERANCE_INFO_COPY = {
           "Verkaufte Wohnungen"
         ],
         [
-          "1,3 Mrd. $",
+          "{{usd:1300000000:compact}}",
           "Größe des Wohnungsmarkts"
         ],
         [
@@ -504,7 +506,7 @@ export const REVERANCE_INFO_COPY = {
         ],
         [
           "Mietszenario",
-          "Laut Projektpräsentation: durchschnittlich 600 $/Monat Langzeitmiete, 80 $/Nacht Kurzzeitmiete und 90 % mögliche Auslastung."
+          "Laut Projektpräsentation: durchschnittlich {{usd:600}}/Monat Langzeitmiete, {{usd:80}}/Nacht Kurzzeitmiete und 90 % mögliche Auslastung."
         ]
       ],
       "imageAlt": "Sonnenuntergang über der Fassade der Residenz",
@@ -522,7 +524,7 @@ export const REVERANCE_INFO_COPY = {
           "Sprzedane apartamenty"
         ],
         [
-          "1,3 mld $",
+          "{{usd:1300000000:compact}}",
           "Wielkość rynku mieszkaniowego"
         ],
         [
@@ -756,7 +758,7 @@ export const REVERANCE_INFO_COPY = {
         ],
         [
           "Scenariusz najmu",
-          "Według prezentacji projektu: średnio 600 $/miesiąc przy najmie długoterminowym, 80 $/noc przy najmie krótkoterminowym i 90% potencjalnego obłożenia."
+          "Według prezentacji projektu: średnio {{usd:600}}/miesiąc przy najmie długoterminowym, {{usd:80}}/noc przy najmie krótkoterminowym i 90% potencjalnego obłożenia."
         ]
       ],
       "imageAlt": "Zachód słońca nad fasadą rezydencji",
@@ -774,7 +776,7 @@ export const REVERANCE_INFO_COPY = {
           "Prodani apartmaji"
         ],
         [
-          "1,3 mlrd $",
+          "{{usd:1300000000:compact}}",
           "Velikost stanovanjskega trga"
         ],
         [
@@ -1008,7 +1010,7 @@ export const REVERANCE_INFO_COPY = {
         ],
         [
           "Primer najema",
-          "Po predstavitvi projekta: povprečno 600 $/mesec pri dolgoročnem najemu, 80 $/noč pri kratkoročnem najemu in 90 % možne zasedenosti."
+          "Po predstavitvi projekta: povprečno {{usd:600}}/mesec pri dolgoročnem najemu, {{usd:80}}/noč pri kratkoročnem najemu in 90 % možne zasedenosti."
         ]
       ],
       "imageAlt": "Sončni zahod nad fasado rezidence",
@@ -1026,7 +1028,7 @@ export const REVERANCE_INFO_COPY = {
           "Проданные квартиры"
         ],
         [
-          "1,3 млрд $",
+          "{{usd:1300000000:compact}}",
           "Объём жилого рынка"
         ],
         [
@@ -1260,7 +1262,7 @@ export const REVERANCE_INFO_COPY = {
         ],
         [
           "Арендный сценарий",
-          "По данным презентации проекта: в среднем 600 $/месяц при долгосрочной аренде, 80 $/ночь при краткосрочной и 90% возможной заполняемости."
+          "По данным презентации проекта: в среднем {{usd:600}}/месяц при долгосрочной аренде, {{usd:80}}/ночь при краткосрочной и 90% возможной заполняемости."
         ]
       ],
       "imageAlt": "Закат над фасадом резиденции",
@@ -1268,4 +1270,4 @@ export const REVERANCE_INFO_COPY = {
       "expand": "Увеличить изображение"
     }
   }
-};
+});

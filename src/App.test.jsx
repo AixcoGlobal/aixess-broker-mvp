@@ -181,8 +181,8 @@ describe("AIXESS navigation pages", () => {
     const { container } = render(<App />);
     const showcase = container.querySelector("#projects");
     expect(within(showcase).getByRole("heading", { name: "CURRENT PROJECT IN BATUMI" })).toBeInTheDocument();
-    expect(within(showcase).getByText("€45K")).toBeInTheDocument();
-    expect(within(showcase).getByText("Entry from €45,000")).toBeInTheDocument();
+    expect(within(showcase).getByText("$59K")).toBeInTheDocument();
+    expect(within(showcase).getByText("Entry from $59,000")).toBeInTheDocument();
     expect(screen.getByText(String(163))).toBeInTheDocument();
     expect(showcase.querySelector(".project-upcoming")).not.toBeInTheDocument();
     const thumbs = within(showcase).getAllByRole("button", { name: /Show Reverance image/ });
@@ -355,7 +355,7 @@ describe("AIXESS navigation pages", () => {
     expect(items).toHaveLength(12);
     expect(items.every((item) => !item.open)).toBe(true);
     expect(items.map((item) => item.querySelector("summary").textContent.replace("+", ""))).toEqual(AIXCO_FAQ.en.map(([question]) => question));
-    expect(within(items[1]).getByText("The minimum investment amount is €5,000.")).toBeInTheDocument();
+    expect(within(items[1]).getByText("The minimum investment amount is $5,900.")).toBeInTheDocument();
   });
 
   it("drops the Insights hero actions and the closing partner banner", () => {
