@@ -1,20 +1,23 @@
+import { withPrices } from "./currency.js";
+
 // Project Reverance page additions (Klem, 14 October 2026).
 // facts: AIXCO.Global's "Current project" section as checked on 14 October 2026
-// (/mnt/project-files/klem-oct14/packet/OFFICIAL-SOURCE-NOTES.txt). The €5,000 reservation and
-// the €45,000 entry price are different figures; the yield is approximate, never guaranteed.
+// (/mnt/project-files/klem-oct14/packet/OFFICIAL-SOURCE-NOTES.txt). The initial down payment and
+// the starting price are different figures (USD, Kemo 20 October 2026; see currency.js); the yield is approximate, never guaranteed.
 // benefit: Klem's REF-06 picture, English word for word.
-export const REVERANCE_PROJECT_COPY = {
+export const REVERANCE_PROJECT_COPY = withPrices({
   en: {
     heroAlt: "Official render of the two Project Reverance towers above the Batumi coast",
     factsTitle: "PROJECT FACTS",
     factsLead: "Batumi is the current project focus.",
     facts: [
-      ["RESERVATION", "From €5,000", "Reserves a residence; it is not the purchase price."],
+      ["INITIAL DOWN PAYMENT", "From {{usd:5900}}", "Secure your apartment with just a 10% down payment and flexible payment terms."],
       ["OWNERSHIP", "100% foreign ownership", "Foreign buyers can own the apartment outright."],
       ["RENTAL YIELD", "Approx. 12% net", "An approximate net rental yield, not a guaranteed return."],
       ["COMPLETION", "July 2028", "Targeted completion date."],
     ],
     factsNote: "Units are chosen with the broker calculator, and availability is checked before reservation.",
+    currencyNote: "All property prices are quoted in United States Dollars (USD), the official contract currency. Payments made in other currencies will be converted into USD using the applicable published exchange rate on the date of payment, in accordance with the purchase agreement.",
     benefitEyebrow: "EXCLUSIVE PURCHASE BENEFIT",
     benefitTitle: "More Upfront. More Value.",
     benefitCopy: "Increase your initial down payment and unlock exclusive savings on your property purchase.",
@@ -27,12 +30,14 @@ export const REVERANCE_PROJECT_COPY = {
     factsTitle: "PROJEKTDATEN",
     factsLead: "Batumi ist der aktuelle Projektschwerpunkt.",
     facts: [
-      ["RESERVIERUNG", "Ab 5.000 €", "Reserviert eine Wohnung; das ist nicht der Kaufpreis."],
+      ["ERSTE ANZAHLUNG", "Ab {{usd:5900}}", "Sichern Sie sich Ihre Wohnung mit nur 10\u00a0% Anzahlung und flexiblen Zahlungsbedingungen."],
       ["EIGENTUM", "100 % ausländisches Eigentum", "Ausländische Käufer können die Wohnung vollständig besitzen."],
       ["MIETRENDITE", "Ca. 12 % netto", "Eine ungefähre Nettomietrendite, keine garantierte Rendite."],
       ["FERTIGSTELLUNG", "Juli 2028", "Geplanter Fertigstellungstermin."],
     ],
     factsNote: "Die Wohnung wird mit dem Broker-Rechner gewählt, und die Verfügbarkeit wird vor der Reservierung geprüft.",
+    currencyNote: "Alle Immobilienpreise werden in US-Dollar (USD) angegeben, der offiziellen Vertragswährung. Zahlungen in anderen Währungen werden gemäß dem Kaufvertrag zum am Zahlungstag geltenden veröffentlichten Wechselkurs in USD umgerechnet.",
+    eurNote: "Die Euro-Beträge auf dieser Website sind zur Orientierung zum EZB-Referenzkurs vom 19. Oktober 2026 (1\u00a0EUR = {{rate}}\u00a0USD) aus USD umgerechnet.",
     benefitEyebrow: "EXKLUSIVER KAUFVORTEIL",
     benefitTitle: "Mehr Anzahlung. Mehr Wert.",
     benefitCopy: "Erhöhen Sie Ihre Anzahlung und sichern Sie sich exklusive Ersparnisse beim Kauf Ihrer Immobilie.",
@@ -45,12 +50,13 @@ export const REVERANCE_PROJECT_COPY = {
     factsTitle: "FAKTY O PROJEKCIE",
     factsLead: "Batumi to obecny główny projekt.",
     facts: [
-      ["REZERWACJA", "Od 5000 €", "Rezerwuje apartament; to nie jest cena zakupu."],
+      ["WKŁAD POCZĄTKOWY", "Od {{usd:5900}}", "Zabezpiecz swój apartament wpłatą zaledwie 10% i skorzystaj z elastycznych warunków płatności."],
       ["WŁASNOŚĆ", "100% własności zagranicznej", "Zagraniczni nabywcy mogą być pełnymi właścicielami."],
       ["RENTOWNOŚĆ NAJMU", "Ok. 12% netto", "Przybliżona rentowność netto, a nie gwarantowany zwrot."],
       ["ZAKOŃCZENIE", "Lipiec 2028", "Planowany termin zakończenia budowy."],
     ],
     factsNote: "Apartament wybiera się w kalkulatorze dla brokerów, a dostępność sprawdza się przed rezerwacją.",
+    currencyNote: "Wszystkie ceny nieruchomości podawane są w dolarach amerykańskich (USD), oficjalnej walucie umowy. Płatności dokonane w innych walutach zostaną przeliczone na USD według obowiązującego opublikowanego kursu wymiany z dnia płatności, zgodnie z umową kupna.",
     benefitEyebrow: "WYJĄTKOWA KORZYŚĆ PRZY ZAKUPIE",
     benefitTitle: "Większa wpłata. Większa wartość.",
     benefitCopy: "Zwiększ wpłatę początkową i zyskaj wyjątkowe oszczędności przy zakupie nieruchomości.",
@@ -63,12 +69,14 @@ export const REVERANCE_PROJECT_COPY = {
     factsTitle: "PODATKI O PROJEKTU",
     factsLead: "Batumi je trenutno osrednji projekt.",
     facts: [
-      ["REZERVACIJA", "Od 5.000 €", "Rezervira stanovanje; to ni kupnina."],
+      ["ZAČETNI POLOG", "Od {{usd:5900}}", "Zagotovite si stanovanje z le 10-odstotnim pologom in prilagodljivimi plačilnimi pogoji."],
       ["LASTNIŠTVO", "100-odstotno tuje lastništvo", "Tuji kupci so lahko polni lastniki stanovanja."],
       ["DONOS NAJEMNINE", "Pribl. 12 % neto", "Približen neto donos najemnine, ne zajamčen donos."],
       ["DOKONČANJE", "Julij 2028", "Načrtovani datum dokončanja."],
     ],
     factsNote: "Stanovanje se izbere z brokerskim kalkulatorjem, razpoložljivost pa se preveri pred rezervacijo.",
+    currencyNote: "Vse cene nepremičnin so navedene v ameriških dolarjih (USD), uradni pogodbeni valuti. Plačila v drugih valutah bodo pretvorjena v USD po veljavnem objavljenem menjalnem tečaju na dan plačila, v skladu s kupoprodajno pogodbo.",
+    eurNote: "Zneski v evrih na tej spletni strani so informativno preračunani iz USD po referenčnem tečaju ECB z dne 19. oktobra 2026 (1\u00a0EUR = {{rate}}\u00a0USD).",
     benefitEyebrow: "EKSKLUZIVNA UGODNOST OB NAKUPU",
     benefitTitle: "Več vnaprej. Več vrednosti.",
     benefitCopy: "Povečajte začetni polog in si zagotovite ekskluzivne prihranke pri nakupu nepremičnine.",
@@ -81,12 +89,13 @@ export const REVERANCE_PROJECT_COPY = {
     factsTitle: "ФАКТЫ О ПРОЕКТЕ",
     factsLead: "Батуми — текущий основной проект.",
     facts: [
-      ["БРОНИРОВАНИЕ", "От 5000 €", "Бронирует апартаменты; это не цена покупки."],
+      ["НАЧАЛЬНЫЙ ВЗНОС", "От {{usd:5900}}", "Закрепите за собой апартаменты с первоначальным взносом всего 10\u00a0% и гибкими условиями оплаты."],
       ["СОБСТВЕННОСТЬ", "100% иностранная собственность", "Иностранные покупатели могут владеть апартаментами полностью."],
       ["ДОХОДНОСТЬ АРЕНДЫ", "Около 12% чистыми", "Приблизительная чистая доходность аренды, а не гарантированный доход."],
       ["ЗАВЕРШЕНИЕ", "Июль 2028", "Плановый срок завершения."],
     ],
     factsNote: "Апартаменты выбирают в калькуляторе для брокеров, а наличие проверяют перед бронированием.",
+    currencyNote: "Все цены на недвижимость указаны в долларах США (USD), официальной валюте договора. Платежи в других валютах конвертируются в USD по применимому опубликованному обменному курсу на дату платежа в соответствии с договором купли-продажи.",
     benefitEyebrow: "ЭКСКЛЮЗИВНОЕ ПРЕИМУЩЕСТВО ПРИ ПОКУПКЕ",
     benefitTitle: "Больше взнос. Больше выгода.",
     benefitCopy: "Увеличьте первоначальный взнос и получите эксклюзивную экономию при покупке недвижимости.",
@@ -94,4 +103,4 @@ export const REVERANCE_PROJECT_COPY = {
     discount: "СКИДКА",
     benefitClosing: "Вложите больше. Сэкономьте больше.",
   },
-};
+});

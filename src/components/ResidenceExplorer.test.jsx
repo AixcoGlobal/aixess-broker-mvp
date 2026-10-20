@@ -334,14 +334,14 @@ describe("Residence explorer", () => {
     let dialog = await screen.findByRole("dialog", { name: /Floor 13/i });
     expect(within(dialog).getByText("A Block")).toBeInTheDocument();
     expect(await within(dialog).findByRole("heading", { name: "Residence 1305" })).toBeInTheDocument();
-    expect(within(dialog).getByText("€52,164")).toBeInTheDocument();
+    expect(within(dialog).getByText("$58,600")).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: /Open 2D PLAN of residence 1305 full screen/i }).querySelector("img"))
       .toHaveAttribute("src", "/assets/reverance-pdf/A1305-plan.webp");
 
     rerender(<ResidenceExplorer {...props} requestedApartment={{ code: "B1305" }} />);
     dialog = await screen.findByRole("dialog", { name: /Floor 13/i });
     await waitFor(() => expect(within(dialog).getByText("B Block")).toBeInTheDocument());
-    expect(within(dialog).getByText("€50,771")).toBeInTheDocument();
+    expect(within(dialog).getByText("$57,000")).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: /Reserved residence/i })).toBeDisabled();
     expect(floorLoader).not.toHaveBeenCalled();
   });

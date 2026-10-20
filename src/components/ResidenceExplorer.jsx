@@ -26,6 +26,7 @@ import { FittedHeading } from "./FittedHeading.jsx";
 import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
 import "./ResidenceExplorer.css";
 import { AixessLogo } from "./AixessLogo.jsx";
+import { formatEurSourcePrice } from "../currency.js";
 
 const loadReverance3D = () => import("./Reverance3D");
 const Reverance3D = lazy(() => loadReverance3D().then((module) => ({
@@ -509,7 +510,7 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
       {goldenPremium && (
         <div className="golden-premium-unit-meta">
           <span>{goldenCopy.referencePrice}</span>
-          <strong>{new Intl.NumberFormat(locale, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(goldenPremium.price)}</strong>
+          <strong>{formatEurSourcePrice(goldenPremium.price, locale)}</strong>
         </div>
       )}
 
