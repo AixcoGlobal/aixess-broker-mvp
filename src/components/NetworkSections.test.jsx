@@ -18,7 +18,8 @@ describe("Project Reverance overview", () => {
     expect(within(facts).getByText(/quoted in United States Dollars \(USD\), the official contract currency/)).toBeInTheDocument();
     expect(within(facts).getByText(/not a guaranteed return/)).toBeInTheDocument();
     // Entry price and building count are shown once, in the stats above (Kemo, 16 October 2026: no repeated text).
-    expect(within(facts).queryByText("From $59,000")).not.toBeInTheDocument();
+    expect(within(facts).queryByText("$59,000")).not.toBeInTheDocument();
+    expect(screen.getByText("$59,000")).toBeInTheDocument();
     // 60% financing is stated once, in the payment stages (Kemo, 16 October 2026).
     expect(within(facts).queryByText("Bank financing min. 60%")).not.toBeInTheDocument();
   });
