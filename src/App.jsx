@@ -531,7 +531,6 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
 }
 
 function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
-  const { t } = useLanguage();
   return (
     <div className="lasha-home">
       <HomeHero onNavigate={onNavigate}>
@@ -542,10 +541,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
       <HomeAbout />
       <ProjectShowcase onNavigate={onNavigate} />
 
-      <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
-        <ResidenceExplorer onBrokerAccess={() => onOpenModal("register")} />
-      </Suspense>
-
+      {/* The Residence Explorer lives on the Reverance project page only (Kemo, 21 October 2026). */}
       <HomeStartingPoints />
       <HomeAccess availableResidences={availableResidenceCount} onOpenModal={onOpenModal} />
     </div>
@@ -623,8 +619,8 @@ function AppContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // A #contact link opens the homepage at its contact footer, once the lazy explorer above it has
-  // taken its height.
+  // A #contact link opens the homepage at its contact footer, once the page above it has taken its
+  // height (fonts and photos).
   useEffect(() => {
     if (window.location.hash.toLowerCase() !== "#contact") return undefined;
     const timers = [0, 400, 1200].map((delay) => window.setTimeout(() => showContact("auto"), delay));
