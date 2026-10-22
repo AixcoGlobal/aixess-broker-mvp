@@ -303,7 +303,7 @@
 /* Tablets (768–899px) stack the Broker Access hero buttons too, so the copy runs as tall as on a
    phone and keeps the phone's room above the centred scroll-down cue (899 × 700 put the note under it). */
 @media (min-width: 768px) and (max-width: 899px) {
-  .lasha-page-hero:has(.it-hero-actions) .lasha-page-hero-copy { padding-bottom: 7.5rem; }
+  .lasha-page-hero:has(.it-hero-actions) .lasha-page-hero-copy { padding-bottom: 8rem; }
 }
 
 @media (max-width: 599px) {
