@@ -972,3 +972,11 @@ html:root[data-time-theme='night'] :is(.lasha-home, .lasha-page) .site-header .d
 @media (max-width: 1199px) and (orientation: landscape) and (max-height: 540px) {
   .lasha-page-hero .lasha-page-hero-copy { padding-bottom: 8.5rem; }
 }
+/* Tablet widths and short windows (21 October 2026 sweep): the stacked Reverance copy and the
+   centred Insights copy keep room above the scroll-down cue. */
+@media (max-width: 899px) and (orientation: landscape) and (min-height: 541px) {
+  .lasha-page-hero-towers { padding-bottom: calc(5.5rem + var(--hero-bar, 0px)); background: var(--l-paper, #f4f4f1); }
+}
+@media (min-width: 768px) and (max-width: 899px) and (max-height: 800px) {
+  .lasha-page-hero:not(.lasha-page-hero-towers) .lasha-page-hero-copy { padding-bottom: 8.5rem; }
+}
