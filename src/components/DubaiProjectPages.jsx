@@ -189,19 +189,15 @@ function SectionHeading({ id, eyebrow, title, lead }) {
   );
 }
 
-// The asterisk on a figure points to the note that qualifies it.
-function Qualified({ value, route, section, label }) {
-  return <>{value}<a className="dp-mark" href={`#${route}/${section}`} aria-label={label} onClick={sectionLinkClick(route, section)}>*</a></>;
-}
-
-function HeroFacts({ facts, format, route, noteSection, noteId, priceNote }) {
+// The price is tied to the note that qualifies it for screen readers; no asterisk (AiXESS uses * only for corrections).
+function HeroFacts({ facts, format, noteId }) {
   return (
     <dl className="dp-hero-facts">
       {facts.map(([label, text, flag]) => (
         <div key={label}>
           <dt>{label}</dt>
           <dd aria-describedby={flag === "price" ? noteId : undefined}>
-            {flag === "price" ? <Qualified value={format.text(text)} route={route} section={noteSection} label={priceNote} /> : format.text(text)}
+            {format.text(text)}
           </dd>
         </div>
       ))}
@@ -283,7 +279,7 @@ export function TresoraPage({ header }) {
     <>
       <ProjectHero header={header} route={route} eyebrow={common.eyebrow} hero={hero} developer={extra.developer} labels={labels} image="tresora-tower" imageAlt={extra.heroAlt}>
         <p className="lasha-page-hero-text">{hero.intro}</p>
-        <HeroFacts facts={hero.facts} format={format} route={route} noteSection="currency" noteId="tresora-currency" priceNote={hero.priceNote} />
+        <HeroFacts facts={hero.facts} format={format} noteId="tresora-currency" />
         <div className="it-hero-actions">
           <a className="button button-primary" href={`#${route}/spaces`} onClick={sectionLinkClick(route, "spaces")}>{hero.explore}<LashaArrow length={24} /></a>
           <RequestButton common={common} project={project} request={common.requests.availability} label={hero.availability} />
@@ -528,7 +524,7 @@ export function DowntownOnePage({ header }) {
     <>
       <ProjectHero header={header} route={route} eyebrow={common.eyebrow} hero={hero} developer={extra.developer} labels={labels} image="downtown-tower" imageAlt={extra.heroAlt}>
         {hero.body.map((text) => <p className="lasha-page-hero-text" key={text}>{text}</p>)}
-        <HeroFacts facts={hero.facts} format={format} route={route} noteSection="residences" noteId="downtown-one-mix-note" priceNote={residences.note} />
+        <HeroFacts facts={hero.facts} format={format} noteId="downtown-one-mix-note" />
         <div className="it-hero-actions">
           <a className="button button-primary" href={`#${route}/residences`} onClick={sectionLinkClick(route, "residences")}>{hero.explore}<LashaArrow length={24} /></a>
           <RequestButton common={common} project={project} request={common.requests.availability} label={hero.availability} />

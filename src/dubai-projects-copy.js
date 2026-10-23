@@ -55,7 +55,6 @@ export const DUBAI_PROJECTS_COPY = {
         facts: [["From, 40/60 plan", "{{price}}", "price"], ["Initial payment", "{{pct:20}}"], ["Expected completion", "Q1 2028"]],
         explore: "Explore Residences",
         availability: "Request Availability",
-        priceNote: "Indicative price; see the currency note",
       },
       discover: {
         eyebrow: "Discover TRESORA",
@@ -71,7 +70,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "TRESORA",
         title: "Project highlights",
         items: [["JVC, Dubai", "Location"], ["Homes, Offices & Retail", "Mixed-Use Address"], ["Studios to Penthouses", "Residences"]],
-        currency: "*All prices are displayed in US Dollars (USD), the primary currency used by AiXESS. Prices are indicative and may vary depending on daily currency exchange rates. Final prices are subject to confirmation at the time of purchase.",
+        currency: "All prices are displayed in US Dollars (USD), the primary currency used by AiXESS. Prices are indicative and may vary depending on daily currency exchange rates. Final prices are subject to confirmation at the time of purchase.",
       },
       spaces: {
         eyebrow: "Find Your Perfect Space",
@@ -240,7 +239,6 @@ export const DUBAI_PROJECTS_COPY = {
         facts: [["Ab, Plan 40/60", "{{price}}", "price"], ["Anfangszahlung", "{{pct:20}}"], ["Voraussichtliche Fertigstellung", "Q1 2028"]],
         explore: "Residenzen entdecken",
         availability: "Verfügbarkeit anfragen",
-        priceNote: "Richtpreis; siehe Hinweis zur Währung",
       },
       discover: {
         eyebrow: "TRESORA entdecken",
@@ -256,7 +254,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "TRESORA",
         title: "Projekt-Highlights",
         items: [["JVC, Dubai", "Lage"], ["Wohnen, Büros & Handel", "Mixed-Use-Adresse"], ["Vom Studio bis zum Penthouse", "Residenzen"]],
-        currency: "*Alle Preise werden in US-Dollar (USD) angegeben, der Hauptwährung von AiXESS. Die Preise sind Richtwerte und können je nach tagesaktuellen Wechselkursen variieren. Endgültige Preise werden zum Zeitpunkt des Kaufs bestätigt.",
+        currency: "Alle Preise werden in US-Dollar (USD) angegeben, der Hauptwährung von AiXESS. Die Preise sind Richtwerte und können je nach tagesaktuellen Wechselkursen variieren. Endgültige Preise werden zum Zeitpunkt des Kaufs bestätigt.",
       },
       spaces: {
         eyebrow: "Finden Sie Ihren idealen Raum",
@@ -425,7 +423,6 @@ export const DUBAI_PROJECTS_COPY = {
         facts: [["Od, plan 40/60", "{{price}}", "price"], ["Wpłata początkowa", "{{pct:20}}"], ["Planowane ukończenie", "I kw. 2028"]],
         explore: "Poznaj apartamenty",
         availability: "Zapytaj o dostępność",
-        priceNote: "Cena orientacyjna; zobacz informację o walucie",
       },
       discover: {
         eyebrow: "Poznaj TRESORA",
@@ -441,7 +438,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "TRESORA",
         title: "Najważniejsze cechy projektu",
         items: [["JVC, Dubaj", "Lokalizacja"], ["Mieszkania, biura i handel", "Adres wielofunkcyjny"], ["Od studia po penthouse", "Apartamenty"]],
-        currency: "*Wszystkie ceny podane są w dolarach amerykańskich (USD), podstawowej walucie AiXESS. Ceny są orientacyjne i mogą się zmieniać w zależności od dziennych kursów walut. Ostateczne ceny podlegają potwierdzeniu w momencie zakupu.",
+        currency: "Wszystkie ceny podane są w dolarach amerykańskich (USD), podstawowej walucie AiXESS. Ceny są orientacyjne i mogą się zmieniać w zależności od dziennych kursów walut. Ostateczne ceny podlegają potwierdzeniu w momencie zakupu.",
       },
       spaces: {
         eyebrow: "Znajdź idealną przestrzeń",
@@ -610,7 +607,6 @@ export const DUBAI_PROJECTS_COPY = {
         facts: [["Že od, načrt 40/60", "{{price}}", "price"], ["Začetno plačilo", "{{pct:20}}"], ["Predvideno dokončanje", "1. četrtletje 2028"]],
         explore: "Raziščite rezidence",
         availability: "Povprašajte o razpoložljivosti",
-        priceNote: "Okvirna cena; glejte opombo o valuti",
       },
       discover: {
         eyebrow: "Odkrijte TRESORA",
@@ -626,7 +622,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "TRESORA",
         title: "Poudarki projekta",
         items: [["JVC, Dubaj", "Lokacija"], ["Stanovanja, pisarne in trgovine", "Večnamenski naslov"], ["Od studia do penthousa", "Rezidence"]],
-        currency: "*Vse cene so navedene v ameriških dolarjih (USD), glavni valuti AiXESS. Cene so okvirne in se lahko spreminjajo glede na dnevne menjalne tečaje. Končne cene se potrdijo ob nakupu.",
+        currency: "Vse cene so navedene v ameriških dolarjih (USD), glavni valuti AiXESS. Cene so okvirne in se lahko spreminjajo glede na dnevne menjalne tečaje. Končne cene se potrdijo ob nakupu.",
       },
       spaces: {
         eyebrow: "Najdite svoj idealni prostor",
@@ -795,7 +791,6 @@ export const DUBAI_PROJECTS_COPY = {
         facts: [["От, план 40/60", "{{price}}", "price"], ["Первоначальный платёж", "{{pct:20}}"], ["Ожидаемое завершение", "I квартал 2028"]],
         explore: "Смотреть резиденции",
         availability: "Запросить наличие",
-        priceNote: "Ориентировочная цена; см. примечание о валюте",
       },
       discover: {
         eyebrow: "Откройте TRESORA",
@@ -811,7 +806,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "TRESORA",
         title: "Ключевые особенности проекта",
         items: [["JVC, Дубай", "Расположение"], ["Жильё, офисы и торговля", "Многофункциональный адрес"], ["От студий до пентхаусов", "Резиденции"]],
-        currency: "*Все цены указаны в долларах США (USD), основной валюте AiXESS. Цены ориентировочные и могут меняться в зависимости от ежедневных валютных курсов. Окончательные цены подтверждаются в момент покупки.",
+        currency: "Все цены указаны в долларах США (USD), основной валюте AiXESS. Цены ориентировочные и могут меняться в зависимости от ежедневных валютных курсов. Окончательные цены подтверждаются в момент покупки.",
       },
       spaces: {
         eyebrow: "Найдите своё идеальное пространство",
