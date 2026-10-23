@@ -94,10 +94,10 @@ html:root:not([data-time-theme='night']) .dp-hero > .site-header .login-button:h
 
 /* Night: the hero copy is off-white on near-black, the figures and subtitle the light cobalt. */
 html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-tagline, .dp-hero-developer, .dp-hero-figure figcaption, .lasha-page-hero-text) { color: #f4f4f1; }
-html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd, .dp-hero-developer strong, .dp-mark, .dp-inline-link) { color: var(--l-blue-light); }
+html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd, .dp-hero-developer strong, .dp-inline-link) { color: var(--l-blue-light); }
 html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-facts > div, .dp-hero-side) { border-color: rgb(244 244 241 / 0.3); }
 /* Afternoon: the deeper sage reads on the sage ground. */
-html:root[data-time-theme='afternoon'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd, .dp-hero-developer strong, .dp-mark, .dp-inline-link) { color: #2f4733; }
+html:root[data-time-theme='afternoon'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd, .dp-hero-developer strong, .dp-inline-link) { color: #2f4733; }
 html:root[data-time-theme='afternoon'] .lasha-page .dp-hero .it-hero-actions .button-primary { border-color: #3c5a41; background: #3c5a41; color: #f4f4f1; }
 html:root[data-time-theme='afternoon'] .lasha-page .dp-hero .it-hero-actions .button-primary:hover { border-color: #2f4733; background: #2f4733; }
 
@@ -175,16 +175,6 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
 }
 
 /* ---------- Shared pieces ---------- */
-.lasha-page .dp-mark {
-  display: inline-block;
-  margin-left: 0.02em;
-  padding-right: 0.25em;
-  color: inherit;
-  font-size: 0.6em;
-  text-decoration: none;
-  vertical-align: 0.6em;
-}
-.lasha-page .dp-mark:focus-visible { outline: 2px solid var(--l-blue); outline-offset: 2px; }
 .lasha-page .dp-inline-link {
   display: inline-flex;
   gap: 0.6rem;

@@ -95,7 +95,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     const note = document.getElementById("tresora-currency");
     expect(note).toHaveTextContent("All prices are displayed in US Dollars (USD), the primary currency used by AiXESS.");
     expect(note).toHaveTextContent("AED 3.6725 to US$1");
-    const price = screen.getByText((_, element) => element?.tagName === "DD" && element.textContent === "US$207,806*");
+    const price = screen.getByText((_, element) => element?.tagName === "DD" && element.textContent === "US$207,806");
     expect(price).toHaveAttribute("aria-describedby", "tresora-currency");
     expect(page.textContent).not.toMatch(/182,437|70\/30/);
 
@@ -208,7 +208,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
       expect(screen.getByRole("heading", { level: 3, name: title })).toBeInTheDocument();
       expect(screen.getByText(line)).toBeInTheDocument();
     });
-    const price = screen.getByText((_, element) => element?.tagName === "DD" && element.textContent === "US$187,611*");
+    const price = screen.getByText((_, element) => element?.tagName === "DD" && element.textContent === "US$187,611");
     expect(price).toHaveAttribute("aria-describedby", "downtown-one-mix-note");
     expect(document.getElementById("downtown-one-mix-note")).toHaveTextContent("not a live count");
 
