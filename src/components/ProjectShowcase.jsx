@@ -50,6 +50,8 @@ export function ProjectShowcase({ onNavigate, upcoming = UPCOMING_PROJECTS }) {
                   setActive(index);
                   event.currentTarget.scrollIntoView?.({ block: "nearest", inline: "nearest" });
                 }}
+                // A thumbnail reached with Tab scrolls fully into the strip too, focus ring included.
+                onFocus={(event) => event.currentTarget.scrollIntoView?.({ block: "nearest", inline: "nearest" })}
               >
                 <img src={item.thumb} alt="" loading="lazy" decoding="async" />
               </button>

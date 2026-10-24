@@ -414,6 +414,8 @@ html:root[data-time-theme='night'] :is(.lasha-hero h1, .lasha-hero-copy p, .lash
 html:root[data-time-theme='night'] .lasha-page-hero .lasha-eyebrow { color: var(--l-blue-light); }
 html:root[data-time-theme='afternoon'] .lasha-page-hero .lasha-eyebrow { color: #2f4733; }
 html:root[data-time-theme='night'] .lasha-page-hero .it-hero-actions .button-ghost { border-color: #f7f7f4; color: #f7f7f4; }
+/* Its hover fills with the paper colour, so the label turns ink (it stayed paper on paper). */
+html:root[data-time-theme='night'] .lasha-page-hero .it-hero-actions .button-ghost:hover { border-color: #f7f7f4; background: #f7f7f4; color: #171a1d; }
 /* Over the dark night photos the solid accent button is the same night cobalt as the other
    primary buttons (Kemo, 17 October 2026), not a pale tint. */
 html:root[data-time-theme='night'] :is(.lasha-hero-cta, .lasha-page-hero .it-hero-actions .button-primary) {

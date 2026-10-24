@@ -74,6 +74,8 @@
   letter-spacing: 0.16em;
   text-decoration: none;
 }
+/* The same drawn arrow as every other button (it was a small text arrow). */
+.site-footer-write .button .lasha-arrow { width: 1.5rem; height: 0.5rem; }
 .site-footer-write .button:hover { border-color: var(--l-blue-deep); background: var(--l-blue-deep); color: var(--l-paper, #fff); }
 
 .site-footer-legal {
