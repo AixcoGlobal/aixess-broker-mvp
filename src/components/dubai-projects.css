@@ -310,6 +310,8 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
   .lasha-page .dp-groups { grid-template-columns: minmax(0, 1fr); }
   .lasha-page .dp-hero-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .lasha-page .dp-hero-facts > div:first-child { grid-column: 1 / -1; }
+  /* Half a phone is too narrow for a long figure such as SL "1. četrtletje 2028": it wraps. */
+  .lasha-page .dp-hero-facts dd { white-space: normal; overflow-wrap: break-word; }
 }
 
 .lasha-page .dp-closing .rp-actions { margin-top: clamp(2rem, 4vw, 3rem); }
@@ -534,6 +536,12 @@ html:root[data-time-theme='night'] .lasha-page .dp-filter { --dp-press: var(--l-
 
 /* Download buttons for the developers' PDFs: the file type and size after the label. */
 .lasha-page .dp-download { flex-wrap: wrap; gap: 0.3rem 0.6rem; }
+@media (max-width: 599px) {
+  /* Label with the file size under it on the left, the arrow on the right. */
+  .lasha-page .dp-page .rp-actions .dp-download { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 1rem; }
+  .lasha-page .dp-download .dp-download-size { grid-column: 1; grid-row: 2; }
+  .lasha-page .dp-download .lasha-arrow { grid-column: 2; grid-row: 1 / span 2; }
+}
 .lasha-page .dp-download-size { font-size: 0.85em; font-weight: 500; letter-spacing: 0.06em; opacity: 0.78; white-space: nowrap; }
 
 /* The lightbox's link to the full-size file. */

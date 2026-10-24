@@ -113,6 +113,7 @@
   letter-spacing: 0.2em;
   line-height: 1.2;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .lasha-eyebrow::after {
@@ -765,6 +766,8 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
 :is(.lasha-home, .lasha-page) .residence-area-field legend { color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-select-field select { color: var(--l-ink); color-scheme: light; }
 :is(.lasha-home, .lasha-page) .residence-select-field select option { background: var(--l-card, #fff); color: var(--l-ink); }
+/* The select itself draws no outline, so keyboard focus rings its whole field. */
+:is(.lasha-home, .lasha-page) .residence-select-field:has(select:focus-visible) { outline: 2px solid var(--l-blue); outline-offset: -2px; }
 :is(.lasha-home, .lasha-page) .residence-choice-field button { border-color: color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent); color: color-mix(in srgb, var(--l-ink, #171a1d) 72%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-choice-field button.is-active { border-color: var(--l-blue); background: var(--l-blue); color: #fff; }
 :is(.lasha-home, .lasha-page) .residence-area-readout output { color: var(--l-ink); }

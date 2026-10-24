@@ -374,5 +374,6 @@
   .lasha-page .rp-opportunity-media img { aspect-ratio: 4 / 3; }
 }
 @media (max-width: 599px) {
-  .lasha-page .rp-actions .button { flex: 1 1 100%; justify-content: center; }
+  /* Full-width phone buttons: label on the left, arrow on the right, like the hero and homepage buttons. */
+  .lasha-page .rp-actions .button { flex: 1 1 100%; justify-content: space-between; text-align: left; }
 }

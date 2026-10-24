@@ -18,6 +18,9 @@
 .network-emphasis { font-size: clamp(1.25rem, 2.3vw, 2rem); font-weight: 800; max-width: 50ch; margin: 1.5rem 0; }
 .network-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
 .network-section .button { width: auto; height: auto; min-height: 3.25rem; padding: 1rem 1.5rem; font-size: .9375rem; white-space: normal; text-align: center; line-height: 1.4; gap: 1rem; max-width: 100%; overflow-wrap: anywhere; }
+.network-section .button .lasha-arrow { width: 1.5rem; height: 0.5rem; }
+/* Full-width on a phone: label on the left, arrow on the right, like the site's other buttons. */
+@media (max-width: 599px) { .lasha-page .network-section .button { justify-content: space-between; text-align: left; } }
 .network-section .text-link { display: inline-flex; gap: 1rem; font-size: .875rem; min-height: 2.75rem; align-items: center; }
 .network-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; margin-block: 2.5rem; }
 .network-stats > div { border-left: 2px solid #f16510; padding-left: 1.25rem; min-width: 0; }

@@ -157,6 +157,8 @@
   line-height: 1.2;
   text-transform: uppercase;
   overflow-wrap: anywhere;
+  /* A long eyebrow that wraps on a phone splits evenly, never leaving one word on its own line. */
+  text-wrap: balance;
 }
 
 .lasha-page .section-eyebrow::after {
