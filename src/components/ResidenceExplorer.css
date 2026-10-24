@@ -2319,7 +2319,7 @@
     appearance: none;
   }
 
-  .mobile-floor-chip:has(select:focus-visible) { outline: 2px solid var(--orange); outline-offset: 2px; }
+  .mobile-floor-chip:has(select:focus-visible) { outline: 2px solid var(--l-blue, var(--orange)); outline-offset: 2px; }
 
   .mobile-floor-chip option {
     background: #0b1420;
