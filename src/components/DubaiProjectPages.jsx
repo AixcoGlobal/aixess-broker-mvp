@@ -282,8 +282,8 @@ export function TresoraPage({ header }) {
 
       <main className="page-main dp-page">
         <section className="rp-section" id="tresora-discover" aria-labelledby="tresora-discover-title">
-          <SectionHeading id="tresora-discover-title" eyebrow={discover.eyebrow} title={discover.title} />
-          <div className="dp-media-split">
+          <div className="dp-media-split dp-media-split-head">
+            <SectionHeading id="tresora-discover-title" eyebrow={discover.eyebrow} title={discover.title} />
             <div className="dp-columns dp-columns-1">{discover.body.map((text) => <p key={text}>{text}</p>)}</div>
             <RenderFigure slug="tresora-facade" caption={extra.facade[0]} alt={extra.facade[1]} labels={labels} onOpen={open} sizes="(max-width: 899px) calc(100vw - 2.5rem), 46vw" />
           </div>
