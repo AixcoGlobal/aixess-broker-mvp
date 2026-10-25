@@ -169,7 +169,6 @@ function ProjectHero({ header, route, eyebrow, hero, developer, labels, image, i
           <p className="lasha-eyebrow">{eyebrow}</p>
           <h1 className="lasha-page-hero-title" id={`${route}-title`}>{hero.title.map((line) => <span key={line}>{line}</span>)}</h1>
           <p className="dp-hero-subtitle">{hero.subtitle}</p>
-          <p className="dp-hero-tagline">{hero.tagline}</p>
           <p className="dp-hero-developer">{labels.developedBy} <strong>{developer}</strong></p>
         </div>
         <div className="dp-hero-side">{children}</div>
@@ -269,7 +268,7 @@ export function TresoraPage({ header }) {
   const format = useFormat();
   const { open, lightbox } = useLightbox(labels);
   useSectionFromHash(route);
-  const { hero, discover, highlights, spaces, lifestyle, location, payment, more } = project;
+  const { hero, discover, spaces, lifestyle, location, payment, more } = project;
   const { prices, floors, plans, gallery, amenityGallery, app } = extra;
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.mapQuery)}`;
   const floorSet = TRESORA_FLOORS.map((number) => lightboxItem(`tresora-floor-${number}`, floors.items[number][0], floors.items[number][1], labels));
@@ -295,18 +294,9 @@ export function TresoraPage({ header }) {
           </div>
         </section>
 
-        <section className="rp-section rp-mist" id="tresora-highlights" aria-labelledby="tresora-highlights-title">
-          <SectionHeading id="tresora-highlights-title" eyebrow={highlights.eyebrow} title={highlights.title} />
-          <dl className="dp-cards">
-            {highlights.items.map(([text, label]) => (
-              <div key={label}><dd>{text}</dd><dt>{label}</dt></div>
-            ))}
-          </dl>
-        </section>
-
         <section className="rp-section" id="tresora-spaces" aria-labelledby="tresora-spaces-title">
           <SectionHeading id="tresora-spaces-title" eyebrow={spaces.eyebrow} title={spaces.title} />
-          <div className="dp-columns dp-columns-2">{spaces.body.map((text) => <p key={text}>{text}</p>)}</div>
+          <div className="dp-columns">{spaces.body.map((text) => <p key={text}>{text}</p>)}</div>
           <h3 className="rp-subtitle">{spaces.listTitle}</h3>
           <ul className="rp-benefits dp-categories">
             {spaces.categories.map((name, index) => (
@@ -346,7 +336,6 @@ export function TresoraPage({ header }) {
           <p className="dp-table-after">{prices.onRequest}</p>
           <ul className="dp-notes">{prices.notes.map((note) => <li key={note}>{note}</li>)}</ul>
           <div className="dp-terms" id="tresora-currency">
-            <p>{highlights.currency}</p>
             <p>{labels.conversion}</p>
           </div>
         </section>
@@ -442,7 +431,6 @@ export function TresoraPage({ header }) {
               <p className="dp-pay-lead">{plans.leadPhpp}</p>
               <div className="dp-phases">
                 <table className="dp-table dp-schedule">
-                  <caption className="dp-caption-spacer" aria-hidden="true">{plans.down}</caption>
                   <tbody><tr><th scope="row">{plans.down}</th><td>{format.pct(TRESORA_PLAN_PHPP.down)}</td></tr></tbody>
                 </table>
                 {[["toCompletion", TRESORA_PLAN_PHPP.toCompletion], ["afterCompletion", TRESORA_PLAN_PHPP.afterCompletion]].map(([phase, rows]) => (
@@ -471,7 +459,7 @@ export function TresoraPage({ header }) {
 
         <section className="rp-section dp-closing" id="tresora-more" aria-labelledby="tresora-more-title">
           <SectionHeading id="tresora-more-title" eyebrow={more.eyebrow} title={more.title} />
-          <div className="dp-columns dp-columns-2">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+          <div className="dp-columns">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
           <div className="rp-actions">
             <RequestButton common={common} project={project} request={common.requests.contact} label={more.contact} primary />
             <RequestButton common={common} project={project} request={common.requests.details} label={more.details} />
@@ -602,7 +590,7 @@ export function DowntownOnePage({ header }) {
 
         <section className="rp-section rp-mist" id="downtown-one-amenities" aria-labelledby="downtown-one-amenities-title">
           <SectionHeading id="downtown-one-amenities-title" eyebrow={amenities.eyebrow} title={amenities.title} />
-          <div className="dp-columns dp-columns-2">{amenities.body.map((text) => <p key={text}>{text}</p>)}</div>
+          <div className="dp-columns">{amenities.body.map((text) => <p key={text}>{text}</p>)}</div>
           <div className="dp-groups">
             {amenities.groups.map(([group, items]) => (
               <section key={group} aria-label={group}>
@@ -656,12 +644,11 @@ export function DowntownOnePage({ header }) {
               </figure>
             </div>
           </div>
-          <p className="rp-bridge">{location.closing}</p>
         </section>
 
         <section className="rp-section dp-closing" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
           <SectionHeading id="downtown-one-more-title" eyebrow={more.eyebrow} title={more.title} />
-          <div className="dp-columns dp-columns-2">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+          <div className="dp-columns">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
           <div className="rp-actions">
             <RequestButton common={common} project={project} request={common.requests.contact} label={more.contact} primary />
           </div>

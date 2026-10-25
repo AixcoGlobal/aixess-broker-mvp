@@ -1,5 +1,5 @@
 // TRESORA and DOWNTOWN ONE, the two Dubai projects (Kemo, 22 October 2026). English follows the two
-// supplied briefs word for word: 1-AiXESS_TRESORA_Website_Developer_Instructions_Final.docx and
+// supplied briefs, with concise public copy updated on 25 October 2026: 1-AiXESS_TRESORA_Website_Developer_Instructions_Final.docx and
 // 2-DOWNTOWN-ONE-project.docx, with their embedded fact cards rebuilt as text. Editorial labels
 // ("Add pictures", "Project highlits", underscore rules) are not copied. The DOWNTOWN ONE brief opens
 // with "Project: Dubai-project name DOWNTOWN DUBAI", but its own copy names the project Downtown One in
@@ -50,38 +50,28 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["TRESORA", "DUBAI"],
         subtitle: "A Treasure of Balance",
-        tagline: "Contemporary Living. Thoughtful Design. Exceptional Comfort.",
-        intro: "Discover a new expression of modern urban living in Jumeirah Village Circle, Dubai, where contemporary architecture, thoughtfully designed residences and lifestyle amenities come together.",
+        intro: "A new mixed-use address in Jumeirah Village Circle, Dubai.",
         facts: [["From, 40/60 plan", "{{price}}", "price"], ["Initial payment", "{{pct:20}}"], ["Expected completion", "Q1 2028"]],
         explore: "Explore Residences",
         availability: "Request Availability",
       },
       discover: {
         eyebrow: "Discover TRESORA",
-        title: "Where Lifestyle, Comfort and Modern Design Meet",
+        title: "Spaces for work, wellbeing and everyday life",
         body: [
-          "TRESORA is a contemporary mixed-use development located in the heart of Jumeirah Village Circle, one of Dubai's established residential communities.",
-          "Combining elegant residences, boutique office spaces and curated retail, TRESORA offers an environment designed around the balance of work, wellness and everyday living.",
-          "Thoughtfully planned interiors, contemporary architecture and integrated smart technology create a refined living experience where functionality meets modern elegance.",
-          "Whether you are looking for a new home, a professional workspace or an opportunity to own property in Dubai, TRESORA offers a compelling combination of location, design and lifestyle.",
+          "Interiors pair functional planning with integrated smart technology.",
+          "Shared facilities create room to work, unwind and spend time together.",
         ],
-      },
-      highlights: {
-        eyebrow: "TRESORA",
-        title: "Project highlights",
-        items: [["JVC, Dubai", "Location"], ["Homes, Offices & Retail", "Mixed-Use Address"], ["Studios to Penthouses", "Residences"]],
-        currency: "All prices are displayed in US Dollars (USD), the primary currency used by AiXESS. Prices are indicative and may vary depending on daily currency exchange rates. Final prices are subject to confirmation at the time of purchase.",
       },
       spaces: {
-        eyebrow: "Find Your Perfect Space",
-        title: "Designed for Different Lifestyles",
+        eyebrow: "Property types",
+        title: "Find the space that fits",
         body: [
-          "From contemporary studios to spacious two-bedroom residences, TRESORA offers thoughtfully planned living spaces combining comfort, functionality and elegant design.",
-          "The development also features boutique offices and retail spaces, creating a connected environment for modern living and business.",
+          "Compare the categories below, then explore the floor plans to see how the spaces are arranged.",
         ],
-        listTitle: "Available property categories",
+        listTitle: "Residential and commercial options",
         categories: ["Studios & Smart Studios", "Smart One-Bedroom Residences", "One-Bedroom Residences", "Two-Bedroom Residences", "Boutique Offices", "Retail Spaces", "Two- and Three-Bedroom Penthouses"],
-        note: "Categories from WADAN's fact sheet and floor plans. AiXESS confirms current units, layouts and prices on request.",
+        note: "Ask AiXESS for current units, layouts and prices.",
         units: "Request Available Units",
         prices: "Enquire About Prices",
       },
@@ -89,14 +79,13 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Project amenities",
         title: "A Lifestyle Designed Around You",
         lead: "Experience a carefully curated selection of amenities created to support relaxation, wellness, productivity and family living.",
-        amenities: ["Swimming Pool & Jacuzzi", "Fully Equipped Fitness Gym", "Pilates Facilities", "Sauna", "Ice Bath Therapy", "Children's Splash Park", "BBQ & Outdoor Social Areas", "Residents' Lounge & Co-working Spaces", "AI-Powered Resident App"],
+        amenities: ["Swimming Pool & Jacuzzi", "Fully Equipped Fitness Gym", "Pilates Facilities", "Sauna", "Ice Bath Therapy", "Children's Splash Park", "BBQ & Outdoor Social Areas", "Residents' Lounge & Co-working Spaces"],
       },
       location: {
         eyebrow: "Perfectly Positioned in Dubai",
         title: "Jumeirah Village Circle\u00a0— Connected to What Matters",
         body: [
-          "Situated in Jumeirah Village Circle (JVC), TRESORA offers a balance between residential tranquillity and urban connectivity.",
-          "With convenient access to Al Khail Road and Sheikh Mohammed Bin Zayed Road, the development provides connections to major destinations across Dubai.",
+          "Access to Al Khail Road and Sheikh Mohammed Bin Zayed Road connects the development with destinations across Dubai.",
         ],
         nearbyTitle: "Nearby community amenities",
         nearby: ["Circle Mall", "Circle Community Park", "JSS International School", "Life Medical Center", "Carewell Clinics"],
@@ -108,17 +97,14 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Flexible Payment Options",
         title: "Your Property. Your Future.",
         body: [
-          "Discover property ownership opportunities with flexible payment structures designed to accommodate different purchasing preferences.",
-          "Multiple payment options may be available, depending on the selected property and applicable terms.",
-          "Contact AiXESS to receive the latest approved payment plans, property prices and availability.",
+          "Compare the construction-linked and post-handover schedules below.",
         ],
       },
       more: {
         eyebrow: "TRESORA",
         title: "Discover More About TRESORA",
         body: [
-          "Discover contemporary living and property ownership opportunities at TRESORA.",
-          "Our AiXESS team is available to provide detailed project information, current property availability, floor plans and personalised assistance throughout the purchasing process.",
+          "Tell us your preferred property type and our team will help you review the available options.",
         ],
         contact: "Contact AiXESS",
         details: "Request Project Details",
@@ -133,11 +119,8 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["DOWNTOWN ONE", "DUBAI"],
         subtitle: "The Next Generation of Urban Living",
-        tagline: "Smart Living – Stronger Connections",
         body: [
-          "Discover Downtown One, a contemporary residential development in Downtown Jebel Ali, Dubai, designed to bring intelligent technology, refined interiors and exceptional lifestyle experiences together.",
-          "Featuring studios, one-bedroom and two-bedroom residences, the development combines modern architectural design with AI-powered smart home living and a carefully curated selection of leisure and wellness amenities.",
-          "With access to Sheikh Zayed Road and Dubai Metro connectivity, Downtown One offers a well-connected address for those seeking modern living and property ownership in Dubai.",
+          "Contemporary homes in Downtown Jebel Ali, Dubai.",
         ],
         explore: "Explore Residences",
         availability: "Request Availability",
@@ -148,10 +131,7 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Premium project highlights",
         items: [
           ["20 Floors", "Contemporary Residential Tower", "Plus three podium floors, ground floor and basement"],
-          ["Two Plans", "Payment Options", "With or without post-dated cheques (PDC)"],
-          ["10 Layouts", "Residence Plans", "Furnished plans from the brochure"],
           ["AI-Powered", "Smart Home Living", "Intelligent everyday convenience"],
-          ["Metro & Road", "Strategic Connectivity", "Dubai Metro Red Line and Sheikh Zayed Road"],
           ["20+ Amenities", "Lifestyle Experiences", "Wellness, leisure, fitness and family facilities"],
         ],
       },
@@ -159,8 +139,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Beyond Ordinary Living",
         title: "A Lifestyle Designed Around Every Moment",
         body: [
-          "At Downtown One, everyday life extends beyond the residence.",
-          "Enjoy a collection of thoughtfully designed spaces for relaxation, fitness, recreation and family activities. From poolside leisure to immersive fitness experiences, every amenity contributes to a modern and connected lifestyle.",
+          "Shared spaces for fitness, relaxation and time with family and friends.",
         ],
         groups: [
           ["Wellness & Fitness", ["Indoor Gym", "Outdoor Gym", "Immersive Fitness Studio", "Yoga Lawn", "Jacuzzi"]],
@@ -173,8 +152,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Connected to Dubai. Positioned for Tomorrow.",
         title: "Downtown Jebel Ali\u00a0— A Location That Keeps You Moving",
         body: [
-          "Downtown One is positioned in an evolving area of Dubai, offering convenient access to major transport routes, business districts and lifestyle destinations.",
-          "With connectivity to Sheikh Zayed Road and the Dubai Metro Red Line, residents can enjoy convenient connections to Dubai's commercial, recreational and residential hubs.",
+          "Sheikh Zayed Road and the Dubai Metro Red Line connect residents with the city's business districts and leisure destinations.",
         ],
         nearbyTitle: "Nearby Destinations",
         nearby: [
@@ -182,14 +160,12 @@ export const DUBAI_PROJECTS_COPY = {
           ["approximately 10–15 minutes", "Dubai Marina, JBR, Dubai Parks & Resorts and JAFZA One"],
           ["approximately 15–20 minutes", "Expo City Dubai, Dubai Investment Park and Mall of the Emirates"],
         ],
-        closing: "Whether commuting, exploring the city or enjoying leisure destinations, Downtown One places a variety of experiences within reach.",
       },
       more: {
         eyebrow: "Discover More About Downtown One",
         title: "Your Next Property in Dubai Starts Here",
         body: [
-          "Explore the residences, floor plans, lifestyle amenities and property ownership options available at Downtown One.",
-          "Our AiXESS team is ready to provide personalised project information, current prices, property availability and payment options.",
+          "Tell us your preferred residence and our team will help you review current prices, availability and payment terms.",
         ],
         contact: "Contact AiXESS",
       },
@@ -234,38 +210,28 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["TRESORA", "DUBAI"],
         subtitle: "Ein Schatz der Balance",
-        tagline: "Zeitgemäßes Wohnen. Durchdachtes Design. Außergewöhnlicher Komfort.",
-        intro: "Entdecken Sie eine neue Form modernen urbanen Wohnens in Jumeirah Village Circle, Dubai, wo zeitgemäße Architektur, durchdacht gestaltete Residenzen und Lifestyle-Annehmlichkeiten zusammenkommen.",
+        intro: "Eine neue Adresse zum Wohnen und Arbeiten in Jumeirah Village Circle, Dubai.",
         facts: [["Ab, Plan 40/60", "{{price}}", "price"], ["Anfangszahlung", "{{pct:20}}"], ["Voraussichtliche Fertigstellung", "Q1 2028"]],
         explore: "Residenzen entdecken",
         availability: "Verfügbarkeit anfragen",
       },
       discover: {
         eyebrow: "TRESORA entdecken",
-        title: "Wo Lifestyle, Komfort und modernes Design zusammenkommen",
+        title: "Raum für Arbeit, Wohlbefinden und Alltag",
         body: [
-          "TRESORA ist eine zeitgemäße Mixed-Use-Entwicklung im Herzen von Jumeirah Village Circle, einer der etablierten Wohngegenden Dubais.",
-          "Mit eleganten Residenzen, Boutique-Büroflächen und ausgewählten Einzelhandelsflächen bietet TRESORA ein Umfeld, das auf die Balance von Arbeit, Wohlbefinden und Alltag ausgerichtet ist.",
-          "Durchdacht geplante Interieurs, zeitgemäße Architektur und integrierte Smart-Technologie schaffen ein raffiniertes Wohnerlebnis, in dem Funktionalität auf moderne Eleganz trifft.",
-          "Ob Sie ein neues Zuhause, einen professionellen Arbeitsplatz oder die Möglichkeit suchen, Immobilieneigentum in Dubai zu erwerben: TRESORA bietet eine überzeugende Verbindung von Lage, Design und Lifestyle.",
+          "Die Innenräume verbinden funktionale Planung mit integrierter Smart-Technologie.",
+          "Gemeinschaftsbereiche bieten Raum zum Arbeiten, Entspannen und Zusammensein.",
         ],
-      },
-      highlights: {
-        eyebrow: "TRESORA",
-        title: "Projekt-Highlights",
-        items: [["JVC, Dubai", "Lage"], ["Wohnen, Büros & Handel", "Mixed-Use-Adresse"], ["Vom Studio bis zum Penthouse", "Residenzen"]],
-        currency: "Alle Preise werden in US-Dollar (USD) angegeben, der Hauptwährung von AiXESS. Die Preise sind Richtwerte und können je nach tagesaktuellen Wechselkursen variieren. Endgültige Preise werden zum Zeitpunkt des Kaufs bestätigt.",
       },
       spaces: {
-        eyebrow: "Finden Sie Ihren idealen Raum",
-        title: "Gestaltet für unterschiedliche Lebensstile",
+        eyebrow: "Immobilientypen",
+        title: "Finden Sie den passenden Raum",
         body: [
-          "Von zeitgemäßen Studios bis zu großzügigen Zwei-Schlafzimmer-Residenzen bietet TRESORA durchdacht geplante Wohnräume, die Komfort, Funktionalität und elegantes Design verbinden.",
-          "Die Entwicklung umfasst außerdem Boutique-Büros und Einzelhandelsflächen und schafft so ein vernetztes Umfeld für modernes Wohnen und Arbeiten.",
+          "Vergleichen Sie die folgenden Kategorien und entdecken Sie die Raumaufteilung in den Grundrissen.",
         ],
-        listTitle: "Verfügbare Immobilienkategorien",
+        listTitle: "Wohn- und Gewerberäume",
         categories: ["Studios & Smart Studios", "Smart-Residenzen mit einem Schlafzimmer", "Residenzen mit einem Schlafzimmer", "Residenzen mit zwei Schlafzimmern", "Boutique-Büros", "Einzelhandelsflächen", "Penthouses mit zwei und drei Schlafzimmern"],
-        note: "Kategorien laut Factsheet und Grundrissen von WADAN. Aktuelle Einheiten, Grundrisse und Preise bestätigt AiXESS auf Anfrage.",
+        note: "Aktuelle Einheiten, Grundrisse und Preise erhalten Sie auf Anfrage bei AiXESS.",
         units: "Verfügbare Einheiten anfragen",
         prices: "Preise anfragen",
       },
@@ -273,14 +239,13 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Projektausstattung",
         title: "Ein Lebensstil, der sich nach Ihnen richtet",
         lead: "Erleben Sie eine sorgfältig kuratierte Auswahl an Annehmlichkeiten für Entspannung, Wohlbefinden, Produktivität und Familienleben.",
-        amenities: ["Swimmingpool & Jacuzzi", "Voll ausgestattetes Fitnessstudio", "Pilates-Bereich", "Sauna", "Eisbad-Therapie", "Wasserspielpark für Kinder", "Grill- & Outdoor-Treffpunkte", "Bewohner-Lounge & Co-Working-Bereiche", "KI-gestützte Bewohner-App"],
+        amenities: ["Swimmingpool & Jacuzzi", "Voll ausgestattetes Fitnessstudio", "Pilates-Bereich", "Sauna", "Eisbad-Therapie", "Wasserspielpark für Kinder", "Grill- & Outdoor-Treffpunkte", "Bewohner-Lounge & Co-Working-Bereiche"],
       },
       location: {
         eyebrow: "Ideal gelegen in Dubai",
         title: "Jumeirah Village Circle\u00a0— verbunden mit dem, was zählt",
         body: [
-          "In Jumeirah Village Circle (JVC) gelegen, bietet TRESORA eine Balance zwischen ruhigem Wohnen und urbaner Anbindung.",
-          "Mit bequemem Zugang zur Al Khail Road und zur Sheikh Mohammed Bin Zayed Road ist die Entwicklung mit wichtigen Zielen in ganz Dubai verbunden.",
+          "Über die Al Khail Road und die Sheikh Mohammed Bin Zayed Road erreichen Sie Ziele in ganz Dubai.",
         ],
         nearbyTitle: "Einrichtungen in der Nähe",
         nearby: ["Circle Mall", "Circle Community Park", "JSS International School", "Life Medical Center", "Carewell Clinics"],
@@ -292,17 +257,14 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Flexible Zahlungsoptionen",
         title: "Ihre Immobilie. Ihre Zukunft.",
         body: [
-          "Entdecken Sie Möglichkeiten für Immobilieneigentum mit flexiblen Zahlungsstrukturen, die unterschiedlichen Kaufpräferenzen entgegenkommen.",
-          "Je nach gewählter Immobilie und geltenden Bedingungen können mehrere Zahlungsoptionen verfügbar sein.",
-          "Kontaktieren Sie AiXESS, um die aktuell genehmigten Zahlungspläne, Immobilienpreise und Verfügbarkeiten zu erhalten.",
+          "Vergleichen Sie die baubegleitenden Zahlungen und die Raten nach der Übergabe.",
         ],
       },
       more: {
         eyebrow: "TRESORA",
         title: "Mehr über TRESORA erfahren",
         body: [
-          "Entdecken Sie zeitgemäßes Wohnen und Möglichkeiten für Immobilieneigentum bei TRESORA.",
-          "Unser AiXESS-Team stellt Ihnen detaillierte Projektinformationen, aktuelle Verfügbarkeiten, Grundrisse und persönliche Unterstützung während des gesamten Kaufprozesses zur Verfügung.",
+          "Nennen Sie uns Ihren bevorzugten Immobilientyp. Unser Team hilft Ihnen, die verfügbaren Optionen zu prüfen.",
         ],
         contact: "AiXESS kontaktieren",
         details: "Projektdetails anfragen",
@@ -317,11 +279,8 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["DOWNTOWN ONE", "DUBAI"],
         subtitle: "Die nächste Generation urbanen Wohnens",
-        tagline: "Smart Living – stärkere Verbindungen",
         body: [
-          "Entdecken Sie Downtown One, eine zeitgemäße Wohnentwicklung in Downtown Jebel Ali, Dubai, die intelligente Technologie, raffinierte Interieurs und außergewöhnliche Lifestyle-Erlebnisse vereint.",
-          "Mit Studios sowie Residenzen mit einem und zwei Schlafzimmern verbindet die Entwicklung moderne Architektur mit KI-gestütztem Smart-Home-Wohnen und einer sorgfältig kuratierten Auswahl an Freizeit- und Wellness-Angeboten.",
-          "Mit Zugang zur Sheikh Zayed Road und Anbindung an die Dubai Metro bietet Downtown One eine gut vernetzte Adresse für alle, die modernes Wohnen und Immobilieneigentum in Dubai suchen.",
+          "Zeitgemäßes Wohnen in Downtown Jebel Ali, Dubai.",
         ],
         explore: "Residenzen entdecken",
         availability: "Verfügbarkeit anfragen",
@@ -332,10 +291,7 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Premium-Highlights des Projekts",
         items: [
           ["20 Etagen", "Zeitgemäßer Wohnturm", "Dazu drei Podiumsetagen, Erdgeschoss und Untergeschoss"],
-          ["Zwei Pläne", "Zahlungsoptionen", "Mit oder ohne vordatierte Schecks (PDC)"],
-          ["10 Grundrisse", "Wohnungspläne", "Möblierte Pläne aus der Broschüre"],
           ["KI-gestützt", "Smart-Home-Wohnen", "Intelligenter Komfort im Alltag"],
-          ["Metro & Straße", "Strategische Anbindung", "Dubai Metro Red Line und Sheikh Zayed Road"],
           ["20+ Angebote", "Lifestyle-Erlebnisse", "Wellness-, Freizeit-, Fitness- und Familienangebote"],
         ],
       },
@@ -343,8 +299,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Mehr als gewöhnliches Wohnen",
         title: "Ein Lebensstil für jeden Moment",
         body: [
-          "Bei Downtown One reicht der Alltag über die eigene Residenz hinaus.",
-          "Genießen Sie durchdacht gestaltete Bereiche für Entspannung, Fitness, Freizeit und Familienaktivitäten. Vom Entspannen am Pool bis zu immersiven Fitnesserlebnissen trägt jede Annehmlichkeit zu einem modernen, vernetzten Lebensstil bei.",
+          "Gemeinschaftsbereiche für Fitness, Entspannung und Zeit mit Familie und Freunden.",
         ],
         groups: [
           ["Wellness & Fitness", ["Indoor-Fitnessstudio", "Outdoor-Fitnessbereich", "Immersives Fitnessstudio", "Yoga-Rasen", "Jacuzzi"]],
@@ -357,8 +312,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Mit Dubai verbunden. Für morgen positioniert.",
         title: "Downtown Jebel Ali\u00a0— eine Lage, die Sie in Bewegung hält",
         body: [
-          "Downtown One liegt in einem aufstrebenden Gebiet Dubais mit bequemem Zugang zu wichtigen Verkehrswegen, Geschäftsvierteln und Freizeitzielen.",
-          "Dank der Anbindung an die Sheikh Zayed Road und die Dubai Metro Red Line erreichen Bewohner Dubais Geschäfts-, Freizeit- und Wohnzentren bequem.",
+          "Die Sheikh Zayed Road und die Dubai Metro Red Line verbinden Bewohner mit den Geschäftsvierteln und Freizeitzielen der Stadt.",
         ],
         nearbyTitle: "Ziele in der Nähe",
         nearby: [
@@ -366,14 +320,12 @@ export const DUBAI_PROJECTS_COPY = {
           ["ca. 10–15 Minuten", "Dubai Marina, JBR, Dubai Parks & Resorts und JAFZA One"],
           ["ca. 15–20 Minuten", "Expo City Dubai, Dubai Investment Park und Mall of the Emirates"],
         ],
-        closing: "Ob auf dem Weg zur Arbeit, beim Erkunden der Stadt oder in der Freizeit: Downtown One bringt vielfältige Erlebnisse in Reichweite.",
       },
       more: {
         eyebrow: "Mehr über Downtown One erfahren",
         title: "Ihre nächste Immobilie in Dubai beginnt hier",
         body: [
-          "Entdecken Sie die Residenzen, Grundrisse, Annehmlichkeiten und Eigentumsoptionen von Downtown One.",
-          "Unser AiXESS-Team stellt Ihnen gerne persönliche Projektinformationen, aktuelle Preise, Verfügbarkeiten und Zahlungsoptionen zur Verfügung.",
+          "Nennen Sie uns Ihre bevorzugte Residenz. Unser Team unterstützt Sie bei aktuellen Preisen, Verfügbarkeiten und Zahlungsbedingungen.",
         ],
         contact: "AiXESS kontaktieren",
       },
@@ -418,38 +370,28 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["TRESORA", "DUBAI"],
         subtitle: "Skarb równowagi",
-        tagline: "Nowoczesne życie. Przemyślany design. Wyjątkowy komfort.",
-        intro: "Odkryj nowy wymiar nowoczesnego życia w mieście w Jumeirah Village Circle w Dubaju, gdzie współczesna architektura, starannie zaprojektowane apartamenty i udogodnienia lifestyle'owe tworzą jedną całość.",
+        intro: "Nowy adres do życia i pracy w Jumeirah Village Circle w Dubaju.",
         facts: [["Od, plan 40/60", "{{price}}", "price"], ["Wpłata początkowa", "{{pct:20}}"], ["Planowane ukończenie", "I kw. 2028"]],
         explore: "Poznaj apartamenty",
         availability: "Zapytaj o dostępność",
       },
       discover: {
         eyebrow: "Poznaj TRESORA",
-        title: "Gdzie styl życia, komfort i nowoczesny design się spotykają",
+        title: "Przestrzeń do pracy, odpoczynku i codziennego życia",
         body: [
-          "TRESORA to nowoczesna inwestycja wielofunkcyjna w samym sercu Jumeirah Village Circle, jednej z ugruntowanych dzielnic mieszkaniowych Dubaju.",
-          "Łącząc eleganckie apartamenty, butikowe biura i starannie dobrane lokale handlowe, TRESORA tworzy przestrzeń zaprojektowaną wokół równowagi między pracą, dobrym samopoczuciem i codziennym życiem.",
-          "Przemyślane wnętrza, współczesna architektura i zintegrowane inteligentne technologie tworzą wyrafinowane doświadczenie, w którym funkcjonalność spotyka nowoczesną elegancję.",
-          "Niezależnie od tego, czy szukasz nowego domu, profesjonalnej przestrzeni do pracy, czy możliwości posiadania nieruchomości w Dubaju, TRESORA oferuje przekonujące połączenie lokalizacji, designu i stylu życia.",
+          "Wnętrza łączą funkcjonalny układ ze zintegrowaną inteligentną technologią.",
+          "Przestrzenie wspólne zapewniają miejsce do pracy, relaksu i spotkań.",
         ],
-      },
-      highlights: {
-        eyebrow: "TRESORA",
-        title: "Najważniejsze cechy projektu",
-        items: [["JVC, Dubaj", "Lokalizacja"], ["Mieszkania, biura i handel", "Adres wielofunkcyjny"], ["Od studia po penthouse", "Apartamenty"]],
-        currency: "Wszystkie ceny podane są w dolarach amerykańskich (USD), podstawowej walucie AiXESS. Ceny są orientacyjne i mogą się zmieniać w zależności od dziennych kursów walut. Ostateczne ceny podlegają potwierdzeniu w momencie zakupu.",
       },
       spaces: {
-        eyebrow: "Znajdź idealną przestrzeń",
-        title: "Zaprojektowane dla różnych stylów życia",
+        eyebrow: "Rodzaje nieruchomości",
+        title: "Znajdź przestrzeń dla siebie",
         body: [
-          "Od nowoczesnych studiów po przestronne apartamenty z dwiema sypialniami, TRESORA oferuje przemyślane przestrzenie mieszkalne łączące komfort, funkcjonalność i elegancki design.",
-          "Inwestycja obejmuje także butikowe biura i lokale handlowe, tworząc spójne otoczenie dla nowoczesnego życia i biznesu.",
+          "Porównaj poniższe kategorie, a następnie sprawdź rozmieszczenie przestrzeni na planach pięter.",
         ],
-        listTitle: "Dostępne kategorie nieruchomości",
+        listTitle: "Mieszkania i lokale komercyjne",
         categories: ["Studia i inteligentne studia", "Inteligentne apartamenty z jedną sypialnią", "Apartamenty z jedną sypialnią", "Apartamenty z dwiema sypialniami", "Butikowe biura", "Lokale handlowe", "Penthouse'y z dwiema i trzema sypialniami"],
-        note: "Kategorie według karty informacyjnej i planów WADAN. Aktualne lokale, układy i ceny AiXESS potwierdza na zapytanie.",
+        note: "Zapytaj AiXESS o aktualnie dostępne lokale, układy i ceny.",
         units: "Zapytaj o dostępne lokale",
         prices: "Zapytaj o ceny",
       },
@@ -457,14 +399,13 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Udogodnienia projektu",
         title: "Styl życia zaprojektowany wokół Ciebie",
         lead: "Poznaj starannie dobrany zestaw udogodnień stworzonych z myślą o relaksie, dobrym samopoczuciu, produktywności i życiu rodzinnym.",
-        amenities: ["Basen i jacuzzi", "W pełni wyposażona siłownia", "Strefa pilatesu", "Sauna", "Terapia w lodowej kąpieli", "Wodny plac zabaw dla dzieci", "Strefy grillowe i towarzyskie na zewnątrz", "Lounge dla mieszkańców i strefy coworkingowe", "Aplikacja dla mieszkańców oparta na AI"],
+        amenities: ["Basen i jacuzzi", "W pełni wyposażona siłownia", "Strefa pilatesu", "Sauna", "Terapia w lodowej kąpieli", "Wodny plac zabaw dla dzieci", "Strefy grillowe i towarzyskie na zewnątrz", "Lounge dla mieszkańców i strefy coworkingowe"],
       },
       location: {
         eyebrow: "Doskonała lokalizacja w Dubaju",
         title: "Jumeirah Village Circle\u00a0— blisko tego, co ważne",
         body: [
-          "Położona w Jumeirah Village Circle (JVC) TRESORA zapewnia równowagę między spokojem dzielnicy mieszkaniowej a miejskimi połączeniami.",
-          "Dzięki wygodnemu dostępowi do Al Khail Road i Sheikh Mohammed Bin Zayed Road inwestycja zapewnia połączenia z najważniejszymi miejscami w całym Dubaju.",
+          "Dostęp do Al Khail Road i Sheikh Mohammed Bin Zayed Road zapewnia połączenia z miejscami w całym Dubaju.",
         ],
         nearbyTitle: "Udogodnienia w okolicy",
         nearby: ["Circle Mall", "Circle Community Park", "JSS International School", "Life Medical Center", "Carewell Clinics"],
@@ -476,17 +417,14 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Elastyczne opcje płatności",
         title: "Twoja nieruchomość. Twoja przyszłość.",
         body: [
-          "Poznaj możliwości posiadania nieruchomości z elastycznymi strukturami płatności dopasowanymi do różnych preferencji zakupowych.",
-          "W zależności od wybranej nieruchomości i obowiązujących warunków może być dostępnych kilka opcji płatności.",
-          "Skontaktuj się z AiXESS, aby otrzymać najnowsze zatwierdzone plany płatności, ceny nieruchomości i informacje o dostępności.",
+          "Porównaj harmonogram płatności w trakcie budowy i rat po przekazaniu nieruchomości.",
         ],
       },
       more: {
         eyebrow: "TRESORA",
         title: "Dowiedz się więcej o TRESORA",
         body: [
-          "Odkryj nowoczesne życie i możliwości posiadania nieruchomości w TRESORA.",
-          "Zespół AiXESS udostępni szczegółowe informacje o projekcie, aktualną dostępność, rzuty mieszkań oraz zapewni indywidualne wsparcie przez cały proces zakupu.",
+          "Powiedz nam, jaki rodzaj nieruchomości Cię interesuje. Nasz zespół pomoże Ci przeanalizować dostępne opcje.",
         ],
         contact: "Kontakt z AiXESS",
         details: "Poproś o szczegóły projektu",
@@ -501,11 +439,8 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["DOWNTOWN ONE", "DUBAI"],
         subtitle: "Nowa generacja życia w mieście",
-        tagline: "Inteligentne życie – silniejsze połączenia",
         body: [
-          "Poznaj Downtown One, nowoczesną inwestycję mieszkaniową w Downtown Jebel Ali w Dubaju, która łączy inteligentne technologie, wyrafinowane wnętrza i wyjątkowe doświadczenia lifestyle'owe.",
-          "Oferując studia oraz apartamenty z jedną i dwiema sypialniami, inwestycja łączy nowoczesną architekturę z inteligentnym domem opartym na AI i starannie dobranym zestawem udogodnień rekreacyjnych i wellness.",
-          "Dzięki dostępowi do Sheikh Zayed Road i połączeniu z metrem w Dubaju Downtown One to dobrze skomunikowany adres dla osób szukających nowoczesnego życia i nieruchomości w Dubaju.",
+          "Nowoczesne mieszkania w Downtown Jebel Ali w Dubaju.",
         ],
         explore: "Poznaj apartamenty",
         availability: "Zapytaj o dostępność",
@@ -516,10 +451,7 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Najważniejsze cechy projektu premium",
         items: [
           ["20 pięter", "Nowoczesny wieżowiec mieszkalny", "Plus trzy piętra podium, parter i piwnica"],
-          ["Dwa plany", "Opcje płatności", "Z czekami postdatowanymi (PDC) lub bez"],
-          ["10 układów", "Plany mieszkań", "Umeblowane plany z broszury"],
           ["Oparte na AI", "Inteligentny dom", "Inteligentna wygoda na co dzień"],
-          ["Metro i droga", "Strategiczne połączenia", "Czerwona linia metra w Dubaju i Sheikh Zayed Road"],
           ["20+ udogodnień", "Doświadczenia lifestyle'owe", "Wellness, rekreacja, fitness i udogodnienia rodzinne"],
         ],
       },
@@ -527,8 +459,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Więcej niż zwykłe życie",
         title: "Styl życia zaprojektowany na każdą chwilę",
         body: [
-          "W Downtown One codzienne życie wykracza poza mieszkanie.",
-          "Korzystaj z przemyślanych przestrzeni do relaksu, ćwiczeń, rekreacji i zajęć rodzinnych. Od wypoczynku przy basenie po immersyjne treningi – każde udogodnienie tworzy nowoczesny, połączony styl życia.",
+          "Wspólne przestrzenie do aktywności, odpoczynku i spotkań z rodziną oraz przyjaciółmi.",
         ],
         groups: [
           ["Wellness i fitness", ["Siłownia wewnętrzna", "Siłownia na zewnątrz", "Immersyjne studio fitness", "Trawnik do jogi", "Jacuzzi"]],
@@ -541,8 +472,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Połączone z Dubajem. Gotowe na jutro.",
         title: "Downtown Jebel Ali\u00a0— lokalizacja, która daje swobodę ruchu",
         body: [
-          "Downtown One leży w rozwijającej się części Dubaju, z wygodnym dostępem do głównych tras komunikacyjnych, dzielnic biznesowych i miejsc wypoczynku.",
-          "Dzięki połączeniu z Sheikh Zayed Road i czerwoną linią metra w Dubaju mieszkańcy mają wygodny dostęp do centrów biznesowych, rekreacyjnych i mieszkaniowych miasta.",
+          "Sheikh Zayed Road i czerwona linia metra w Dubaju łączą mieszkańców z dzielnicami biznesowymi i atrakcjami miasta.",
         ],
         nearbyTitle: "Miejsca w pobliżu",
         nearby: [
@@ -550,14 +480,12 @@ export const DUBAI_PROJECTS_COPY = {
           ["ok. 10–15 minut", "Dubai Marina, JBR, Dubai Parks & Resorts i JAFZA One"],
           ["ok. 15–20 minut", "Expo City Dubai, Dubai Investment Park i Mall of the Emirates"],
         ],
-        closing: "Dojazdy do pracy, zwiedzanie miasta czy wypoczynek – Downtown One stawia wiele doświadczeń w zasięgu ręki.",
       },
       more: {
         eyebrow: "Dowiedz się więcej o Downtown One",
         title: "Twoja następna nieruchomość w Dubaju zaczyna się tutaj",
         body: [
-          "Poznaj apartamenty, rzuty, udogodnienia i możliwości posiadania nieruchomości w Downtown One.",
-          "Zespół AiXESS przekaże indywidualne informacje o projekcie, aktualne ceny, dostępność nieruchomości i opcje płatności.",
+          "Wskaż interesujące Cię mieszkanie, a nasz zespół pomoże Ci sprawdzić aktualne ceny, dostępność i warunki płatności.",
         ],
         contact: "Kontakt z AiXESS",
       },
@@ -602,38 +530,28 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["TRESORA", "DUBAI"],
         subtitle: "Zaklad ravnovesja",
-        tagline: "Sodobno bivanje. Premišljen dizajn. Izjemno udobje.",
-        intro: "Odkrijte nov izraz sodobnega urbanega bivanja v Jumeirah Village Circle v Dubaju, kjer se združujejo sodobna arhitektura, premišljeno oblikovane rezidence in življenjske ugodnosti.",
+        intro: "Nov naslov za bivanje in delo v Jumeirah Village Circle v Dubaju.",
         facts: [["Že od, načrt 40/60", "{{price}}", "price"], ["Začetno plačilo", "{{pct:20}}"], ["Predvideno dokončanje", "1. četrtletje 2028"]],
         explore: "Raziščite rezidence",
         availability: "Povprašajte o razpoložljivosti",
       },
       discover: {
         eyebrow: "Odkrijte TRESORA",
-        title: "Kjer se srečajo življenjski slog, udobje in sodoben dizajn",
+        title: "Prostor za delo, dobro počutje in vsakdan",
         body: [
-          "TRESORA je sodoben večnamenski projekt v osrčju Jumeirah Village Circle, ene od uveljavljenih stanovanjskih skupnosti v Dubaju.",
-          "Z elegantnimi rezidencami, butičnimi pisarnami in skrbno izbranimi trgovskimi prostori TRESORA ponuja okolje, zasnovano okoli ravnovesja med delom, dobrim počutjem in vsakdanjim življenjem.",
-          "Premišljeno načrtovane notranjosti, sodobna arhitektura in vgrajena pametna tehnologija ustvarjajo prefinjeno bivalno izkušnjo, v kateri se funkcionalnost sreča s sodobno eleganco.",
-          "Ne glede na to, ali iščete nov dom, profesionalni delovni prostor ali priložnost za lastništvo nepremičnine v Dubaju, TRESORA ponuja prepričljivo kombinacijo lokacije, dizajna in življenjskega sloga.",
+          "Notranjost združuje funkcionalno zasnovo in vgrajeno pametno tehnologijo.",
+          "Skupni prostori omogočajo delo, sprostitev in druženje.",
         ],
-      },
-      highlights: {
-        eyebrow: "TRESORA",
-        title: "Poudarki projekta",
-        items: [["JVC, Dubaj", "Lokacija"], ["Stanovanja, pisarne in trgovine", "Večnamenski naslov"], ["Od studia do penthousa", "Rezidence"]],
-        currency: "Vse cene so navedene v ameriških dolarjih (USD), glavni valuti AiXESS. Cene so okvirne in se lahko spreminjajo glede na dnevne menjalne tečaje. Končne cene se potrdijo ob nakupu.",
       },
       spaces: {
-        eyebrow: "Najdite svoj idealni prostor",
-        title: "Zasnovano za različne življenjske sloge",
+        eyebrow: "Vrste nepremičnin",
+        title: "Poiščite prostor zase",
         body: [
-          "Od sodobnih garsonjer do prostornih rezidenc z dvema spalnicama TRESORA ponuja premišljeno načrtovane bivalne prostore, ki združujejo udobje, funkcionalnost in eleganten dizajn.",
-          "Projekt vključuje tudi butične pisarne in trgovske prostore ter ustvarja povezano okolje za sodobno bivanje in poslovanje.",
+          "Primerjajte spodnje kategorije in si na tlorisih oglejte razporeditev prostorov.",
         ],
-        listTitle: "Razpoložljive kategorije nepremičnin",
+        listTitle: "Stanovanjske in poslovne možnosti",
         categories: ["Garsonjere in pametne garsonjere", "Pametne rezidence z eno spalnico", "Rezidence z eno spalnico", "Rezidence z dvema spalnicama", "Butične pisarne", "Trgovski prostori", "Penthousi z dvema in tremi spalnicami"],
-        note: "Kategorije po informativnem listu in tlorisih družbe WADAN. Aktualne enote, tlorise in cene AiXESS potrdi na zahtevo.",
+        note: "Pri AiXESS povprašajte po trenutno razpoložljivih enotah, tlorisih in cenah.",
         units: "Povprašajte o razpoložljivih enotah",
         prices: "Povprašajte o cenah",
       },
@@ -641,14 +559,13 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Ugodnosti projekta",
         title: "Življenjski slog, prilagojen vam",
         lead: "Doživite skrbno izbrane ugodnosti, ustvarjene za sprostitev, dobro počutje, produktivnost in družinsko življenje.",
-        amenities: ["Bazen in jacuzzi", "Popolnoma opremljen fitnes", "Prostori za pilates", "Savna", "Terapija z ledeno kopeljo", "Vodno igrišče za otroke", "Prostori za žar in druženje na prostem", "Salon za stanovalce in coworking prostori", "Aplikacija za stanovalce z umetno inteligenco"],
+        amenities: ["Bazen in jacuzzi", "Popolnoma opremljen fitnes", "Prostori za pilates", "Savna", "Terapija z ledeno kopeljo", "Vodno igrišče za otroke", "Prostori za žar in druženje na prostem", "Salon za stanovalce in coworking prostori"],
       },
       location: {
         eyebrow: "Odlična lega v Dubaju",
         title: "Jumeirah Village Circle\u00a0— povezano s tem, kar šteje",
         body: [
-          "TRESORA v Jumeirah Village Circle (JVC) ponuja ravnovesje med mirom stanovanjske soseske in mestno povezanostjo.",
-          "Z udobnim dostopom do ceste Al Khail Road in ceste Sheikh Mohammed Bin Zayed Road projekt zagotavlja povezave do pomembnih destinacij po vsem Dubaju.",
+          "Dostop do cest Al Khail Road in Sheikh Mohammed Bin Zayed Road povezuje projekt z destinacijami po Dubaju.",
         ],
         nearbyTitle: "Bližnje ugodnosti v soseski",
         nearby: ["Circle Mall", "Circle Community Park", "JSS International School", "Life Medical Center", "Carewell Clinics"],
@@ -660,17 +577,14 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Prilagodljive možnosti plačila",
         title: "Vaša nepremičnina. Vaša prihodnost.",
         body: [
-          "Odkrijte priložnosti za lastništvo nepremičnin s prilagodljivimi plačilnimi strukturami za različne nakupne želje.",
-          "Glede na izbrano nepremičnino in veljavne pogoje je lahko na voljo več možnosti plačila.",
-          "Kontaktirajte AiXESS za najnovejše odobrene plačilne načrte, cene nepremičnin in razpoložljivost.",
+          "Primerjajte plačila med gradnjo in obroke po predaji.",
         ],
       },
       more: {
         eyebrow: "TRESORA",
         title: "Več o projektu TRESORA",
         body: [
-          "Odkrijte sodobno bivanje in priložnosti za lastništvo nepremičnin v projektu TRESORA.",
-          "Ekipa AiXESS vam zagotovi podrobne informacije o projektu, aktualno razpoložljivost, tlorise in osebno pomoč skozi celoten nakupni postopek.",
+          "Povejte nam, katera vrsta nepremičnine vas zanima. Naša ekipa vam bo pomagala pregledati razpoložljive možnosti.",
         ],
         contact: "Kontaktirajte AiXESS",
         details: "Zahtevajte podrobnosti projekta",
@@ -685,11 +599,8 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["DOWNTOWN ONE", "DUBAI"],
         subtitle: "Nova generacija urbanega bivanja",
-        tagline: "Pametno bivanje – močnejše povezave",
         body: [
-          "Odkrijte Downtown One, sodoben stanovanjski projekt v Downtown Jebel Ali v Dubaju, ki združuje inteligentno tehnologijo, prefinjene notranjosti in izjemne življenjske izkušnje.",
-          "Projekt z garsonjerami ter rezidencami z eno in dvema spalnicama združuje sodobno arhitekturo s pametnim domom z umetno inteligenco in skrbno izbranimi ugodnostmi za prosti čas in dobro počutje.",
-          "Z dostopom do ceste Sheikh Zayed Road in povezavo z metrojem v Dubaju je Downtown One dobro povezan naslov za vse, ki iščejo sodobno bivanje in lastništvo nepremičnine v Dubaju.",
+          "Sodobni domovi v Downtown Jebel Ali v Dubaju.",
         ],
         explore: "Raziščite rezidence",
         availability: "Povprašajte o razpoložljivosti",
@@ -700,10 +611,7 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Poudarki vrhunskega projekta",
         items: [
           ["20 nadstropij", "Sodobna stanovanjska stolpnica", "Ter tri nadstropja podija, pritličje in klet"],
-          ["Dva načrta", "Možnosti plačila", "S postdatiranimi čeki (PDC) ali brez"],
-          ["10 tlorisov", "Načrti stanovanj", "Opremljeni načrti iz brošure"],
           ["Z umetno inteligenco", "Pametni dom", "Inteligentno vsakdanje udobje"],
-          ["Metro in cesta", "Strateška povezanost", "Rdeča linija metroja v Dubaju in Sheikh Zayed Road"],
           ["20+ ugodnosti", "Življenjske izkušnje", "Ponudba za dobro počutje, prosti čas, fitnes in družine"],
         ],
       },
@@ -711,8 +619,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Več kot običajno bivanje",
         title: "Življenjski slog za vsak trenutek",
         body: [
-          "V Downtown One se vsakdanje življenje nadaljuje onkraj rezidence.",
-          "Uživajte v premišljeno oblikovanih prostorih za sprostitev, fitnes, rekreacijo in družinske dejavnosti. Od oddiha ob bazenu do poglobljenih fitnes izkušenj vsaka ugodnost prispeva k sodobnemu in povezanemu življenjskemu slogu.",
+          "Skupni prostori za vadbo, sprostitev ter druženje z družino in prijatelji.",
         ],
         groups: [
           ["Dobro počutje in fitnes", ["Notranji fitnes", "Zunanji fitnes", "Imerzivni fitnes studio", "Trata za jogo", "Jacuzzi"]],
@@ -725,8 +632,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Povezano z Dubajem. Pripravljeno na jutri.",
         title: "Downtown Jebel Ali\u00a0— lokacija, ki vas ohranja v gibanju",
         body: [
-          "Downtown One leži v razvijajočem se delu Dubaja z udobnim dostopom do glavnih prometnih poti, poslovnih okrožij in destinacij za prosti čas.",
-          "S povezavo do ceste Sheikh Zayed Road in rdeče linije metroja v Dubaju imajo stanovalci udobne povezave do poslovnih, rekreacijskih in stanovanjskih središč Dubaja.",
+          "Cesta Sheikh Zayed Road in rdeča linija dubajskega metroja povezujeta stanovalce s poslovnimi predeli in prostočasnimi destinacijami mesta.",
         ],
         nearbyTitle: "Bližnje destinacije",
         nearby: [
@@ -734,14 +640,12 @@ export const DUBAI_PROJECTS_COPY = {
           ["približno 10–15 minut", "Dubai Marina, JBR, Dubai Parks & Resorts in JAFZA One"],
           ["približno 15–20 minut", "Expo City Dubai, Dubai Investment Park in Mall of the Emirates"],
         ],
-        closing: "Ne glede na to, ali se vozite na delo, raziskujete mesto ali uživate v prostem času, Downtown One ponuja številne izkušnje na dosegu roke.",
       },
       more: {
         eyebrow: "Več o projektu Downtown One",
         title: "Vaša naslednja nepremičnina v Dubaju se začne tukaj",
         body: [
-          "Raziščite rezidence, tlorise, ugodnosti in možnosti lastništva nepremičnin v projektu Downtown One.",
-          "Ekipa AiXESS vam z veseljem posreduje osebne informacije o projektu, aktualne cene, razpoložljivost nepremičnin in možnosti plačila.",
+          "Povejte nam, katero stanovanje vas zanima. Naša ekipa vam bo pomagala preveriti trenutne cene, razpoložljivost in plačilne pogoje.",
         ],
         contact: "Kontaktirajte AiXESS",
       },
@@ -786,38 +690,28 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["TRESORA", "DUBAI"],
         subtitle: "Сокровище баланса",
-        tagline: "Современная жизнь. Продуманный дизайн. Исключительный комфорт.",
-        intro: "Откройте новое воплощение современной городской жизни в Jumeirah Village Circle, Дубай, где сочетаются современная архитектура, продуманные резиденции и удобства для жизни.",
+        intro: "Новый адрес для жизни и работы в Jumeirah Village Circle, Дубай.",
         facts: [["От, план 40/60", "{{price}}", "price"], ["Первоначальный платёж", "{{pct:20}}"], ["Ожидаемое завершение", "I квартал 2028"]],
         explore: "Смотреть резиденции",
         availability: "Запросить наличие",
       },
       discover: {
         eyebrow: "Откройте TRESORA",
-        title: "Где встречаются стиль жизни, комфорт и современный дизайн",
+        title: "Пространство для работы, отдыха и повседневной жизни",
         body: [
-          "TRESORA — современный многофункциональный комплекс в самом сердце Jumeirah Village Circle, одного из сложившихся жилых районов Дубая.",
-          "Сочетая элегантные резиденции, бутик-офисы и тщательно подобранные торговые площади, TRESORA создаёт среду, построенную на балансе работы, благополучия и повседневной жизни.",
-          "Продуманные интерьеры, современная архитектура и встроенные умные технологии создают изысканную среду для жизни, где функциональность встречается с современной элегантностью.",
-          "Ищете ли вы новый дом, профессиональное рабочее пространство или возможность владеть недвижимостью в Дубае, TRESORA предлагает убедительное сочетание расположения, дизайна и стиля жизни.",
+          "Интерьеры сочетают функциональную планировку со встроенными умными технологиями.",
+          "Общие пространства предназначены для работы, отдыха и общения.",
         ],
-      },
-      highlights: {
-        eyebrow: "TRESORA",
-        title: "Ключевые особенности проекта",
-        items: [["JVC, Дубай", "Расположение"], ["Жильё, офисы и торговля", "Многофункциональный адрес"], ["От студий до пентхаусов", "Резиденции"]],
-        currency: "Все цены указаны в долларах США (USD), основной валюте AiXESS. Цены ориентировочные и могут меняться в зависимости от ежедневных валютных курсов. Окончательные цены подтверждаются в момент покупки.",
       },
       spaces: {
-        eyebrow: "Найдите своё идеальное пространство",
-        title: "Создано для разных стилей жизни",
+        eyebrow: "Типы недвижимости",
+        title: "Найдите подходящее пространство",
         body: [
-          "От современных студий до просторных резиденций с двумя спальнями — TRESORA предлагает продуманные жилые пространства, сочетающие комфорт, функциональность и элегантный дизайн.",
-          "В комплексе также есть бутик-офисы и торговые помещения, создающие единую среду для современной жизни и бизнеса.",
+          "Сравните категории ниже и изучите расположение помещений на планах этажей.",
         ],
-        listTitle: "Доступные категории недвижимости",
+        listTitle: "Жилые и коммерческие помещения",
         categories: ["Студии и смарт-студии", "Смарт-резиденции с одной спальней", "Резиденции с одной спальней", "Резиденции с двумя спальнями", "Бутик-офисы", "Торговые помещения", "Пентхаусы с двумя и тремя спальнями"],
-        note: "Категории по информационному листу и планировкам WADAN. Актуальные объекты, планировки и цены AiXESS подтверждает по запросу.",
+        note: "Уточните у AiXESS доступные объекты, планировки и актуальные цены.",
         units: "Запросить доступные объекты",
         prices: "Узнать цены",
       },
@@ -825,14 +719,13 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Удобства проекта",
         title: "Стиль жизни, созданный для вас",
         lead: "Оцените тщательно подобранные удобства для отдыха, благополучия, продуктивности и семейной жизни.",
-        amenities: ["Бассейн и джакузи", "Полностью оборудованный тренажёрный зал", "Зона для пилатеса", "Сауна", "Терапия ледяной ванной", "Детский аквапарк с фонтанами", "Зоны барбекю и отдыха на открытом воздухе", "Лаунж для жителей и коворкинг", "Приложение для жителей на базе ИИ"],
+        amenities: ["Бассейн и джакузи", "Полностью оборудованный тренажёрный зал", "Зона для пилатеса", "Сауна", "Терапия ледяной ванной", "Детский аквапарк с фонтанами", "Зоны барбекю и отдыха на открытом воздухе", "Лаунж для жителей и коворкинг"],
       },
       location: {
         eyebrow: "Идеальное расположение в Дубае",
         title: "Jumeirah Village Circle\u00a0— рядом со всем важным",
         body: [
-          "Расположенный в Jumeirah Village Circle (JVC), TRESORA сочетает спокойствие жилого района и городскую доступность.",
-          "Благодаря удобному выезду на Al Khail Road и Sheikh Mohammed Bin Zayed Road комплекс связан с ключевыми точками по всему Дубаю.",
+          "Выезд на Al Khail Road и Sheikh Mohammed Bin Zayed Road обеспечивает связь с разными районами Дубая.",
         ],
         nearbyTitle: "Инфраструктура рядом",
         nearby: ["Circle Mall", "Circle Community Park", "JSS International School", "Life Medical Center", "Carewell Clinics"],
@@ -844,17 +737,14 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Гибкие варианты оплаты",
         title: "Ваша недвижимость. Ваше будущее.",
         body: [
-          "Откройте возможности владения недвижимостью с гибкими схемами оплаты, учитывающими разные предпочтения покупателей.",
-          "В зависимости от выбранного объекта и действующих условий могут быть доступны несколько вариантов оплаты.",
-          "Свяжитесь с AiXESS, чтобы получить актуальные утверждённые планы оплаты, цены и информацию о наличии.",
+          "Сравните графики платежей во время строительства и после передачи объекта.",
         ],
       },
       more: {
         eyebrow: "TRESORA",
         title: "Узнайте больше о TRESORA",
         body: [
-          "Откройте современную жизнь и возможности владения недвижимостью в TRESORA.",
-          "Команда AiXESS предоставит подробную информацию о проекте, актуальное наличие, планировки и персональную поддержку на всех этапах покупки.",
+          "Сообщите, какой тип недвижимости вас интересует. Наша команда поможет рассмотреть доступные варианты.",
         ],
         contact: "Связаться с AiXESS",
         details: "Запросить подробности проекта",
@@ -869,11 +759,8 @@ export const DUBAI_PROJECTS_COPY = {
       hero: {
         title: ["DOWNTOWN ONE", "DUBAI"],
         subtitle: "Новое поколение городской жизни",
-        tagline: "Умная жизнь – крепкие связи",
         body: [
-          "Откройте Downtown One — современный жилой комплекс в Downtown Jebel Ali, Дубай, объединяющий интеллектуальные технологии, изысканные интерьеры и исключительный стиль жизни.",
-          "Студии, резиденции с одной и двумя спальнями: комплекс сочетает современную архитектуру, умный дом на базе ИИ и тщательно подобранные удобства для досуга и велнеса.",
-          "Благодаря выезду на Sheikh Zayed Road и доступу к метро Дубая Downtown One — удобно связанный адрес для тех, кто ищет современную жизнь и недвижимость в Дубае.",
+          "Современные резиденции в Downtown Jebel Ali, Дубай.",
         ],
         explore: "Смотреть резиденции",
         availability: "Запросить наличие",
@@ -884,10 +771,7 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Ключевые особенности премиального проекта",
         items: [
           ["20 этажей", "Современная жилая башня", "А также три этажа подиума, первый этаж и подвал"],
-          ["Два плана", "Варианты оплаты", "С отсроченными чеками (PDC) или без"],
-          ["10 планировок", "Планы резиденций", "Планы с мебелью из брошюры"],
           ["На базе ИИ", "Умный дом", "Интеллектуальный комфорт каждый день"],
-          ["Метро и трасса", "Стратегическая доступность", "Красная линия метро Дубая и Sheikh Zayed Road"],
           ["20+ удобств", "Стиль жизни", "Велнес, досуг, фитнес и всё для семьи"],
         ],
       },
@@ -895,8 +779,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Больше, чем обычная жизнь",
         title: "Стиль жизни для каждого момента",
         body: [
-          "В Downtown One повседневная жизнь выходит за пределы резиденции.",
-          "Наслаждайтесь продуманными пространствами для отдыха, фитнеса, развлечений и семейного досуга. От отдыха у бассейна до иммерсивных тренировок — каждое удобство создаёт современный и связанный стиль жизни.",
+          "Общие пространства для тренировок, отдыха и встреч с семьёй и друзьями.",
         ],
         groups: [
           ["Велнес и фитнес", ["Крытый тренажёрный зал", "Уличный тренажёрный зал", "Иммерсивная фитнес-студия", "Лужайка для йоги", "Джакузи"]],
@@ -909,8 +792,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Связь с Дубаем. Взгляд в завтра.",
         title: "Downtown Jebel Ali\u00a0— район, который держит вас в движении",
         body: [
-          "Downtown One расположен в развивающемся районе Дубая с удобным доступом к главным транспортным магистралям, деловым районам и местам отдыха.",
-          "Благодаря связи с Sheikh Zayed Road и красной линией метро Дубая жители могут удобно добираться до деловых, развлекательных и жилых центров города.",
+          "Sheikh Zayed Road и красная линия метро Дубая связывают жителей с деловыми районами и местами отдыха города.",
         ],
         nearbyTitle: "Места поблизости",
         nearby: [
@@ -918,14 +800,12 @@ export const DUBAI_PROJECTS_COPY = {
           ["примерно 10–15 минут", "Dubai Marina, JBR, Dubai Parks & Resorts и JAFZA One"],
           ["примерно 15–20 минут", "Expo City Dubai, Dubai Investment Park и Mall of the Emirates"],
         ],
-        closing: "Поездки на работу, прогулки по городу или отдых — Downtown One делает множество впечатлений доступными.",
       },
       more: {
         eyebrow: "Узнайте больше о Downtown One",
         title: "Ваша следующая недвижимость в Дубае начинается здесь",
         body: [
-          "Изучите резиденции, планировки, удобства и варианты владения недвижимостью в Downtown One.",
-          "Команда AiXESS готова предоставить персональную информацию о проекте, актуальные цены, наличие объектов и варианты оплаты.",
+          "Сообщите, какая резиденция вас интересует. Наша команда поможет уточнить актуальные цены, доступность и условия оплаты.",
         ],
         contact: "Связаться с AiXESS",
       },

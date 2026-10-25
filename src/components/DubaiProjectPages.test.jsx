@@ -83,7 +83,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     const page = document.querySelector(".dubai-project-page");
     const copy = DUBAI_PROJECTS_COPY.en.tresora;
     const extra = DUBAI_SOURCES_COPY.en.tresora;
-    [copy.discover.title, copy.highlights.title, copy.spaces.title, extra.prices.title, extra.floors.title, copy.lifestyle.title, /Connected to What Matters/, copy.payment.title, copy.more.title].forEach((title) => {
+    [copy.discover.title, copy.spaces.title, extra.prices.title, extra.floors.title, copy.lifestyle.title, /Connected to What Matters/, copy.payment.title, copy.more.title].forEach((title) => {
       expect(screen.getByRole("heading", { level: 2, name: title })).toBeInTheDocument();
     });
     copy.spaces.categories.forEach((name) => expect(screen.getByRole("heading", { level: 4, name })).toBeInTheDocument());
@@ -93,8 +93,9 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     // The from price is the lowest studio on the 40/60 plan (AED 763,168 at the dirham's peg), tied to the currency note.
     expect(usdFromAed(TRESORA_FROM_AED)).toBe(207806);
     const note = document.getElementById("tresora-currency");
-    expect(note).toHaveTextContent("All prices are displayed in US Dollars (USD), the primary currency used by AiXESS.");
-    expect(note).toHaveTextContent("AED 3.6725 to US$1");
+    expect(note).toHaveTextContent("AED 3.6725 per US$1");
+    expect(note).toHaveTextContent("The developer's AED prices apply.");
+    expect(page.textContent).not.toMatch(/All prices are displayed in US Dollars|exchange rate on the date|earlier fact sheet|Functions named in the brochure/);
     const price = screen.getByText((_, element) => element?.tagName === "DD" && element.textContent === "US$207,806");
     expect(price).toHaveAttribute("aria-describedby", "tresora-currency");
     expect(page.textContent).not.toMatch(/182,437|70\/30/);
@@ -162,7 +163,8 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect(gallery).toHaveTextContent("Developer renderings from WADAN's TRESORA brochure");
     const app = document.getElementById("tresora-app");
     expect([...app.querySelectorAll(".dp-list li")].map((item) => item.textContent)).toEqual(["01AI assistance", "02Updates", "03Requests", "04Documents", "05Announcements"]);
-    expect(app).toHaveTextContent("not an AiXESS service");
+    expect(app).toHaveTextContent("The resident app is provided by WADAN.");
+    expect(app).toHaveTextContent("subject to developer confirmation");
     expect(app.querySelector("a, button")).toBeNull();
   });
 
@@ -191,7 +193,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("link", { name: /Explore Residences/ }));
     expect(window.location.hash).toBe("#tresora/spaces");
-    expect(document.activeElement).toHaveTextContent("Designed for Different Lifestyles");
+    expect(document.activeElement).toHaveTextContent(DUBAI_PROJECTS_COPY.en.tresora.spaces.title);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TRESORA");
   });
 

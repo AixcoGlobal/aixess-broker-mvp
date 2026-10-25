@@ -24,6 +24,7 @@ html:root:not([data-time-theme='night']) .dp-hero > .site-header .login-button:h
 .lasha-page .dp-hero-copy {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  justify-items: stretch;
   gap: clamp(1.6rem, 3vw, 2.6rem);
   width: 100%;
   max-width: none;
@@ -37,27 +38,17 @@ html:root:not([data-time-theme='night']) .dp-hero > .site-header .login-button:h
   font-family: var(--l-head);
   font-size: var(--v4-sub);
   font-weight: 700;
-  line-height: 0.95;
+  line-height: 1.08;
   text-transform: uppercase;
   text-wrap: balance;
-}
-.lasha-page .dp-hero-tagline {
-  max-width: 40rem;
-  margin: 0.9rem 0 0;
-  color: var(--l-ink, #171a1d);
-  font-size: var(--v4-label);
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  line-height: 1.5;
-  text-transform: uppercase;
 }
 .lasha-page .dp-hero .lasha-page-hero-text { max-width: 38rem; margin: 0 0 0.9rem; color: var(--l-ink, #171a1d); }
 .lasha-page .dp-hero .lasha-page-hero-text:last-of-type { margin-bottom: 0; }
 .lasha-page .dp-hero .it-hero-actions { margin-top: clamp(1.4rem, 2.4vw, 2rem); }
 
 .lasha-page .dp-hero-facts {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
   gap: 1.1rem clamp(1.4rem, 3vw, 2.6rem);
   width: 100%;
   margin: clamp(1.4rem, 2.6vw, 2rem) 0 0;
@@ -67,14 +58,13 @@ html:root:not([data-time-theme='night']) .dp-hero > .site-header .login-button:h
   flex-direction: column-reverse;
   justify-content: flex-end;
   gap: 0.45rem;
-  flex: 0 1 auto;
   min-width: 0;
   max-width: 100%;
   padding-top: 0.9rem;
   border-top: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 30%, transparent);
 }
 .lasha-page .dp-hero-facts dt { font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.16em; line-height: 1.35; text-transform: uppercase; }
-.lasha-page .dp-hero-facts dd { margin: 0; color: var(--l-blue); font-family: var(--l-head); font-size: clamp(2rem, 3vw, 2.9rem); font-weight: 700; line-height: 0.95; white-space: nowrap; }
+.lasha-page .dp-hero-facts dd { margin: 0; color: var(--l-blue); font-family: var(--l-head); font-size: clamp(2rem, 3vw, 2.9rem); font-weight: 700; line-height: 1.1; overflow-wrap: break-word; }
 
 /* The copy keeps the scroll-down cue's height free under it, so a long hero that fills the screen
    (tablets, short laptop windows) never runs beneath the cue. */
@@ -82,18 +72,8 @@ html:root:not([data-time-theme='night']) .dp-hero > .site-header .login-button:h
   .lasha-page .dp-hero .dp-hero-copy { padding-bottom: 8rem; }
 }
 
-/* Two columns from 1100px: the name on the left, the copy, figures and buttons on the right. */
-@media (min-width: 1100px) {
-  .lasha-page .dp-hero-copy {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    column-gap: clamp(3rem, 6vw, 7rem);
-    align-items: end;
-  }
-  .lasha-page .dp-hero-side { padding-left: clamp(1.6rem, 3vw, 3rem); border-left: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent); }
-}
-
 /* Night: the hero copy is off-white on near-black, the figures and subtitle the light cobalt. */
-html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-tagline, .dp-hero-developer, .dp-hero-figure figcaption, .lasha-page-hero-text) { color: #f4f4f1; }
+html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-developer, .dp-hero-figure figcaption, .lasha-page-hero-text) { color: #f4f4f1; }
 html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd, .dp-hero-developer strong, .dp-inline-link) { color: var(--l-blue-light); }
 html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-facts > div, .dp-hero-side) { border-color: rgb(244 244 241 / 0.3); }
 /* Afternoon: the deeper sage reads on the sage ground. */
@@ -162,9 +142,6 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
   .lasha-page .dp-hero-media > .dp-hero-figure img { flex: 1 1 0; height: 0; min-height: 18rem; max-height: none; aspect-ratio: auto; }
   .lasha-page .dp-hero-media > .dp-hero-copy { grid-column: 1; grid-row: 2; max-width: 56rem; }
   .lasha-page .dp-hero-figure figcaption { padding-inline: 0; }
-  /* One column beside the image: name, then the copy, figures and buttons. */
-  .lasha-page .dp-hero-media .dp-hero-copy { grid-template-columns: minmax(0, 1fr); }
-  .lasha-page .dp-hero-media .dp-hero-side { padding-left: 0; border-left: 0; }
   /* The title shrinks to keep the copy on the first screen, but never below 3.6rem: a long hero
      (DOWNTOWN ONE's three paragraphs on a short window) runs on below the fold instead. */
   .lasha-page .dp-hero-media .lasha-page-hero-title { font-size: max(3.6rem, min(var(--v4-page-title), 6.4vw, var(--hero-title-vh), var(--hero-title-fit, 100vw))); }
@@ -192,18 +169,15 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
 .lasha-page .dp-page .rp-actions .button { display: inline-flex; align-items: center; }
 .lasha-page .dp-page .rp-actions .button .lasha-arrow { width: 1.5rem; height: 0.5rem; }
 .lasha-page .dp-page :is(.rp-heading h2, .rp-subtitle, .dp-list-title) { scroll-margin-top: 1.5rem; }
-.lasha-page .dp-page .rp-heading h2 { max-width: 26ch; }
+.lasha-page .dp-page .rp-heading h2 { max-width: 26ch; line-height: 1.03; }
 .lasha-page .dp-page :is(h2, h3, h4, p, li, dt, dd)[tabindex]:focus { outline: none; }
 .lasha-page .dp-terms { scroll-margin-top: 30vh; }
 
-/* Paragraph groups: one readable column, or two side by side from 900px. */
+/* Paragraph groups stay in one readable column. */
 .lasha-page .dp-columns { display: grid; gap: 1rem clamp(2rem, 4vw, 3.5rem); max-width: 52rem; }
 .lasha-page .dp-columns p,
 .lasha-page .dp-text { margin: 0; font-size: var(--v4-lead); line-height: 1.6; }
 .lasha-page .dp-text + .dp-text { margin-top: 1rem; }
-@media (min-width: 900px) {
-  .lasha-page .dp-columns-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 81.2rem; }
-}
 
 /* Fact cards rebuilt from the briefs' highlight graphics: natural height, no fixed sizes. */
 .lasha-page .dp-cards {
@@ -216,7 +190,7 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
 }
 .lasha-page .dp-cards-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .lasha-page .dp-cards-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.lasha-page .dp-cards > :is(div, li) {
+.lasha-page .dp-cards > li {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -225,18 +199,17 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
   border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent);
   background: var(--l-card, #fff);
 }
-.lasha-page .dp-cards :is(dd, strong) {
+.lasha-page .dp-cards strong {
   margin: 0;
   color: var(--l-blue);
   font-family: var(--l-head);
   font-size: clamp(2.3rem, 3.6vw, 3.6rem);
   font-weight: 700;
-  line-height: 0.92;
+  line-height: 1.08;
   text-transform: uppercase;
   overflow-wrap: break-word;
   hyphens: manual;
 }
-.lasha-page .dp-cards dt,
 .lasha-page .dp-cards h3 { margin: 0; font-family: var(--l-body); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.18em; line-height: 1.4; text-transform: uppercase; }
 .lasha-page .dp-cards p { margin: 0; color: color-mix(in srgb, var(--l-ink, #171a1d) 78%, transparent); font-size: var(--v4-text); line-height: 1.6; }
 .lasha-page .dp-terms { max-width: 72ch; }
@@ -300,7 +273,7 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
   max-width: 81.2rem;
   margin-top: clamp(2.6rem, 5vw, 4rem);
 }
-.lasha-page .dp-groups h3 { margin: 0 0 0.8rem; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1; text-transform: uppercase; overflow-wrap: break-word; hyphens: manual; }
+.lasha-page .dp-groups h3 { margin: 0 0 0.8rem; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1.1; text-transform: uppercase; overflow-wrap: break-word; hyphens: manual; }
 .lasha-page .dp-groups ul { margin: 0; padding: 0; list-style: none; }
 .lasha-page .dp-groups li { padding: 0.75rem 0; border-top: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 20%, transparent); font-size: var(--v4-text); line-height: 1.45; overflow-wrap: break-word; }
 @media (max-width: 1099px) {
@@ -310,8 +283,9 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
   .lasha-page .dp-groups { grid-template-columns: minmax(0, 1fr); }
   .lasha-page .dp-hero-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .lasha-page .dp-hero-facts > div:first-child { grid-column: 1 / -1; }
-  /* Half a phone is too narrow for a long figure such as SL "1. četrtletje 2028": it wraps. */
-  .lasha-page .dp-hero-facts dd { white-space: normal; overflow-wrap: break-word; }
+}
+@media (max-width: 359px) {
+  .lasha-page .dp-hero-facts { grid-template-columns: minmax(0, 1fr); }
 }
 
 .lasha-page .dp-closing .rp-actions { margin-top: clamp(2rem, 4vw, 3rem); }
@@ -384,6 +358,8 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-lis
 
 /* Tables: prices, launch mix and payment schedules. */
 .lasha-page .dp-table-wrap { max-width: 81.2rem; }
+.lasha-page .dp-price-table { table-layout: fixed; }
+.lasha-page .dp-price-table thead th:first-child { width: 24%; }
 .lasha-page .dp-table {
   width: 100%;
   border-collapse: collapse;
@@ -410,20 +386,21 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-lis
 .lasha-page div.dp-terms p { margin: 0 0 0.6rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); font-size: var(--v4-small); line-height: 1.55; }
 .lasha-page div.dp-terms p:last-child { margin-bottom: 0; }
 
-/* Below 900px the five price columns become one card per category, each value with its label. */
-@media (max-width: 899px) {
+/* Keep five columns only where category names and both currencies have room. */
+@media (max-width: 1199px) {
   .lasha-page .dp-price-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .lasha-page .dp-price-table :is(tbody, tr, th, td) { display: block; }
   .lasha-page .dp-price-table tbody { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 1rem; }
   .lasha-page .dp-price-table tr { padding: 1.2rem 1.2rem 0.4rem; border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent); background: var(--l-card, #fff); }
-  .lasha-page .dp-price-table tbody th { padding: 0 0 1rem; border: 0; }
+  .lasha-page .dp-price-table tbody th { width: auto; padding: 0 0 1rem; border: 0; }
   .lasha-page .dp-price-table td { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.8rem 0; }
   .lasha-page .dp-price-table tbody tr:last-child :is(th, td) { border-bottom: 0; }
   .lasha-page .dp-price-table td::before { content: attr(data-label); flex: 0 1 auto; min-width: 0; color: color-mix(in srgb, var(--l-ink, #171a1d) 78%, transparent); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.14em; line-height: 1.35; text-transform: uppercase; }
   .lasha-page .dp-price-table tbody td > * { grid-column: 2; text-align: right; }
-  .lasha-page .dp-price-table tbody td { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 1rem; align-items: start; }
+  .lasha-page .dp-price-table tbody td { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 1rem; align-items: start; }
   .lasha-page .dp-price-table tbody td::before { grid-column: 1; grid-row: 1 / span 2; }
   .lasha-page .dp-price-table td > strong { font-size: 1.45rem; }
+  .lasha-page .dp-price-table td > strong + span { margin-top: 0; }
 }
 /* The three-column launch mix stacks the same way on phones. */
 @media (max-width: 599px) {
@@ -442,6 +419,13 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-lis
   .lasha-page .dp-mix-table tfoot td::before,
   .lasha-page .dp-mix-table tfoot td[aria-hidden] { display: none; }
 }
+/* A full-width label keeps long translations clear of the figures on phones. */
+@media (max-width: 599px) {
+  .lasha-page :is(.dp-price-table, .dp-mix-table) tbody td { grid-template-columns: minmax(0, 1fr); row-gap: 0.35rem; }
+  .lasha-page :is(.dp-price-table, .dp-mix-table) tbody td::before { grid-column: 1; grid-row: auto; margin-bottom: 0.2rem; }
+  .lasha-page :is(.dp-price-table, .dp-mix-table) tbody td > * { grid-column: 1; text-align: left; }
+  .lasha-page :is(.dp-price-table, .dp-mix-table) td > strong + span { margin-top: 0; }
+}
 
 /* Payment schedules: one card per plan. TRESORA: 40/60 beside the wider post-handover plan from
    1100px; DOWNTOWN ONE: the two plans side by side from 800px. */
@@ -457,14 +441,14 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-lis
   border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent);
   background: var(--l-card, #fff);
 }
-.lasha-page .dp-pay h3 { margin: 0; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1; text-transform: uppercase; }
+.lasha-page .dp-pay h3 { margin: 0; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1.1; text-transform: uppercase; }
 .lasha-page .dp-pay-lead { max-width: 52ch; margin: 0; font-size: var(--v4-text); line-height: 1.55; }
 .lasha-page .dp-pay .dp-inline-link { margin-top: auto; padding-top: 0.4rem; font-size: var(--v4-label); }
-.lasha-page .dp-phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.5rem), 1fr)); gap: 1rem clamp(1.2rem, 2.4vw, 2rem); align-items: start; align-self: stretch; }
+.lasha-page .dp-phases { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem clamp(1.2rem, 2.4vw, 2rem); align-items: start; align-self: stretch; }
+@media (min-width: 700px) { .lasha-page .dp-phases { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.lasha-page .dp-phases > .dp-schedule:first-child { grid-column: 1 / -1; }
 .lasha-page .dp-schedule { width: 100%; }
 .lasha-page .dp-phases > .dp-schedule { align-self: start; }
-/* The down-payment table has no caption of its own; the spacer keeps its first row level with the others. */
-.lasha-page .dp-schedule .dp-caption-spacer { visibility: hidden; }
 .lasha-page .dp-schedule caption { padding-bottom: 0.55rem; color: var(--l-blue); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.16em; line-height: 1.35; text-align: left; text-transform: uppercase; }
 .lasha-page .dp-schedule :is(th, td) { padding-block: 0.6rem; font-weight: 400; }
 .lasha-page .dp-schedule td { text-align: right; white-space: nowrap; font-weight: 600; }
@@ -487,17 +471,17 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-lis
   list-style: none;
 }
 .lasha-page .dp-plans-2 { --dp-plan-aspect: 1.414; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.2rem; }
-.lasha-page .dp-plans-layouts { --dp-plan-aspect: 4 / 5; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.lasha-page .dp-plans-layouts { --dp-plan-aspect: 4 / 5; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .lasha-page .dp-plan { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
 .lasha-page .dp-plan-image { padding: clamp(0.4rem, 1vw, 0.75rem); border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 18%, transparent); background: #fff; }
 .lasha-page .dp-plan-image img { display: block; width: 100%; height: auto; aspect-ratio: var(--dp-plan-aspect); object-fit: contain; transition: transform 300ms ease; }
 .lasha-page .dp-plan-image:hover img { transform: scale(1.02); }
-.lasha-page .dp-plan h3 { margin: 0.9rem 0 0; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1; text-transform: uppercase; }
+.lasha-page .dp-plan h3 { margin: 0.9rem 0 0; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1.1; text-transform: uppercase; }
 .lasha-page .dp-plan p { margin: 0.45rem 0 0; color: color-mix(in srgb, var(--l-ink, #171a1d) 78%, transparent); font-size: var(--v4-small); line-height: 1.5; }
 .lasha-page .dp-plan .dp-inline-link { margin-top: 0.6rem; font-size: var(--v4-label); }
 @media (max-width: 1099px) {
   .lasha-page .dp-plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lasha-page .dp-plans-layouts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lasha-page .dp-plans-layouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 699px) {
   .lasha-page .dp-plans-layouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
