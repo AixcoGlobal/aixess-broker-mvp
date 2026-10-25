@@ -71,7 +71,7 @@
   align-content: start;
   justify-items: start;
   /* The bottom padding keeps the copy clear of the scroll-down cue at the panel's foot. */
-  padding: calc(var(--lnp-header) + 44 * var(--u)) calc(70 * var(--u)) max(calc(52 * var(--u)), 8.5rem) var(--lnp-gutter);
+  padding: calc(var(--lnp-header) + 44 * var(--u)) calc(70 * var(--u)) max(calc(52 * var(--u)), var(--hero-cue-clearance)) var(--lnp-gutter);
   background: var(--l-field);
   color: var(--l-on-field);
 }
@@ -99,7 +99,7 @@
 .lnp-hero-media { position: relative; min-width: 0; overflow: hidden; background: var(--l-sky); }
 /* The scroll-down cue centred at the panel's foot (Kemo, 21 October 2026: "it has to be in middle"),
    in the panel's text colour. */
-.lnp-hero-scroll-cue { position: absolute; right: 0; bottom: max(1.5rem, env(safe-area-inset-bottom, 0px)); left: 0; margin-inline: auto; }
+.lnp-hero-scroll-cue { position: absolute; right: 0; bottom: max(var(--hero-cue-inset), env(safe-area-inset-bottom, 0px)); left: 0; margin-inline: auto; }
 
 .lnp-hero-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--lnp-position, 50% 100%); }
 
@@ -130,7 +130,7 @@
   top: calc(19 * var(--u));
   left: calc(-122 * var(--u));
   width: 1px;
-  height: calc(159 * var(--u));
+  bottom: calc(16 * var(--u));
   background: #bfc4c9;
   content: "";
 }
@@ -319,7 +319,7 @@
 }
 
 .lnp-commercial-down { padding-top: calc(26 * var(--u)); }
-.lnp-commercial-media { width: 100%; height: calc(422 * var(--u)); object-fit: cover; object-position: 60% 50%; }
+.lnp-commercial-media { width: 100%; height: 100%; min-height: calc(422 * var(--u)); object-fit: cover; object-position: 60% 50%; }
 
 /* How it works: frame 1494–1800. */
 .lnp-process {
@@ -364,6 +364,13 @@
   .lnp { --lnp-header: 5.35rem; }
 }
 
+/* Give translated process titles room to keep their heading size on smaller desktops. */
+@media (min-width: 900px) and (max-width: 1399px) {
+  .lnp-process { grid-template-columns: minmax(0, 1fr); padding-right: var(--lnp-gutter); }
+  .lnp-steps,
+  html:not([lang='en']) .lnp-steps { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
 /* Phones and small tablets: one readable column in Lasha's colours. */
 @media (max-width: 899px) {
   .lnp { --lnp-gutter: 1.25rem; }
@@ -377,7 +384,7 @@
   .lnp-steps { grid-template-columns: minmax(0, 1fr); }
 
   .lnp-hero { min-height: 0; }
-  .lnp-hero-panel { padding: calc(var(--lnp-header) + 2.4rem) var(--lnp-gutter) 8rem; }
+  .lnp-hero-panel { padding: calc(var(--lnp-header) + 2.4rem) var(--lnp-gutter) var(--hero-cue-clearance); }
   .lnp-hero-title { margin-top: 1rem; }
   .lnp-hero-body { margin-top: 1.2rem; font-size: 1rem; }
   .lnp-hero-panel .lnp-button { margin-top: 1.8rem; }

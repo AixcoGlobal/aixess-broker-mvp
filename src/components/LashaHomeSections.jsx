@@ -217,7 +217,7 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", c
   useHeaderOnLightSky(ref, lightSky?.ranges, locale);
   useHeroCopyFitsScreen(ref, locale);
   return (
-    <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes}>
+    <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes} data-hero-image={image}>
       {header}
       {media.family ? (
         <ThemedImage className="lasha-page-hero-media" family={media.family} sizes={media.sizes ?? pageHeroSizes(media.aspect)} style={style} alt={imageAlt} fetchPriority="high" decoding="async" />

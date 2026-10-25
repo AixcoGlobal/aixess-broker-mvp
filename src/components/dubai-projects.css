@@ -69,7 +69,7 @@ html:root:not([data-time-theme='night']) .dp-hero > .site-header .login-button:h
 /* The copy keeps the scroll-down cue's height free under it, so a long hero that fills the screen
    (tablets, short laptop windows) never runs beneath the cue. */
 @media (min-width: 768px) {
-  .lasha-page .dp-hero .dp-hero-copy { padding-bottom: 8rem; }
+  .lasha-page .dp-hero .dp-hero-copy { padding-bottom: var(--hero-cue-clearance); }
 }
 
 /* Night: the hero copy is off-white on near-black, the figures and subtitle the light cobalt. */
@@ -125,7 +125,7 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
 
 @media (max-width: 1099px), (max-aspect-ratio: 1/1) {
   /* Stacked: the copy follows the image straight away, with the cue's room under it. */
-  .lasha-page .dp-hero-media .dp-hero-copy { margin-top: 0; margin-bottom: 0; padding-top: clamp(1.8rem, 4vw, 2.6rem); padding-bottom: 8.5rem; }
+  .lasha-page .dp-hero-media .dp-hero-copy { margin-top: 0; margin-bottom: 0; padding-top: clamp(1.8rem, 4vw, 2.6rem); padding-bottom: var(--hero-cue-clearance); }
 }
 @media (max-width: 599px) {
   .lasha-page .dp-hero-figure img { aspect-ratio: 5 / 4; }

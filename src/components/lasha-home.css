@@ -258,34 +258,33 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
   color: #000;
 }
 
-/* A solid blue button, as on phones: the link sits over the tree line on every screen size. It is
-   the Batumi card's Explore project button (Kemo, 18 October 2026: "same size as the other
-   buttons"): 217 × 67 frame px, Inter Medium 14px, the arrow after the text. It scales with the page
-   width like that button (`--cta-u`), not with the hero's height-capped `--u`; a longer translation
-   widens it rather than squeezing the letters. */
+/* Main hero CTA uses the public button size, with a wider footprint (Kemo, 25 October 2026).
+   Its text and hit area stay readable independently of the scaled desktop composition. */
 .lasha-hero-cta {
-  --cta-u: calc(min(100vw, 1920px) / 1440);
   display: inline-flex;
   align-items: center;
-  gap: calc(10 * var(--cta-u));
+  justify-content: space-between;
+  gap: 1.5rem;
   box-sizing: border-box;
-  min-width: calc(217 * var(--cta-u));
-  height: calc(67 * var(--cta-u));
+  width: max-content;
+  min-width: min(20rem, 100%);
+  max-width: 100%;
+  min-height: var(--public-button-height, 4rem);
   margin-top: calc(34 * var(--u));
-  padding: 0 calc(10 * var(--cta-u)) 0 calc(13 * var(--cta-u));
+  padding: 1rem 1.5rem;
   background: var(--l-blue);
   color: var(--l-paper);
-  font-size: max(calc(14 * var(--cta-u)), 0.66rem);
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  line-height: 1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
   text-transform: uppercase;
   text-decoration: none;
-  white-space: nowrap;
+  white-space: normal;
   transition: background 160ms ease;
 }
 
-.lasha-hero-cta .lasha-arrow { width: calc(25 * var(--cta-u)); min-width: 0.7rem; }
+.lasha-hero-cta .lasha-arrow { flex: 0 0 24px; width: 24px; height: 12px; }
 .lasha-hero-cta .lasha-arrow path { stroke-width: 1.5; }
 .lasha-hero-cta:hover { background: var(--l-blue-deep); }
 .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
@@ -299,6 +298,13 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
     bottom: var(--hero-bar, 0px);
     align-content: center;
   }
+}
+
+/* Fixed-size readable copy and buttons need their own clearance in short laptop windows. */
+@media (min-width: 900px) and (max-height: 700px) {
+  .lasha-hero-frame { --u: min(100cqi / 1440, (100svh - 8rem) / 992); }
+  .lasha-hero-copy { bottom: calc(6.5rem + var(--hero-bar, 0px)); }
+  .lasha-hero-copy p { max-width: 28rem; }
 }
 
 /* A soft sky wash behind the copy column keeps the black poster type and the subtitle crisp
@@ -593,8 +599,9 @@ html[lang="de"] .lasha-starting h2 > .lasha-accent { display: block; margin-top:
   position: relative;
   display: grid;
   grid-template-columns: calc(71 * var(--u) + 327 * var(--u) + var(--access-gap)) auto minmax(0, 1fr);
-  height: calc(339 * var(--u));
+  min-height: calc(339 * var(--u));
   padding-right: calc(70 * var(--u));
+  padding-bottom: calc(69 * var(--u));
 }
 
 /* Title, count and label end on one baseline level with the bottom of DOWNLOAD PROJECT MATERIALS
@@ -611,7 +618,6 @@ html[lang="de"] .lasha-starting h2 > .lasha-accent { display: block; margin-top:
   flex-direction: column;
   align-items: flex-start;
   min-width: 0;
-  height: calc(270 * var(--u));
   padding: calc(27.8 * var(--u)) var(--access-gap) 0 calc(71 * var(--u));
 }
 
@@ -648,7 +654,7 @@ html[lang="pl"] .lasha-access h2 > span + span { margin-top: 0.66em; }
   top: calc(41 * var(--u));
   left: 0;
   width: 1px;
-  height: calc(237.5 * var(--u));
+  bottom: calc(-8.5 * var(--u));
   background: #d7d9da;
   content: "";
 }
@@ -657,7 +663,6 @@ html[lang="pl"] .lasha-access h2 > span + span { margin-top: 0.66em; }
   display: flex;
   align-items: flex-end;
   gap: calc(23 * var(--u));
-  height: calc(270 * var(--u));
   padding: 0 var(--access-gap);
 }
 
@@ -693,10 +698,10 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
 
 .lasha-access-actions {
   display: grid;
-  align-content: start;
+  align-content: end;
   justify-items: end;
-  /* REGISTER at frame y 72 to 142, DOWNLOAD at 200 to 270, where the texts end. */
-  row-gap: calc(58 * var(--u));
+  /* The action group shares the text columns' bottom edge and grows for wrapped translations. */
+  row-gap: 1rem;
   padding: calc(72 * var(--u)) 0 0 var(--access-gap);
 }
 
@@ -1011,10 +1016,10 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
   .lasha-hero-copy p { margin-top: 1.5rem; max-width: 23rem; }
   /* Kemo, October 7: the blue text link was unreadable over the trees, so phones get a solid button. */
   /* As the phone Explore project button. */
-  .lasha-hero-cta { justify-content: space-between; gap: 0.8rem; min-width: 0; height: 3.3rem; margin-top: 1.7rem; padding: 0 0.9rem 0 1rem; font-size: var(--v4-btn); letter-spacing: 0.08em; background: var(--l-blue); color: var(--l-paper); }
+  .lasha-hero-cta { gap: 1rem; width: 100%; min-width: 0; margin-top: 1.7rem; padding: 0.9rem 1.25rem; background: var(--l-blue); color: var(--l-paper); }
   .lasha-hero-cta:hover { background: var(--l-blue-deep); text-decoration: none; }
   .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
-  .lasha-hero-cta .lasha-arrow { width: 29px; height: 13px; }
+  .lasha-hero-cta .lasha-arrow { width: 24px; height: 12px; }
 
   /* Metrics: two by two, the tagline takes the fourth cell. */
   .lasha-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 0; }

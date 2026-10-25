@@ -17,6 +17,7 @@ import "./components/lasha-pages.css";
 import "./components/time-theme.css";
 import "./components/scroll-to-top.css";
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
+import "./components/public-ui.css";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { getWorkbookAvailableCount } from "./data/reveranceInventory.js";

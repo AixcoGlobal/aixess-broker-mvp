@@ -76,23 +76,26 @@ html:root[data-time-theme='night'] .scroll-top-button:focus-visible {
   .scroll-top-button:hover { translate: none; }
 }
 
-/* Scroll-down cue at the foot of every page hero (Kemo, 20 October 2026: "something without
-   background and that animates"): a line whose light runs down it over and over, above a chevron
-   that nods in step, drawn straight on the photo with no box behind it. It takes the theme's accent
-   (Kemo, 21 October 2026: "has to change color based on theme ... make sure its visible"): cobalt by
-   day, deep sage in the afternoon, light cobalt at night, each mark edged by a hairline of paper (or
-   black at night) so it stays visible on busy photos. Reduced motion keeps both still. */
+/* One compact cue on every hero: a readable label and a small animated chevron, without a box.
+   The theme accent stays on the mark; photo labels use white and solid panels use their own ink. */
+:root {
+  --hero-cue-inset: 3.125rem;
+  --hero-cue-clearance: calc(var(--hero-cue-inset) + 44px + 1.5rem);
+}
+
 .scroll-down-cue {
-  --cue-track: 44px;
   --cue-color: #2557d6;
   --cue-edge: rgb(255 255 255 / 0.92);
+  --cue-label: #fff;
   display: inline-flex;
-  width: 44px;
+  width: max-content;
+  max-width: calc(100% - 2.5rem);
+  min-height: 44px;
   flex: 0 0 auto;
-  flex-direction: column;
   align-items: center;
-  gap: 5px;
-  padding: 4px 0;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 4px;
   border: 0;
   background: none;
   color: var(--cue-color);
@@ -101,34 +104,21 @@ html:root[data-time-theme='night'] .scroll-top-button:focus-visible {
 html:root[data-time-theme='afternoon'] .scroll-down-cue { --cue-color: #3c5a41; }
 html:root[data-time-theme='night'] .scroll-down-cue { --cue-color: #8eaaf6; --cue-edge: rgb(0 0 0 / 0.8); }
 
-.scroll-down-cue__track {
-  position: relative;
-  width: 3px;
-  height: var(--cue-track);
-  overflow: hidden;
-  background: var(--cue-color);
-  box-shadow: 0 0 0 1px var(--cue-edge);
-}
-
-/* The running light is the edge colour moving down the accent line. */
-.scroll-down-cue__bead {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 16px;
-  background: var(--cue-edge);
-  animation: scroll-down-cue-run 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-
-@keyframes scroll-down-cue-run {
-  0% { transform: translateY(-16px); }
-  70%, 100% { transform: translateY(var(--cue-track)); }
+.scroll-down-cue__label {
+  color: var(--cue-label);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .scroll-down-cue__chevron {
-  width: 28px;
-  height: 28px;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
   overflow: visible;
   animation: scroll-down-cue-nod 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
@@ -137,7 +127,7 @@ html:root[data-time-theme='night'] .scroll-down-cue { --cue-color: #8eaaf6; --cu
 
 @keyframes scroll-down-cue-nod {
   0%, 50% { transform: translateY(0); }
-  68% { transform: translateY(4px); }
+  68% { transform: translateY(3px); }
   100% { transform: translateY(0); }
 }
 
@@ -146,8 +136,16 @@ html:root[data-time-theme='night'] .scroll-down-cue { --cue-color: #8eaaf6; --cu
   outline-offset: 4px;
 }
 
-@media (min-width: 768px) {
-  .scroll-down-cue { --cue-track: 56px; }
+.dp-hero .scroll-down-cue { --cue-label: var(--l-ink); }
+.lnp-hero .scroll-down-cue { --cue-label: var(--l-on-field); }
+html:root:not([data-time-theme='night']) .lasha-hero .scroll-down-cue,
+html:root:not([data-time-theme='night']) .lasha-page-hero[data-hero-image='skyline'] .scroll-down-cue,
+html:root[data-time-theme='day'] .lasha-page-hero[data-hero-image='broker-tools-refined'] .scroll-down-cue { --cue-label: #000; }
+.lasha-page-hero[data-hero-image='batumi-coast'] { --hero-cue-inset: 2.375rem; }
+@media (max-width: 899px), (max-aspect-ratio: 1/1) {
+  .lasha-page-hero-towers .scroll-down-cue { --cue-label: var(--l-ink); }
+  .lasha-page-hero[data-hero-image='batumi-coast'] { --hero-cue-inset: 5.625rem; }
+  html:root:not([data-time-theme='night']) .lasha-page-hero:is([data-hero-image='batumi-coast'], [data-hero-image='broker-tools-refined']) .scroll-down-cue { --cue-label: #000; }
 }
 
 /* The homepage hero's copy is positioned in its photo, so the cue is too: centred at the photo's
@@ -156,16 +154,11 @@ html:root[data-time-theme='night'] .scroll-down-cue { --cue-color: #8eaaf6; --cu
   position: absolute;
   z-index: 3;
   right: 0;
-  bottom: calc(max(1.5rem, env(safe-area-inset-bottom, 0px)) + var(--hero-bar, 0px));
+  bottom: calc(max(var(--hero-cue-inset), env(safe-area-inset-bottom, 0px)) + var(--hero-bar, 0px));
   left: 0;
   margin-inline: auto;
 }
 
-@media (max-width: 899px) {
-  .lasha-hero-scroll-cue { bottom: calc(max(1.25rem, env(safe-area-inset-bottom, 0px)) + var(--hero-bar, 0px)); }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .scroll-down-cue__bead { animation: none; transform: translateY(calc(var(--cue-track) - 16px)); }
   .scroll-down-cue__chevron { animation: none; }
 }

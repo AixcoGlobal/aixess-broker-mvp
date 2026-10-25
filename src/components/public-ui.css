@@ -1,0 +1,162 @@
+/* Shared public copy and action sizes. Keep the explorer and admin controls on their own scale. */
+:root {
+  --public-body: 1rem;
+  --public-lead: clamp(1.125rem, 1.3vw, 1.25rem);
+  --public-note: 0.875rem;
+  --public-label: 0.75rem;
+  --public-button-text: 0.875rem;
+  --public-button-height: 4rem;
+  --public-button-width: 17.5rem;
+}
+
+/* Body copy, including the frame pages whose desktop copy was smaller than on phones. */
+.lasha-home .lasha-starting-grid p,
+.lnp :is(.lnp-hero-body, .lnp-starting p, .lnp-advantage-subtitle, .lnp-people p, .lnp-commercial-body, .lnp-steps p),
+.lasha-page :is(.network-card p, .network-steps p, .rp-benefits p, .rp-stages p, .rp-cards p, .rp-highlights li),
+.lasha-page :is(.it-card-body > p:not(.it-card-place, .it-card-status), .it-feature p, .it-step-list p, .it-faq details p),
+.lasha-page :is(.dp-cards p, .dp-pay-lead, .dp-table, .dp-table-after),
+.privacy-page.lasha-page p,
+body .modal-copy,
+body .cookie-notice p {
+  font-size: var(--public-body);
+  line-height: 1.55;
+}
+
+.lasha-home :is(.lasha-about-body, .dp-listing-line),
+.lasha-home .lasha-hero-copy p,
+.lnp :is(.lnp-kicker, .lnp-process-eyebrow),
+.lasha-page :is(.lasha-page-hero-text, .network-lead, .rp-lead, .rp-body, .rp-bridge, .it-lead, .dp-columns p, .dp-text, .purchase-benefit-copy),
+.lasha-page .dp-hero-media .lasha-page-hero-text,
+.site-footer .site-footer-intro > p:last-child,
+.site-footer .site-footer-details dd {
+  font-size: var(--public-lead);
+  line-height: 1.55;
+}
+
+/* Supporting notes and captions stay distinct from the body without becoming tiny. */
+.lasha-home .lasha-metrics-note,
+.lasha-page :is(.rp-note, .network-note, .it-note, .it-hero-note, .project-facts-note, .dp-notes li, .dp-plan p, .dp-figure figcaption),
+.lasha-page .project-facts-list span,
+.lasha-page div.dp-terms p,
+.lasha-page .dp-table td > strong + span,
+.lasha-page .dp-price-none,
+.lasha-page .dp-schedule-mark,
+.site-footer .site-footer-brand span,
+.site-footer .site-footer-legal nav :is(a, button),
+body .access-form .privacy-acknowledgement,
+body .form-submit-error {
+  font-size: var(--public-note);
+  line-height: 1.5;
+}
+
+.lasha-home :is(.lasha-eyebrow, .lasha-about-points li, .lasha-metrics-label, .dp-listing-category, .dp-listing-meta),
+.lnp :is(.lnp-eyebrow, .lnp-commercial-eyebrow, .lnp-services-eyebrow),
+.lasha-page :is(.network-stats dt, .purchase-benefit-tiers p span, .rp-opportunity-media figcaption span),
+.lasha-page :is(.lasha-eyebrow, .section-eyebrow, .it-eyebrow, .it-card-place, .it-card-status, .project-facts-list dt, .purchase-benefit-eyebrow, .rp-stats dt, .rp-gallery-label, .rp-amenity-images span),
+.lasha-page :is(.dp-hero-facts dt, .dp-hero-developer, .dp-hero-figure figcaption, .dp-cards dt, .dp-nearby dt, .dp-figure-kind, .dp-download-size),
+.lasha-page .dp-gallery .dp-figure-kind,
+.lasha-page :is(.dp-table thead th, .dp-mix-table tfoot th, .dp-schedule caption),
+.lasha-page :is(.dp-price-table, .dp-mix-table) td::before,
+.site-footer .lasha-eyebrow,
+.site-footer .site-footer-details dt,
+body .modal-eyebrow,
+body .access-form label > span {
+  font-size: var(--public-label);
+  line-height: 1.4;
+}
+
+/* Section and card headings keep a heading role even when their old rule used the label token. */
+.lasha-page :is(.dp-list-title, .dp-cards h3, .rp-stages h3) {
+  font-family: var(--l-head);
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+/* Positive action groups avoid changing floor plans, inventory, filters or admin buttons. */
+.lasha-page :is(.page-cta-row, .it-hero-actions, .rp-actions, .network-actions) {
+  justify-self: stretch;
+  width: 100%;
+}
+
+.lasha-page :is(.page-cta-row, .it-hero-actions, .rp-actions, .network-actions) > .button,
+.lasha-page .it-steps > .button,
+.lasha-page .network-section > .button,
+.lnp .lnp-button,
+.lasha-home .lasha-access-actions .lasha-button,
+.lasha-home .dp-listing .lasha-button,
+.site-footer .site-footer-write .button,
+body .modal-panel .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: min(100%, var(--public-button-width));
+  max-width: 100%;
+  min-height: var(--public-button-height);
+  height: auto;
+  padding: 1rem 1.5rem;
+  font-size: var(--public-button-text);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-align: left;
+  white-space: normal;
+}
+
+.lasha-page :is(.it-text-link, .dp-inline-link, .text-link, .resource-link),
+.lasha-page .rp-subnav a,
+.lasha-page :is(.dp-plan, .dp-pay) .dp-inline-link,
+.lasha-page :is(.dp-price-table, .dp-mix-table) tbody th .dp-inline-link {
+  font-size: var(--public-button-text);
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+}
+
+/* Header controls use a compact role; the brand and theme icon keep their measured dimensions. */
+:is(.lasha-home, .lasha-page) .site-header :is(.button, .menu-toggle, .language-switcher-trigger),
+.mobile-nav.lasha-menu .lasha-menu-bar .menu-toggle {
+  min-height: 3rem;
+  height: auto;
+  padding-block: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.3;
+}
+:is(.lasha-home, .lasha-page) .site-header .desktop-nav button {
+  font-size: 0.8125rem;
+}
+.mobile-nav.lasha-menu :is(.mobile-register, .mobile-login) {
+  min-height: 3.5rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  font-size: var(--public-button-text);
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  white-space: normal;
+}
+.lasha-page .dp-filter button,
+body .cookie-actions button {
+  min-height: 3rem;
+  font-size: var(--public-button-text);
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+}
+body .access-form input { font-size: var(--public-body); }
+body .modal-switch { min-height: 2.75rem; font-size: var(--public-note); line-height: 1.4; }
+
+@media (max-width: 599px) {
+  :root { --public-button-height: 3.5rem; }
+  .lasha-page :is(.page-cta-row, .it-hero-actions, .rp-actions, .network-actions) > .button,
+  .lasha-page .it-steps > .button,
+  .lasha-page .network-section > .button,
+  .lnp .lnp-button,
+  .lasha-home .lasha-access-actions .lasha-button,
+  .lasha-home .dp-listing .lasha-button,
+  .site-footer .site-footer-write .button,
+  body .modal-panel .button {
+    width: 100%;
+    min-width: 0;
+    padding: 0.9rem 1.25rem;
+  }
+}

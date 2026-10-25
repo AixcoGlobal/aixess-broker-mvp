@@ -3,9 +3,9 @@
    the frame's, in frame pixels (--u). Headlines stay in AiXESS Head like every other page (Kemo,
    18 October 2026, asked whether the Figma font was consistent with the rest of the site); it is
    wider than Figma's Morganite, so the title keeps the frame's 893px width, the figures keep its
-   63px capitals and PROJECT REVERANCE fills the card's text column. Body text is Inter Medium
-   13 / 16px at 1.08 leading. The render with its thumbnail strip and the right column (figures
-   319px over the 514 × 374 project card) both run from frame y 2245 to y 2938. AiXESS Head's
+   63px capitals and PROJECT REVERANCE fills the card's text column. Readable public type and
+   button sizes take precedence over scaled frame sizes; both columns grow with the card.
+   AiXESS Head's
    line box is 900/300 with 655 capitals, so line-height 0.71 starts each display line's box at
    its capitals and leaves 0.055em below them. */
 .lasha-home .project-showcase { padding: calc(48 * var(--u)) calc(70 * var(--u)) calc(22 * var(--u)); }
@@ -27,17 +27,17 @@
   display: grid;
   grid-template-columns: calc(746 * var(--u)) calc(514 * var(--u));
   column-gap: calc(39 * var(--u));
-  align-items: start;
+  align-items: stretch;
   /* 35px from the title's capitals to the render, less the line box's 0.055em below them. */
   margin-top: calc(35 * var(--u) - 0.055 * var(--title-size, calc(102 * var(--u))));
 }
 
-.lasha-home .project-feature-gallery { display: grid; row-gap: calc(17 * var(--u)); min-width: 0; }
+.lasha-home .project-feature-gallery { display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: calc(17 * var(--u)); min-width: 0; padding-bottom: calc(32 * var(--u)); }
 
 .lasha-home .project-feature-media {
   position: relative;
   margin: 0;
-  height: calc(606 * var(--u));
+  min-height: calc(606 * var(--u));
   overflow: hidden;
   background: #d9ddd8;
 }
@@ -99,13 +99,13 @@
 .lasha-home .project-facts {
   display: grid;
   grid-template-columns: calc(246 * var(--u)) minmax(0, 1fr);
-  grid-template-rows: calc(155 * var(--u)) calc(164 * var(--u));
+  grid-template-rows: minmax(calc(155 * var(--u)), auto) minmax(calc(164 * var(--u)), auto);
   border-top: 1px solid var(--l-line);
 }
 
 .lasha-home .project-facts > div {
   min-width: 0;
-  padding: calc(17 * var(--u)) calc(12 * var(--u)) 0 calc(32 * var(--u));
+  padding: calc(17 * var(--u)) calc(12 * var(--u)) 1rem calc(32 * var(--u));
 }
 
 .lasha-home .project-facts > div:nth-child(even) { padding-left: calc(83 * var(--u)); border-left: 1px solid var(--l-line); }
@@ -128,16 +128,12 @@
   overflow-wrap: anywhere;
   /* Figma's #505050, following the theme: a fixed grey was 2.6:1 on the true-black night page. */
   color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent);
-  font-size: max(calc(13 * var(--u)), 0.75rem);
+  font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1.08;
+  line-height: 1.4;
 }
 
-/* The card (Kemo, 18 October 2026: the buttons must sit level with the thumbnails, as they read in
-   Figma). Its 67px buttons share the thumbnail row, frame y 2868 to 2935, and the card ends 32px
-   below them, its side padding. The facts block is 319px plus its 1px top rule, so the card runs
-   304px to the buttons' top. The extra height over Figma's 374px is spread between the name, body,
-   rule and buttons rather than left as one gap above the buttons. */
+/* The card and gallery grow together so readable text never has to shrink to fit the frame. */
 .lasha-home .project-card {
   display: flex;
   flex-direction: column;
@@ -160,9 +156,9 @@
 .lasha-home .project-card p {
   max-width: calc(447 * var(--u));
   margin-top: calc(29 * var(--u) - 0.055 * 70 * var(--u));
-  font-size: max(calc(16 * var(--u)), 0.8125rem);
+  font-size: 1rem;
   font-weight: 500;
-  line-height: 1.08;
+  line-height: 1.5;
 }
 
 .lasha-home .project-card .project-card-meta {
@@ -179,28 +175,24 @@
 .lasha-home .project-card-actions {
   display: flex;
   gap: calc(14 * var(--u));
-  /* At least Figma's 34px under the location line; the rest of the card's height goes here, so
-     the buttons stay on the thumbnail row. */
+  align-self: stretch;
+  /* Keep separation below the location line, with spare card height above the action. */
   margin-top: auto;
   padding-top: calc(34 * var(--u));
 }
 
 .lasha-home .project-card-actions .lasha-button {
-  width: calc(217 * var(--u));
-  height: calc(67 * var(--u));
-  min-height: 22px;
-  padding: 0 calc(10 * var(--u)) 0 calc(13 * var(--u));
-  font-size: max(calc(14 * var(--u)), 0.66rem);
-  font-weight: 500;
+  width: min(100%, 20rem);
+  min-height: var(--public-button-height, 4rem);
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   letter-spacing: 0.05em;
-  white-space: nowrap;
-  gap: calc(10 * var(--u));
+  white-space: normal;
+  gap: 1rem;
 }
 
-.lasha-home .project-card-actions .lasha-arrow { flex-shrink: 1; width: calc(25 * var(--u)); min-width: 0.7rem; }
-/* Longer translations (PROJEKT ENTDECKEN, RAZIŠČITE PROJEKT, СМОТРЕТЬ ПРОЕКТ) close up to fit the
-   frame's 217px buttons. */
-html:is([lang="de"], [lang="sl"], [lang="ru"]) .lasha-home .project-card-actions .lasha-button { font-size: max(calc(14 * var(--u)), 0.6rem); letter-spacing: 0.01em; }
+.lasha-home .project-card-actions .lasha-arrow { flex: 0 0 24px; width: 24px; height: 12px; }
 
 
 .project-upcoming {
@@ -254,8 +246,8 @@ html:is([lang="de"], [lang="sl"], [lang="ru"]) .lasha-home .project-card-actions
   .lasha-home .project-showcase { --title-size: var(--v4-h2); }
   .lasha-home .project-showcase h2 { margin-top: 0.8rem; line-height: 0.88; white-space: normal; }
   .lasha-home .project-feature { grid-template-columns: minmax(0, 1fr); row-gap: 1.6rem; margin-top: 1.2rem; }
-  .lasha-home .project-feature-gallery { row-gap: 0.5rem; }
-  .lasha-home .project-feature-media { height: auto; aspect-ratio: 4 / 3; }
+  .lasha-home .project-feature-gallery { row-gap: 0.5rem; padding-bottom: 0; }
+  .lasha-home .project-feature-media { min-height: 0; aspect-ratio: 4 / 3; }
   .lasha-home .project-feature-expand { right: 0.75rem; bottom: 0.75rem; width: 2.5rem; height: 2.5rem; }
   .lasha-home .project-feature-expand svg { width: 14px; }
   .lasha-home .project-thumbs { gap: 0.4rem; }
@@ -275,8 +267,7 @@ html:is([lang="de"], [lang="sl"], [lang="ru"]) .lasha-home .project-card-actions
   .lasha-home .project-card > p:not(.project-card-meta) { min-height: 0; }
   .lasha-home .project-card .project-card-meta { margin-top: 1.1rem; padding-top: 0.9rem; }
   .lasha-home .project-card-actions { flex-wrap: wrap; gap: 0.6rem; margin-top: 1.4rem; padding-top: 0; align-self: stretch; }
-  .lasha-home .project-card-actions .lasha-button,
-  html:is([lang="de"], [lang="sl"], [lang="ru"]) .lasha-home .project-card-actions .lasha-button { flex: 1 1 9rem; width: auto; height: 3.3rem; padding: 0 0.9rem 0 1rem; font-size: var(--v4-btn); letter-spacing: 0.08em; white-space: normal; }
+  .lasha-home .project-card-actions .lasha-button { flex: 1 1 100%; width: 100%; padding: 0.9rem 1.25rem; letter-spacing: 0.05em; }
   .lasha-home .project-card-actions .lasha-button { gap: 0.8rem; }
   .lasha-home .project-card-actions .lasha-arrow { width: 1.6rem; flex-shrink: 0; }
 }
