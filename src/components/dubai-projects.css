@@ -460,11 +460,19 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-lis
 .lasha-page .dp-pay h3 { margin: 0; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1; text-transform: uppercase; }
 .lasha-page .dp-pay-lead { max-width: 52ch; margin: 0; font-size: var(--v4-text); line-height: 1.55; }
 .lasha-page .dp-pay .dp-inline-link { margin-top: auto; padding-top: 0.4rem; font-size: var(--v4-label); }
-.lasha-page .dp-phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.5rem), 1fr)); gap: 1rem clamp(1.2rem, 2.4vw, 2rem); align-items: start; align-self: stretch; }
+/* Two columns, each filled top to bottom: down payment and the run up to completion, then the
+   instalments after completion. Stacked when the card is narrow. */
+.lasha-page .dp-pay-wide { container-type: inline-size; }
+.lasha-page .dp-phases { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem clamp(1.2rem, 2.4vw, 2rem); align-items: start; align-self: stretch; }
+.lasha-page .dp-phase { display: grid; gap: 1rem; min-width: 0; }
 .lasha-page .dp-schedule { width: 100%; }
-.lasha-page .dp-phases > .dp-schedule { align-self: start; }
-/* The down-payment table has no caption of its own; the spacer keeps its first row level with the others. */
-.lasha-page .dp-schedule .dp-caption-spacer { visibility: hidden; }
+/* The down-payment table has no caption of its own; side by side, the spacer keeps its first row
+   level with the after-completion column's first row. */
+.lasha-page .dp-schedule .dp-caption-spacer { display: none; }
+@container (min-width: 30rem) {
+  .lasha-page .dp-phases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lasha-page .dp-schedule .dp-caption-spacer { display: table-caption; visibility: hidden; }
+}
 .lasha-page .dp-schedule caption { padding-bottom: 0.55rem; color: var(--l-blue); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.16em; line-height: 1.35; text-align: left; text-transform: uppercase; }
 .lasha-page .dp-schedule :is(th, td) { padding-block: 0.6rem; font-weight: 400; }
 .lasha-page .dp-schedule td { text-align: right; white-space: nowrap; font-weight: 600; }

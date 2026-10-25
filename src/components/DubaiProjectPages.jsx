@@ -441,23 +441,27 @@ export function TresoraPage({ header }) {
               <h3 id="tresora-plan-phpp">{plans.titlePhpp}</h3>
               <p className="dp-pay-lead">{plans.leadPhpp}</p>
               <div className="dp-phases">
-                <table className="dp-table dp-schedule">
-                  <caption className="dp-caption-spacer" aria-hidden="true">{plans.down}</caption>
-                  <tbody><tr><th scope="row">{plans.down}</th><td>{format.pct(TRESORA_PLAN_PHPP.down)}</td></tr></tbody>
-                </table>
                 {[["toCompletion", TRESORA_PLAN_PHPP.toCompletion], ["afterCompletion", TRESORA_PLAN_PHPP.afterCompletion]].map(([phase, rows]) => (
-                  <table className="dp-table dp-schedule" key={phase}>
-                    <caption>{plans[phase]}</caption>
-                    <tbody>
-                      {rows.map(([when, value, mark]) => (
-                        <tr key={when}>
-                          <th scope="row">{format.month(when)}{mark && <span className="dp-schedule-mark"> · {plans.completionShort}</span>}</th>
-                          <td>{format.pct(value)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    <tfoot><tr><th scope="row">{labels.total}</th><td>{format.pct(rows.reduce((sum, [, value]) => sum + value, 0))}</td></tr></tfoot>
-                  </table>
+                  <div className="dp-phase" key={phase}>
+                    {phase === "toCompletion" && (
+                      <table className="dp-table dp-schedule">
+                        <caption className="dp-caption-spacer" aria-hidden="true">{plans.down}</caption>
+                        <tbody><tr><th scope="row">{plans.down}</th><td>{format.pct(TRESORA_PLAN_PHPP.down)}</td></tr></tbody>
+                      </table>
+                    )}
+                    <table className="dp-table dp-schedule">
+                      <caption>{plans[phase]}</caption>
+                      <tbody>
+                        {rows.map(([when, value, mark]) => (
+                          <tr key={when}>
+                            <th scope="row">{format.month(when)}{mark && <span className="dp-schedule-mark"> · {plans.completionShort}</span>}</th>
+                            <td>{format.pct(value)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot><tr><th scope="row">{labels.total}</th><td>{format.pct(rows.reduce((sum, [, value]) => sum + value, 0))}</td></tr></tfoot>
+                    </table>
+                  </div>
                 ))}
               </div>
             </article>
