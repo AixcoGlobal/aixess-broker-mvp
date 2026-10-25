@@ -5,7 +5,6 @@ import { NETWORK_COPY } from "../network-copy.js";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { HOME_HERO_LINES } from "../project-showcase-copy.js";
 import { ThemedImage } from "./ThemedImage.jsx";
-import { ScrollDownCue } from "./ScrollDownCue.jsx";
 
 // Lasha's hairline arrows (traced from the Figma frame); sized by the parent's CSS.
 export function LashaArrow({ className = "lasha-arrow", length = 24 }) {
@@ -87,7 +86,6 @@ export function HomeHero({ children, onNavigate }) {
           {/* Opens the Project Reverance page itself (Klem, 16 October 2026), not a homepage section. */}
           <a className="lasha-hero-cta" href="#residences" onClick={routeLinkClick(onNavigate, "residences")}>{copy.heroCta}<LashaArrow length={24} /></a>
         </div>
-        <ScrollDownCue className="lasha-hero-scroll-cue" />
       </div>
     </section>
   );
@@ -161,51 +159,6 @@ function useHeaderOnLightSky(ref, ranges, locale) {
   }, [ref, ranges, locale]);
 }
 
-// From 900px on a landscape window, the hero's copy shows whole on the first screen (Kemo, 19 October
-// 2026: the Insights subtitle ran off the bottom of a short window). CSS sizes the title by the
-// window's height; a longer translation that still runs past the bottom shrinks the title (through
-// --hero-title-fit) until the last line or button ends a little above the window's lower edge.
-export function useHeroCopyFitsScreen(ref, locale) {
-  useLayoutEffect(() => {
-    const hero = ref.current;
-    const title = hero?.querySelector(".lasha-page-hero-title");
-    const copy = hero?.querySelector(".lasha-page-hero-copy");
-    if (!title || !copy || typeof window.matchMedia !== "function") return undefined;
-    const query = window.matchMedia("(min-width: 900px) and (min-aspect-ratio: 1/1)");
-    let frame = 0;
-    const fit = () => {
-      title.style.removeProperty("--hero-title-fit");
-      if (!query.matches) return;
-      // The scroll-down cue sits under the copy at the foot of the screen, so the copy stops above it.
-      const cue = hero.querySelector(":scope > .lasha-page-hero-cue");
-      const limit = window.innerHeight - (cue ? cue.offsetHeight + 8 : Math.min(24, window.innerHeight * 0.03));
-      for (let pass = 0; pass < 4; pass += 1) {
-        const last = Math.max(...Array.from(copy.children, (child) => child.getBoundingClientRect().bottom));
-        const overflow = last - hero.getBoundingClientRect().top - limit;
-        if (overflow <= 0.5) return;
-        const size = parseFloat(getComputedStyle(title).fontSize);
-        const height = title.getBoundingClientRect().height;
-        if (!size || !height) return;
-        const next = Math.max(size * 0.55, size * (height - overflow - 1) / height);
-        title.style.setProperty("--hero-title-fit", `${Math.floor(next * 100) / 100}px`);
-      }
-    };
-    const schedule = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(fit);
-    };
-    fit();
-    document.fonts?.ready.then(schedule);
-    window.addEventListener("resize", schedule);
-    query.addEventListener?.("change", schedule);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("resize", schedule);
-      query.removeEventListener?.("change", schedule);
-    };
-  }, [ref, locale]);
-}
-
 // Inner pages open with the homepage's language: the site header floating over a
 // Reverance render, a blue eyebrow and an oversized headline.
 export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", copy, image = "skyline", imageAlt = "", variant, lightSky, children }) {
@@ -215,9 +168,8 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", c
   const ref = useRef(null);
   const { locale } = useLanguage();
   useHeaderOnLightSky(ref, lightSky?.ranges, locale);
-  useHeroCopyFitsScreen(ref, locale);
   return (
-    <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes} data-hero-image={image}>
+    <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes}>
       {header}
       {media.family ? (
         <ThemedImage className="lasha-page-hero-media" family={media.family} sizes={media.sizes ?? pageHeroSizes(media.aspect)} style={style} alt={imageAlt} fetchPriority="high" decoding="async" />
@@ -230,7 +182,6 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", c
         {copy && <p className="lasha-page-hero-text">{copy}</p>}
         {children}
       </div>
-      <div className="lasha-page-hero-cue"><ScrollDownCue /></div>
     </section>
   );
 }

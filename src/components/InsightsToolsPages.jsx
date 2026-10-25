@@ -138,7 +138,7 @@ function CardMedia({ media, label }) {
 // and sends brokers to sign in or apply.
 // By day the photo's sky (left of the hanging plants) and its pale stone terrace (right of them)
 // carry ink header labels; labels over the plants stay white (see useHeaderOnLightSky).
-const BROKER_TOOLS_LIGHT_SKY = { themes: "day", ranges: [[0, 0.68], [0.84, 1]] };
+const BROKER_TOOLS_LIGHT_SKY = { themes: "day", ranges: [[0, 0.72], [0.84, 1]] };
 
 export function BrokerPlatformHero({ header, eyebrow, onOpenModal }) {
   const { tools: c } = useCopy();

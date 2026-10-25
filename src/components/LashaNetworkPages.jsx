@@ -1,13 +1,11 @@
 import { useLayoutEffect, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
-import { FittedHeading } from "./FittedHeading.jsx";
 import { LashaArrow } from "./LashaHomeSections.jsx";
 import { NETWORK_COPY } from "../network-copy.js";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { LASHA_PAGES_COPY } from "../lasha-pages-copy.js";
 import "./lasha-network-pages.css";
 import { ThemedImage } from "./ThemedImage.jsx";
-import { ScrollDownCue } from "./ScrollDownCue.jsx";
 import { BrokerGetStarted, BrokerPlatformHero, BrokerWorkspace } from "./InsightsToolsPages.jsx";
 
 // AiXESS Advantage and Broker Access, built to Lasha Bakashvili's Figma frames (AIXESS
@@ -76,7 +74,7 @@ function useHeaderOverField(ref, locale) {
 }
 
 // Phones stack the panel over the render: the render takes the rest of the first screen, so the
-// hero fills it with the scroll-down cue at its foot (Kemo, 20 October 2026). CSS needs the panel's height.
+// hero fills the screen. CSS needs the panel's height.
 function usePanelHeight(ref) {
   useLayoutEffect(() => {
     const hero = ref.current;
@@ -100,12 +98,13 @@ function SplitHero({ header, eyebrow, title, body, action, media, className }) {
     <section ref={ref} className={`lnp-hero ${className}`}>
       {header}
       {/* The panel ends where the render starts on phones, and with the hero on wider screens. */}
-      <div className="lnp-hero-panel" data-scroll-cue-end>
-        <p className="lasha-eyebrow lnp-eyebrow">{eyebrow}</p>
-        <FittedHeading as="h1" className="lnp-hero-title">{title.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
-        <p className="lnp-hero-body">{body}</p>
-        {action}
-        <ScrollDownCue className="lnp-hero-scroll-cue" />
+      <div className="lnp-hero-panel">
+        <div className="lnp-hero-copy">
+          <p className="lasha-eyebrow lnp-eyebrow">{eyebrow}</p>
+          <h1 className="lnp-hero-title">{title.map((line) => <span key={line}>{line}</span>)}</h1>
+          <p className="lnp-hero-body">{body}</p>
+          {action}
+        </div>
       </div>
       <div className="lnp-hero-media">
         {media.family
@@ -149,7 +148,7 @@ export function AdvantagePageContent({ header }) {
         <img className="lnp-advantage-media" src={image("reverance-terrace-1312")} srcSet={srcSet("reverance-terrace", 656)} sizes="(max-width: 899px) 100vw, 46vw" width="656" height="679" alt="" loading="lazy" decoding="async" />
         <div className="lnp-advantage-panel">
           <p className="lnp-kicker">{network.advantage[0]}</p>
-          <FittedHeading id="lnp-advantage-title" className="lnp-advantage-title">{splitBeforeLast(network.advantage[1]).map((line) => <span key={line}>{line}</span>)}</FittedHeading>
+          <h2 id="lnp-advantage-title" className="lnp-advantage-title">{splitBeforeLast(network.advantage[1]).map((line) => <span key={line}>{line}</span>)}</h2>
           <p className="lnp-advantage-subtitle">{page.advantageSubtitle}</p>
           <PageButton variant="dark" flow="login">{network.signIn}</PageButton>
         </div>
@@ -159,10 +158,10 @@ export function AdvantagePageContent({ header }) {
         <p className="lnp-services-figure" aria-hidden="true">360°</p>
         <div className="lnp-services-copy">
           <p className="lnp-services-eyebrow">{servicesEyebrow}</p>
-          <FittedHeading id="lnp-services-title">{splitBalanced(noStop(servicesTitle)).map((line) => <span key={line}>{line}</span>)}</FittedHeading>
+          <h2 id="lnp-services-title">{splitBalanced(noStop(servicesTitle)).map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
         <div className="lnp-services-claim">
-          <FittedHeading as="p">{page.connectSupports.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
+          <p>{page.connectSupports.map((line) => <span key={line}>{line}</span>)}</p>
         </div>
       </section>
     </div>
@@ -180,7 +179,6 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
   const people = network.people.map(([title, line], index) => [title, index < 3 ? noStop(line) : line]);
   const [lastTitle, lastLine] = network.steps[4];
   const steps = [...network.steps.slice(0, 4).map(([title, line]) => [title, noStop(line)]), [lastTitle, lastLine.split(/(?<=[.!?])\s/)[0].replace(/\.$/, "")]];
-  const stepTitles = useRef(new Map()).current;
   return (
     <div className="lnp lnp-broker">
       <BrokerPlatformHero header={header} eyebrow={t("brokerAccessEyebrow")} onOpenModal={onOpenModal} />
@@ -189,7 +187,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
       <section className="lnp-join" aria-labelledby="lnp-join-title">
         <div className="lnp-join-panel">
           <p className="lasha-eyebrow lnp-eyebrow">{network.eligibility[0]}</p>
-          <FittedHeading id="lnp-join-title" className="lnp-join-title">{splitBrokerTitle(network.eligibility[1]).map((line) => <span key={line}>{line}</span>)}</FittedHeading>
+          <h2 id="lnp-join-title" className="lnp-join-title">{splitBrokerTitle(network.eligibility[1]).map((line) => <span key={line}>{line}</span>)}</h2>
           <p className="lnp-hero-body">{page.brokerIntro}</p>
         </div>
         <div className="lnp-join-media">
@@ -209,12 +207,12 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
         <p className="lnp-commercial-eyebrow" id="lnp-commercial-title">{network.commercial[0]}</p>
         <div className="lnp-commercial-down">
           <p className="lnp-figure">10%</p>
-          <FittedHeading><span>{page.downPayment}</span></FittedHeading>
+          <h2><span>{page.downPayment}</span></h2>
           <p className="lnp-commercial-body">{page.commercialBody}</p>
         </div>
         <div className="lnp-commercial-commission">
           <p className="lnp-figure">100%</p>
-          <FittedHeading>{page.commissionUnlocked.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
+          <h2>{page.commissionUnlocked.map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
         <img className="lnp-commercial-media" src={image("reverance-tower-1990")} srcSet={srcSet("reverance-tower", 995)} sizes="(max-width: 899px) 100vw, 42vw" width="995" height="589" alt="" loading="lazy" decoding="async" />
       </section>
@@ -222,13 +220,13 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
       <section className="lnp-process" aria-labelledby="lnp-process-title">
         <div className="lnp-process-heading">
           <p className="lnp-process-eyebrow">{sentenceCase(network.process[0], locale)}</p>
-          <FittedHeading id="lnp-process-title">{splitAfter(noStop(network.process[1]), 2).map((line) => <span key={line}>{line}</span>)}</FittedHeading>
+          <h2 id="lnp-process-title">{splitAfter(noStop(network.process[1]), 2).map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
         <ol className="lnp-steps">
           {steps.map(([title, line], index) => (
             <li key={title}>
               <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
-              <FittedHeading as="h3" fitGroup={stepTitles}><span>{title}</span></FittedHeading>
+              <h3><span>{title}</span></h3>
               <p>{line}</p>
             </li>
           ))}

@@ -8,9 +8,8 @@ import {
 } from "../dubai-projects-data.js";
 import { formatUsdOnly } from "../currency.js";
 import { CONTACT } from "../contact-copy.js";
-import { LashaArrow, routeLinkClick, useHeroCopyFitsScreen } from "./LashaHomeSections.jsx";
+import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
 import { Lightbox } from "./ReveranceProjectInfo.jsx";
-import { ScrollDownCue } from "./ScrollDownCue.jsx";
 import "./reverance-project.css";
 import "./dubai-projects.css";
 
@@ -152,13 +151,10 @@ function lightboxItem(slug, caption, alt, labels) {
 }
 
 // The page hero: copy on the theme's ground, the developer's rendering beside it (above it on phones),
-// so no text ever sits on the photograph. Fills the first screen with the scroll-down cue at its foot.
+// so no text ever sits on the photograph. The hero grows with its copy.
 function ProjectHero({ header, route, eyebrow, hero, developer, labels, image, imageAlt, children }) {
-  const ref = useRef(null);
-  const { locale } = useLanguage();
-  useHeroCopyFitsScreen(ref, locale);
   return (
-    <section ref={ref} className="lasha-page-hero lasha-page-hero-type dp-hero dp-hero-media" aria-labelledby={`${route}-title`}>
+    <section className="lasha-page-hero lasha-page-hero-type dp-hero dp-hero-media" aria-labelledby={`${route}-title`}>
       {header}
       <figure className="dp-hero-figure">
         <Picture slug={image} alt={imageAlt} sizes="(max-width: 1099px) 100vw, 36vw" eager />
@@ -173,7 +169,6 @@ function ProjectHero({ header, route, eyebrow, hero, developer, labels, image, i
         </div>
         <div className="dp-hero-side">{children}</div>
       </div>
-      <div className="lasha-page-hero-cue"><ScrollDownCue /></div>
     </section>
   );
 }

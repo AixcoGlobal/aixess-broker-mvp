@@ -7,6 +7,32 @@
   --public-button-text: 0.875rem;
   --public-button-height: 4rem;
   --public-button-width: 17.5rem;
+  /* Project Reverance is the reference for the public heading hierarchy. */
+  --public-page-title: clamp(3.4rem, 7vw, 8.2rem);
+  --public-section-title: clamp(2.9rem, 6.2vw, 6.4rem);
+  --public-subtitle: clamp(1.9rem, 3.6vw, 3.4rem);
+  --public-card-title: clamp(1.55rem, 2.1vw, 2.05rem);
+}
+
+:is(.lasha-home, .lasha-page) {
+  --v4-page-title: var(--public-page-title);
+  --v4-h2: var(--public-section-title);
+  --v4-sub: var(--public-subtitle);
+  --v4-h3: var(--public-card-title);
+}
+
+.lasha-home {
+  --public-project-title: calc(70 * var(--u));
+  --public-project-section-title: calc(102 * var(--u));
+}
+.lasha-home :is(.project-card h3, .dp-listing-cards h3) { font-size: var(--public-project-title); }
+.lasha-home .dp-listing h2 { font-size: var(--public-project-section-title); }
+
+@media (max-width: 899px) {
+  .lasha-home {
+    --public-project-title: var(--v4-h3-xl);
+    --public-project-section-title: var(--v4-h2);
+  }
 }
 
 /* Body copy, including the frame pages whose desktop copy was smaller than on phones. */
@@ -66,12 +92,19 @@ body .access-form label > span {
 }
 
 /* Section and card headings keep a heading role even when their old rule used the label token. */
-.lasha-page :is(.dp-list-title, .dp-cards h3, .rp-stages h3) {
+.lasha-page :is(.dp-cards h3, .rp-stages h3) {
   font-family: var(--l-head);
-  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  font-size: var(--public-card-title);
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: 0;
+}
+
+.lasha-page .dp-list-title {
+  font-family: var(--l-head);
+  font-size: var(--public-subtitle);
+  line-height: 0.95;
+  letter-spacing: -0.012em;
 }
 
 /* Positive action groups avoid changing floor plans, inventory, filters or admin buttons. */

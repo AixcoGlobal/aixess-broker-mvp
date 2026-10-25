@@ -216,6 +216,7 @@
 }
 
 .it-workspace-intro img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; object-position: 50% 58%; }
+.it-workspace-intro .it-heading > div { max-width: none; }
 
 .it-features {
   display: grid;
@@ -298,12 +299,6 @@
   .it-workspace-intro img { max-width: 40rem; aspect-ratio: 16 / 9; }
   .it-step-list { grid-template-columns: minmax(0, 1fr); }
   .lasha-page-hero .it-hero-actions .button { flex: 0 0 auto; width: 100%; justify-content: space-between; }
-}
-
-/* Tablets (768–899px) stack the Broker Access hero buttons too, so the copy runs as tall as on a
-   phone and keeps the phone's room above the centred scroll-down cue (899 × 700 put the note under it). */
-@media (min-width: 768px) and (max-width: 899px) {
-  .lasha-page-hero:has(.it-hero-actions) .lasha-page-hero-copy { padding-bottom: 8rem; }
 }
 
 @media (max-width: 599px) {
