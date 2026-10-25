@@ -290,6 +290,28 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-lis
   .lasha-page .dp-media-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .lasha-page .dp-media-split-reverse > .dp-figure { order: -1; }
 }
+/* Heading and text together beside a tall rendering from 1200px, so the short text has no empty
+   column under it; narrower screens keep the heading above the split. */
+@media (max-width: 899px) {
+  .lasha-page .dp-media-split-head > .rp-heading { margin-bottom: 0; }
+}
+@media (min-width: 900px) {
+  .lasha-page .dp-media-split-head { row-gap: 0; }
+  .lasha-page .dp-media-split-head > .rp-heading { grid-column: 1 / -1; }
+}
+@media (min-width: 1200px) {
+  .lasha-page .dp-media-split-head { grid-template-rows: auto 1fr; column-gap: clamp(3rem, 5vw, 5.5rem); }
+  .lasha-page .dp-media-split-head > .rp-heading { grid-column: 1; margin-bottom: 2rem; }
+  .lasha-page .dp-media-split-head > .dp-figure { grid-column: 2; grid-row: 1 / span 2; align-self: stretch; display: flex; flex-direction: column; }
+  /* The title keeps the section size until a long translation would outgrow its half of the row. */
+  .lasha-page .dp-media-split-head > .rp-heading { container-type: inline-size; }
+  .lasha-page .dp-media-split-head > .dp-columns { align-self: start; }
+  .lasha-page .dp-media-split-head > .rp-heading h2 { font-size: min(var(--v4-h2), 13cqi); }
+  /* The rendering keeps its own proportions, and grows to the text's height when the text runs
+     longer, trimming sky on the left rather than the building. */
+  .lasha-page .dp-media-split-head > .dp-figure button { position: relative; flex: 1 0 auto; aspect-ratio: 1440 / 943; }
+  .lasha-page .dp-media-split-head > .dp-figure img { position: absolute; inset: 0; height: 100%; object-fit: cover; object-position: 78% 50%; }
+}
 .lasha-page .dp-list-2 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
 
 /* A captioned rendering or map that opens larger. Captions sit under the image, never on it. */
