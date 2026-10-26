@@ -225,8 +225,9 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     const plans = document.querySelector("#downtown-one-payment .dp-compare");
     expect([...plans.querySelectorAll("thead th")].map((cell) => cell.textContent)).toEqual(["With PDC", "Without PDC"]);
     expect([...plans.querySelectorAll("tfoot td")].map((cell) => cell.textContent)).toEqual(["100%", "100%"]);
-    expect(plans).toHaveTextContent("1% × 80");
-    expect(plans).toHaveTextContent("1% × 75");
+    // The monthly row shows 1% once per plan with its number of months, not "1% × 80" and "80 months".
+    const monthly = [...plans.querySelectorAll("tbody tr")].at(-1);
+    expect([...monthly.querySelectorAll("td")].map((cell) => cell.textContent)).toEqual(["1%80 months", "1%75 months"]);
 
     // Ten layouts with a filter by type.
     const layouts = () => document.querySelectorAll(".dp-plans-layouts .dp-plan");
