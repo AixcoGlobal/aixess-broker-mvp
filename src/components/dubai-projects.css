@@ -228,7 +228,6 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero .it-hero-actions .bu
 @media (max-width: 599px) {
   .lasha-page .dp-groups { grid-template-columns: minmax(0, 1fr); }
   .lasha-page .dp-hero-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lasha-page .dp-hero-facts > div:first-child { grid-column: 1 / -1; }
 }
 @media (max-width: 379px) {
   .lasha-page .dp-hero-facts { grid-template-columns: minmax(0, 1fr); }

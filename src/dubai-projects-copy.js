@@ -5,7 +5,9 @@
 // developers' brochures or price lists is shown. Not copied: the briefs' editorial labels ("Add
 // pictures", "Here add pictures of the project", section numbers, underscore rules), the stray
 // "Project : Dubai-project name DOWNTOWN DUBAI" line, and every asterisk (AiXESS uses * only for
-// corrections). "Project highlits" is spelt "Project highlights".
+// corrections). "Project highlits" is spelt "Project highlights". Kemo, 26 October 2026 (the client's
+// comment): no apartment prices, floors or unit lists; property types only, so the brief's
+// "Starting from $182,437" is not shown.
 
 export const DUBAI_PROJECTS_COPY = {
   en: {
@@ -47,7 +49,6 @@ export const DUBAI_PROJECTS_COPY = {
         tagline: "Contemporary Living. Thoughtful Design. Exceptional Comfort.",
         intro: "Discover a new expression of modern urban living in Jumeirah Village Circle, Dubai, where contemporary architecture, thoughtfully designed residences and lifestyle amenities come together.",
         facts: [
-          ["Starting from", "$182,437"],
           ["Initial Payment", "20%"],
           ["Expected Completion", "Q1 2028"],
         ],
@@ -68,7 +69,6 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Project highlights",
         items: [
           ["JVC, Dubai", "Location"],
-          ["$182,437", "Starting price"],
           ["Q1 2028", "Expected completion"],
           ["20%", "Initial payment"],
         ],
@@ -288,7 +288,6 @@ export const DUBAI_PROJECTS_COPY = {
         tagline: "Zeitgemäßes Wohnen. Durchdachtes Design. Außergewöhnlicher Komfort.",
         intro: "Entdecken Sie eine neue Form modernen urbanen Wohnens in Jumeirah Village Circle, Dubai, wo zeitgemäße Architektur, durchdacht gestaltete Residenzen und Lifestyle-Annehmlichkeiten zusammenkommen.",
         facts: [
-          ["Ab", "182.437 USD"],
           ["Anfangszahlung", "20 %"],
           ["Voraussichtliche Fertigstellung", "Q1 2028"],
         ],
@@ -309,7 +308,6 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Projekt-Highlights",
         items: [
           ["JVC, Dubai", "Lage"],
-          ["182.437 USD", "Startpreis"],
           ["Q1 2028", "Voraussichtliche Fertigstellung"],
           ["20 %", "Anfangszahlung"],
         ],
@@ -529,7 +527,6 @@ export const DUBAI_PROJECTS_COPY = {
         tagline: "Nowoczesne życie. Przemyślany design. Wyjątkowy komfort.",
         intro: "Odkryj nowy wymiar nowoczesnego życia w mieście w Jumeirah Village Circle w Dubaju, gdzie współczesna architektura, starannie zaprojektowane apartamenty i udogodnienia lifestyle'owe tworzą jedną całość.",
         facts: [
-          ["Od", "182 437 USD"],
           ["Wpłata początkowa", "20%"],
           ["Planowane ukończenie", "I kw. 2028"],
         ],
@@ -550,7 +547,6 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Najważniejsze cechy projektu",
         items: [
           ["JVC, Dubaj", "Lokalizacja"],
-          ["182 437 USD", "Cena początkowa"],
           ["I kw. 2028", "Planowane ukończenie"],
           ["20%", "Wpłata początkowa"],
         ],
@@ -770,7 +766,6 @@ export const DUBAI_PROJECTS_COPY = {
         tagline: "Sodobno bivanje. Premišljen dizajn. Izjemno udobje.",
         intro: "Odkrijte nov izraz sodobnega urbanega bivanja v Jumeirah Village Circle v Dubaju, kjer se združujejo sodobna arhitektura, premišljeno oblikovane rezidence in življenjske ugodnosti.",
         facts: [
-          ["Že od", "182.437 USD"],
           ["Začetno plačilo", "20 %"],
           ["Predvideno dokončanje", "1. četrtletje 2028"],
         ],
@@ -791,7 +786,6 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Poudarki projekta",
         items: [
           ["JVC, Dubaj", "Lokacija"],
-          ["182.437 USD", "Začetna cena"],
           ["1. četrtletje 2028", "Predvideno dokončanje"],
           ["20 %", "Začetno plačilo"],
         ],
@@ -1011,7 +1005,6 @@ export const DUBAI_PROJECTS_COPY = {
         tagline: "Современная жизнь. Продуманный дизайн. Исключительный комфорт.",
         intro: "Откройте новое воплощение современной городской жизни в Jumeirah Village Circle, Дубай, где сочетаются современная архитектура, продуманные резиденции и удобства для жизни.",
         facts: [
-          ["От", "182 437 USD"],
           ["Первоначальный платёж", "20 %"],
           ["Ожидаемое завершение", "I квартал 2028"],
         ],
@@ -1032,7 +1025,6 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Ключевые особенности проекта",
         items: [
           ["JVC, Дубай", "Расположение"],
-          ["182 437 USD", "Начальная цена"],
           ["I квартал 2028", "Ожидаемое завершение"],
           ["20 %", "Первоначальный платёж"],
         ],

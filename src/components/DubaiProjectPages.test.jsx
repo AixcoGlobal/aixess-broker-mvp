@@ -112,7 +112,8 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect([...page.querySelectorAll(".dp-page h2")].map((title) => title.textContent)).toEqual([
       copy.discover.title, copy.highlights.title, copy.spaces.title, copy.lifestyle.title, copy.location.title, copy.payment.title, copy.more.title,
     ]);
-    expect([...page.querySelectorAll(".dp-hero-facts dd")].map((value) => value.textContent)).toEqual(["$182,437", "20%", "Q1 2028"]);
+    expect([...page.querySelectorAll(".dp-hero-facts dd")].map((value) => value.textContent)).toEqual(["20%", "Q1 2028"]);
+    expect(page.textContent).not.toMatch(/182[.,\s\u00a0]?437/);
     expect(copy.spaces.categories).toHaveLength(6);
     expect(copy.lifestyle.amenities).toHaveLength(8);
     expect(page.textContent).not.toMatch(/Penthouse|Sauna|WADAN|AED|Floor plans|Gallery|Resident app\b/);

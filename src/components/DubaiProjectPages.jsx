@@ -175,7 +175,7 @@ export function TresoraPage({ header }) {
 
         <section className="rp-section rp-mist" id="tresora-highlights" aria-labelledby="tresora-highlights-title">
           <SectionHeading id="tresora-highlights-title" title={highlights.title} />
-          <ul className="dp-cards dp-cards-2">
+          <ul className="dp-cards dp-cards-3">
             {highlights.items.map(([value, label]) => <li key={label}><strong>{value}</strong><p>{label}</p></li>)}
           </ul>
         </section>
