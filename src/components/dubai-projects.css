@@ -2,7 +2,7 @@
    and the Reverance sections in reverance-project.css): paper and mist grounds, condensed uppercase
    headings, blue accents from the theme tokens. The hero is type on the theme's pale ground (cobalt
    tint by day, sage in the afternoon, near-black at night) beside the developer's rendering, so no
-   text ever sits on a photograph. Plans are shown whole on white, never cropped. */
+   text ever sits on a photograph. */
 
 /* ---------- Hero ---------- */
 .lasha-page .dp-hero { background: var(--l-soft, #e3ebf6); }
@@ -67,18 +67,17 @@ html:root:not([data-time-theme='night']) .dp-hero > .site-header .login-button:h
 .lasha-page .dp-hero-facts dd { margin: 0; color: var(--l-blue); font-family: var(--l-head); font-size: clamp(2rem, 3vw, 2.9rem); font-weight: 700; line-height: 1.1; overflow-wrap: break-word; }
 
 /* Night: the hero copy is off-white on near-black, the figures and subtitle the light cobalt. */
-html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-developer, .dp-hero-figure figcaption, .lasha-page-hero-text) { color: #f4f4f1; }
-html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd, .dp-hero-developer strong, .dp-inline-link) { color: var(--l-blue-light); }
+html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-tagline, .lasha-page-hero-text) { color: #f4f4f1; }
+html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd) { color: var(--l-blue-light); }
 html:root[data-time-theme='night'] .lasha-page .dp-hero :is(.dp-hero-facts > div, .dp-hero-side) { border-color: rgb(244 244 241 / 0.3); }
 /* Afternoon: the deeper sage reads on the sage ground. */
-html:root[data-time-theme='afternoon'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd, .dp-hero-developer strong, .dp-inline-link) { color: #2f4733; }
+html:root[data-time-theme='afternoon'] .lasha-page .dp-hero :is(.dp-hero-subtitle, .dp-hero-facts dd) { color: #2f4733; }
 html:root[data-time-theme='afternoon'] .lasha-page .dp-hero .it-hero-actions .button-primary { border-color: #3c5a41; background: #3c5a41; color: #f4f4f1; }
 html:root[data-time-theme='afternoon'] .lasha-page .dp-hero .it-hero-actions .button-primary:hover { border-color: #2f4733; background: #2f4733; }
 
 /* The developer's rendering. Phones, tablets and portrait screens: under the header, across the
    width, with the copy below it. From 1100px on landscape screens: a column at the right, from the
-   header to the hero's foot, with the copy in one column at the left. The caption sits under the
-   image on the hero's ground. */
+   header to the hero's foot, with the copy in one column at the left. */
 .lasha-page .dp-hero-media { --dp-hero-image: 36%; }
 .lasha-page .dp-hero-figure {
   display: flex;
@@ -96,16 +95,7 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero .it-hero-actions .bu
   object-position: var(--dp-hero-position, 50% 35%);
   background: var(--l-mist);
 }
-.lasha-page .dp-hero-figure figcaption {
-  padding: 0.6rem var(--page-gutter) 0;
-  color: color-mix(in srgb, var(--l-ink, #171a1d) 72%, transparent);
-  font-size: var(--v4-label);
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  line-height: 1.4;
-  text-transform: uppercase;
-}
-.lasha-page .dp-hero-developer {
+.lasha-page .dp-hero-tagline {
   margin: 0.9rem 0 0;
   color: var(--l-ink, #171a1d);
   font-size: var(--v4-label);
@@ -114,8 +104,6 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero .it-hero-actions .bu
   line-height: 1.5;
   text-transform: uppercase;
 }
-.lasha-page .dp-hero-developer strong { color: var(--l-blue); font-weight: 700; }
-html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { color: #2f4733; }
 
 @media (max-width: 1099px), (max-aspect-ratio: 1/1) {
   /* Stacked: the copy follows the image with the same section spacing as Reverance. */
@@ -135,31 +123,15 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
   .lasha-page .dp-hero-media > .dp-hero-figure { grid-column: 2; grid-row: 2; padding: 0 var(--page-gutter) 1.4rem 0; }
   .lasha-page .dp-hero-media > .dp-hero-figure img { flex: 1 1 0; height: 0; min-height: 18rem; max-height: none; aspect-ratio: auto; }
   .lasha-page .dp-hero-media > .dp-hero-copy { grid-column: 1; grid-row: 2; max-width: 56rem; }
-  .lasha-page .dp-hero-figure figcaption { padding-inline: 0; }
   .lasha-page .dp-hero-media .lasha-page-hero-text { max-width: 44rem; font-size: var(--v4-text); line-height: 1.6; }
 }
 
 /* ---------- Shared pieces ---------- */
-.lasha-page .dp-inline-link {
-  display: inline-flex;
-  gap: 0.6rem;
-  align-items: center;
-  color: var(--l-blue);
-  font-size: var(--v4-btn);
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-underline-offset: 0.3em;
-}
-.lasha-page .dp-inline-link .lasha-arrow { width: 1.25rem; height: 0.5rem; }
-.lasha-page .dp-inline-link:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-
 .lasha-page .dp-page .rp-actions .button { display: inline-flex; align-items: center; }
 .lasha-page .dp-page .rp-actions .button .lasha-arrow { width: 1.5rem; height: 0.5rem; }
 .lasha-page .dp-page :is(.rp-heading h2, .rp-subtitle, .dp-list-title) { scroll-margin-top: 1.5rem; }
 .lasha-page .dp-page .rp-heading h2 { max-width: 26ch; line-height: 1.03; }
 .lasha-page .dp-page :is(h2, h3, h4, p, li, dt, dd)[tabindex]:focus { outline: none; }
-.lasha-page .dp-terms { scroll-margin-top: 30vh; }
 
 /* Paragraph groups stay in one readable column. */
 .lasha-page .dp-columns { display: grid; gap: 1rem clamp(2rem, 4vw, 3.5rem); max-width: 52rem; }
@@ -200,20 +172,12 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
 }
 .lasha-page .dp-cards h3 { margin: 0; font-family: var(--l-body); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.18em; line-height: 1.4; text-transform: uppercase; }
 .lasha-page .dp-cards p { margin: 0; color: color-mix(in srgb, var(--l-ink, #171a1d) 78%, transparent); font-size: var(--v4-text); line-height: 1.6; }
-.lasha-page .dp-terms { max-width: 72ch; }
 @media (max-width: 1099px) {
   .lasha-page .dp-cards-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 599px) {
   .lasha-page :is(.dp-cards-2, .dp-cards-3) { grid-template-columns: minmax(0, 1fr); }
 }
-
-/* Property categories (TRESORA): index and name, three to a row on wide screens. */
-.lasha-page .dp-categories { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 81.2rem; }
-@media (max-width: 899px) { .lasha-page .dp-categories { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 559px) { .lasha-page .dp-categories { grid-template-columns: minmax(0, 1fr); } }
-.lasha-page .dp-categories h4 { margin: 0.9rem 0 0; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1; text-transform: uppercase; }
-.lasha-page .dp-categories + .rp-note { margin-top: 0.4rem; }
 
 /* Amenity and place lists: hairline rows. */
 .lasha-page .dp-list {
@@ -241,17 +205,11 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
   line-height: 1.4;
   overflow-wrap: break-word;
 }
-.lasha-page .dp-list li .rp-index { flex: none; min-width: 2.2rem; font-size: 1.2rem; }
 .lasha-page .dp-list-title { margin: 0 0 0.9rem; font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.18em; line-height: 1.4; text-transform: uppercase; color: var(--l-blue); }
 .lasha-page .dp-split { align-items: start; }
 .lasha-page .dp-split .rp-actions { margin-top: clamp(1.6rem, 3vw, 2.2rem); }
-.lasha-page .dp-text + .dp-list-title { margin-top: clamp(1.6rem, 3vw, 2.2rem); }
-
-/* Nearby destinations (DOWNTOWN ONE): the approximate time as supplied, then the places. */
-.lasha-page .dp-nearby { margin: 0; }
-.lasha-page .dp-nearby > div { display: grid; gap: 0.35rem; padding: 1rem 0; border-top: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 20%, transparent); }
-.lasha-page .dp-nearby dt { color: var(--l-blue); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.16em; line-height: 1.4; text-transform: uppercase; }
-.lasha-page .dp-nearby dd { margin: 0; font-size: var(--v4-lead); font-weight: 500; line-height: 1.45; }
+.lasha-page :is(.dp-text + .dp-list-title, .dp-list-title-gap) { margin-top: clamp(1.6rem, 3vw, 2.2rem); }
+.lasha-page .dp-text-after { margin-top: clamp(1.6rem, 3vw, 2.2rem); }
 
 /* Amenity groups (DOWNTOWN ONE): four columns, two on tablets, one on phones. */
 .lasha-page .dp-groups {
@@ -270,18 +228,17 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-hero-developer strong { c
 @media (max-width: 599px) {
   .lasha-page .dp-groups { grid-template-columns: minmax(0, 1fr); }
   .lasha-page .dp-hero-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lasha-page .dp-hero-facts > div:first-child { grid-column: 1 / -1; }
 }
-@media (max-width: 359px) {
+@media (max-width: 379px) {
   .lasha-page .dp-hero-facts { grid-template-columns: minmax(0, 1fr); }
 }
 
 .lasha-page .dp-closing .rp-actions { margin-top: clamp(2rem, 4vw, 3rem); }
 
 /* Afternoon eyebrows on the pale sage bands use the deeper sage, as on Reverance. */
-html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-list-title, .rp-mist .dp-nearby dt) { color: #3c5a41; }
+html:root[data-time-theme='afternoon'] .lasha-page .dp-page .rp-mist .dp-list-title { color: #3c5a41; }
 
-/* ---------- Source material: renders, prices, plans, schedules, downloads ---------- */
+/* ---------- Renderings ---------- */
 .lasha-page .dp-columns-1 { grid-template-columns: minmax(0, 1fr); max-width: 44rem; }
 
 /* Text beside a rendering from 900px; the image under the text on smaller screens. */
@@ -309,399 +266,32 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.rp-mist .dp-lis
   .lasha-page .dp-media-split-head > .rp-heading h2 { font-size: min(var(--v4-h2), 13cqi); }
   /* The rendering keeps its own proportions, and grows to the text's height when the text runs
      longer, trimming sky on the left rather than the building. */
-  .lasha-page .dp-media-split-head > .dp-figure button { position: relative; flex: 1 0 auto; aspect-ratio: 1440 / 943; }
+  .lasha-page .dp-media-split-head > .dp-figure .dp-figure-frame { position: relative; flex: 1 0 auto; aspect-ratio: 1440 / 943; }
   .lasha-page .dp-media-split-head > .dp-figure img { position: absolute; inset: 0; height: 100%; object-fit: cover; object-position: 78% 50%; }
 }
 .lasha-page .dp-list-2 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
 
-/* A captioned rendering or map that opens larger. Captions sit under the image, never on it. */
+/* A rendering or map on its own, without a caption. */
 .lasha-page .dp-figure { min-width: 0; margin: 0; }
-.lasha-page .dp-figure button,
-.lasha-page .dp-plan-image {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: var(--l-mist);
-  color: inherit;
-  cursor: zoom-in;
-}
+.lasha-page .dp-figure-frame { display: block; width: 100%; background: var(--l-mist); }
 .lasha-page .dp-figure img { display: block; width: 100%; height: auto; }
-.lasha-page .dp-figure :is(button, .dp-plan-image):focus-visible,
-.lasha-page :is(.dp-figure button, .dp-plan-image):focus-visible { outline: 3px solid var(--l-blue); outline-offset: 3px; }
-.lasha-page .dp-figure figcaption {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem 0.9rem;
-  align-items: baseline;
-  padding-top: 0.75rem;
-  font-size: var(--v4-small);
-  line-height: 1.45;
-}
-.lasha-page .dp-figure-kind,
-.lasha-page .dp-gallery .dp-figure-kind { color: var(--l-blue); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
-.lasha-page .dp-map button { padding: clamp(0.5rem, 1.2vw, 0.9rem); border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 18%, transparent); background: #fff; }
+.lasha-page .dp-map .dp-figure-frame { padding: clamp(0.5rem, 1.2vw, 0.9rem); border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 18%, transparent); background: #fff; }
 .lasha-page .dp-split .dp-map { margin-top: clamp(1.4rem, 3vw, 2rem); }
 .lasha-page .dp-split > .dp-map { margin-top: 0; }
 
-/* Galleries: the label under each rendering on the page's ground (no shade on the photo). */
-.lasha-page .dp-gallery button { background: transparent; }
-.lasha-page .dp-gallery img { background: var(--l-mist); }
-.lasha-page .dp-gallery .rp-gallery-label {
-  position: static;
-  display: block;
-  padding: 0.75rem 0 0;
-  background: none;
-  color: var(--l-ink, #171a1d);
-}
-.lasha-page .dp-gallery + .rp-note { margin-top: 1.4rem; }
-.lasha-page .rp-subtitle + .dp-gallery { margin-top: 1.2rem; }
-/* Brochure renderings (TRESORA): small sources, so tiles stay near their own 584px width and never zoom. */
+/* TRESORA's renderings: small sources, so tiles stay near their own 584px width (eight, four to a row). */
 .lasha-page .dp-gallery-still { row-gap: clamp(1.4rem, 3vw, 2rem); max-width: 81.2rem; }
-.lasha-page .dp-gallery-still.dp-gallery-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 54rem; }
-@media (max-width: 599px) { .lasha-page .dp-gallery-still.dp-gallery-2 { grid-template-columns: minmax(0, 1fr); } }
-.lasha-page .dp-gallery-still figure { margin: 0; }
+@media (min-width: 1100px) { .lasha-page .dp-gallery-still { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .lasha-page .dp-gallery-still img { aspect-ratio: 584 / 327; background: var(--l-mist); transition: none; }
-.lasha-page .dp-gallery-still .rp-gallery-label { padding-top: 0.75rem; }
-.lasha-page .dp-media-split + .rp-subtitle { margin-top: clamp(2.4rem, 5vw, 3.6rem); }
-.lasha-page .dp-list-app { margin-bottom: 0.4rem; }
+.lasha-page .dp-gallery img { background: var(--l-mist); }
+/* DOWNTOWN ONE's fifteen renderings, two to a row on tablets: the last one runs full width. */
+@media (min-width: 600px) and (max-width: 1099px) { .lasha-page .dp-gallery:not(.dp-gallery-still) > li:last-child:nth-child(odd) { grid-column: 1 / -1; } }
+.lasha-page .dp-media-split + .dp-gallery { margin-top: clamp(2.4rem, 5vw, 3.6rem); }
 
-/* Tables: prices, launch mix and payment schedules. */
-.lasha-page .dp-table-wrap { max-width: 81.2rem; }
-.lasha-page .dp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--v4-text);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.4;
-}
-.lasha-page .dp-table :is(th, td) { padding: 0.95rem 1.2rem 0.95rem 0; border-top: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 20%, transparent); text-align: left; vertical-align: top; }
-.lasha-page .dp-table :is(th, td):last-child { padding-right: 0; }
-.lasha-page .dp-table thead th { padding-top: 0; border-top: 0; color: color-mix(in srgb, var(--l-ink, #171a1d) 78%, transparent); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.16em; line-height: 1.35; text-transform: uppercase; vertical-align: bottom; }
-.lasha-page .dp-table tbody tr:last-child :is(th, td) { border-bottom: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 20%, transparent); }
-.lasha-page .dp-table td > strong { display: block; color: var(--l-blue); font-family: var(--l-head); font-size: clamp(1.45rem, 1.9vw, 1.9rem); font-weight: 700; line-height: 1; white-space: nowrap; }
-.lasha-page .dp-table td > strong + span { display: block; margin-top: 0.35rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); font-size: var(--v4-small); white-space: nowrap; }
-.lasha-page .dp-table-after { max-width: 62ch; margin: 1.2rem 0 0; font-size: var(--v4-text); line-height: 1.55; }
-.lasha-page .dp-notes { display: grid; gap: 0.55rem; max-width: 72ch; margin: 1.2rem 0 0; padding: 0; list-style: none; }
-.lasha-page .dp-notes li { padding-left: 1rem; border-left: 2px solid var(--l-blue); color: color-mix(in srgb, var(--l-ink, #171a1d) 80%, transparent); font-size: var(--v4-small); line-height: 1.55; }
-.lasha-page div.dp-terms { margin-top: 1.2rem; }
-.lasha-page div.dp-terms p { margin: 0 0 0.6rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); font-size: var(--v4-small); line-height: 1.55; }
-.lasha-page div.dp-terms p:last-child { margin-bottom: 0; }
-
-
-/* TRESORA price board (Kemo, 25 October 2026: "turn it to something spectacular ... that fits our
-   brandbook"). Each category is one row: its name in AiXESS Head with the listed sizes and the
-   request link under it, then the three payment options as large AiXESS Head prices. The 100%
-   upfront option runs as one solid pillar in the theme's button colour (cobalt by day and at night,
-   deep sage in the afternoon) with white figures. Below 1200px each category is a card that ends
-   in the same pillar colour. The rows are grids, so the table keeps explicit ARIA roles. */
-.lasha-page :is(.dp-price-board, .dp-mix-board, .dp-compare-board, .dp-plans-pay) {
-  --board-line: color-mix(in srgb, var(--l-ink, #171a1d) 18%, transparent);
-  --board-rule: color-mix(in srgb, var(--l-ink, #171a1d) 80%, transparent);
-  --board-band: #2557d6;
-  --board-band-hover: #1b45b0;
-  --board-band-line: rgb(255 255 255 / 0.24);
-  --board-tint: color-mix(in srgb, var(--l-blue) 7%, transparent);
-  --board-pad: clamp(1.2rem, 1.6vw, 1.6rem);
-}
-html:root[data-time-theme='afternoon'] .lasha-page :is(.dp-price-board, .dp-mix-board, .dp-compare-board, .dp-plans-pay) { --board-band: #3c5a41; --board-band-hover: #2f4733; }
-html:root[data-time-theme='night'] .lasha-page :is(.dp-price-board, .dp-mix-board, .dp-compare-board, .dp-plans-pay) { --board-band: var(--l-night-button); --board-band-hover: var(--l-night-button-hover); --board-tint: rgb(255 255 255 / 0.04); }
-
-.lasha-page .dp-price-board .dp-price-table,
-.lasha-page .dp-price-board .dp-price-table :is(thead, tbody) { display: block; width: 100%; }
-.lasha-page .dp-price-board .dp-price-table tr { display: grid; }
-.lasha-page .dp-price-board .dp-price-table :is(th, td) { display: block; min-width: 0; padding: 0; border: 0; text-align: left; }
-
-/* Category name, listed sizes and the request link. */
-.lasha-page .dp-price-board .dp-price-table tbody th {
-  font-family: var(--l-head);
-  font-size: var(--v4-h3);
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 1.02;
-  text-transform: uppercase;
-  transition: color 180ms ease;
-}
-.lasha-page .dp-price-board .dp-price-size { display: block; color: color-mix(in srgb, var(--l-ink, #171a1d) 82%, transparent); font-size: var(--public-body); line-height: 1.45; }
-.lasha-page .dp-price-board .dp-col-1 .dp-inline-link { width: fit-content; margin-top: 0.9rem; font-size: var(--public-label); line-height: 1.4; letter-spacing: 0.14em; }
-
-/* Prices: US$ in AiXESS Head, the developer's AED under it. */
-.lasha-page .dp-price-board .dp-price-table td > strong { display: block; color: var(--l-blue); font-family: var(--l-head); font-size: clamp(1.9rem, 2.6vw, 2.75rem); font-weight: 700; letter-spacing: 0.005em; line-height: 0.95; white-space: nowrap; }
-.lasha-page .dp-price-board .dp-price-table td > strong + span { display: block; margin-top: 0.5rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 76%, transparent); font-size: var(--public-note); letter-spacing: 0.01em; line-height: 1.4; white-space: nowrap; }
-.lasha-page .dp-price-board .dp-price-none { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.7rem; padding-top: 0.75rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 70%, transparent); font-size: var(--public-label); font-style: normal; font-weight: 600; letter-spacing: 0.14em; line-height: 1.4; text-transform: uppercase; }
-.lasha-page .dp-price-board .dp-price-none::before { content: ""; flex: none; width: 1.6rem; height: 1px; background: currentColor; }
-
-/* The 100% upfront pillar. */
-.lasha-page .dp-price-board .dp-col-4 { background: var(--board-band); color: #fff; transition: background-color 180ms ease; }
-.lasha-page .dp-price-board .dp-price-table td.dp-col-4 > strong { color: #fff; }
-.lasha-page .dp-price-board .dp-price-table td.dp-col-4 > strong + span { color: rgb(255 255 255 / 0.84); }
-
-@media (hover: hover) {
-  .lasha-page .dp-price-board .dp-price-table tbody tr:hover > :not(.dp-col-4) { background: var(--board-tint); }
-  .lasha-page .dp-price-board .dp-price-table tbody tr:hover > .dp-col-4 { background: var(--board-band-hover); }
-  .lasha-page .dp-price-board .dp-price-table tbody tr:hover th { color: var(--l-blue); }
-}
-
-.lasha-page .dp-price-board .dp-price-table tbody tr:last-child > :is(th, td) { border-bottom: 0; }
-/* The arrow follows the last word when a long request link wraps. */
-.lasha-page .dp-price-board .dp-col-1 .dp-inline-link { display: block; }
-.lasha-page .dp-price-board .dp-col-1 .dp-inline-link .lasha-arrow { display: inline-block; margin-left: 0.6rem; vertical-align: middle; }
-.lasha-page .dp-price-board .dp-link-tail { white-space: nowrap; }
-
-/* Board from 1200px: category and sizes share the first column, then the three options. */
-@media (min-width: 1200px) {
-  .lasha-page .dp-price-board .dp-price-table tr { grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); grid-template-rows: auto 1fr; }
-  .lasha-page .dp-price-board .dp-price-table :is(.dp-col-0, .dp-col-1) { grid-column: 1; padding-right: 2rem; }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-0 { grid-row: 1; }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-1 { grid-row: 2; }
-  .lasha-page .dp-price-board .dp-price-table :is(.dp-col-2, .dp-col-3, .dp-col-4) { grid-row: 1 / span 2; padding: 0 var(--board-pad); }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-2 { grid-column: 2; }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-3 { grid-column: 3; }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-4 { grid-column: 4; }
-
-  /* Head: CATEGORY over LISTED SIZES, then the option names in AiXESS Head, on one baseline. */
-  .lasha-page .dp-price-board .dp-price-table thead tr { grid-template-rows: 1fr auto; }
-  .lasha-page .dp-price-board .dp-price-table thead th { color: color-mix(in srgb, var(--l-ink, #171a1d) 78%, transparent); font-size: var(--public-label); font-weight: 600; letter-spacing: 0.16em; line-height: 1.4; text-transform: uppercase; }
-  .lasha-page .dp-price-board .dp-price-table thead .dp-col-0 { align-self: end; }
-  .lasha-page .dp-price-board .dp-price-table thead .dp-col-1 { padding-bottom: 1.3rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 62%, transparent); }
-  .lasha-page .dp-price-board .dp-price-table thead :is(.dp-col-2, .dp-col-3, .dp-col-4) {
-    align-self: stretch;
-    display: flex;
-    align-items: flex-end;
-    padding-top: 2rem;
-    padding-bottom: 1.3rem;
-    color: var(--l-ink, #171a1d);
-    font-family: var(--l-head);
-    font-size: clamp(1.35rem, 1.65vw, 1.7rem);
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    line-height: 1;
-  }
-  .lasha-page .dp-price-board .dp-price-table thead .dp-col-4 { color: #fff; }
-
-  /* Rows: a heavy rule under the head, hairlines between categories, lighter lines on the pillar. */
-  .lasha-page .dp-price-board .dp-price-table tbody tr > * { border-top: 1px solid var(--board-line); }
-  .lasha-page .dp-price-board .dp-price-table tbody tr > .dp-col-1 { border-top: 0; }
-  .lasha-page .dp-price-board .dp-price-table tbody tr > .dp-col-4 { border-top-color: var(--board-band-line); }
-  .lasha-page .dp-price-board .dp-price-table tbody tr:first-child > :not(.dp-col-1) { border-top: 2px solid var(--board-rule); }
-  .lasha-page .dp-price-board .dp-price-table tbody tr:first-child > .dp-col-4 { border-top-color: rgb(255 255 255 / 0.6); }
-  .lasha-page .dp-price-board .dp-price-table tbody tr:last-child > :is(.dp-col-1, .dp-col-2, .dp-col-3) { border-bottom: 1px solid var(--board-line); }
-  .lasha-page .dp-price-board .dp-price-table tbody th { padding-top: 1.75rem; }
-  .lasha-page .dp-price-board .dp-price-table tbody .dp-col-1 { padding-top: 0.6rem; padding-bottom: 1.75rem; }
-  .lasha-page .dp-price-board .dp-price-table tbody :is(.dp-col-2, .dp-col-3, .dp-col-4) { padding-top: 1.75rem; padding-bottom: 1.75rem; }
-  .lasha-page .dp-price-board .dp-price-table tbody tr:last-child > .dp-col-4 { padding-bottom: 2.2rem; }
-}
-
-/* Cards below 1200px: name, sizes and link, the two plans side by side, the upfront pillar last. */
-@media (max-width: 1199px) {
-  .lasha-page .dp-price-board .dp-price-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .lasha-page .dp-price-board .dp-price-table tbody { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap: 1rem; }
-  .lasha-page .dp-price-board .dp-price-table tbody tr { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto auto 1fr auto; border: 1px solid var(--board-line); background: var(--l-card, #fff); }
-  .lasha-page .dp-price-board .dp-price-table :is(.dp-col-0, .dp-col-1, .dp-col-4) { grid-column: 1 / -1; }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-0 { padding: 1.4rem var(--board-pad) 0; }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-1 { padding: 0.9rem var(--board-pad) 1.3rem; }
-  .lasha-page .dp-price-board .dp-price-table :is(.dp-col-2, .dp-col-3) { display: flex; flex-direction: column; padding: 1.1rem var(--board-pad) 1.3rem; border-top: 1px solid var(--board-line); }
-  /* A label that wraps pushes nothing: both amounts sit on the same line. */
-  .lasha-page .dp-price-board .dp-price-table :is(.dp-col-2, .dp-col-3)::before { flex: 1 0 auto; }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-3 { border-left: 1px solid var(--board-line); }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-4 { padding: 1.2rem var(--board-pad) 1.4rem; }
-  /* Labels sit above their amounts. */
-  .lasha-page .dp-price-board .dp-price-table td::before { content: attr(data-label); display: block; margin-bottom: 0.55rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); font-size: var(--public-label); font-weight: 600; letter-spacing: 0.14em; line-height: 1.4; text-transform: uppercase; }
-  .lasha-page .dp-price-board .dp-price-table td.dp-col-1::before { margin-bottom: 0.3rem; }
-  .lasha-page .dp-price-board .dp-price-table td.dp-col-4::before { color: rgb(255 255 255 / 0.84); }
-  .lasha-page .dp-price-board .dp-price-table td > strong { font-size: clamp(1.7rem, 4.2vw, 2.1rem); }
-  .lasha-page .dp-price-board .dp-price-table td.dp-col-4 > strong { font-size: clamp(2rem, 5vw, 2.5rem); }
-}
-@media (max-width: 379px) {
-  .lasha-page .dp-price-board .dp-price-table :is(.dp-col-2, .dp-col-3) { grid-column: 1 / -1; }
-  .lasha-page .dp-price-board .dp-price-table .dp-col-3 { border-left: 0; }
-}
-
-/* DOWNTOWN ONE launch mix and plan comparison: the same board language as TRESORA's prices
-   (Kemo, 26 October 2026: "every page to be perfect in projects"). The mix's starting prices and
-   the PDC plan (the page's headline 10%) run in the theme pillar. Both stay real tables. */
-.lasha-page :is(.dp-mix-board, .dp-compare-board) { max-width: 64rem; }
-.lasha-page .dp-compare-board { margin-top: clamp(1.4rem, 3vw, 2.2rem); }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table { table-layout: fixed; }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table :is(th, td) { padding: 1.5rem var(--board-pad); border-top: 1px solid var(--board-line); border-bottom: 0; transition: background-color 180ms ease, color 180ms ease; }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table :is(th, td):first-child { padding-left: 0; }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table thead :is(th, td) { padding-top: 2rem; padding-bottom: 1.2rem; border-top: 0; vertical-align: bottom; }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table thead th:not(:first-child) { color: var(--l-ink, #171a1d); font-family: var(--l-head); font-size: clamp(1.35rem, 1.65vw, 1.7rem); font-weight: 700; letter-spacing: 0.01em; line-height: 1; text-align: left; }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table tbody tr:first-child > * { border-top: 2px solid var(--board-rule); }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table tbody tr:last-child > * { border-bottom: 1px solid var(--board-line); }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table td { text-align: left; white-space: normal; }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table td > strong { display: block; color: var(--l-blue); font-family: var(--l-head); font-size: clamp(1.9rem, 2.6vw, 2.75rem); font-weight: 700; letter-spacing: 0.005em; line-height: 0.95; white-space: nowrap; }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table td > strong + span { display: block; margin-top: 0.5rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 76%, transparent); font-size: var(--public-note); font-weight: 400; letter-spacing: 0.01em; line-height: 1.4; white-space: nowrap; }
-/* The pillar. */
-.lasha-page .dp-mix-board .dp-col-2,
-.lasha-page .dp-compare-board .dp-col-1 { background: var(--board-band); color: #fff; }
-.lasha-page :is(.dp-mix-board .dp-table .dp-col-2, .dp-compare-board .dp-table .dp-col-1) { border-top-color: var(--board-band-line); border-bottom-color: transparent; }
-.lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table thead :is(.dp-mix-board .dp-col-2, .dp-compare-board .dp-col-1),
-.lasha-page :is(.dp-mix-board .dp-table td.dp-col-2, .dp-compare-board .dp-table td.dp-col-1) > strong { color: #fff; }
-.lasha-page :is(.dp-mix-board .dp-table td.dp-col-2, .dp-compare-board .dp-table td.dp-col-1) > strong + span { color: rgb(255 255 255 / 0.84); }
-.lasha-page :is(.dp-mix-board .dp-table tbody tr:first-child .dp-col-2, .dp-compare-board .dp-table tbody tr:first-child .dp-col-1) { border-top-color: rgb(255 255 255 / 0.6); }
-@media (hover: hover) {
-  .lasha-page :is(.dp-mix-board, .dp-compare-board) .dp-table tbody tr:hover > * { background: var(--board-tint); }
-  .lasha-page :is(.dp-mix-board .dp-table tbody tr:hover > .dp-col-2, .dp-compare-board .dp-table tbody tr:hover > .dp-col-1) { background: var(--board-band-hover); }
-  .lasha-page .dp-mix-board .dp-table tbody tr:hover th .dp-board-name { color: var(--l-blue); }
-}
-
-/* Launch mix: type, units at launch, then the pillar. */
-.lasha-page .dp-mix-board thead .dp-col-0 { width: 46%; }
-.lasha-page .dp-mix-board thead .dp-col-1 { width: 22%; }
-.lasha-page .dp-mix-board tbody th { font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1.02; text-transform: uppercase; }
-.lasha-page .dp-mix-board .dp-board-name { display: block; transition: color 180ms ease; }
-.lasha-page .dp-mix-board tbody th .dp-inline-link { display: block; width: fit-content; margin-top: 0.9rem; font-family: var(--l-body); font-size: var(--public-label); font-weight: 600; letter-spacing: 0.14em; line-height: 1.4; text-transform: uppercase; }
-.lasha-page .dp-mix-board tbody th .dp-inline-link .lasha-arrow { display: inline-block; margin-left: 0.6rem; vertical-align: middle; }
-.lasha-page .dp-mix-board .dp-link-tail { white-space: nowrap; }
-.lasha-page .dp-mix-board .dp-table td.dp-col-1 > strong { color: var(--l-ink, #171a1d); }
-
-/* Plan comparison: the step on the left, one column per plan. */
-.lasha-page .dp-compare-board thead td:first-child { width: 40%; }
-.lasha-page .dp-compare-board tbody th { font-family: var(--l-head); font-size: clamp(1.35rem, 1.65vw, 1.7rem); font-weight: 700; line-height: 1.02; text-transform: uppercase; }
-.lasha-page .dp-compare-board tbody th .dp-schedule-mark { font-family: var(--l-body); text-transform: none; }
-.lasha-page .dp-compare-board .dp-schedule-mark { display: block; margin-top: 0.45rem; font-size: var(--public-note); font-weight: 400; letter-spacing: 0; line-height: 1.4; white-space: normal; }
-.lasha-page .dp-compare-board .dp-table tfoot :is(th, td) { padding-top: 1.3rem; padding-bottom: 1.3rem; border-top: 2px solid var(--board-rule); color: var(--l-ink, #171a1d); font-family: var(--l-head); font-size: clamp(1.35rem, 1.65vw, 1.7rem); font-weight: 700; line-height: 1; text-transform: uppercase; }
-.lasha-page .dp-compare-board .dp-table tfoot td.dp-col-1 { border-top-color: rgb(255 255 255 / 0.6); color: #fff; }
-
-/* Phones: the mix becomes one card per type ending in the pillar; the comparison keeps its columns. */
-@media (max-width: 599px) {
-  .lasha-page .dp-mix-board thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .lasha-page .dp-mix-board .dp-table,
-  .lasha-page .dp-mix-board .dp-table :is(tbody, tr, th, td) { display: block; width: auto; }
-  .lasha-page .dp-mix-board .dp-table tbody { display: grid; gap: 1rem; }
-  .lasha-page .dp-mix-board .dp-table tbody tr { border: 1px solid var(--board-line); background: var(--l-card, #fff); }
-  .lasha-page .dp-mix-board .dp-table tbody tr > * { border: 0; }
-  .lasha-page .dp-mix-board .dp-table tbody tr:first-child > *,
-  .lasha-page .dp-mix-board .dp-table tbody tr:last-child > * { border-top: 0; border-bottom: 0; }
-  .lasha-page .dp-mix-board .dp-table :is(th, td),
-  .lasha-page .dp-mix-board .dp-table :is(th, td):first-child { padding: 1.1rem var(--board-pad) 1.2rem; }
-  .lasha-page .dp-mix-board .dp-table th { padding-top: 1.4rem; padding-bottom: 1.1rem; }
-  .lasha-page .dp-mix-board .dp-table td.dp-col-1 { border-top: 1px solid var(--board-line); }
-  .lasha-page .dp-mix-board .dp-table td::before { content: attr(data-label); display: block; margin-bottom: 0.55rem; color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); font-size: var(--public-label); font-weight: 600; letter-spacing: 0.14em; line-height: 1.4; text-transform: uppercase; }
-  .lasha-page .dp-mix-board .dp-table td.dp-col-2::before { color: rgb(255 255 255 / 0.84); }
-  .lasha-page .dp-mix-board .dp-table td.dp-col-1 > strong { font-size: clamp(1.7rem, 4.2vw, 2.1rem); }
-  .lasha-page .dp-mix-board .dp-table td.dp-col-2 > strong { font-size: clamp(2rem, 5vw, 2.5rem); }
-
-  .lasha-page .dp-compare-board .dp-table :is(th, td) { padding: 1.1rem 0.6rem; }
-  .lasha-page .dp-compare-board .dp-table thead :is(th, td) { padding-top: 1.4rem; padding-bottom: 1rem; }
-  .lasha-page .dp-compare-board thead td:first-child { width: 42%; }
-  .lasha-page .dp-compare-board tbody th { font-size: 1.2rem; }
-  .lasha-page .dp-compare-board .dp-table thead th:not(:first-child),
-  .lasha-page .dp-compare-board .dp-table tfoot :is(th, td) { font-size: 1.2rem; }
-  .lasha-page .dp-compare-board .dp-table td > strong { font-size: clamp(1.45rem, 6vw, 1.9rem); }
-  .lasha-page .dp-compare-board .dp-table td > strong + span { white-space: normal; }
-}
-
-/* Payment schedules: one card per plan. TRESORA: 40/60 beside the wider post-handover plan from
-   1100px; DOWNTOWN ONE: the two plans side by side from 800px. */
-.lasha-page .dp-plans-pay { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(1rem, 2vw, 1.6rem); max-width: 81.2rem; margin-top: clamp(2rem, 4vw, 3rem); }
-@media (min-width: 1100px) { .lasha-page .dp-plans-pay { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); } }
-.lasha-page .dp-pay {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  min-width: 0;
-  padding: clamp(1.3rem, 2.6vw, 2.2rem);
-  border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent);
-  background: var(--l-card, #fff);
-}
-.lasha-page .dp-pay h3 { margin: 0; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1.1; text-transform: uppercase; }
-.lasha-page .dp-pay-lead { max-width: 52ch; margin: 0; font-size: var(--v4-text); line-height: 1.55; }
-.lasha-page .dp-pay .dp-inline-link { margin-top: auto; padding-top: 0.4rem; font-size: var(--v4-label); }
-.lasha-page .dp-phases { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem clamp(1.2rem, 2.4vw, 2rem); align-items: start; align-self: stretch; }
-@media (min-width: 700px) { .lasha-page .dp-phases { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.lasha-page .dp-phases > .dp-schedule:first-child { grid-column: 1 / -1; }
-.lasha-page .dp-schedule { width: 100%; }
-.lasha-page .dp-phases > .dp-schedule { align-self: start; }
-.lasha-page .dp-schedule caption { padding-bottom: 0.55rem; color: var(--l-blue); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.16em; line-height: 1.35; text-align: left; text-transform: uppercase; }
-.lasha-page .dp-schedule :is(th, td) { padding-block: 0.6rem; font-weight: 400; }
-.lasha-page .dp-schedule td { text-align: right; white-space: nowrap; font-weight: 600; }
-.lasha-page .dp-schedule tfoot :is(th, td) { border-top: 2px solid var(--l-ink, #171a1d); font-weight: 700; }
-.lasha-page .dp-schedule-mark { color: color-mix(in srgb, var(--l-ink, #171a1d) 70%, transparent); font-size: var(--v4-small); }
-/* TRESORA's schedules speak the board language too: percentages in AiXESS Head, each total on the
-   theme pillar colour. */
-.lasha-page .dp-plans-pay .dp-schedule td { color: var(--l-blue); font-family: var(--l-head); font-size: 1.35rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1; vertical-align: middle; }
-.lasha-page .dp-plans-pay .dp-schedule th { vertical-align: middle; }
-.lasha-page .dp-plans-pay .dp-schedule tfoot :is(th, td) { padding: 0.85rem 0.9rem; border-top: 0; background: var(--board-band); color: #fff; font-family: var(--l-head); font-size: 1.35rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1; text-transform: uppercase; }
-.lasha-page .dp-plans-pay .dp-schedule tbody tr:last-child :is(th, td) { border-bottom: 0; }
-
-/* Plans: the whole page on white, never cropped, opening at full size. */
-.lasha-page .dp-plans {
-  --dp-plan-aspect: 16 / 9;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1.4rem, 2.6vw, 2.2rem) clamp(1rem, 2vw, 1.6rem);
-  max-width: 81.2rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.lasha-page .dp-plans-2 { --dp-plan-aspect: 1.414; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.2rem; }
-.lasha-page .dp-plans-layouts { --dp-plan-aspect: 4 / 5; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.lasha-page .dp-plan { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
-.lasha-page .dp-plan-image { padding: clamp(0.4rem, 1vw, 0.75rem); border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 18%, transparent); background: #fff; }
-.lasha-page .dp-plan-image img { display: block; width: 100%; height: auto; aspect-ratio: var(--dp-plan-aspect); object-fit: contain; transition: transform 300ms ease; }
-.lasha-page .dp-plan-image:hover img { transform: scale(1.02); }
-.lasha-page .dp-plan h3 { margin: 0.9rem 0 0; font-family: var(--l-head); font-size: var(--v4-h3); font-weight: 700; line-height: 1.1; text-transform: uppercase; }
-.lasha-page .dp-plan p { margin: 0.45rem 0 0; color: color-mix(in srgb, var(--l-ink, #171a1d) 78%, transparent); font-size: var(--v4-small); line-height: 1.5; }
-.lasha-page .dp-plan .dp-inline-link { margin-top: 0.6rem; font-size: var(--v4-label); }
-@media (max-width: 1099px) {
-  .lasha-page .dp-plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lasha-page .dp-plans-layouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 699px) {
-  .lasha-page .dp-plans-layouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 599px) {
-  .lasha-page :is(.dp-plans, .dp-plans-2) { grid-template-columns: minmax(0, 1fr); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .lasha-page .dp-plan-image img { transition: none; }
-  .lasha-page .dp-plan-image:hover img { transform: none; }
-}
-
-/* Layout filter (DOWNTOWN ONE). */
-.lasha-page .dp-layouts { margin-top: clamp(2.6rem, 5vw, 4rem); }
-.lasha-page .dp-layouts .rp-subtitle { margin-top: 0; }
-.lasha-page .dp-filter { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.4rem 0 1.6rem; }
-.lasha-page .dp-filter button {
-  min-height: 2.75rem;
-  padding: 0.6rem 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 45%, transparent);
-  background: transparent;
-  color: var(--l-ink, #171a1d);
-  font: inherit;
-  font-size: var(--v4-label);
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  line-height: 1.2;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-.lasha-page .dp-filter button:hover { border-color: var(--l-ink, #171a1d); }
-.lasha-page .dp-filter button[aria-pressed='true'] { border-color: var(--dp-press, #2557d6); background: var(--dp-press, #2557d6); color: #fff; }
-.lasha-page .dp-filter button:focus-visible { outline: 2px solid var(--l-blue); outline-offset: 2px; }
-html:root[data-time-theme='afternoon'] .lasha-page .dp-filter { --dp-press: #3c5a41; }
-html:root[data-time-theme='night'] .lasha-page .dp-filter { --dp-press: var(--l-night-button, #2557d6); }
-
-/* Download buttons for the developers' PDFs: the file type and size after the label. */
-.lasha-page .dp-download { flex-wrap: wrap; gap: 0.3rem 0.6rem; }
-@media (max-width: 599px) {
-  /* Label with the file size under it on the left, the arrow on the right. */
-  .lasha-page .dp-page .rp-actions .dp-download { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 1rem; }
-  .lasha-page .dp-download .dp-download-size { grid-column: 1; grid-row: 2; }
-  .lasha-page .dp-download .lasha-arrow { grid-column: 2; grid-row: 1 / span 2; }
-}
-.lasha-page .dp-download-size { font-size: 0.85em; font-weight: 500; letter-spacing: 0.06em; opacity: 0.78; white-space: nowrap; }
-
-/* The lightbox's link to the full-size file. */
-.rp-lightbox .dp-lightbox-full { color: #fff; font-weight: 600; text-decoration: underline; text-underline-offset: 0.25em; }
-.rp-lightbox .dp-lightbox-full:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-
-/* Afternoon: the small accent labels on the pale sage bands use the deeper sage. */
-html:root[data-time-theme='afternoon'] .lasha-page .dp-page :is(.dp-figure-kind, .dp-schedule caption) { color: #3c5a41; }
+/* The currency disclaimer under TRESORA's closing section. */
+.lasha-page .dp-terms { max-width: 72ch; margin-top: clamp(2.4rem, 5vw, 3.6rem); }
+.lasha-page .dp-terms h3 { margin: 0 0 0.6rem; font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.16em; line-height: 1.4; text-transform: uppercase; }
+.lasha-page .dp-terms p { margin: 0; color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); font-size: var(--v4-small); line-height: 1.55; }
 
 /* ---------- Homepage cards ---------- */
 .lasha-home .dp-listing { padding: calc(70 * var(--u)) calc(70 * var(--u)) calc(30 * var(--u)); color: var(--l-ink, #171a1d); }
