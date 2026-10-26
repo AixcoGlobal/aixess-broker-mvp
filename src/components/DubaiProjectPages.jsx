@@ -1,50 +1,26 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { DUBAI_PROJECTS_COPY } from "../dubai-projects-copy.js";
-import { DUBAI_SOURCES_COPY } from "../dubai-projects-sources-copy.js";
-import {
-  DOWNTOWN_LAYOUTS, DOWNTOWN_MAPS_URL, DOWNTOWN_MIX, DOWNTOWN_PLANS, DUBAI_DOCS, TRESORA_FLOORS,
-  TRESORA_FROM_AED, TRESORA_PLAN_4060, TRESORA_PLAN_PHPP, TRESORA_PRICES, docBytes, dubaiImage, usdFromAed,
-} from "../dubai-projects-data.js";
-import { formatUsdOnly } from "../currency.js";
+import { DUBAI_IMAGES_COPY } from "../dubai-projects-images-copy.js";
+import { dubaiImage } from "../dubai-projects-data.js";
 import { CONTACT } from "../contact-copy.js";
 import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
-import { Lightbox } from "./ReveranceProjectInfo.jsx";
 import "./reverance-project.css";
 import "./dubai-projects.css";
 
-// TRESORA by WADAN and SAMANA Downtown One, each on its own page: #tresora and #downtown-one, with
-// sections at #tresora/prices and the like. Copy from the two DOCX briefs (22 October 2026), facts,
-// renders, plans and downloads from the developers' source packet (23 October 2026). Renders are the
-// developers' own, labelled as renderings; plans open whole and unscaled-down in the lightbox, with
-// the original PDF to download. Every request button is an email to AiXESS that names the project and
-// the request, the same route as Reverance's materials request (the Vercel site has no form server).
+// TRESORA and Downtown One, each on its own page: #tresora and #downtown-one, with sections at
+// #tresora/spaces and the like. Kemo, 26 October 2026: the two Word briefs are the only approved text,
+// so every visible word comes from them (dubai-projects-copy.js) and the sections follow their order.
+// The developers' renderings stay as pictures, without captions. Every request button is an email to
+// AiXESS that names the project and the request (the Vercel site has no form server).
 
 const reducedMotion = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 function useDubaiCopy(key) {
   const { locale } = useLanguage();
   const copy = DUBAI_PROJECTS_COPY[locale] || DUBAI_PROJECTS_COPY.en;
-  const sources = DUBAI_SOURCES_COPY[locale] || DUBAI_SOURCES_COPY.en;
-  return { locale, common: copy.common, project: key ? copy[key] : null, all: copy, labels: sources.common, extra: key ? sources[key] : null };
-}
-
-// Figures in the page's language: AED exactly as supplied, US dollars derived at the dirham's peg.
-function useFormat() {
-  const { locale } = useLanguage();
-  const dateLocale = locale === "en" ? "en-GB" : locale;
-  const aed = (value) => new Intl.NumberFormat(locale, { style: "currency", currency: "AED", minimumFractionDigits: Number.isInteger(value) ? 0 : 2, maximumFractionDigits: 2 }).format(value);
-  const usd = (aedValue) => formatUsdOnly(usdFromAed(aedValue), locale);
-  const pct = (value) => new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 1 }).format(value / 100);
-  const number = (value) => new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(value);
-  const day = (iso) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
-  const month = (iso) => new Intl.DateTimeFormat(dateLocale, { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}-01T00:00:00Z`));
-  // {{price}} is TRESORA's 40/60 starting price, {{studio}} DOWNTOWN ONE's studio launch price.
-  const text = (value) => value
-    .replace("{{price}}", usd(TRESORA_FROM_AED))
-    .replace("{{studio}}", usd(DOWNTOWN_MIX[0].fromAed))
-    .replace(/\{\{pct:(\d+)\}\}/g, (_, n) => pct(Number(n)));
-  return { aed, usd, pct, number, day, month, text, locale };
+  const images = DUBAI_IMAGES_COPY[locale] || DUBAI_IMAGES_COPY.en;
+  return { common: copy.common, project: key ? copy[key] : null, all: copy, images: key ? images[key] : null };
 }
 
 // An email to AiXESS's verified address, already naming the project, its location and the request.
@@ -56,33 +32,11 @@ export function projectMailto(common, project, request) {
   return `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-function RequestButton({ common, project, request, label, primary = false }) {
+// The button's own words are the request named in the email.
+function RequestButton({ common, project, label, primary = false }) {
   return (
-    <a className={`button ${primary ? "button-primary" : "button-ghost"}`} href={projectMailto(common, project, request)} aria-label={`${label} (${common.opensEmail})`}>
+    <a className={`button ${primary ? "button-primary" : "button-ghost"}`} href={projectMailto(common, project, label)} aria-label={`${label} (${common.opensEmail})`}>
       {label}<LashaArrow length={24} />
-    </a>
-  );
-}
-
-// `wrapTail` keeps the last word and the arrow together when a long label wraps (price board).
-function RequestLink({ common, project, request, label, wrapTail = false }) {
-  const split = label.lastIndexOf(" ");
-  return (
-    <a className="dp-inline-link" href={projectMailto(common, project, request)} aria-label={`${label} (${common.opensEmail})`}>
-      {wrapTail && split > 0
-        ? <>{label.slice(0, split + 1)}<span className="dp-link-tail">{label.slice(split + 1)}<LashaArrow length={20} /></span></>
-        : <>{label}<LashaArrow length={20} /></>}
-    </a>
-  );
-}
-
-// A direct link to one of the developers' original PDFs, with its size.
-function DownloadButton({ href, label, labels, primary = false }) {
-  const { locale } = useLanguage();
-  const megabytes = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(docBytes(href) / 1e6);
-  return (
-    <a className={`button ${primary ? "button-primary" : "button-ghost"} dp-download`} href={href} download aria-label={`${label} (${labels.pdf}, ${megabytes} MB)`}>
-      {label}<span className="dp-download-size" aria-hidden="true">{labels.pdf} · {megabytes} MB</span><LashaArrow length={24} />
     </a>
   );
 }
@@ -112,7 +66,7 @@ function sectionLinkClick(route, section) {
   };
 }
 
-// "#tresora/prices" opens the page at that section (shared links, reload, Back and Forward).
+// "#tresora/spaces" opens the page at that section (shared links, reload, Back and Forward).
 function useSectionFromHash(route) {
   useEffect(() => {
     const timers = [];
@@ -133,43 +87,20 @@ function useSectionFromHash(route) {
   }, [route]);
 }
 
-// One lightbox per page: open(items, index) shows a set of images; focus returns to the trigger.
-function useLightbox(labels) {
-  const [state, setState] = useState(null);
-  const trigger = useRef(null);
-  const open = useCallback((items, index, event) => { trigger.current = event?.currentTarget ?? null; setState({ items, index }); }, []);
-  const close = useCallback(() => {
-    setState(null);
-    window.setTimeout(() => trigger.current?.focus({ preventScroll: true }), 0);
-  }, []);
-  const step = useCallback((delta) => setState((current) => current && { ...current, index: (current.index + delta + current.items.length) % current.items.length }), []);
-  const lightbox = state ? <Lightbox items={state.items} index={state.index} onClose={close} onStep={step} labels={labels.lightbox} /> : null;
-  return { open, lightbox };
-}
-
-// A lightbox item: [caption, image sources, description, link to the full-size file].
-function lightboxItem(slug, caption, alt, labels) {
-  const image = dubaiImage(slug);
-  const extra = <a className="dp-lightbox-full" href={image.full} target="_blank" rel="noopener noreferrer" aria-label={`${labels.openFull} (${labels.opensNewTab})`}>{labels.openFull}</a>;
-  return [caption, image, alt, extra];
-}
-
 // The page hero: copy on the theme's ground, the developer's rendering beside it (above it on phones),
 // so no text ever sits on the photograph. The hero grows with its copy.
-function ProjectHero({ header, route, eyebrow, hero, developer, labels, image, imageAlt, children }) {
+function ProjectHero({ header, route, hero, image, imageAlt, children }) {
   return (
     <section className="lasha-page-hero lasha-page-hero-type dp-hero dp-hero-media" aria-labelledby={`${route}-title`}>
       {header}
       <figure className="dp-hero-figure">
         <Picture slug={image} alt={imageAlt} sizes="(max-width: 1099px) 100vw, 36vw" eager />
-        <figcaption>{labels.rendering}</figcaption>
       </figure>
       <div className="lasha-page-hero-copy dp-hero-copy">
         <div className="dp-hero-head">
-          <p className="lasha-eyebrow">{eyebrow}</p>
           <h1 className="lasha-page-hero-title" id={`${route}-title`}>{hero.title.map((line) => <span key={line}>{line}</span>)}</h1>
           <p className="dp-hero-subtitle">{hero.subtitle}</p>
-          <p className="dp-hero-developer">{labels.developedBy} <strong>{developer}</strong></p>
+          <p className="dp-hero-tagline">{hero.tagline}</p>
         </div>
         <div className="dp-hero-side">{children}</div>
       </div>
@@ -187,100 +118,49 @@ function SectionHeading({ id, eyebrow, title, lead }) {
   );
 }
 
-// The price is tied to the note that qualifies it for screen readers; no asterisk (AiXESS uses * only for corrections).
-function HeroFacts({ facts, format, noteId }) {
-  return (
-    <dl className="dp-hero-facts">
-      {facts.map(([label, text, flag]) => (
-        <div key={label}>
-          <dt>{label}</dt>
-          <dd aria-describedby={flag === "price" ? noteId : undefined}>
-            {format.text(text)}
-          </dd>
-        </div>
-      ))}
-    </dl>
-  );
+function Paragraphs({ items, className = "dp-columns" }) {
+  return <div className={className}>{items.map((text) => <p key={text}>{text}</p>)}</div>;
 }
 
-// A captioned rendering that opens larger.
-function RenderFigure({ slug, caption, alt, labels, onOpen, sizes, className = "" }) {
+// A rendering on its own, without a caption.
+function RenderFigure({ slug, alt, sizes, className = "" }) {
   return (
     <figure className={`dp-figure ${className}`}>
-      <button type="button" onClick={(event) => onOpen([lightboxItem(slug, caption, alt, labels)], 0, event)} aria-label={`${labels.viewLarger}: ${alt}`}>
-        <Picture slug={slug} sizes={sizes} />
-      </button>
-      <figcaption><span>{caption}</span> <span className="dp-figure-kind">{labels.rendering}</span></figcaption>
+      <div className="dp-figure-frame"><Picture slug={slug} alt={alt} sizes={sizes} /></div>
     </figure>
   );
 }
 
-function Gallery({ items, labels, onOpen }) {
-  const set = items.map(([slug, caption, alt]) => lightboxItem(slug, caption, alt, labels));
+// Renderings without captions. `still`: TRESORA's brochure renderings, small sources shown near their own size.
+function Gallery({ items, still = false }) {
   return (
-    <ul className="rp-gallery dp-gallery">
-      {items.map(([slug, caption, alt], index) => (
+    <ul className={`rp-gallery dp-gallery${still ? " dp-gallery-still" : ""}`}>
+      {items.map(([slug, alt]) => (
         <li key={slug}>
-          <button type="button" onClick={(event) => onOpen(set, index, event)} aria-label={`${labels.viewLarger}: ${alt}`}>
-            <Picture slug={slug} sizes="(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 31vw" />
-            <span className="rp-gallery-label">{caption}</span>
-          </button>
+          <Picture slug={slug} alt={alt} sizes={still ? "(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 27rem" : "(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 31vw"} />
         </li>
       ))}
     </ul>
-  );
-}
-
-// Brochure renderings captured at about 584px: shown at their own size and never enlarged, so no lightbox.
-function StillGallery({ items, className = "" }) {
-  return (
-    <ul className={`rp-gallery dp-gallery dp-gallery-still ${className}`}>
-      {items.map(([slug, caption, alt]) => (
-        <li key={slug}>
-          <figure>
-            <Picture slug={slug} alt={alt} sizes="(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 27rem" />
-            <figcaption className="rp-gallery-label">{caption}</figcaption>
-          </figure>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-// A technical plan: shown whole (contain, never cropped), opening at full size.
-function PlanCard({ slug, thumb, title, text, alt, labels, onOpen, set, index, children }) {
-  return (
-    <li className="dp-plan">
-      <button type="button" className="dp-plan-image" onClick={(event) => onOpen(set, index, event)} aria-label={`${labels.viewLarger}: ${title}`}>
-        <Picture slug={thumb || slug} alt={alt || ""} sizes="(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 31vw" />
-      </button>
-      <h3>{title}</h3>
-      {text && <p>{text}</p>}
-      {children}
-    </li>
   );
 }
 
 export function TresoraPage({ header }) {
   const route = "tresora";
-  const { common, project, labels, extra } = useDubaiCopy("tresora");
-  const format = useFormat();
-  const { open, lightbox } = useLightbox(labels);
+  const { common, project, images } = useDubaiCopy("tresora");
   useSectionFromHash(route);
-  const { hero, discover, spaces, lifestyle, location, payment, more } = project;
-  const { prices, floors, plans, gallery, amenityGallery, app } = extra;
+  const { hero, discover, highlights, spaces, lifestyle, location, payment, more, currency } = project;
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.mapQuery)}`;
-  const floorSet = TRESORA_FLOORS.map((number) => lightboxItem(`tresora-floor-${number}`, floors.items[number][0], floors.items[number][1], labels));
-  const priceCell = (value) => (value === null ? <span className="dp-price-none">{prices.noPrice}</span> : <><strong>{format.usd(value)}</strong><span>{format.aed(value)}</span></>);
 
   return (
     <>
-      <ProjectHero header={header} route={route} eyebrow={common.eyebrow} hero={hero} developer={extra.developer} labels={labels} image="tresora-tower" imageAlt={extra.heroAlt}>
+      <ProjectHero header={header} route={route} hero={hero} image="tresora-tower" imageAlt={images.hero}>
         <p className="lasha-page-hero-text">{hero.intro}</p>
-        <HeroFacts facts={hero.facts} format={format} noteId="tresora-currency" />
+        <dl className="dp-hero-facts">
+          {hero.facts.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
+        </dl>
         <div className="it-hero-actions">
           <a className="button button-primary" href={`#${route}/spaces`} onClick={sectionLinkClick(route, "spaces")}>{hero.explore}<LashaArrow length={24} /></a>
-          <RequestButton common={common} project={project} request={common.requests.availability} label={hero.availability} />
+          <RequestButton common={common} project={project} label={hero.availability} />
         </div>
       </ProjectHero>
 
@@ -288,100 +168,39 @@ export function TresoraPage({ header }) {
         <section className="rp-section" id="tresora-discover" aria-labelledby="tresora-discover-title">
           <div className="dp-media-split dp-media-split-head">
             <SectionHeading id="tresora-discover-title" eyebrow={discover.eyebrow} title={discover.title} />
-            <div className="dp-columns dp-columns-1">{discover.body.map((text) => <p key={text}>{text}</p>)}</div>
-            <RenderFigure slug="tresora-facade" caption={extra.facade[0]} alt={extra.facade[1]} labels={labels} onOpen={open} sizes="(max-width: 899px) calc(100vw - 2.5rem), 46vw" />
+            <Paragraphs items={discover.body} className="dp-columns dp-columns-1" />
+            <RenderFigure slug="tresora-facade" alt={images.facade} sizes="(max-width: 899px) calc(100vw - 2.5rem), 46vw" />
           </div>
+        </section>
+
+        <section className="rp-section rp-mist" id="tresora-highlights" aria-labelledby="tresora-highlights-title">
+          <SectionHeading id="tresora-highlights-title" title={highlights.title} />
+          <ul className="dp-cards dp-cards-2">
+            {highlights.items.map(([value, label]) => <li key={label}><strong>{value}</strong><p>{label}</p></li>)}
+          </ul>
         </section>
 
         <section className="rp-section" id="tresora-spaces" aria-labelledby="tresora-spaces-title">
           <SectionHeading id="tresora-spaces-title" eyebrow={spaces.eyebrow} title={spaces.title} />
-          <div className="dp-columns">{spaces.body.map((text) => <p key={text}>{text}</p>)}</div>
-          <h3 className="rp-subtitle">{spaces.listTitle}</h3>
-          <ul className="rp-benefits dp-categories">
-            {spaces.categories.map((name, index) => (
-              <li key={name}><span className="rp-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><h4>{name}</h4></li>
-            ))}
-          </ul>
-          <p className="rp-note">{spaces.note}</p>
+          <Paragraphs items={spaces.body} />
+          <h3 className="dp-list-title dp-list-title-gap">{spaces.listTitle}</h3>
+          <ul className="dp-list dp-list-2">{spaces.categories.map((name) => <li key={name}>{name}</li>)}</ul>
           <div className="rp-actions">
-            <RequestButton common={common} project={project} request={common.requests.units} label={spaces.units} primary />
-            <RequestButton common={common} project={project} request={common.requests.prices} label={spaces.prices} />
+            <RequestButton common={common} project={project} label={spaces.units} primary />
+            <RequestButton common={common} project={project} label={spaces.prices} />
           </div>
         </section>
 
-        <section className="rp-section rp-mist" id="tresora-prices" aria-labelledby="tresora-prices-title">
-          <SectionHeading id="tresora-prices-title" eyebrow={prices.eyebrow} title={prices.title} lead={prices.lead} />
-          {/* The price board: explicit roles keep the table's semantics while its rows are laid out as a grid. */}
-          <div className="dp-table-wrap dp-price-board">
-            <table className="dp-table dp-price-table" role="table">
-              <thead role="rowgroup">
-                <tr role="row">{prices.columns.map((name, index) => <th key={name} scope="col" role="columnheader" className={`dp-col-${index}`}>{name}</th>)}</tr>
-              </thead>
-              <tbody role="rowgroup">
-                {TRESORA_PRICES.map((row) => (
-                  <tr key={row.key} role="row">
-                    <th scope="row" role="rowheader" className="dp-col-0">{prices.rows[row.key]}</th>
-                    <td role="cell" className="dp-col-1" data-label={prices.columns[1]}>
-                      <span className="dp-price-size">{row.sizes.map(format.number).join("–")} {labels.sqft}</span>
-                      <RequestLink common={common} project={project} request={`${common.requests.prices}: ${prices.rows[row.key]}`} label={`${labels.askAbout} ${prices.rows[row.key]}`} wrapTail />
-                    </td>
-                    <td role="cell" className="dp-col-2" data-label={prices.columns[2]}>{priceCell(row.plan4060)}</td>
-                    <td role="cell" className="dp-col-3" data-label={prices.columns[3]}>{priceCell(row.phpp)}</td>
-                    <td role="cell" className="dp-col-4" data-label={prices.columns[4]}>{priceCell(row.upfront)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="dp-table-after">{prices.onRequest}</p>
-          <ul className="dp-notes">{prices.notes.map((note) => <li key={note}>{note}</li>)}</ul>
-          <div className="dp-terms" id="tresora-currency">
-            <p>{labels.conversion}</p>
-          </div>
-        </section>
-
-        <section className="rp-section" id="tresora-floors" aria-labelledby="tresora-floors-title">
-          <SectionHeading id="tresora-floors-title" eyebrow={floors.eyebrow} title={floors.title} lead={floors.lead} />
-          <ul className="dp-plans">
-            {TRESORA_FLOORS.map((number, index) => (
-              <PlanCard key={number} slug={`tresora-floor-${number}`} title={floors.items[number][0]} text={floors.items[number][1]} alt={floors.items[number][1]} labels={labels} onOpen={open} set={floorSet} index={index} />
-            ))}
-          </ul>
-          <p className="rp-note">{floors.disclaimer}</p>
-          <div className="rp-actions">
-            <DownloadButton href={DUBAI_DOCS.tresoraFloorPlans} label={floors.download} labels={labels} primary />
-          </div>
-        </section>
-
-        <section className="rp-section rp-mist" id="tresora-gallery" aria-labelledby="tresora-gallery-title">
-          <SectionHeading id="tresora-gallery-title" eyebrow={gallery.eyebrow} title={gallery.title} />
-          <StillGallery items={gallery.items} />
-          <p className="rp-note">{gallery.note}</p>
-        </section>
-
-        <section className="rp-section" id="tresora-lifestyle" aria-labelledby="tresora-lifestyle-title">
-          <SectionHeading id="tresora-lifestyle-title" eyebrow={lifestyle.eyebrow} title={lifestyle.title} lead={lifestyle.lead} />
+        <section className="rp-section rp-mist" id="tresora-lifestyle" aria-labelledby="tresora-lifestyle-title">
+          <SectionHeading id="tresora-lifestyle-title" title={lifestyle.title} lead={lifestyle.lead} />
           <div className="dp-media-split dp-media-split-reverse">
-            <ul className="dp-list dp-list-2">
-              {lifestyle.amenities.map((name, index) => (
-                <li key={name}><span className="rp-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{name}</li>
-              ))}
-            </ul>
-            <RenderFigure slug="tresora-pool" caption={extra.pool[0]} alt={extra.pool[1]} labels={labels} onOpen={open} sizes="(max-width: 899px) calc(100vw - 2.5rem), 46vw" />
+            <div>
+              <h3 className="dp-list-title">{lifestyle.listTitle}</h3>
+              <ul className="dp-list dp-list-2">{lifestyle.amenities.map((name) => <li key={name}>{name}</li>)}</ul>
+            </div>
+            <RenderFigure slug="tresora-pool" alt={images.pool} sizes="(max-width: 899px) calc(100vw - 2.5rem), 46vw" />
           </div>
-          <h3 className="rp-subtitle">{amenityGallery.title}</h3>
-          <StillGallery items={amenityGallery.items} className="dp-gallery-2" />
-        </section>
-
-        <section className="rp-section rp-mist" id="tresora-app" aria-labelledby="tresora-app-title">
-          <SectionHeading id="tresora-app-title" eyebrow={app.eyebrow} title={app.title} lead={app.lead} />
-          <h3 className="dp-list-title">{app.featuresTitle}</h3>
-          <ul className="dp-list dp-list-app">
-            {app.features.map((name, index) => (
-              <li key={name}><span className="rp-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{name}</li>
-            ))}
-          </ul>
-          <p className="rp-note">{app.note}</p>
+          <Gallery items={images.gallery} still />
         </section>
 
         <section className="rp-section" id="tresora-location" aria-labelledby="tresora-location-title">
@@ -389,143 +208,60 @@ export function TresoraPage({ header }) {
           <div className="rp-split dp-split">
             <div>
               {location.body.map((text) => <p className="dp-text" key={text}>{text}</p>)}
-              <h3 className="dp-list-title">{location.nearbyTitle}</h3>
-              <ul className="dp-list dp-list-1">
-                {location.nearby.map((name) => <li key={name}>{name}</li>)}
-              </ul>
               <div className="rp-actions">
                 <a className="button button-primary" href={mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`${location.explore} (${common.opensMaps})`}>{location.explore}<LashaArrow length={24} /></a>
+                <RequestButton common={common} project={project} label={location.contact} />
               </div>
             </div>
-            <figure className="dp-figure dp-map">
-              <button type="button" onClick={(event) => open([lightboxItem("tresora-map", extra.map[0], extra.map[1], labels)], 0, event)} aria-label={`${labels.viewLarger}: ${extra.map[0]}`}>
-                <Picture slug="tresora-map" alt={extra.map[1]} sizes="(max-width: 899px) calc(100vw - 2.5rem), 40vw" />
-              </button>
-              <figcaption>{extra.map[0]}</figcaption>
-            </figure>
+            <RenderFigure slug="tresora-map" alt={images.map} className="dp-map" sizes="(max-width: 899px) calc(100vw - 2.5rem), 40vw" />
           </div>
         </section>
 
         <section className="rp-section rp-mist" id="tresora-payment" aria-labelledby="tresora-payment-title">
           <SectionHeading id="tresora-payment-title" eyebrow={payment.eyebrow} title={payment.title} />
-          <div className="dp-columns">{payment.body.map((text) => <p key={text}>{text}</p>)}</div>
-          <div className="dp-plans-pay">
-            <article className="dp-pay" aria-labelledby="tresora-plan-4060">
-              <h3 id="tresora-plan-4060">{plans.title4060}</h3>
-              <p className="dp-pay-lead">{plans.lead4060}</p>
-              <table className="dp-table dp-schedule">
-                <thead><tr><th scope="col">{plans.date}</th><th scope="col">{plans.payment}</th></tr></thead>
-                <tbody>
-                  {TRESORA_PLAN_4060.map(([when, value]) => (
-                    <tr key={when}>
-                      <th scope="row">{when === "booking" ? plans.booking : when === "completion" ? plans.completion : format.day(when)}</th>
-                      <td>{format.pct(value)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot><tr><th scope="row">{labels.total}</th><td>{format.pct(TRESORA_PLAN_4060.reduce((sum, [, value]) => sum + value, 0))}</td></tr></tfoot>
-              </table>
-            </article>
-            <article className="dp-pay dp-pay-wide" aria-labelledby="tresora-plan-phpp">
-              <h3 id="tresora-plan-phpp">{plans.titlePhpp}</h3>
-              <p className="dp-pay-lead">{plans.leadPhpp}</p>
-              <div className="dp-phases">
-                <table className="dp-table dp-schedule">
-                  <tbody><tr><th scope="row">{plans.down}</th><td>{format.pct(TRESORA_PLAN_PHPP.down)}</td></tr></tbody>
-                </table>
-                {[["toCompletion", TRESORA_PLAN_PHPP.toCompletion], ["afterCompletion", TRESORA_PLAN_PHPP.afterCompletion]].map(([phase, rows]) => (
-                  <table className="dp-table dp-schedule" key={phase}>
-                    <caption>{plans[phase]}</caption>
-                    <tbody>
-                      {rows.map(([when, value, mark]) => (
-                        <tr key={when}>
-                          <th scope="row">{format.month(when)}{mark && <span className="dp-schedule-mark"> · {plans.completionShort}</span>}</th>
-                          <td>{format.pct(value)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    <tfoot><tr><th scope="row">{labels.total}</th><td>{format.pct(rows.reduce((sum, [, value]) => sum + value, 0))}</td></tr></tfoot>
-                  </table>
-                ))}
-              </div>
-            </article>
-          </div>
-          <p className="rp-note">{plans.source}</p>
-          <div className="rp-actions">
-            <RequestButton common={common} project={project} request={plans.request} label={plans.ask} primary />
-            <DownloadButton href={DUBAI_DOCS.tresoraPaymentPlan} label={plans.download} labels={labels} />
-          </div>
+          <Paragraphs items={payment.body} />
         </section>
 
         <section className="rp-section dp-closing" id="tresora-more" aria-labelledby="tresora-more-title">
-          <SectionHeading id="tresora-more-title" eyebrow={more.eyebrow} title={more.title} />
-          <div className="dp-columns">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+          <SectionHeading id="tresora-more-title" title={more.title} />
+          <Paragraphs items={more.body} />
           <div className="rp-actions">
-            <RequestButton common={common} project={project} request={common.requests.contact} label={more.contact} primary />
-            <RequestButton common={common} project={project} request={common.requests.details} label={more.details} />
+            <RequestButton common={common} project={project} label={more.contact} primary />
+            <RequestButton common={common} project={project} label={more.details} />
+          </div>
+          <div className="dp-terms" id="tresora-currency">
+            <h3>{currency.title}</h3>
+            <p>{currency.text}</p>
           </div>
         </section>
       </main>
-      {lightbox}
     </>
-  );
-}
-
-function LayoutViewer({ copy, labels, onOpen }) {
-  const [filter, setFilter] = useState("all");
-  const shown = DOWNTOWN_LAYOUTS.filter(([, kind]) => filter === "all" || kind === filter);
-  const set = shown.map(([page]) => lightboxItem(`downtown-layout-${page}`, copy.types[page], copy.planAlt.replace("{{type}}", copy.types[page]), labels));
-  return (
-    <div className="dp-layouts">
-      <h3 className="rp-subtitle" id="downtown-one-layouts-title">{copy.title}</h3>
-      <p className="dp-text">{copy.lead}</p>
-      <div className="dp-filter" role="group" aria-label={copy.filterLabel}>
-        {Object.entries(copy.filters).map(([key, label]) => (
-          <button key={key} type="button" aria-pressed={filter === key} onClick={() => setFilter(key)}>{label}</button>
-        ))}
-      </div>
-      <ul className="dp-plans dp-plans-layouts" aria-labelledby="downtown-one-layouts-title">
-        {shown.map(([page], index) => (
-          <PlanCard key={page} slug={`downtown-layout-${page}`} thumb={`downtown-layout-${page}-plan`} title={copy.types[page]} alt={copy.planAlt.replace("{{type}}", copy.types[page])} labels={labels} onOpen={onOpen} set={set} index={index} />
-        ))}
-      </ul>
-      <p className="rp-note">{copy.noAreas}</p>
-      <p className="rp-note">{copy.disclaimer}</p>
-    </div>
   );
 }
 
 export function DowntownOnePage({ header }) {
   const route = "downtown-one";
-  const { common, project, labels, extra } = useDubaiCopy("downtown");
-  const format = useFormat();
-  const { open, lightbox } = useLightbox(labels);
+  const { common, project, images } = useDubaiCopy("downtown");
   useSectionFromHash(route);
   const { hero, highlights, amenities, location, more } = project;
-  const { residences, layouts, payment, gallery, amenityGallery, levels } = extra;
-  const levelSet = [
-    lightboxItem("downtown-plan-podium", levels.podium[0], levels.podium[1], labels),
-    lightboxItem("downtown-plan-roof", levels.roof[0], levels.roof[1], labels),
-  ];
 
   return (
     <>
-      <ProjectHero header={header} route={route} eyebrow={common.eyebrow} hero={hero} developer={extra.developer} labels={labels} image="downtown-tower" imageAlt={extra.heroAlt}>
+      <ProjectHero header={header} route={route} hero={hero} image="downtown-tower" imageAlt={images.hero}>
         {hero.body.map((text) => <p className="lasha-page-hero-text" key={text}>{text}</p>)}
-        <HeroFacts facts={hero.facts} format={format} noteId="downtown-one-mix-note" />
         <div className="it-hero-actions">
-          <a className="button button-primary" href={`#${route}/residences`} onClick={sectionLinkClick(route, "residences")}>{hero.explore}<LashaArrow length={24} /></a>
-          <RequestButton common={common} project={project} request={common.requests.availability} label={hero.availability} />
+          <a className="button button-primary" href={`#${route}/highlights`} onClick={sectionLinkClick(route, "highlights")}>{hero.explore}<LashaArrow length={24} /></a>
+          <RequestButton common={common} project={project} label={hero.availability} />
         </div>
       </ProjectHero>
 
       <main className="page-main dp-page">
         <section className="rp-section" id="downtown-one-highlights" aria-labelledby="downtown-one-highlights-title">
-          <SectionHeading id="downtown-one-highlights-title" eyebrow={highlights.eyebrow} title={highlights.title} />
+          <SectionHeading id="downtown-one-highlights-title" title={highlights.title} />
           <ul className="dp-cards dp-cards-3">
-            {highlights.items.map(([text, title, line]) => (
+            {highlights.items.map(([value, title, line]) => (
               <li key={title}>
-                <strong>{format.text(text)}</strong>
+                <strong>{value}</strong>
                 <h3>{title}</h3>
                 <p>{line}</p>
               </li>
@@ -533,66 +269,9 @@ export function DowntownOnePage({ header }) {
           </ul>
         </section>
 
-        <section className="rp-section rp-mist" id="downtown-one-residences" aria-labelledby="downtown-one-residences-title">
-          <SectionHeading id="downtown-one-residences-title" eyebrow={residences.eyebrow} title={residences.title} lead={residences.lead} />
-          {/* Launch mix board: the starting price runs in the theme pillar, as on TRESORA's price board. */}
-          <div className="dp-table-wrap dp-mix-board">
-            <table className="dp-table dp-mix-table" role="table">
-              <thead role="rowgroup"><tr role="row">{residences.columns.map((name, index) => <th key={name} scope="col" role="columnheader" className={`dp-col-${index}`}>{name}</th>)}</tr></thead>
-              <tbody role="rowgroup">
-                {DOWNTOWN_MIX.map((row) => (
-                  <tr key={row.key} role="row">
-                    <th scope="row" role="rowheader" className="dp-col-0">
-                      <span className="dp-board-name">{residences.rows[row.key]}</span>
-                      <RequestLink common={common} project={project} request={`${common.requests.prices}: ${residences.rows[row.key]}`} label={`${labels.askAbout} ${residences.rows[row.key]}`} wrapTail />
-                    </th>
-                    <td role="cell" className="dp-col-1" data-label={residences.columns[1]}><strong>{format.number(row.units)}</strong></td>
-                    <td role="cell" className="dp-col-2" data-label={residences.columns[2]}><strong>{format.usd(row.fromAed)}</strong><span>{format.aed(row.fromAed)}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="dp-terms" id="downtown-one-mix-note">
-            <p>{residences.note}</p>
-            <p>{labels.conversion}</p>
-          </div>
-          <LayoutViewer copy={layouts} labels={labels} onOpen={open} />
-          <div className="rp-actions">
-            <DownloadButton href={DUBAI_DOCS.downtownBrochure} label={extra.downloads.brochure} labels={labels} primary />
-            <RequestButton common={common} project={project} request={layouts.title} label={layouts.ask} />
-          </div>
-        </section>
-
-        <section className="rp-section" id="downtown-one-payment" aria-labelledby="downtown-one-payment-title">
-          <SectionHeading id="downtown-one-payment-title" eyebrow={payment.eyebrow} title={payment.title} lead={payment.lead} />
-          {/* Plan comparison board: the PDC plan, the page's headline 10%, runs in the theme pillar. */}
-          <div className="dp-table-wrap dp-compare-board">
-            <table className="dp-table dp-schedule dp-compare">
-              <thead>
-                <tr><td />{DOWNTOWN_PLANS.map((plan, index) => <th key={plan.key} scope="col" className={`dp-col-${index + 1}`}>{payment.plans[plan.key]}</th>)}</tr>
-              </thead>
-              <tbody>
-                <tr><th scope="row">{payment.down}</th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}><strong>{format.pct(plan.down)}</strong></td>)}</tr>
-                <tr><th scope="row">{payment.month6}<span className="dp-schedule-mark">{payment.milestone}</span></th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}><strong>+{format.pct(plan.month6)}</strong></td>)}</tr>
-                <tr><th scope="row">{payment.month12}<span className="dp-schedule-mark">{payment.milestone}</span></th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}><strong>+{format.pct(plan.month12)}</strong></td>)}</tr>
-                <tr><th scope="row">{payment.monthly}</th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}><strong>{format.pct(plan.monthly)}</strong><span className="dp-schedule-mark">{payment.months.replace("{{n}}", format.number(plan.months))}</span></td>)}</tr>
-              </tbody>
-              <tfoot>
-                <tr><th scope="row">{payment.total}</th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}>{format.pct(plan.down + plan.month6 + plan.month12 + plan.monthly * plan.months)}</td>)}</tr>
-              </tfoot>
-            </table>
-          </div>
-          <p className="rp-note">{payment.note}</p>
-          <div className="rp-actions">
-            <RequestButton common={common} project={project} request={payment.request} label={payment.ask} primary />
-            <DownloadButton href={DUBAI_DOCS.downtownFactbook} label={extra.downloads.factbook} labels={labels} />
-          </div>
-        </section>
-
         <section className="rp-section rp-mist" id="downtown-one-amenities" aria-labelledby="downtown-one-amenities-title">
           <SectionHeading id="downtown-one-amenities-title" eyebrow={amenities.eyebrow} title={amenities.title} />
-          <div className="dp-columns">{amenities.body.map((text) => <p key={text}>{text}</p>)}</div>
+          <Paragraphs items={amenities.body} />
           <div className="dp-groups">
             {amenities.groups.map(([group, items]) => (
               <section key={group} aria-label={group}>
@@ -601,21 +280,10 @@ export function DowntownOnePage({ header }) {
               </section>
             ))}
           </div>
-          <h3 className="rp-subtitle">{levels.title}</h3>
-          <ul className="dp-plans dp-plans-2">
-            {[["downtown-plan-podium", levels.podium], ["downtown-plan-roof", levels.roof]].map(([slug, [title, text]], index) => (
-              <PlanCard key={slug} slug={slug} title={title} text={text} alt={text} labels={labels} onOpen={open} set={levelSet} index={index} />
-            ))}
-          </ul>
-          <p className="rp-note">{levels.community}</p>
-          <h3 className="rp-subtitle">{amenityGallery.title}</h3>
-          <Gallery items={amenityGallery.items} labels={labels} onOpen={open} />
         </section>
 
-        <section className="rp-section" id="downtown-one-gallery" aria-labelledby="downtown-one-gallery-title">
-          <SectionHeading id="downtown-one-gallery-title" eyebrow={gallery.eyebrow} title={gallery.title} />
-          <Gallery items={gallery.items} labels={labels} onOpen={open} />
-          <p className="rp-note">{gallery.note}</p>
+        <section className="rp-section" id="downtown-one-gallery" aria-label={project.name}>
+          <Gallery items={images.gallery} />
         </section>
 
         <section className="rp-section rp-mist" id="downtown-one-location" aria-labelledby="downtown-one-location-title">
@@ -623,40 +291,23 @@ export function DowntownOnePage({ header }) {
           <div className="rp-split dp-split">
             <div>
               {location.body.map((text) => <p className="dp-text" key={text}>{text}</p>)}
-              <p className="dp-text">{extra.location.area}</p>
-              <h3 className="dp-list-title">{extra.location.highlightsTitle}</h3>
-              <ul className="dp-list dp-list-1">{extra.location.highlights.map((item) => <li key={item}>{item}</li>)}</ul>
-              <div className="rp-actions">
-                <a className="button button-primary" href={DOWNTOWN_MAPS_URL} target="_blank" rel="noopener noreferrer" aria-label={`${extra.location.maps} (${common.opensMaps})`}>{extra.location.maps}<LashaArrow length={24} /></a>
-              </div>
-            </div>
-            <div>
               <h3 className="dp-list-title">{location.nearbyTitle}</h3>
-              <dl className="dp-nearby">
-                {location.nearby.map(([time, places]) => (
-                  <div key={time}><dt>{time}</dt><dd>{places}</dd></div>
-                ))}
-              </dl>
-              <p className="rp-note">{extra.location.travelNote}</p>
-              <figure className="dp-figure dp-map">
-                <button type="button" onClick={(event) => open([lightboxItem("downtown-map", extra.location.map[0], extra.location.map[1], labels)], 0, event)} aria-label={`${labels.viewLarger}: ${extra.location.map[0]}`}>
-                  <Picture slug="downtown-map" alt={extra.location.map[1]} sizes="(max-width: 899px) calc(100vw - 2.5rem), 40vw" />
-                </button>
-                <figcaption>{extra.location.map[0]}</figcaption>
-              </figure>
+              <ul className="dp-list dp-list-1">{location.nearby.map((item) => <li key={item}>{item}</li>)}</ul>
+              <p className="dp-text dp-text-after">{location.closing}</p>
             </div>
+            <RenderFigure slug="downtown-map" alt={images.map} className="dp-map" sizes="(max-width: 899px) calc(100vw - 2.5rem), 40vw" />
           </div>
         </section>
 
         <section className="rp-section dp-closing" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
           <SectionHeading id="downtown-one-more-title" eyebrow={more.eyebrow} title={more.title} />
-          <div className="dp-columns">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+          <Paragraphs items={more.body} />
           <div className="rp-actions">
-            <RequestButton common={common} project={project} request={common.requests.contact} label={more.contact} primary />
+            <RequestButton common={common} project={project} label={more.brochure} primary />
+            <RequestButton common={common} project={project} label={more.contact} />
           </div>
         </section>
       </main>
-      {lightbox}
     </>
   );
 }
@@ -664,19 +315,17 @@ export function DowntownOnePage({ header }) {
 // The homepage's Dubai cards, under the Batumi project: one per project, each opening its own page.
 export function DubaiProjectCards({ onNavigate }) {
   const { common, all } = useDubaiCopy();
-  const { locale } = useLanguage();
-  const sources = DUBAI_SOURCES_COPY[locale] || DUBAI_SOURCES_COPY.en;
-  const cards = [["tresora", all.tresora, "tresora-tower", sources.tresora], ["downtown-one", all.downtown, "downtown-street", sources.downtown]];
+  const cards = [["tresora", all.tresora, "tresora-tower"], ["downtown-one", all.downtown, "downtown-street"]];
   return (
     <section className="dp-listing" id="dubai-projects" aria-labelledby="dubai-projects-title">
       <p className="lasha-eyebrow">{common.listEyebrow}</p>
       <h2 id="dubai-projects-title">{common.listTitle}</h2>
       <ul className="dp-listing-cards">
-        {cards.map(([route, project, image, extra]) => (
+        {cards.map(([route, project, image]) => (
           <li key={route}>
             <article aria-labelledby={`${route}-card-title`}>
               <Picture slug={image} className="dp-listing-image" sizes="(max-width: 899px) calc(100vw - 2.5rem), 44vw" />
-              <p className="dp-listing-category">{common.category} · {extra.developer}</p>
+              <p className="dp-listing-category">{common.category}</p>
               <h3 id={`${route}-card-title`}>{project.cardName}</h3>
               <p className="dp-listing-line">{project.cardLine}</p>
               <p className="dp-listing-meta">{project.place}<br />{project.cardStatus}</p>
