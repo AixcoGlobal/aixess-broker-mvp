@@ -535,18 +535,19 @@ export function DowntownOnePage({ header }) {
 
         <section className="rp-section rp-mist" id="downtown-one-residences" aria-labelledby="downtown-one-residences-title">
           <SectionHeading id="downtown-one-residences-title" eyebrow={residences.eyebrow} title={residences.title} lead={residences.lead} />
-          <div className="dp-table-wrap">
-            <table className="dp-table dp-mix-table">
-              <thead><tr>{residences.columns.map((name) => <th key={name} scope="col">{name}</th>)}</tr></thead>
-              <tbody>
+          {/* Launch mix board: the starting price runs in the theme pillar, as on TRESORA's price board. */}
+          <div className="dp-table-wrap dp-mix-board">
+            <table className="dp-table dp-mix-table" role="table">
+              <thead role="rowgroup"><tr role="row">{residences.columns.map((name, index) => <th key={name} scope="col" role="columnheader" className={`dp-col-${index}`}>{name}</th>)}</tr></thead>
+              <tbody role="rowgroup">
                 {DOWNTOWN_MIX.map((row) => (
-                  <tr key={row.key}>
-                    <th scope="row">
-                      {residences.rows[row.key]}
-                      <RequestLink common={common} project={project} request={`${common.requests.prices}: ${residences.rows[row.key]}`} label={`${labels.askAbout} ${residences.rows[row.key]}`} />
+                  <tr key={row.key} role="row">
+                    <th scope="row" role="rowheader" className="dp-col-0">
+                      <span className="dp-board-name">{residences.rows[row.key]}</span>
+                      <RequestLink common={common} project={project} request={`${common.requests.prices}: ${residences.rows[row.key]}`} label={`${labels.askAbout} ${residences.rows[row.key]}`} wrapTail />
                     </th>
-                    <td data-label={residences.columns[1]}>{format.number(row.units)}</td>
-                    <td data-label={residences.columns[2]}><strong>{format.usd(row.fromAed)}</strong><span>{format.aed(row.fromAed)}</span></td>
+                    <td role="cell" className="dp-col-1" data-label={residences.columns[1]}><strong>{format.number(row.units)}</strong></td>
+                    <td role="cell" className="dp-col-2" data-label={residences.columns[2]}><strong>{format.usd(row.fromAed)}</strong><span>{format.aed(row.fromAed)}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -565,19 +566,20 @@ export function DowntownOnePage({ header }) {
 
         <section className="rp-section" id="downtown-one-payment" aria-labelledby="downtown-one-payment-title">
           <SectionHeading id="downtown-one-payment-title" eyebrow={payment.eyebrow} title={payment.title} lead={payment.lead} />
-          <div className="dp-table-wrap">
+          {/* Plan comparison board: the PDC plan, the page's headline 10%, runs in the theme pillar. */}
+          <div className="dp-table-wrap dp-compare-board">
             <table className="dp-table dp-schedule dp-compare">
               <thead>
-                <tr><td />{DOWNTOWN_PLANS.map((plan) => <th key={plan.key} scope="col">{payment.plans[plan.key]}</th>)}</tr>
+                <tr><td />{DOWNTOWN_PLANS.map((plan, index) => <th key={plan.key} scope="col" className={`dp-col-${index + 1}`}>{payment.plans[plan.key]}</th>)}</tr>
               </thead>
               <tbody>
-                <tr><th scope="row">{payment.down}</th>{DOWNTOWN_PLANS.map((plan) => <td key={plan.key}>{format.pct(plan.down)}</td>)}</tr>
-                <tr><th scope="row">{payment.month6}<span className="dp-schedule-mark">{payment.milestone}</span></th>{DOWNTOWN_PLANS.map((plan) => <td key={plan.key}>+{format.pct(plan.month6)}</td>)}</tr>
-                <tr><th scope="row">{payment.month12}<span className="dp-schedule-mark">{payment.milestone}</span></th>{DOWNTOWN_PLANS.map((plan) => <td key={plan.key}>+{format.pct(plan.month12)}</td>)}</tr>
-                <tr><th scope="row">{payment.monthly}</th>{DOWNTOWN_PLANS.map((plan) => <td key={plan.key}>{format.pct(plan.monthly)} × {format.number(plan.months)}<span className="dp-schedule-mark">{payment.months.replace("{{n}}", format.number(plan.months))}</span></td>)}</tr>
+                <tr><th scope="row">{payment.down}</th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}><strong>{format.pct(plan.down)}</strong></td>)}</tr>
+                <tr><th scope="row">{payment.month6}<span className="dp-schedule-mark">{payment.milestone}</span></th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}><strong>+{format.pct(plan.month6)}</strong></td>)}</tr>
+                <tr><th scope="row">{payment.month12}<span className="dp-schedule-mark">{payment.milestone}</span></th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}><strong>+{format.pct(plan.month12)}</strong></td>)}</tr>
+                <tr><th scope="row">{payment.monthly}</th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}><strong>{format.pct(plan.monthly)}</strong><span className="dp-schedule-mark">{payment.months.replace("{{n}}", format.number(plan.months))}</span></td>)}</tr>
               </tbody>
               <tfoot>
-                <tr><th scope="row">{payment.total}</th>{DOWNTOWN_PLANS.map((plan) => <td key={plan.key}>{format.pct(plan.down + plan.month6 + plan.month12 + plan.monthly * plan.months)}</td>)}</tr>
+                <tr><th scope="row">{payment.total}</th>{DOWNTOWN_PLANS.map((plan, index) => <td key={plan.key} className={`dp-col-${index + 1}`}>{format.pct(plan.down + plan.month6 + plan.month12 + plan.monthly * plan.months)}</td>)}</tr>
               </tfoot>
             </table>
           </div>
