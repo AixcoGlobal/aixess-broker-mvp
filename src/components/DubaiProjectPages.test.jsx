@@ -27,14 +27,14 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
 
     fireEvent.click(toggle);
     const menu = within(container.querySelector(".nav-group-menu"));
-    expect(menu.getAllByRole("button").map((button) => button.textContent)).toEqual(["Batumi – Reverance Project", "Tresora Project", "Downtown One Project"]);
-    expect([...container.querySelectorAll(".nav-group-menu > li")].map((item) => item.textContent)).toEqual(["Georgia", "Batumi – Reverance Project", "Dubai", "Tresora Project", "Downtown One Project"]);
-    fireEvent.click(menu.getByRole("button", { name: "Tresora Project" }));
+    expect(menu.getAllByRole("button").map((button) => button.textContent)).toEqual(["Batumi – Reverance Project", "Dubai – Tresora Project", "Dubai – Downtown One Project"]);
+    expect([...container.querySelectorAll(".nav-group-menu > li")].map((item) => item.textContent)).toEqual(["Georgia", "Batumi – Reverance Project", "UAE", "Dubai – Tresora Project", "Dubai – Downtown One Project"]);
+    fireEvent.click(menu.getByRole("button", { name: "Dubai – Tresora Project" }));
     expect(window.location.hash).toBe("#tresora");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TRESORADUBAI");
 
     fireEvent.click(screen.getByRole("button", { name: "Show projects" }));
-    fireEvent.click(within(document.querySelector(".nav-group-menu")).getByRole("button", { name: "Downtown One Project" }));
+    fireEvent.click(within(document.querySelector(".nav-group-menu")).getByRole("button", { name: "Dubai – Downtown One Project" }));
     expect(window.location.hash).toBe("#downtown-one");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("DOWNTOWN ONEDUBAI");
     expect(document.querySelector(".dp-page").textContent).not.toContain("TRESORA");
@@ -117,7 +117,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect(page.textContent).not.toMatch(/182[.,\s\u00a0]?437/);
     expect(copy.spaces.categories).toHaveLength(6);
     expect(copy.lifestyle.amenities).toHaveLength(8);
-    expect(page.textContent).not.toMatch(/Penthouse|Sauna|WADAN|AED|Floor plans|Gallery|Resident app\b/);
+    expect(page.textContent).not.toMatch(/Penthouse|Sauna|WADAN|AED(?=[\s\d])|Floor plans|Gallery|Resident app\b/);
     expect(document.getElementById("tresora-currency")).toHaveTextContent(`${copy.currency.title}${copy.currency.text}`);
 
     const images = [...page.querySelectorAll("img")];
@@ -168,7 +168,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     ]);
     expect([...page.querySelectorAll(".dp-cards strong")].map((value) => value.textContent)).toEqual(["20 Floors", "10%", "December 2029", "AI-Powered", "Metro & Road", "20+ Amenities"]);
     expect(copy.amenities.groups.flatMap(([, items]) => items)).toHaveLength(21);
-    expect(page.textContent).not.toMatch(/DOWNTOWN DUBAI|SAMANA|AED|PDC|Shallow Pool|Cigar Lounge|Outdoor Shower|Here add pictures|_{3,}/);
+    expect(page.textContent).not.toMatch(/DOWNTOWN DUBAI|SAMANA|AED(?=[\s\d])|PDC|Shallow Pool|Cigar Lounge|Outdoor Shower|Here add pictures|_{3,}/);
     expect(screen.getByText("Dubai Metro and Aster Cedars Hospital — approximately 5–10 minutes")).toBeInTheDocument();
     expect(page.querySelectorAll(".dp-gallery img")).toHaveLength(DUBAI_IMAGES_COPY.en.downtown.gallery.length);
     [...page.querySelectorAll("img")].forEach((image) => expect(image.getAttribute("src")).toMatch(/^\/assets\/dubai\/downtown-[a-z0-9-]+\.webp$/));

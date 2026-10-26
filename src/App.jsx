@@ -36,11 +36,11 @@ const ResidenceExplorer = lazy(() => import("./components/ResidenceExplorer").th
 // Selected Opportunities lists each live project under it (Klem, 12 October 2026: "there will
 // come many more projects"). Add a project here only once it has a real page.
 // TRESORA and DOWNTOWN ONE in Dubai joined on 22 October 2026 (Kemo), each with its own page.
-// Kemo, 26 October 2026: the projects sit under a country heading (Georgia, Dubai).
+// Kemo, 26 October 2026: the projects sit under a country heading (Georgia, UAE).
 const OPPORTUNITY_PROJECTS = [
   { key: "residences", labelKey: "reveranceProjectNav", regionKey: "regionGeorgia" },
-  { key: "tresora", labelKey: "tresoraProjectNav", regionKey: "regionDubai" },
-  { key: "downtown-one", labelKey: "downtownOneProjectNav", regionKey: "regionDubai" },
+  { key: "tresora", labelKey: "tresoraProjectNav", regionKey: "regionUae" },
+  { key: "downtown-one", labelKey: "downtownOneProjectNav", regionKey: "regionUae" },
 ];
 
 // A child opens a new country when its region differs from the one before it.
