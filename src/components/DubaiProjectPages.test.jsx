@@ -28,8 +28,8 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     fireEvent.click(toggle);
     fireEvent.click(within(container.querySelector("#nav-group-projects")).getByRole("button", { name: "UAE / DUBAI" }));
     const menu = within(container.querySelector("#nav-market-dubai"));
-    expect(menu.getAllByRole("button").map((button) => button.textContent)).toEqual(["TRESORA", "Downtown One"]);
-    fireEvent.click(menu.getByRole("button", { name: "TRESORA" }));
+    expect(menu.getAllByRole("button").map((button) => button.textContent)).toEqual(["Tresora", "Downtown One"]);
+    fireEvent.click(menu.getByRole("button", { name: "Tresora" }));
     expect(window.location.hash).toBe("#tresora");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TRESORADUBAI");
 
