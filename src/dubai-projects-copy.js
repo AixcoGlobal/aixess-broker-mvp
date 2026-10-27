@@ -1,13 +1,21 @@
-// TRESORA and DOWNTOWN ONE, the two Dubai projects. Kemo, 26 October 2026: the two Word briefs are
-// the only approved text for these pages (AiXESS_TRESORA_Website_Developer_Instructions_Final.docx and
-// DOWNTOWN ONE project.docx). English is their wording verbatim, including the fact cards pictured in
-// each brief; the other languages translate exactly that text and nothing more. Nothing from the
-// developers' brochures or price lists is shown. Not copied: the briefs' editorial labels ("Add
+import { formatUsdOnly } from "./currency.js";
+
+// TRESORA and DOWNTOWN ONE, the two Dubai projects. Kemo, 26 October 2026: the two Word briefs supply
+// the base text for these pages (AiXESS_TRESORA_Website_Developer_Instructions_Final.docx and
+// DOWNTOWN ONE project.docx), including their pictured fact cards. Kemo's two photos of 27 October
+// also approve Tresora's starting price, price per m² and Everything included specifications below,
+// superseding the brief-only/no-prices restriction for these additions. Other brochure and price-list
+// content stays excluded. Not copied: the briefs' editorial labels ("Add
 // pictures", "Here add pictures of the project", section numbers, underscore rules), the stray
 // "Project : Dubai-project name DOWNTOWN DUBAI" line, and every asterisk (AiXESS uses * only for
 // corrections). "Project highlits" is spelt "Project highlights". Kemo, 26 October 2026 (the client's
-// comment): no apartment prices, floors or unit lists; property types only, so the brief's
+// comment): no floors or unit lists; property types only. The brief's older
 // "Starting from $182,437" is not shown.
+
+const priceValues = (locale) => ({
+  starting: formatUsdOnly(176635, locale),
+  perSqm: formatUsdOnly(4115, locale),
+});
 
 export const DUBAI_PROJECTS_COPY = {
   en: {
@@ -91,6 +99,22 @@ export const DUBAI_PROJECTS_COPY = {
         ],
         units: "Request Available Units",
         prices: "Enquire About Prices",
+      },
+      pricing: {
+        startingLabel: "Starting price",
+        perSqmLabel: "Price per m²",
+        ...priceValues("en"),
+      },
+      included: {
+        title: "Everything included",
+        lead: "Every apartment is handed over fully furnished and equipped, with a complete smart-home system.",
+        items: [
+          ["Living room", "LG QNED TV, Apple TV 4K, sound bar and smart voice control."],
+          ["Kitchen & laundry", "Bosch oven, gas hob, cooker hood, coffee machine, refrigerator, microwave, dishwasher and washer-dryer."],
+          ["Smart home", "KNX automation for lighting, climate, curtains, display panels and intercom. Compatible with Apple Home, Google Home, Alexa, SmartThings and Matter."],
+          ["Indoor air monitoring", "Sensors for temperature, humidity, CO₂, fine dust (PM2.5 / PM10), VOCs and formaldehyde, plus light and motion sensing."],
+          ["Security & Wi-Fi", "SALTO smart door lock, 1Home Server KNX Pro and UniFi WiFi 7."],
+        ],
       },
       lifestyle: {
         title: "A Lifestyle Designed Around You",
@@ -331,6 +355,22 @@ export const DUBAI_PROJECTS_COPY = {
         units: "Verfügbare Einheiten anfragen",
         prices: "Preise anfragen",
       },
+      pricing: {
+        startingLabel: "Einstiegspreis",
+        perSqmLabel: "Preis pro m²",
+        ...priceValues("de"),
+      },
+      included: {
+        title: "Alles inklusive",
+        lead: "Jede Wohnung wird vollständig möbliert und ausgestattet sowie mit einem kompletten Smart-Home-System übergeben.",
+        items: [
+          ["Wohnzimmer", "LG QNED TV, Apple TV 4K, Soundbar und intelligente Sprachsteuerung."],
+          ["Küche & Wäschepflege", "Bosch-Backofen, Gaskochfeld, Dunstabzugshaube, Kaffeemaschine, Kühlschrank, Mikrowelle, Geschirrspüler und Waschtrockner."],
+          ["Smart Home", "KNX-Automation für Beleuchtung, Raumklima, Vorhänge, Bedienpanels und Gegensprechanlage. Kompatibel mit Apple Home, Google Home, Alexa, SmartThings und Matter."],
+          ["Raumluftüberwachung", "Sensoren für Temperatur, Luftfeuchtigkeit, CO₂, Feinstaub (PM2.5 / PM10), flüchtige organische Verbindungen (VOC) und Formaldehyd sowie Licht- und Bewegungserfassung."],
+          ["Sicherheit & WLAN", "Intelligentes SALTO-Türschloss, 1Home Server KNX Pro und UniFi WiFi 7."],
+        ],
+      },
       lifestyle: {
         title: "Ein Lebensstil, der sich nach Ihnen richtet",
         lead: "Erleben Sie eine sorgfältig kuratierte Auswahl an Annehmlichkeiten für Entspannung, Wohlbefinden, Produktivität und Familienleben.",
@@ -569,6 +609,22 @@ export const DUBAI_PROJECTS_COPY = {
         ],
         units: "Zapytaj o dostępne lokale",
         prices: "Zapytaj o ceny",
+      },
+      pricing: {
+        startingLabel: "Cena od",
+        perSqmLabel: "Cena za m²",
+        ...priceValues("pl"),
+      },
+      included: {
+        title: "Wszystko w cenie",
+        lead: "Każdy apartament jest przekazywany w pełni umeblowany i wyposażony, z kompletnym systemem inteligentnego domu.",
+        items: [
+          ["Salon", "Telewizor LG QNED, Apple TV 4K, soundbar i inteligentne sterowanie głosowe."],
+          ["Kuchnia i pranie", "Piekarnik, płyta gazowa, okap, ekspres do kawy, lodówka, kuchenka mikrofalowa, zmywarka i pralko-suszarka marki Bosch."],
+          ["Inteligentny dom", "Automatyka KNX do sterowania oświetleniem, klimatem, zasłonami, panelami sterowania i domofonem. Współpracuje z Apple Home, Google Home, Alexa, SmartThings i Matter."],
+          ["Monitorowanie powietrza", "Czujniki temperatury, wilgotności, CO₂, pyłów (PM2.5 / PM10), lotnych związków organicznych (VOC) i formaldehydu oraz czujniki światła i ruchu."],
+          ["Bezpieczeństwo i Wi-Fi", "Inteligentny zamek SALTO, 1Home Server KNX Pro i UniFi WiFi 7."],
+        ],
       },
       lifestyle: {
         title: "Styl życia zaprojektowany wokół Ciebie",
@@ -809,6 +865,22 @@ export const DUBAI_PROJECTS_COPY = {
         units: "Povprašajte o razpoložljivih enotah",
         prices: "Povprašajte o cenah",
       },
+      pricing: {
+        startingLabel: "Začetna cena",
+        perSqmLabel: "Cena na m²",
+        ...priceValues("sl"),
+      },
+      included: {
+        title: "Vse vključeno",
+        lead: "Vsako stanovanje je predano v celoti opremljeno s pohištvom in napravami ter s popolnim sistemom pametnega doma.",
+        items: [
+          ["Dnevna soba", "Televizor LG QNED, Apple TV 4K, zvočna letev in pametno glasovno upravljanje."],
+          ["Kuhinja in pralnica", "Boschevi aparati: pečica, plinska kuhalna plošča, napa, kavni aparat, hladilnik, mikrovalovna pečica, pomivalni stroj in pralno-sušilni stroj."],
+          ["Pametni dom", "Avtomatizacija KNX za osvetlitev, notranjo klimo, zavese, upravljalne zaslone in domofon. Združljivo z Apple Home, Google Home, Alexa, SmartThings in Matter."],
+          ["Merjenje kakovosti zraka", "Senzorji za temperaturo, vlažnost, CO₂, fine delce (PM2.5 / PM10), hlapne organske spojine (VOC) in formaldehid ter zaznavanje svetlobe in gibanja."],
+          ["Varnost in Wi-Fi", "Pametna ključavnica SALTO, 1Home Server KNX Pro in UniFi WiFi 7."],
+        ],
+      },
       lifestyle: {
         title: "Življenjski slog, prilagojen vam",
         lead: "Doživite skrbno izbrane ugodnosti, ustvarjene za sprostitev, dobro počutje, produktivnost in družinsko življenje.",
@@ -1047,6 +1119,22 @@ export const DUBAI_PROJECTS_COPY = {
         ],
         units: "Запросить доступные объекты",
         prices: "Узнать цены",
+      },
+      pricing: {
+        startingLabel: "Стартовая цена",
+        perSqmLabel: "Цена за м²",
+        ...priceValues("ru"),
+      },
+      included: {
+        title: "Всё включено",
+        lead: "Каждая квартира передаётся полностью меблированной и оборудованной, с полноценной системой умного дома.",
+        items: [
+          ["Гостиная", "Телевизор LG QNED, Apple TV 4K, саундбар и интеллектуальное голосовое управление."],
+          ["Кухня и стирка", "Техника Bosch: духовой шкаф, газовая варочная панель, вытяжка, кофемашина, холодильник, микроволновая печь, посудомоечная и стирально-сушильная машины."],
+          ["Умный дом", "Автоматика KNX для освещения, климата, штор, панелей управления и домофона. Совместима с Apple Home, Google Home, Alexa, SmartThings и Matter."],
+          ["Контроль воздуха в помещении", "Датчики температуры, влажности, CO₂, мелкой пыли (PM2.5 / PM10), летучих органических соединений (VOC) и формальдегида, а также датчики света и движения."],
+          ["Безопасность и Wi-Fi", "Умный дверной замок SALTO, 1Home Server KNX Pro и UniFi WiFi 7."],
+        ],
       },
       lifestyle: {
         title: "Стиль жизни, созданный для вас",

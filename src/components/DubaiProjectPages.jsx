@@ -9,8 +9,8 @@ import "./reverance-project.css";
 import "./dubai-projects.css";
 
 // TRESORA and Downtown One, each on its own page: #tresora and #downtown-one, with sections at
-// #tresora/spaces and the like. Kemo, 26 October 2026: the two Word briefs are the only approved text,
-// so every visible word comes from them (dubai-projects-copy.js) and the sections follow their order.
+// #tresora/spaces and the like. The Word briefs supply the base text and section order; Kemo's
+// 27 October photos add TRESORA's starting prices and furnished-apartment inclusions.
 // The developers' renderings stay as pictures, without captions. Every request button is an email to
 // AiXESS that names the project and the request (the Vercel site has no form server).
 
@@ -148,7 +148,7 @@ export function TresoraPage({ header }) {
   const route = "tresora";
   const { common, project, images } = useDubaiCopy("tresora");
   useSectionFromHash(route);
-  const { hero, discover, highlights, spaces, lifestyle, location, payment, more, currency } = project;
+  const { hero, discover, highlights, spaces, pricing, included, lifestyle, location, payment, more, currency } = project;
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.mapQuery)}`;
 
   return (
@@ -183,12 +183,23 @@ export function TresoraPage({ header }) {
         <section className="rp-section" id="tresora-spaces" aria-labelledby="tresora-spaces-title">
           <SectionHeading id="tresora-spaces-title" eyebrow={spaces.eyebrow} title={spaces.title} />
           <Paragraphs items={spaces.body} />
+          <dl className="dp-price-summary">
+            <div><dt>{pricing.startingLabel}</dt><dd>{pricing.starting}</dd></div>
+            <div><dt>{pricing.perSqmLabel}</dt><dd>{pricing.perSqm}</dd></div>
+          </dl>
           <h3 className="dp-list-title dp-list-title-gap">{spaces.listTitle}</h3>
           <ul className="dp-list dp-list-2">{spaces.categories.map((name) => <li key={name}>{name}</li>)}</ul>
           <div className="rp-actions">
             <RequestButton common={common} project={project} label={spaces.units} primary />
             <RequestButton common={common} project={project} label={spaces.prices} />
           </div>
+        </section>
+
+        <section className="rp-section" id="tresora-included" aria-labelledby="tresora-included-title">
+          <SectionHeading id="tresora-included-title" title={included.title} lead={included.lead} />
+          <dl className="dp-included-list">
+            {included.items.map(([title, text]) => <div key={title}><dt>{title}</dt><dd>{text}</dd></div>)}
+          </dl>
         </section>
 
         <section className="rp-section rp-mist" id="tresora-lifestyle" aria-labelledby="tresora-lifestyle-title">

@@ -75,7 +75,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     ["tresora", "downtown-one", "residences", "home", "projects"].forEach((route) => expect(document.querySelectorAll(`.dubai-project-page [id='${route}']`)).toHaveLength(0));
   });
 
-  // Every string the copy holds for a page, so the rendered text can be checked against the briefs only.
+  // Every string in the approved page copy, including TRESORA's supplied price and furnishing photos.
   const strings = (value) => (typeof value === "string" ? [value] : Array.isArray(value) ? value.flatMap(strings) : value && typeof value === "object" ? Object.values(value).flatMap(strings) : []);
   const visibleTexts = (root) => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -88,7 +88,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
   };
 
   ["tresora", "downtown-one"].forEach((route) => {
-    it(`shows only the brief's own words on ${route}, with no asterisk or extra label`, () => {
+    it(`shows only the approved copy on ${route}, with no asterisk or extra label`, () => {
       ["en", "de", "pl", "sl", "ru"].forEach((locale) => {
         window.localStorage.setItem("aixess-language", locale);
         window.history.replaceState({}, "", `/#${route}`);
@@ -106,13 +106,13 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     });
   });
 
-  it("builds TRESORA in the brief's order: hero facts, highlights, spaces, amenities, location, payment, more", () => {
+  it("builds TRESORA with its approved spaces, inclusions and project sections", () => {
     window.history.replaceState({}, "", "/#tresora");
     render(<App />);
     const page = document.querySelector(".dubai-project-page");
     const copy = DUBAI_PROJECTS_COPY.en.tresora;
     expect([...page.querySelectorAll(".dp-page h2")].map((title) => title.textContent)).toEqual([
-      copy.discover.title, copy.highlights.title, copy.spaces.title, copy.lifestyle.title, copy.location.title, copy.payment.title, copy.more.title,
+      copy.discover.title, copy.highlights.title, copy.spaces.title, copy.included.title, copy.lifestyle.title, copy.location.title, copy.payment.title, copy.more.title,
     ]);
     expect([...page.querySelectorAll(".dp-hero-facts dd")].map((value) => value.textContent)).toEqual(["20%", "Q1 2028"]);
     expect(page.textContent).not.toMatch(/182[.,\s\u00a0]?437/);

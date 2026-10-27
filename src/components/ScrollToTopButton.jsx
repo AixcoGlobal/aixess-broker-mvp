@@ -7,10 +7,9 @@ import { useLanguage } from "../i18n.jsx";
 
 const VISIBILITY_OFFSET = 520;
 
-// UI the button must never sit on (the explorer dock and its copy and filter panels, which runs closer to the
-// edge than the page margin, the cookie notice, the footer's logo and links): it steps aside while
-// one of these overlaps it.
-const AVOID_SELECTOR = ".mobile-residence-dock, :is(.explorer-copy-panel, .residence-filter-panel):not([aria-hidden='true']), .cookie-notice, .site-footer-legal";
+// Keep the button clear of the explorer panels, consent/footer controls and Tresora's new price
+// and equipment copy, which can share its horizontal position on phones.
+const AVOID_SELECTOR = ".mobile-residence-dock, :is(.explorer-copy-panel, .residence-filter-panel):not([aria-hidden='true']), .cookie-notice, .site-footer-legal, .dp-price-summary :is(dt, dd), #tresora-included :is(h2, p, dt, dd)";
 
 let activeFrame = null;
 let cancelCleanup = null;
