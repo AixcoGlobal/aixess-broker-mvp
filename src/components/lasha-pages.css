@@ -741,8 +741,7 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
   .mobile-nav.lasha-menu .lasha-menu-bar { height: 4.75rem; }
 }
 
-/* Selected Opportunities lists its projects in a small panel under the label (Klem, 12 October
-   2026). The panel is paper with ink text in every theme so it reads over any hero photo. */
+/* Each location reveals its projects in a theme-coloured panel. */
 .desktop-nav .nav-group {
   position: relative;
   display: flex;
@@ -750,17 +749,16 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
   gap: 0.2rem;
 }
 
-.desktop-nav .nav-group-toggle {
-  display: grid;
-  place-items: center;
-  width: 1.2rem;
+.desktop-nav .nav-group-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   min-height: 2.75rem;
   color: inherit;
 }
 
-.desktop-nav .nav-group-toggle::after { content: none; }
-.desktop-nav .nav-group-toggle svg { width: 12px; height: 12px; transition: transform 160ms ease; }
-.desktop-nav .nav-group.is-open .nav-group-toggle svg { transform: rotate(180deg); }
+.desktop-nav .nav-group-trigger svg { width: 12px; height: 12px; transition: transform 160ms ease; }
+.desktop-nav .nav-group.is-open .nav-group-trigger svg { transform: rotate(180deg); }
 
 .desktop-nav .nav-group-menu {
   position: absolute;
@@ -803,44 +801,36 @@ body .modal-panel :is(button, input, a):focus-visible { outline-color: var(--l-b
 /* At night the pale cobalt tint is too faint on black, so the row takes the night buttons' cobalt. */
 html:root[data-time-theme='night'] :is(.lasha-home, .lasha-page) .site-header .desktop-nav .nav-group-menu button:is(:hover, :focus-visible) { background: #2557d6; color: #fff; }
 .desktop-nav .nav-group-menu button:focus-visible { outline: 2px solid var(--l-blue); outline-offset: -2px; }
-/* Country headings over the projects (Kemo, 26 October 2026): small muted labels, not links. */
-:is(.lasha-home, .lasha-page) .site-header .desktop-nav .nav-group-region {
-  padding: 0.75rem 1rem 0.3rem;
-  color: color-mix(in srgb, var(--l-ink) 74%, transparent);
-  font-family: var(--l-body);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-:is(.lasha-home, .lasha-page) .site-header .desktop-nav .nav-group-region:not(:first-child) { margin-top: 0.4rem; border-top: 1px solid color-mix(in srgb, var(--l-ink) 12%, transparent); }
 
 @media (max-width: 1399px) {
-  .mobile-nav.lasha-menu > button.lasha-menu-sub {
+  .mobile-nav.lasha-menu .lasha-menu-projects {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .mobile-nav.lasha-menu .lasha-menu-projects[hidden] { display: none; }
+  .mobile-nav.lasha-menu > button.lasha-menu-category { justify-content: space-between; }
+  .mobile-nav.lasha-menu .lasha-menu-category svg { width: 16px; height: 16px; transition: transform 160ms ease; }
+  .mobile-nav.lasha-menu .lasha-menu-category[aria-expanded='true'] svg { transform: rotate(180deg); }
+
+  .mobile-nav.lasha-menu .lasha-menu-sub {
+    position: relative;
+    width: 100%;
     min-height: 3.3rem;
     padding: 0 0 0 1.4rem;
-    color: rgba(244, 244, 241, 0.82);
+    color: inherit;
     font-family: var(--l-body);
     font-size: 1rem;
     letter-spacing: 0.01em;
     text-transform: none;
   }
 
-  .mobile-nav.lasha-menu > button.lasha-menu-sub.is-active { padding-left: 2.5rem; color: #8fb0ff; }
-  .mobile-nav.lasha-menu > button.lasha-menu-sub.is-active::before { left: 1.4rem; height: 1.2rem; }
+  .mobile-nav.lasha-menu .lasha-menu-sub.is-active { color: var(--l-blue); }
+}
 
-  .mobile-nav.lasha-menu > .lasha-menu-region {
-    margin: 0;
-    padding: 1rem 0 0.2rem 1.4rem;
-    color: rgba(244, 244, 241, 0.74);
-    font-family: var(--l-body);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    line-height: 1.2;
-    text-transform: uppercase;
-  }
+@media (prefers-reduced-motion: reduce) {
+  .desktop-nav .nav-group-trigger svg,
+  .mobile-nav.lasha-menu .lasha-menu-category svg { transition: none; }
 }
 
 /* Project Reverance facts from AIXCO.Global's "Current project" section (14 October 2026), where

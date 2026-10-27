@@ -20,21 +20,20 @@ const mailtoParts = (href) => {
 };
 
 describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
-  it("lists both projects under Selected Opportunities, each opening its own page", () => {
+  it("lists both projects under UAE / Dubai, each opening its own page", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
-    const toggle = screen.getByRole("button", { name: "Show projects" });
+    const toggle = within(container.querySelector(".desktop-nav")).getByRole("button", { name: "UAE / DUBAI" });
 
     fireEvent.click(toggle);
-    const menu = within(container.querySelector(".nav-group-menu"));
-    expect(menu.getAllByRole("button").map((button) => button.textContent)).toEqual(["Batumi – Reverance Project", "Dubai – Tresora Project", "Dubai – Downtown One Project"]);
-    expect([...container.querySelectorAll(".nav-group-menu > li")].map((item) => item.textContent)).toEqual(["Georgia", "Batumi – Reverance Project", "UAE", "Dubai – Tresora Project", "Dubai – Downtown One Project"]);
-    fireEvent.click(menu.getByRole("button", { name: "Dubai – Tresora Project" }));
+    const menu = within(container.querySelector("#nav-group-dubai"));
+    expect(menu.getAllByRole("button").map((button) => button.textContent)).toEqual(["TRESORA", "Downtown One"]);
+    fireEvent.click(menu.getByRole("button", { name: "TRESORA" }));
     expect(window.location.hash).toBe("#tresora");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TRESORADUBAI");
 
-    fireEvent.click(screen.getByRole("button", { name: "Show projects" }));
-    fireEvent.click(within(document.querySelector(".nav-group-menu")).getByRole("button", { name: "Dubai – Downtown One Project" }));
+    fireEvent.click(within(document.querySelector(".desktop-nav")).getByRole("button", { name: "UAE / DUBAI" }));
+    fireEvent.click(within(document.querySelector("#nav-group-dubai")).getByRole("button", { name: "Downtown One" }));
     expect(window.location.hash).toBe("#downtown-one");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("DOWNTOWN ONEDUBAI");
     expect(document.querySelector(".dp-page").textContent).not.toContain("TRESORA");

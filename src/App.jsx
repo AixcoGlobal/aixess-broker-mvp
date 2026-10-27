@@ -33,23 +33,21 @@ const ResidenceExplorer = lazy(() => import("./components/ResidenceExplorer").th
 })));
 
 
-// Selected Opportunities lists each live project under it (Klem, 12 October 2026: "there will
-// come many more projects"). Add a project here only once it has a real page.
-// TRESORA and DOWNTOWN ONE in Dubai joined on 22 October 2026 (Kemo), each with its own page.
-// Kemo, 26 October 2026: the projects sit under a country heading (Georgia, UAE).
-const OPPORTUNITY_PROJECTS = [
-  { key: "residences", labelKey: "reveranceProjectNav", regionKey: "regionGeorgia" },
-  { key: "tresora", labelKey: "tresoraProjectNav", regionKey: "regionUae" },
-  { key: "downtown-one", labelKey: "downtownOneProjectNav", regionKey: "regionUae" },
+// Location labels disclose their live projects; they are not page routes.
+const PROJECT_MARKETS = [
+  { key: "batumi", labelKey: "batumi", children: [
+    { key: "residences", labelKey: "reveranceProjectNav" },
+  ] },
+  { key: "dubai", labelKey: "uaeDubai", children: [
+    { key: "tresora", labelKey: "tresoraProjectNav" },
+    { key: "downtown-one", labelKey: "downtownOneProjectNav" },
+  ] },
 ];
-
-// A child opens a new country when its region differs from the one before it.
-const startsRegion = (children, index) => index === 0 || children[index].regionKey !== children[index - 1].regionKey;
 
 const navItems = [
   { key: "why-aixess", labelKey: "aixessAdvantage" },
   { key: "broker-access", labelKey: "brokerAccess" },
-  { key: "residences", labelKey: "selectedOpportunities", children: OPPORTUNITY_PROJECTS },
+  ...PROJECT_MARKETS,
   { key: "insights", labelKey: "insights" },
   // Contact is the footer every page ends with (Klem, 14 October 2026), not a page of its own.
   { key: "contact", labelKey: "contact" },
@@ -57,7 +55,7 @@ const navItems = [
 
 // Broker Tools is part of Broker Access now (Klem, 22 October 2026); old links land there.
 const routeAliases = { resources: "insights", calculators: "broker-access", "broker-tools": "broker-access" };
-const validRoutes = new Set(["home", ...navItems.map(({ key }) => key).filter((key) => key !== "contact"), ...OPPORTUNITY_PROJECTS.map(({ key }) => key), "admin", "privacy"]);
+const validRoutes = new Set(["home", ...navItems.filter(({ key, children }) => key !== "contact" && !children).map(({ key }) => key), ...PROJECT_MARKETS.flatMap(({ children }) => children.map(({ key }) => key)), "admin", "privacy"]);
 
 // Scrolls to the contact footer and moves focus there, so keyboard and screen-reader users land on it too.
 function showContact(behavior = "smooth") {
@@ -90,7 +88,10 @@ function routeFromLocation() {
 function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal, pageHeader = false }) {
   const { t, locale } = useLanguage();
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [openMarket, setOpenMarket] = useState(null);
+  useEffect(() => { setOpenMarket(null); }, [menuOpen, currentPage]);
   const navigate = (page) => {
+    setOpenMarket(null);
     onToggleMenu(false);
     onNavigate(page);
   };
@@ -103,7 +104,7 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
 
       <nav className="desktop-nav" aria-label={t("primaryNavigation")}>
         {navItems.map(({ key, labelKey, children }) => (children ? (
-          <NavGroup key={key} item={{ key, labelKey, children }} currentPage={currentPage} onNavigate={navigate} />
+          <NavGroup key={key} item={{ key, labelKey, children }} currentPage={currentPage} onNavigate={navigate} open={!menuOpen && openMarket === key} onOpenChange={(open) => setOpenMarket(open ? key : null)} />
         ) : (
           <button
             className={currentPage === key ? "is-active" : ""}
@@ -152,26 +153,28 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
         {navItems.map(({ key, labelKey, children }) => (
           <Fragment key={key}>
             <button
-              className={currentPage === key ? "is-active" : ""}
+              className={`${children ? "lasha-menu-category" : ""} ${currentPage === key || children?.some((child) => child.key === currentPage) ? "is-active" : ""}`}
               type="button"
               aria-current={currentPage === key && !children ? "page" : undefined}
-              onClick={() => navigate(key)}
+              aria-expanded={children ? openMarket === key : undefined}
+              aria-controls={children ? `mobile-projects-${key}` : undefined}
+              onClick={() => children ? setOpenMarket(openMarket === key ? null : key) : navigate(key)}
             >
               {t(labelKey)}
+              {children && <CaretDown aria-hidden="true" weight="bold" />}
             </button>
-            {children?.map((child, index) => (
-              <Fragment key={child.labelKey}>
-                {startsRegion(children, index) && <p className="lasha-menu-region">{t(child.regionKey)}</p>}
-                <button
+            {children && <ul className="lasha-menu-projects" id={`mobile-projects-${key}`} hidden={openMarket !== key}>
+              {children.map((child) => (
+                <li key={child.key}><button
                   className={`lasha-menu-sub ${currentPage === child.key ? "is-active" : ""}`}
                   type="button"
                   aria-current={currentPage === child.key ? "page" : undefined}
                   onClick={() => navigate(child.key)}
                 >
                   {t(child.labelKey)}
-                </button>
-              </Fragment>
-            ))}
+                </button></li>
+              ))}
+            </ul>}
           </Fragment>
         ))}
         <LanguageSwitcher languageOpen={languageOpen} setLanguageOpen={setLanguageOpen} />
@@ -183,24 +186,20 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   );
 }
 
-// A top-level entry with its projects underneath: the label still opens the category page,
-// and the caret (or hovering) shows the project list. Escape and an outside click close it.
-function NavGroup({ item, currentPage, onNavigate }) {
+// Hover reveals the projects; the full label is also a keyboard/touch disclosure.
+function NavGroup({ item, currentPage, onNavigate, open, onOpenChange }) {
   const { t } = useLanguage();
-  const [pinned, setPinned] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const open = pinned || hovered;
-  const close = () => { setPinned(false); setHovered(false); };
+  const close = () => onOpenChange(false);
   const groupRef = useRef(null);
   const listId = `nav-group-${item.key}`;
-  const active = currentPage === item.key || item.children.some((child) => child.key === currentPage);
+  const active = item.children.some((child) => child.key === currentPage);
 
   useEffect(() => {
     if (!open) return undefined;
     const onKeyDown = (event) => {
       if (event.key !== "Escape") return;
       close();
-      groupRef.current?.querySelector(".nav-group-toggle")?.focus();
+      groupRef.current?.querySelector(".nav-group-trigger")?.focus();
     };
     const onPointerDown = (event) => {
       if (!groupRef.current?.contains(event.target)) close();
@@ -222,33 +221,36 @@ function NavGroup({ item, currentPage, onNavigate }) {
     <div
       className={`nav-group ${open ? "is-open" : ""}`}
       ref={groupRef}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onBlur={(event) => { if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) setPinned(false); }}
+      onPointerEnter={(event) => { if (event.pointerType === "mouse") onOpenChange(true); }}
+      onPointerLeave={() => { if (!groupRef.current?.contains(document.activeElement)) close(); }}
+      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) close(); }}
     >
-      <button className={active ? "is-active" : ""} type="button" aria-current={currentPage === item.key ? "page" : undefined} onClick={() => go(item.key)}>
-        {t(item.labelKey)}
-      </button>
       <button
-        className="nav-group-toggle"
+        className={`nav-group-trigger ${active ? "is-active" : ""}`}
         type="button"
         aria-expanded={open}
         aria-controls={listId}
-        aria-label={t("showProjects")}
-        onClick={() => setPinned((value) => (hovered ? true : !value))}
+        onClick={() => onOpenChange(!open)}
+        onKeyDown={(event) => {
+          if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+          event.preventDefault();
+          onOpenChange(true);
+          window.requestAnimationFrame(() => {
+            const projects = groupRef.current?.querySelectorAll(".nav-group-menu button");
+            projects?.[event.key === "ArrowUp" ? projects.length - 1 : 0]?.focus();
+          });
+        }}
       >
+        {t(item.labelKey)}
         <CaretDown aria-hidden="true" weight="bold" />
       </button>
       <ul className="nav-group-menu" id={listId} hidden={!open}>
-        {item.children.map((child, index) => (
-          <Fragment key={child.labelKey}>
-            {startsRegion(item.children, index) && <li className="nav-group-region">{t(child.regionKey)}</li>}
-            <li>
+        {item.children.map((child) => (
+          <li key={child.labelKey}>
             <button type="button" className={currentPage === child.key ? "is-active" : ""} aria-current={currentPage === child.key ? "page" : undefined} onClick={() => go(child.key)}>
               {t(child.labelKey)}
             </button>
-            </li>
-          </Fragment>
+          </li>
         ))}
       </ul>
     </div>
