@@ -11,6 +11,7 @@ export const LANGUAGE_OPTIONS = [
 
 const ENGLISH = {
   project: "PROJECT",
+  projects: "PROJECTS",
   whyAixess: "WHY AIXESS",
   residences: "RESIDENCES",
   brokerAccess: "BROKER ACCESS",
@@ -293,6 +294,7 @@ const TRANSLATIONS = {
   de: {
     ...ENGLISH,
     project: "PROJEKT",
+    projects: "PROJEKTE",
     whyAixess: "WARUM AIXESS",
     residences: "RESIDENZEN",
     brokerAccess: "MAKLERZUGANG",
@@ -572,6 +574,7 @@ const TRANSLATIONS = {
   pl: {
     ...ENGLISH,
     project: "PROJEKT",
+    projects: "PROJEKTY",
     whyAixess: "DLACZEGO AIXESS",
     residences: "APARTAMENTY",
     brokerAccess: "DOSTĘP DLA POŚREDNIKÓW",
@@ -851,6 +854,7 @@ const TRANSLATIONS = {
   sl: {
     ...ENGLISH,
     project: "PROJEKT",
+    projects: "PROJEKTI",
     whyAixess: "ZAKAJ AIXESS",
     residences: "REZIDENCE",
     brokerAccess: "DOSTOP POSREDNIKOV",
@@ -1130,6 +1134,7 @@ const TRANSLATIONS = {
   ru: {
     ...ENGLISH,
     project: "ПРОЕКТ",
+    projects: "ПРОЕКТЫ",
     whyAixess: "ПОЧЕМУ AIXESS",
     residences: "АПАРТАМЕНТЫ",
     brokerAccess: "ДОСТУП БРОКЕРАМ",

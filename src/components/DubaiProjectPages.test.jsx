@@ -20,20 +20,22 @@ const mailtoParts = (href) => {
 };
 
 describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
-  it("lists both projects under UAE / Dubai, each opening its own page", () => {
+  it("lists both projects under Projects and UAE / Dubai, each opening its own page", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
-    const toggle = within(container.querySelector(".desktop-nav")).getByRole("button", { name: "UAE / DUBAI" });
+    const toggle = within(container.querySelector(".desktop-nav")).getByRole("button", { name: "PROJECTS" });
 
     fireEvent.click(toggle);
-    const menu = within(container.querySelector("#nav-group-dubai"));
+    fireEvent.click(within(container.querySelector("#nav-group-projects")).getByRole("button", { name: "UAE / DUBAI" }));
+    const menu = within(container.querySelector("#nav-market-dubai"));
     expect(menu.getAllByRole("button").map((button) => button.textContent)).toEqual(["TRESORA", "Downtown One"]);
     fireEvent.click(menu.getByRole("button", { name: "TRESORA" }));
     expect(window.location.hash).toBe("#tresora");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TRESORADUBAI");
 
-    fireEvent.click(within(document.querySelector(".desktop-nav")).getByRole("button", { name: "UAE / DUBAI" }));
-    fireEvent.click(within(document.querySelector("#nav-group-dubai")).getByRole("button", { name: "Downtown One" }));
+    fireEvent.click(within(document.querySelector(".desktop-nav")).getByRole("button", { name: "PROJECTS" }));
+    fireEvent.click(within(document.querySelector("#nav-group-projects")).getByRole("button", { name: "UAE / DUBAI" }));
+    fireEvent.click(within(document.querySelector("#nav-market-dubai")).getByRole("button", { name: "Downtown One" }));
     expect(window.location.hash).toBe("#downtown-one");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("DOWNTOWN ONEDUBAI");
     expect(document.querySelector(".dp-page").textContent).not.toContain("TRESORA");

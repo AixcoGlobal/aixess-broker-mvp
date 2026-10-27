@@ -47,7 +47,7 @@ const PROJECT_MARKETS = [
 const navItems = [
   { key: "why-aixess", labelKey: "aixessAdvantage" },
   { key: "broker-access", labelKey: "brokerAccess" },
-  ...PROJECT_MARKETS,
+  { key: "projects", labelKey: "projects", children: PROJECT_MARKETS },
   { key: "insights", labelKey: "insights" },
   // Contact is the footer every page ends with (Klem, 14 October 2026), not a page of its own.
   { key: "contact", labelKey: "contact" },
@@ -88,9 +88,11 @@ function routeFromLocation() {
 function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal, pageHeader = false }) {
   const { t, locale } = useLanguage();
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [projectsOpen, setProjectsOpen] = useState(false);
   const [openMarket, setOpenMarket] = useState(null);
-  useEffect(() => { setOpenMarket(null); }, [menuOpen, currentPage]);
+  useEffect(() => { setProjectsOpen(false); setOpenMarket(null); }, [menuOpen, currentPage]);
   const navigate = (page) => {
+    setProjectsOpen(false);
     setOpenMarket(null);
     onToggleMenu(false);
     onNavigate(page);
@@ -104,7 +106,7 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
 
       <nav className="desktop-nav" aria-label={t("primaryNavigation")}>
         {navItems.map(({ key, labelKey, children }) => (children ? (
-          <NavGroup key={key} item={{ key, labelKey, children }} currentPage={currentPage} onNavigate={navigate} open={!menuOpen && openMarket === key} onOpenChange={(open) => setOpenMarket(open ? key : null)} />
+          <NavGroup key={key} item={{ key, labelKey, children }} currentPage={currentPage} onNavigate={navigate} open={!menuOpen && projectsOpen} onOpenChange={setProjectsOpen} />
         ) : (
           <button
             className={currentPage === key ? "is-active" : ""}
@@ -153,26 +155,44 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
         {navItems.map(({ key, labelKey, children }) => (
           <Fragment key={key}>
             <button
-              className={`${children ? "lasha-menu-category" : ""} ${currentPage === key || children?.some((child) => child.key === currentPage) ? "is-active" : ""}`}
+              className={`${children ? "lasha-menu-category" : ""} ${currentPage === key || children?.some((market) => market.children.some((child) => child.key === currentPage)) ? "is-active" : ""}`}
               type="button"
               aria-current={currentPage === key && !children ? "page" : undefined}
-              aria-expanded={children ? openMarket === key : undefined}
+              aria-expanded={children ? projectsOpen : undefined}
               aria-controls={children ? `mobile-projects-${key}` : undefined}
-              onClick={() => children ? setOpenMarket(openMarket === key ? null : key) : navigate(key)}
+              onClick={() => {
+                if (children) { setProjectsOpen(!projectsOpen); setOpenMarket(null); }
+                else navigate(key);
+              }}
             >
               {t(labelKey)}
               {children && <CaretDown aria-hidden="true" weight="bold" />}
             </button>
-            {children && <ul className="lasha-menu-projects" id={`mobile-projects-${key}`} hidden={openMarket !== key}>
-              {children.map((child) => (
-                <li key={child.key}><button
-                  className={`lasha-menu-sub ${currentPage === child.key ? "is-active" : ""}`}
-                  type="button"
-                  aria-current={currentPage === child.key ? "page" : undefined}
-                  onClick={() => navigate(child.key)}
-                >
-                  {t(child.labelKey)}
-                </button></li>
+            {children && <ul className="lasha-menu-projects" id={`mobile-projects-${key}`} hidden={!projectsOpen}>
+              {children.map((market) => (
+                <li key={market.key}>
+                  <button
+                    className={`lasha-menu-category ${market.children.some((child) => child.key === currentPage) ? "is-active" : ""}`}
+                    type="button"
+                    aria-expanded={openMarket === market.key}
+                    aria-controls={`mobile-market-${market.key}`}
+                    onClick={() => setOpenMarket(openMarket === market.key ? null : market.key)}
+                  >
+                    {t(market.labelKey)}<CaretDown aria-hidden="true" weight="bold" />
+                  </button>
+                  <ul className="lasha-menu-project-list" id={`mobile-market-${market.key}`} hidden={openMarket !== market.key}>
+                    {market.children.map((child) => (
+                      <li key={child.key}><button
+                        className={`lasha-menu-sub ${currentPage === child.key ? "is-active" : ""}`}
+                        type="button"
+                        aria-current={currentPage === child.key ? "page" : undefined}
+                        onClick={() => navigate(child.key)}
+                      >
+                        {t(child.labelKey)}
+                      </button></li>
+                    ))}
+                  </ul>
+                </li>
               ))}
             </ul>}
           </Fragment>
@@ -189,13 +209,20 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
 // Hover reveals the projects; the full label is also a keyboard/touch disclosure.
 function NavGroup({ item, currentPage, onNavigate, open, onOpenChange }) {
   const { t } = useLanguage();
-  const close = () => onOpenChange(false);
+  const [openMarket, setOpenMarket] = useState(null);
+  const close = () => { setOpenMarket(null); onOpenChange(false); };
   const groupRef = useRef(null);
   const listId = `nav-group-${item.key}`;
-  const active = item.children.some((child) => child.key === currentPage);
+  const active = item.children.some((market) => market.children.some((child) => child.key === currentPage));
+
+  const closeMarket = () => {
+    const trigger = groupRef.current?.querySelector(".nav-market-trigger[aria-expanded='true']");
+    setOpenMarket(null);
+    trigger?.focus();
+  };
 
   useEffect(() => {
-    if (!open) return undefined;
+    if (!open) { setOpenMarket(null); return undefined; }
     const onKeyDown = (event) => {
       if (event.key !== "Escape") return;
       close();
@@ -224,6 +251,13 @@ function NavGroup({ item, currentPage, onNavigate, open, onOpenChange }) {
       onPointerEnter={(event) => { if (event.pointerType === "mouse") onOpenChange(true); }}
       onPointerLeave={() => { if (!groupRef.current?.contains(document.activeElement)) close(); }}
       onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) close(); }}
+      onKeyDown={(event) => {
+        if (openMarket && (event.key === "Escape" || event.key === "ArrowLeft")) {
+          event.preventDefault();
+          event.stopPropagation();
+          closeMarket();
+        }
+      }}
     >
       <button
         className={`nav-group-trigger ${active ? "is-active" : ""}`}
@@ -236,8 +270,8 @@ function NavGroup({ item, currentPage, onNavigate, open, onOpenChange }) {
           event.preventDefault();
           onOpenChange(true);
           window.requestAnimationFrame(() => {
-            const projects = groupRef.current?.querySelectorAll(".nav-group-menu button");
-            projects?.[event.key === "ArrowUp" ? projects.length - 1 : 0]?.focus();
+            const markets = groupRef.current?.querySelectorAll(".nav-market-trigger");
+            markets?.[event.key === "ArrowUp" ? markets.length - 1 : 0]?.focus();
           });
         }}
       >
@@ -245,11 +279,43 @@ function NavGroup({ item, currentPage, onNavigate, open, onOpenChange }) {
         <CaretDown aria-hidden="true" weight="bold" />
       </button>
       <ul className="nav-group-menu" id={listId} hidden={!open}>
-        {item.children.map((child) => (
-          <li key={child.labelKey}>
-            <button type="button" className={currentPage === child.key ? "is-active" : ""} aria-current={currentPage === child.key ? "page" : undefined} onClick={() => go(child.key)}>
-              {t(child.labelKey)}
+        {item.children.map((market) => (
+          <li
+            className="nav-market"
+            key={market.key}
+            onPointerEnter={(event) => { if (event.pointerType === "mouse") setOpenMarket(market.key); }}
+            onPointerLeave={(event) => { if (!event.currentTarget.contains(document.activeElement)) setOpenMarket((value) => value === market.key ? null : value); }}
+            onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setOpenMarket((value) => value === market.key ? null : value); }}
+          >
+            <button
+              type="button"
+              className={`nav-market-trigger ${market.children.some((child) => child.key === currentPage) ? "is-active" : ""}`}
+              aria-expanded={openMarket === market.key}
+              aria-controls={`nav-market-${market.key}`}
+              onClick={() => setOpenMarket(openMarket === market.key ? null : market.key)}
+              onKeyDown={(event) => {
+                if (!["ArrowRight", "ArrowDown", "ArrowUp"].includes(event.key)) return;
+                event.preventDefault();
+                const row = event.currentTarget.closest(".nav-market");
+                const last = event.key === "ArrowUp";
+                setOpenMarket(market.key);
+                window.requestAnimationFrame(() => {
+                  const projects = row.querySelectorAll(".nav-market-menu button");
+                  projects[last ? projects.length - 1 : 0]?.focus();
+                });
+              }}
+            >
+              {t(market.labelKey)}<CaretDown aria-hidden="true" weight="bold" />
             </button>
+            <ul className="nav-group-menu nav-market-menu" id={`nav-market-${market.key}`} hidden={openMarket !== market.key}>
+              {market.children.map((child) => (
+                <li key={child.key}>
+                  <button type="button" className={currentPage === child.key ? "is-active" : ""} aria-current={currentPage === child.key ? "page" : undefined} onClick={() => go(child.key)}>
+                    {t(child.labelKey)}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>

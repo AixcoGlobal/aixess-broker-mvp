@@ -25,8 +25,7 @@ describe("AIXESS navigation pages", () => {
     expect(Array.from(document.querySelectorAll(".desktop-nav button")).filter((button) => !button.closest(".nav-group-menu")).map((button) => button.textContent)).toEqual([
       "AIXESS ADVANTAGE",
       "BROKER ACCESS",
-      "BATUMI",
-      "UAE / DUBAI",
+      "PROJECTS",
       "INSIGHTS",
       "CONTACT",
     ]);
@@ -54,7 +53,7 @@ describe("AIXESS navigation pages", () => {
     expect(collapse).not.toBeNull();
     // The panel's own styles (ink ground, paper labels) and the Reverance sub-entry, not the
     // narrower phone refinements.
-    const panelBreakpoints = [...menu.matchAll(/@media \(max-width: (\d+)px\) \{\s*\.mobile-nav\.lasha-menu(?: \.lasha-menu-projects)? \{\s*(?:z-index|margin)/g)].map((m) => m[1]);
+    const panelBreakpoints = [...menu.matchAll(/@media \(max-width: (\d+)px\) \{\s*\.mobile-nav\.lasha-menu(?: :is\(\.lasha-menu-projects, \.lasha-menu-project-list\))? \{\s*(?:z-index|margin)/g)].map((m) => m[1]);
     expect(panelBreakpoints).toHaveLength(2);
     panelBreakpoints.forEach((width) => expect(width).toBe(collapse[1]));
   });
@@ -71,7 +70,7 @@ describe("AIXESS navigation pages", () => {
       const toggle = document.querySelector(".site-header .menu-toggle");
       fireEvent.click(toggle);
       expect(panel).toHaveClass("is-open");
-      expect(within(panel).getAllByRole("button").map((button) => button.textContent)).toEqual(expect.arrayContaining(["AIXESS ADVANTAGE", "BROKER ACCESS", "BATUMI", "UAE / DUBAI", "INSIGHTS"]));
+      expect(within(panel).getAllByRole("button").map((button) => button.textContent)).toEqual(expect.arrayContaining(["AIXESS ADVANTAGE", "BROKER ACCESS", "PROJECTS", "INSIGHTS"]));
       fireEvent.keyDown(document, { key: "Escape" });
       expect(panel).not.toHaveClass("is-open");
 
@@ -396,11 +395,11 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("button", { name: /REQUEST BROKER ACCESS/ })).toBeInTheDocument();
   });
 
-  it("opens Reverance from the Batumi menu and closes it with Escape", () => {
+  it("opens Reverance through Projects and Batumi and closes Projects with Escape", () => {
     window.history.replaceState({}, "", "/");
     const { container } = render(<App />);
 
-    const toggle = within(container.querySelector(".desktop-nav")).getByRole("button", { name: "BATUMI" });
+    const toggle = within(container.querySelector(".desktop-nav")).getByRole("button", { name: "PROJECTS" });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(toggle);
     expect(toggle).toHaveAttribute("aria-expanded", "true");
@@ -408,7 +407,8 @@ describe("AIXESS navigation pages", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "false");
 
     fireEvent.click(toggle);
-    fireEvent.click(within(container.querySelector("#nav-group-batumi")).getByRole("button", { name: "Reverance" }));
+    fireEvent.click(within(container.querySelector("#nav-group-projects")).getByRole("button", { name: "BATUMI" }));
+    fireEvent.click(within(container.querySelector("#nav-market-batumi")).getByRole("button", { name: "Reverance" }));
     expect(window.location.hash).toBe("#residences");
     expect(screen.getByRole("heading", { name: /two buildings/i })).toBeInTheDocument();
   });
