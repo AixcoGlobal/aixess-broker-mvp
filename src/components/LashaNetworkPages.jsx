@@ -133,13 +133,10 @@ export function AdvantagePageContent({ header }) {
       />
 
       <section className="lnp-starting" aria-label={network.startingPointsTitle}>
-        {/* As on the homepage, each card has its own line rather than the frame's repeated first line. */}
-        {network.startingPoints.map(([title, line], index) => (
+        {/* Each card has its own line rather than the frame's repeated first line. No numbers or arrow
+            rules above the titles (Kemo, 28 October 2026). */}
+        {network.startingPoints.map(([title, line]) => (
           <article key={title}>
-            <span className="lnp-rule" aria-hidden="true">
-              <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
-              <LashaArrow length={193} />
-            </span>
             <h2>{title}</h2>
             <p>{line}</p>
           </article>

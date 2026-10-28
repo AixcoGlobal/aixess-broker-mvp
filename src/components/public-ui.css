@@ -36,7 +36,6 @@
 }
 
 /* Body copy, including the frame pages whose desktop copy was smaller than on phones. */
-.lasha-home .lasha-starting-grid p,
 .lnp :is(.lnp-hero-body, .lnp-starting p, .lnp-advantage-subtitle, .lnp-people p, .lnp-commercial-body, .lnp-steps p, .lnp-care-intro, .lnp-care-list p),
 .lasha-page :is(.network-card p, .network-steps p, .rp-benefits p, .rp-stages p, .rp-cards p, .rp-highlights li),
 .lasha-page :is(.it-card-body > p:not(.it-card-place, .it-card-status), .it-feature p, .it-step-list p, .it-faq details p),

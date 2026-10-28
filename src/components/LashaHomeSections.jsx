@@ -246,6 +246,8 @@ function keepPhraseTogether(text) {
   return <>{before} <span className="lasha-starting-line"><span className="lasha-nowrap">{phrase}</span>{after}</span></>;
 }
 
+// The three starting-point cards were taken off the homepage because Broker Access shows them
+// (Kemo, 28 October 2026); the statement stays.
 export function HomeStartingPoints() {
   const { locale } = useLanguage();
   const network = NETWORK_COPY[locale] || NETWORK_COPY.en;
@@ -256,20 +258,6 @@ export function HomeStartingPoints() {
     <section className="lasha-starting" aria-labelledby="lasha-starting-title">
       <p className="lasha-eyebrow">{network.introTagline.replace(/\.$/, "")}</p>
       <h2 id="lasha-starting-title"><span>{keepPhraseTogether(lead)}</span> <span className="lasha-accent">{accent}</span></h2>
-      <div className="lasha-starting-grid">
-        {/* Each card has its own line (Kemo, 16 October 2026: no repeated text on a page), though
-            Lasha's frame repeated the first card's line under all three titles. */}
-        {network.startingPoints.map(([title, line], index) => (
-          <article key={title}>
-            <span className="lasha-starting-rule" aria-hidden="true">
-              <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
-              <LashaArrow length={193} />
-            </span>
-            <h3>{title}</h3>
-            <p>{line}</p>
-          </article>
-        ))}
-      </div>
     </section>
   );
 }

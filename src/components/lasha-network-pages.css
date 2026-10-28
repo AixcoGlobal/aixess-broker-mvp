@@ -134,10 +134,6 @@
 
 .lnp-starting article:nth-child(3)::before { left: calc(-132 * var(--u)); }
 
-.lnp-rule { display: flex; align-items: center; gap: calc(14 * var(--u)); color: var(--l-blue); }
-.lnp-rule .lasha-index { font-size: var(--v4-index); }
-.lnp-rule .lasha-arrow { width: calc(193 * var(--u)); }
-
 .lnp-starting h2 { margin-top: calc(22 * var(--u)); font-size: var(--v4-route); line-height: 0.95; }
 
 .lnp-starting p {
@@ -507,8 +503,6 @@ html:root[data-time-theme='night'] .lnp-care-text .lasha-index { color: var(--l-
   .lnp-starting article { padding: 1.4rem 0 1.5rem; }
   .lnp-starting article + article { border-top: 1px solid #bfc4c9; }
   .lnp-starting article + article::before { content: none; }
-  .lnp-rule { gap: 0.8rem; }
-  .lnp-rule .lasha-arrow { width: 8rem; height: 0.5rem; }
   .lnp-starting h2 { margin-top: 0.9rem; }
   .lnp-starting p { margin-top: 0.5rem; font-size: 1rem; line-height: 1.4; }
 
