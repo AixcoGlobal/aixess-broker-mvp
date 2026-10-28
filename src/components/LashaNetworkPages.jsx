@@ -4,8 +4,10 @@ import { LashaArrow } from "./LashaHomeSections.jsx";
 import { NETWORK_COPY } from "../network-copy.js";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { LASHA_PAGES_COPY } from "../lasha-pages-copy.js";
+import { ADVANTAGE_SERVICES_COPY } from "../advantage-services-copy.js";
 import "./lasha-network-pages.css";
 import { ThemedImage } from "./ThemedImage.jsx";
+import { ArrowsClockwise, ChartBar, Coins, FileText, Gear, HouseLine, Key, UsersThree } from "@phosphor-icons/react";
 import { BrokerGetStarted, BrokerPlatformHero, BrokerWorkspace } from "./InsightsToolsPages.jsx";
 
 // AiXESS Advantage and Broker Access, built to Lasha Bakashvili's Figma frames (AIXESS
@@ -116,8 +118,8 @@ function SplitHero({ header, eyebrow, title, body, action, media, className }) {
 }
 
 export function AdvantagePageContent({ header }) {
-  const { network, home, page } = useCopy();
-  const [servicesEyebrow, servicesTitle] = network.services;
+  const { locale, network, home, page } = useCopy();
+  const care = ADVANTAGE_SERVICES_COPY[locale] || ADVANTAGE_SERVICES_COPY.en;
   return (
     <div className="lnp lnp-advantage">
       <SplitHero
@@ -131,13 +133,10 @@ export function AdvantagePageContent({ header }) {
       />
 
       <section className="lnp-starting" aria-label={network.startingPointsTitle}>
-        {/* As on the homepage, each card has its own line rather than the frame's repeated first line. */}
-        {network.startingPoints.map(([title, line], index) => (
+        {/* Each card has its own line rather than the frame's repeated first line. No numbers or arrow
+            rules above the titles (Kemo, 28 October 2026). */}
+        {network.startingPoints.map(([title, line]) => (
           <article key={title}>
-            <span className="lnp-rule" aria-hidden="true">
-              <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
-              <LashaArrow length={193} />
-            </span>
             <h2>{title}</h2>
             <p>{line}</p>
           </article>
@@ -154,14 +153,45 @@ export function AdvantagePageContent({ header }) {
         </div>
       </section>
 
-      <section className="lnp-services" aria-labelledby="lnp-services-title">
-        <p className="lnp-services-figure" aria-hidden="true">360°</p>
-        <div className="lnp-services-copy">
-          <p className="lnp-services-eyebrow">{servicesEyebrow}</p>
-          <h2 id="lnp-services-title">{splitBalanced(noStop(servicesTitle)).map((line) => <span key={line}>{line}</span>)}</h2>
+      {/* AiXESS 360° Services (Kemo, 28 October 2026, from his image), in the page's own type and
+          colours. It replaces Lasha's shorter 360° row, which said the same thing. */}
+      <section className="lnp-care" aria-labelledby="lnp-care-title">
+        <div className="lnp-care-head">
+          <div>
+            <p className="lnp-care-eyebrow">{care.eyebrow}</p>
+            <h2 id="lnp-care-title">{care.title.map((line) => <span key={line}>{line}</span>)}</h2>
+          </div>
+          <div className="lnp-care-copy">
+            <p className="lnp-care-subtitle">{care.subtitle}</p>
+            <p className="lnp-care-intro">{care.intro}</p>
+          </div>
         </div>
-        <div className="lnp-services-claim">
-          <p>{page.connectSupports.map((line) => <span key={line}>{line}</span>)}</p>
+        {/* Kemo's round layout: the eight services sit on a ring around a terrace photo, clockwise
+            from the top right, with their text outside the ring. Below 1280px the ring carries only
+            the photo and badges, and the text follows as a list. */}
+        <div className="lnp-care-ring">
+          <div className="lnp-care-stage">
+            <div className="lnp-care-hub" aria-hidden="true">
+              <ThemedImage family="coastal-lifestyle" defaultWidth={800} sizes="(max-width: 1279px) 14rem, 30vw" alt="" loading="lazy" decoding="async" />
+            </div>
+            {CARE_DOTS.map(([x, y]) => <span key={`${x}${y}`} className="lnp-care-dot" style={{ "--x": x, "--y": y }} aria-hidden="true" />)}
+            <ol className="lnp-care-list">
+              {care.items.map(([title, line], index) => {
+                const Icon = CARE_ICONS[index];
+                const [x, y] = ringPoint(-67.5 + index * 45);
+                return (
+                  <li key={title} className={`${index < 4 ? "is-right" : "is-left"}${[0, 7].includes(index) ? " is-top" : ""}${[3, 4].includes(index) ? " is-bottom" : ""}`} style={{ "--x": x, "--y": y }}>
+                    <span className="lnp-care-badge" aria-hidden="true"><Icon weight="light" /></span>
+                    <div className="lnp-care-text">
+                      <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
+                      <h3>{title}</h3>
+                      <p>{line}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
       </section>
     </div>
@@ -239,23 +269,16 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
   );
 }
 
+// The 360° ring: one icon per service, in the order of Kemo's image.
+const CARE_ICONS = [HouseLine, Coins, FileText, Key, Gear, UsersThree, ChartBar, ArrowsClockwise];
+const ringPoint = (degrees) => [Math.cos((degrees * Math.PI) / 180), Math.sin((degrees * Math.PI) / 180)].map((value) => Number(value.toFixed(4)));
+// Small dots on the ring halfway between services.
+const CARE_DOTS = Array.from({ length: 8 }, (_, index) => ringPoint(-45 + index * 45));
+
 // Lasha breaks the Advantage title before its last word: YOUR AIXESS / ADVANTAGE.
 function splitBeforeLast(text) {
   const words = text.split(/\s+/);
   return words.length > 1 ? [words.slice(0, -1).join(" "), words.at(-1)] : [text];
-}
-
-// Two lines of about equal length: WE DON'T STOP / AT THE SALE.
-function splitBalanced(text) {
-  const words = text.split(/\s+/);
-  let best = [text];
-  let bestGap = Infinity;
-  for (let i = 1; i < words.length; i += 1) {
-    const lines = [words.slice(0, i).join(" "), words.slice(i).join(" ")];
-    const gap = Math.abs(lines[0].length - lines[1].length);
-    if (gap < bestGap) { best = lines; bestGap = gap; }
-  }
-  return best;
 }
 
 // "FROM ACCESS TO COMMISSION" → ["FROM ACCESS", "TO COMMISSION"]: break after the first n words.

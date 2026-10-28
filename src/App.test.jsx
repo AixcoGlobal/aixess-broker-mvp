@@ -166,13 +166,10 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { name: l.projectTitle })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: l.aboutTitle.join("") })).toBeInTheDocument();
     expect(screen.getByText(l.heroSubtitle.replace(/\s+/g, " "))).toBeInTheDocument();
-    expect(container.querySelectorAll(".lasha-starting-grid article")).toHaveLength(3);
     expect(container.querySelectorAll(".lasha-metrics > div")).toHaveLength(3);
-    for (const [title] of c.startingPoints) {
-      expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
-    }
-    // Each starting point has its own line; no text repeats on the page (Kemo, 16 October 2026).
-    for (const [, line] of c.startingPoints) expect(screen.getAllByText(line)).toHaveLength(1);
+    // The starting-point cards are on Broker Access only (Kemo, 28 October 2026).
+    expect(container.querySelector(".lasha-starting article")).toBeNull();
+    for (const [, line] of c.startingPoints) expect(screen.queryByText(line)).toBeNull();
   });
 
   it("shows Reverance as the featured homepage project with working project actions", () => {
@@ -283,8 +280,10 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByText("Turn trusted connections into new business opportunities.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "YOUR AIXESSADVANTAGE" })).toBeInTheDocument();
     expect(screen.getByText("International real estate opportunities for your clients and network")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "WE DON'T STOPAT THE SALE" })).toBeInTheDocument();
-    expect(screen.getByText("AIXCO SUPPORTS.")).toBeInTheDocument();
+    // AiXESS 360° Services (Kemo, 28 October 2026) replaces the shorter 360° row.
+    expect(screen.getByRole("heading", { name: "AiXESS360° SERVICES" })).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 3 }).filter((h) => h.closest(".lnp-care"))).toHaveLength(8);
+    expect(screen.queryByText("AIXCO SUPPORTS.")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "REQUEST ACCESS" })).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-signup?lang=en");
     expect(screen.getByRole("link", { name: "PARTNER SIGN IN" })).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-login?lang=en");
 

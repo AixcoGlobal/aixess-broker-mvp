@@ -478,8 +478,9 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 
 .lasha-about-points .lasha-index { font-size: var(--v4-index); letter-spacing: 0; }
 
-/* Starting points: eyebrow, three-line statement, mist band 214 tall. */
-.lasha-starting { padding: calc(125 * var(--u)) 0 0; }
+/* Starting points: eyebrow and three-line statement; the cards below it now live only on Broker
+   Access (Kemo, 28 October 2026). */
+.lasha-starting { padding: calc(125 * var(--u)) 0 calc(100 * var(--u)); }
 
 .lasha-starting > .lasha-eyebrow,
 .lasha-starting > h2 { margin-left: calc(70 * var(--u)); }
@@ -522,66 +523,6 @@ html[lang="ru"] .lasha-starting h2 > .lasha-accent { display: block; margin-top:
 html[lang="de"] .lasha-starting h2 > .lasha-accent { display: block; margin-top: 0.1em; }
 .lasha-starting .lasha-starting-line { display: block; }
 .lasha-starting .lasha-nowrap { white-space: nowrap; }
-
-.lasha-starting-grid {
-  position: relative;
-  display: grid;
-  grid-template-columns: calc(477.7 * var(--u)) calc(476 * var(--u)) minmax(0, 1fr);
-  min-height: calc(214 * var(--u));
-  margin-top: calc(36.1 * var(--u));
-  /* The bottom padding keeps longer translations (German at 1280px) inside the band. */
-  padding: calc(19.7 * var(--u)) 0 calc(16 * var(--u)) calc(71 * var(--u));
-  background: var(--l-mist);
-}
-
-.lasha-starting-grid::after {
-  position: absolute;
-  right: calc(70 * var(--u));
-  bottom: 0;
-  left: calc(70 * var(--u));
-  height: 1px;
-  background: #babfc4;
-  content: "";
-}
-
-.lasha-starting-grid article { position: relative; min-width: 0; }
-
-.lasha-starting-grid article + article::before {
-  position: absolute;
-  top: calc(19.3 * var(--u));
-  bottom: 0;
-  left: calc(-124.7 * var(--u));
-  width: 1px;
-  background: #bfc4c9;
-  content: "";
-}
-
-.lasha-starting-grid article:nth-child(3)::before { left: calc(-133.7 * var(--u)); }
-
-.lasha-starting-rule {
-  display: flex;
-  align-items: center;
-  gap: calc(14 * var(--u));
-  color: var(--l-blue);
-}
-
-.lasha-starting-rule .lasha-index { font-size: var(--v4-index); }
-.lasha-starting-rule .lasha-arrow { width: calc(193 * var(--u)); }
-
-.lasha-starting-grid h3 {
-  margin-top: calc(27.4 * var(--u));
-  font-family: var(--l-display);
-  font-size: var(--v4-route);
-  line-height: 0.95;
-  letter-spacing: 0;
-}
-
-.lasha-starting-grid p {
-  margin-top: calc(8.95 * var(--u));
-  max-width: max(calc(206 * var(--u)), 13rem);
-  font-size: var(--v4-text);
-  line-height: 1.65;
-}
 
 /* Broker access: frame 4609–4948. The title, the count and the buttons each keep the same
    clear inset from the rule to their right, as in Lasha's sample (Klem, 12 October 2026);
@@ -1043,8 +984,8 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
   /* On 320px phones "INTERNATIONALER ZUGANG" / "DOSTĘP MIĘDZYNARODOWY" outgrew their column. */
   @media (max-width: 359px) { .lasha-about-points li { letter-spacing: 0.08em; } }
 
-  /* Starting points: one card per row. */
-  .lasha-starting { padding-top: 3.6rem; }
+  /* Starting points. */
+  .lasha-starting { padding: 3.6rem 0 1.2rem; }
   .lasha-starting > .lasha-eyebrow,
   .lasha-starting > h2 { margin-inline: 1.25rem; }
   .lasha-starting > .lasha-eyebrow { line-height: 1.1; }
@@ -1054,21 +995,6 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
   .lasha-starting h2 > span:first-child { max-width: none; }
   /* "UNTERSCHIEDLICHE" is one unbreakable word. */
   .lasha-home:lang(de) .lasha-starting h2 { font-size: min(var(--v4-h2), calc((100vw - 2.5rem) / 6.2)); }
-  .lasha-starting-grid {
-    grid-template-columns: minmax(0, 1fr);
-    min-height: 0;
-    margin-top: 2.2rem;
-    padding: 0.6rem 1.25rem 0.8rem;
-  }
-  .lasha-starting-grid::after { right: 1.25rem; left: 1.25rem; }
-  .lasha-starting-grid article { padding: 1.4rem 0 1.5rem; }
-  .lasha-starting-grid article + article { border-top: 1px solid #bfc4c9; }
-  .lasha-starting-grid article + article::before { content: none; }
-  .lasha-starting-rule { gap: 0.8rem; }
-  .lasha-starting-rule .lasha-arrow { width: 7rem; }
-  .lasha-starting-grid h3 { margin-top: 0.9rem; }
-  .lasha-starting-grid p { max-width: 24rem; margin-top: 0.45rem; }
-
   /* Broker access: headline, count, then full-width actions. */
   .lasha-access { grid-template-columns: minmax(0, 1fr); height: auto; padding: 0 0 3.2rem; }
   .lasha-access-copy { padding: 3.2rem 1.25rem 0; }
