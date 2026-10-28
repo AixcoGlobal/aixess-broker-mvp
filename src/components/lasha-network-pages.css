@@ -224,7 +224,7 @@
 html:root[data-time-theme='night'] .lnp-care { --care-badge: var(--l-night-button); --care-ring: color-mix(in srgb, var(--care-badge) 60%, transparent); }
 
 .lnp-care-ring { margin-top: calc(64 * var(--u)); container-type: inline-size; }
-@media (min-width: 1200px) { .lnp-care-ring { margin-top: clamp(3rem, 5vw, 6rem); } }
+@media (min-width: 1280px) { .lnp-care-ring { margin-top: clamp(3rem, 5vw, 6rem); } }
 
 .lnp-care-badge {
   display: grid;
@@ -245,10 +245,10 @@ html:root[data-time-theme='night'] .lnp-care-text .lasha-index { color: var(--l-
 .lnp-care-list h3 { margin-top: 0.55rem; font-size: var(--v4-route); line-height: 0.95; hyphens: manual; overflow-wrap: break-word; }
 .lnp-care-list p { max-width: 20rem; margin-top: 0.5rem; font-size: var(--v4-small); line-height: 1.45; letter-spacing: 0.02em; }
 
-/* Below 1200px the ring keeps its shape but carries only the photo and the badges, centred
+/* Below 1280px the ring keeps its shape but carries only the photo and the badges, centred
    above the services, which follow as a list (two columns from 600px). The badges, dots and
    photo are placed on the ring box (--ring wide) at the top of .lnp-care-ring. */
-@media (max-width: 1199px) {
+@media (max-width: 1279px) {
   .lnp-care-stage {
     --ring: min(100cqi, 28rem);
     --r: calc(var(--ring) * 0.39);
@@ -287,17 +287,17 @@ html:root[data-time-theme='night'] .lnp-care-text .lasha-index { color: var(--l-
   .lnp-care-list li { min-width: 0; padding: 1.5rem 0 1.6rem; border-top: 1px solid var(--l-line); }
 }
 
-/* From 1200px the full ring: a stage 70% as tall as it is wide, leaving room above and below
-   for the top and bottom text, and a ring whose radius is 23% of its width. Each service is a
+/* From 1280px the full ring: a stage 80% as tall as it is wide, leaving room above and below
+   for the top and bottom text, and a ring whose radius is 25% of its width. Each service is a
    point on the ring (--x, --y: cosine and sine of its angle) with its badge centred on it and its
    text outside the ring, left-aligned on the right, right-aligned on the left. */
-@media (min-width: 1200px) {
+@media (min-width: 1280px) {
   .lnp-care-stage {
-    --r: 23cqi;
+    --r: 25cqi;
     --badge: 7.6cqi;
-    --cy: 35cqi;
+    --cy: 40cqi;
     position: relative;
-    height: 70cqi;
+    height: 80cqi;
   }
 
   .lnp-care-stage::before {
@@ -314,7 +314,7 @@ html:root[data-time-theme='night'] .lnp-care-text .lasha-index { color: var(--l-
   .lnp-care-hub,
   .lnp-care-dot,
   .lnp-care-badge { position: absolute; transform: translate(-50%, -50%); }
-  .lnp-care-hub { top: var(--cy); left: 50cqi; width: 30cqi; aspect-ratio: 1; }
+  .lnp-care-hub { top: var(--cy); left: 50cqi; width: 32cqi; aspect-ratio: 1; }
   .lnp-care-dot { top: calc(var(--cy) + var(--y) * var(--r)); left: calc(50cqi + var(--x) * var(--r)); width: 0.55cqi; }
 
   .lnp-care-list { display: block; }
@@ -339,7 +339,7 @@ html:root[data-time-theme='night'] .lnp-care-text .lasha-index { color: var(--l-
   .lnp-care-text {
     position: absolute;
     top: 0;
-    width: 20cqi;
+    width: 20.5cqi;
     transform: translateY(-50%);
   }
 
@@ -352,8 +352,8 @@ html:root[data-time-theme='night'] .lnp-care-text .lasha-index { color: var(--l-
   .is-left .lnp-care-text { right: calc(var(--badge) / 2 + 1.6cqi); text-align: right; }
   .is-left p { margin-left: auto; }
 
-  .lnp-care-list h3 { font-size: clamp(1.35rem, 2cqi, 2.4rem); }
-  .lnp-care-list p { font-size: clamp(0.88rem, 1.1cqi, 1.05rem); }
+  /* The same title size as the page's starting-point cards (Kemo, 28 October 2026: too small). */
+  .lnp-care-list h3 { font-size: var(--v4-route); }
 }
 
 /* Who can join: Lasha's Broker Access hero (panel 657, render 385, list), now a section below

@@ -170,12 +170,12 @@ export function AdvantagePageContent({ header }) {
           </div>
         </div>
         {/* Kemo's round layout: the eight services sit on a ring around a terrace photo, clockwise
-            from the top right, with their text outside the ring. Below 1200px the ring carries only
+            from the top right, with their text outside the ring. Below 1280px the ring carries only
             the photo and badges, and the text follows as a list. */}
         <div className="lnp-care-ring">
           <div className="lnp-care-stage">
             <div className="lnp-care-hub" aria-hidden="true">
-              <ThemedImage family="coastal-lifestyle" defaultWidth={800} sizes="(max-width: 1199px) 14rem, 30vw" alt="" loading="lazy" decoding="async" />
+              <ThemedImage family="coastal-lifestyle" defaultWidth={800} sizes="(max-width: 1279px) 14rem, 30vw" alt="" loading="lazy" decoding="async" />
             </div>
             {CARE_DOTS.map(([x, y]) => <span key={`${x}${y}`} className="lnp-care-dot" style={{ "--x": x, "--y": y }} aria-hidden="true" />)}
             <ol className="lnp-care-list">
