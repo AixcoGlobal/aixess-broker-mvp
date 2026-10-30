@@ -1,0 +1,133 @@
+/* Even spacing around divider lines (Kemo, 28 October 2026: "distance from line to text should be
+   same ... we need symmetry"). Wherever a hairline separates two things, the letters above the line
+   and the letters below it sit the same distance from it, and every row of a group uses the same
+   distance. That distance is the larger of the two the design already had, so nothing moves closer
+   and no size changes. Distances are measured between the letters a reader sees: from a baseline
+   down to the line, and from the line down to the capitals. The --trim-* values pull a text box in
+   to its letters (AiXESS Head: capitals 0.36em below its centred content box's top, baseline 0.30em
+   above its bottom; Inter: 0.365em both ways), so a padding equal to the distance gives that
+   distance whatever font size or line height sits beside it. */
+:root {
+  --trim-head-top: calc(0.36em - 0.5lh);
+  --trim-head-bottom: calc(0.3em - 0.5lh);
+  --trim-body: calc(0.365em - 0.5lh);
+}
+
+/* Who can join (Broker Access): the text's distance above each rule, under it too. The first row
+   also starts on the rows' left edge. */
+@media (min-width: 900px) {
+  .lnp-people li { padding-block: calc(28 * var(--u) + 0.425rem); }
+  .lnp-people li:first-child { margin-left: calc(5 * var(--u)); }
+}
+.lnp-people :is(.lasha-index, h3) { margin-top: var(--trim-head-top); }
+.lnp-people p { margin-bottom: var(--trim-body); }
+@media (max-width: 899px) {
+  .lnp-people li { padding-block: 1.725rem; }
+}
+
+/* How it works (Broker Access), stacked on phones. */
+@media (max-width: 899px) {
+  .lnp-steps li,
+  .lnp-steps li:first-child { padding-block: 1.725rem; }
+  .lnp-steps .lasha-index { margin-top: var(--trim-head-top); }
+  .lnp-steps p { margin-bottom: var(--trim-body); }
+}
+
+/* Three steps to get started (Broker Access), stacked on phones: the gap between steps moves into
+   each step so its rule sits midway. */
+@media (max-width: 899px) {
+  .it-step-list { row-gap: 0; }
+  .it-step-list li { padding-top: calc(clamp(1.2rem, 3vw, 3rem) + 0.4rem); }
+  .it-step-list li:not(:last-child) { padding-bottom: calc(clamp(1.2rem, 3vw, 3rem) + 0.4rem); }
+  .it-step-list .lasha-index { margin-top: var(--trim-head-top); }
+  .it-step-list li:not(:last-child) p { margin-bottom: var(--trim-body); }
+}
+
+/* Questions (Insights): a one-line question sits centred in its 3.6rem row; longer questions get
+   the same room above and below. The +/× mark keeps to one text line so it adds no height. */
+.it-faq summary { padding-block: calc((3.6rem - 1lh) / 2); }
+.it-faq summary span { line-height: 1; }
+
+/* Project facts (Reverance). */
+.lasha-page .project-facts-list > div { padding-block: 1.7125rem; }
+.lasha-page .project-facts-list dt { margin-top: var(--trim-body); }
+.lasha-page .project-facts-list dd > :last-child { margin-bottom: var(--trim-body); }
+
+/* Figures (Why Batumi, Why AIXCO): the figure shows above its label. */
+.lasha-page .rp-stats > div { padding-block: 1.8rem; }
+.lasha-page .rp-stats dd { margin-top: var(--trim-head-top); }
+.lasha-page .rp-stats dt { margin-bottom: var(--trim-body); }
+
+/* Ownership in Georgia. */
+.lasha-page .rp-benefits li { padding-block: 2.025rem; }
+.lasha-page .rp-benefits .rp-index { margin-top: var(--trim-head-top); }
+.lasha-page .rp-benefits p { margin-bottom: var(--trim-body); }
+
+/* AiXESS 360° Services as a list, below the full ring. */
+@media (max-width: 1279px) {
+  .lnp-care-list li { padding-block: 2.025rem; }
+  .lnp-care-text .lasha-index { margin-top: var(--trim-head-top); }
+  .lnp-care-list p { margin-bottom: var(--trim-body); }
+}
+@media (max-width: 899px) {
+  .lnp-care-list li { padding-block: 1.825rem; }
+}
+
+/* Starting points (AiXESS Advantage): both rules sit Lasha's 132px before the next column; stacked
+   on phones, the text above each rule gets the room the title below it has. */
+.lnp-starting article + article::before { left: calc(-132 * var(--u)); }
+@media (max-width: 899px) {
+  .lnp-starting article { padding-bottom: 2.5rem; }
+  .lnp-starting p { margin-bottom: var(--trim-body); }
+}
+
+/* Homepage: the rule between the two rows of points, the figure cells, the metric cells and the
+   project teasers. */
+@media (min-width: 900px) {
+  .lasha-home .lasha-about-points { row-gap: calc(35.4 * var(--u)); }
+  .lasha-about-points li:nth-child(3)::before { top: calc(-18.95 * var(--u)); }
+  .lasha-home .project-facts { grid-template-rows: minmax(calc(159 * var(--u)), auto) minmax(calc(164 * var(--u)), auto); }
+  .lasha-home .project-facts > div,
+  .lasha-home .project-facts > div:nth-child(n + 3) { padding-top: max(calc(21 * var(--u)), 1.35rem); }
+  .lasha-home .lasha-metrics-tagline { padding-left: calc(70 * var(--u)); }
+  /* The rule keeps its place under short descriptions and moves down only under full ones. */
+  .lasha-home .project-card > p:not(.project-card-meta) { min-height: calc(80 * var(--u)); }
+  .lasha-home .project-card .project-card-meta { margin-top: calc(17 * var(--u)); }
+}
+.lasha-home .dp-listing-meta { padding-top: 1.1rem; }
+@media (max-width: 899px) {
+  .lasha-about-points li:nth-child(n + 3) { padding-top: 1.5rem; }
+  .lasha-home .project-facts > div,
+  .lasha-home .project-facts > div:nth-child(n + 3) { padding-top: calc(1.1rem + 4.9px); }
+  .lasha-metrics > div { padding-top: calc(1.6rem + 3.4px); }
+  .lasha-home .project-card .project-card-meta { padding-top: 1.1rem; }
+}
+
+/* Tresora's prices, stacked on phones: the label under the rule gets the room the price above it
+   has. */
+@media (max-width: 709px) {
+  .lasha-page .dp-price-summary > div:not(:first-child) { padding-top: calc(1.25rem + 19.5px); }
+}
+
+/* Dubai hero figures, stacked on the narrowest phones. */
+@media (max-width: 379px) {
+  .lasha-page .dp-hero-facts > div + div { padding-top: calc(0.9rem + 2px); }
+}
+
+/* Everything included (Tresora): heading and text share each row's distance from its rules. */
+.lasha-page .dp-included-list > div { padding-block: calc(clamp(1.5rem, 3vw, 2.25rem) + 0.55rem); }
+.lasha-page .dp-included-list dt { margin-block: var(--trim-head-top) var(--trim-head-bottom); }
+.lasha-page .dp-included-list dd { margin-block: var(--trim-body); }
+@media (max-width: 699px) {
+  .lasha-page .dp-included-list dt { margin-bottom: 0; }
+  .lasha-page .dp-included-list dd { margin-top: 0; }
+}
+
+/* Amenities (Downtown One). */
+.lasha-page .dp-groups li { padding-top: calc(0.75rem + 2.2px); }
+
+/* Privacy policy: each heading sits as far under its rule as the text above the rule sits over it. */
+.privacy-page.lasha-page section:not(:first-child) h2 { margin-top: calc(2.425rem + var(--trim-head-top)); }
+
+/* Footer contact rows. */
+.site-footer .site-footer-details > div:not(.site-footer-write) { padding-top: calc(1.05rem + 4.8px); }
