@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { LashaArrow } from "./LashaHomeSections.jsx";
+import { useWordFit } from "./useWordFit.js";
 import { NETWORK_COPY } from "../network-copy.js";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { LASHA_PAGES_COPY } from "../lasha-pages-copy.js";
@@ -204,6 +205,13 @@ export function AdvantagePageContent({ header }) {
 export function BrokerAccessPageContent({ header, onOpenModal }) {
   const { t } = useLanguage();
   const { locale, network, page } = useCopy();
+  // Both commercial headlines take the size the longest word fits at (ПЕРВОНАЧАЛЬНОГО, 31 October 2026).
+  const commercialRef = useRef(null);
+  useWordFit(commercialRef, "h2");
+  // The five step titles share one size, small enough for the longest word to stay whole
+  // (ПРИСОЕДИНЯЙТЕСЬ, PRÄSENTIEREN, PREDSTAVITE broke mid-word from 900px, 31 October 2026).
+  const stepsRef = useRef(null);
+  useWordFit(stepsRef, "h3");
   // Lasha's list drops the full stop on the first three. CONNECTORS keeps its own line, not the
   // frame's repeat of the sales line (Kemo, 16 October 2026: no repeated text on a page).
   const people = network.people.map(([title, line], index) => [title, index < 3 ? noStop(line) : line]);
@@ -233,7 +241,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
         </ol>
       </section>
 
-      <section className="lnp-commercial" aria-labelledby="lnp-commercial-title">
+      <section className="lnp-commercial" aria-labelledby="lnp-commercial-title" ref={commercialRef}>
         <p className="lnp-commercial-eyebrow" id="lnp-commercial-title">{network.commercial[0]}</p>
         <div className="lnp-commercial-down">
           <p className="lnp-figure">10%</p>
@@ -252,7 +260,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
           <p className="lnp-process-eyebrow">{sentenceCase(network.process[0], locale)}</p>
           <h2 id="lnp-process-title">{splitAfter(noStop(network.process[1]), 2).map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
-        <ol className="lnp-steps">
+        <ol className="lnp-steps" ref={stepsRef}>
           {steps.map(([title, line], index) => (
             <li key={title}>
               <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>

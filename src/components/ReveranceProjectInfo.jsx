@@ -3,6 +3,7 @@ import { useLanguage } from "../i18n.jsx";
 import { REVERANCE_INFO_COPY } from "../reverance-project-info-copy.js";
 import GALLERY_SIZES from "../data/project-gallery-sizes.json";
 import "./reverance-project.css";
+import { useWordFit } from "./useWordFit.js";
 
 // Project Reverance information beneath the approved hero (Klem, 16 October 2026: "compare" the
 // AIXCO.Global v4 project page). Copy and its qualifications are in reverance-project-info-copy.js.
@@ -77,10 +78,13 @@ export function AixcoOpportunity() {
 }
 
 function Heading({ id, eyebrow, title, lead }) {
+  // A word too long for the column (MIĘDZYNARODOWYCH at 320px) shrinks the headline, never splits.
+  const titleRef = useRef(null);
+  useWordFit(titleRef);
   return (
     <header className="rp-heading">
       <p className="section-eyebrow">{eyebrow}</p>
-      <h2 id={id}>{title}</h2>
+      <h2 id={id} ref={titleRef}>{title}</h2>
       {lead && <p className="rp-lead">{lead}</p>}
     </header>
   );
@@ -88,11 +92,14 @@ function Heading({ id, eyebrow, title, lead }) {
 
 export function WhyBatumi() {
   const { batumi } = useProjectInfoCopy();
+  // SCHWARZMEERTOURISMUS, split mid-word on phones and left its comma alone on a line on laptops.
+  const statementRef = useRef(null);
+  useWordFit(statementRef);
   return (
     <section className="rp-section rp-mist" id="why-batumi" aria-labelledby="why-batumi-title">
       <header className="rp-heading">
         <p className="section-eyebrow">{batumi.eyebrow}</p>
-        <h2 id="why-batumi-title" className="rp-statement">{batumi.title}</h2>
+        <h2 id="why-batumi-title" className="rp-statement" ref={statementRef}>{batumi.title}</h2>
       </header>
       <dl className="rp-stats rp-stats-5">
         {batumi.stats.map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
