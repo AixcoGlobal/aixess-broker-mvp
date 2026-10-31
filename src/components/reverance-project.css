@@ -344,6 +344,9 @@
 
 /* AIXCO's opportunity block. */
 .lasha-page .rp-split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; max-width: 81.2rem; }
+/* min-width lets the 32ch measure widen for a word longer than it (SCHWARZMEERTOURISMUS,) so its
+   comma stays on its line; on phones useWordFit then shrinks the statement to its column. */
+.lasha-page .rp-section .rp-statement { min-width: min-content; }
 .lasha-page .rp-statement { max-width: 32ch; font-size: var(--v4-sub); line-height: 0.95; }
 .lasha-page .rp-body-tight { margin: 0 0 1.8rem; }
 .lasha-page .rp-highlights { display: grid; gap: 0.8rem; margin: 1.6rem 0 0; padding: 0; list-style: none; }

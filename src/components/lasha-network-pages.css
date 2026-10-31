@@ -417,7 +417,7 @@ html:root[data-time-theme='night'] .lnp-care-text .lasha-index { color: var(--l-
   letter-spacing: -0.015em;
 }
 
-.lnp-commercial h2 { width: 100%; margin-top: calc(26 * var(--u)); font-size: calc(66 * var(--u)); line-height: 0.88; }
+.lnp-commercial h2 { width: 100%; min-width: 0; margin-top: calc(26 * var(--u)); font-size: calc(66 * var(--u)); line-height: 0.88; }
 .lnp-commercial-body { max-width: max(calc(281 * var(--u)), 16rem); margin-top: calc(26 * var(--u)); font-size: var(--v4-text); line-height: 1.1; }
 
 .lnp-commercial-commission {

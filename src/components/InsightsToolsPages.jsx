@@ -1,8 +1,10 @@
+import { useRef } from "react";
 import { BookOpenText, ChartLineUp } from "@phosphor-icons/react";
 import { useLanguage } from "../i18n.jsx";
 import { AIXCO_FAQ } from "../aixco-faq-copy.js";
 import { INSIGHTS_TOOLS_COPY } from "../insights-tools-copy.js";
 import { LashaArrow, LashaPageHero } from "./LashaHomeSections.jsx";
+import { useWordFit } from "./useWordFit.js";
 import "./insights-tools.css";
 import { ThemedImage } from "./ThemedImage.jsx";
 
@@ -14,11 +16,13 @@ function useCopy() {
 }
 
 function SectionHeading({ id, eyebrow, title, copy, children }) {
+  const titleRef = useRef(null);
+  useWordFit(titleRef);
   return (
     <div className="it-heading">
       <div>
         <p className="it-eyebrow">{eyebrow}</p>
-        <h2 id={id}>{(Array.isArray(title) ? title : [title]).map((line) => <span key={line}>{line}</span>)}</h2>
+        <h2 id={id} ref={titleRef}>{(Array.isArray(title) ? title : [title]).map((line) => <span key={line}>{line}</span>)}</h2>
         {copy && <p className="it-lead">{copy}</p>}
       </div>
       {children}
