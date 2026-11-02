@@ -1,0 +1,312 @@
+/* Lasha's Figma typefaces for everything except titles (Kemo, 2 November 2026: "change fonts just
+   leave titles for now ... rest of the website fonts has to be exactly as it is in figma").
+   Titles (page heroes, section headings, block headings, hero subtitles) keep AiXESS Head until
+   Kemo decides on them. Everything else follows the Figma file (mdoKe84QEOkpDthDFO8pyy):
+   - figures, step numbers, card and item headings: Morganite, in the Figma weight of each
+     (Bold 700, SemiBold 600, Medium 500, ExtraBold 800), as "AiXESS Figma" (src/lasha-fonts.css);
+   - Inter text: the Figma weight of each piece of copy.
+   "AiXESS Figma" is scaled so its capitals are as tall as AiXESS Head's at the same font-size.
+   Its line box is shorter (0.937em, baseline 0.703em down, against AiXESS Head's 1.2em and 0.9em),
+   so every swapped element keeps an explicit line-height and is moved down by --fig-shift
+   (0.0657em, the baseline difference at any line-height): sizes, baselines and spacing stay put.
+   Russian keeps AiXESS Head throughout (Morganite has no Cyrillic), set by --l-fig.
+   Every selector starts with :root so it wins over the page stylesheets whatever order they load in. */
+
+:root { --l-fig: "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif; --fig-shift: 0.0657em; }
+:root:lang(ru) { --l-fig: "AiXESS Head", "Arial Narrow", sans-serif; --fig-shift: 0em; }
+
+/* ---- Morganite: figures and numbers ---------------------------------------------------- */
+:root .lasha-home .lasha-metrics-value,
+:root .lasha-home .lasha-metrics-value .lasha-plus { font-family: var(--l-fig); font-weight: 800; font-synthesis: none;
+  translate: 0 calc(var(--fig-shift) * var(--fig-k, 1)); }
+
+:root .lasha-plus,
+:root .lasha-index,
+:root .lasha-home .project-facts dd,
+:root .lasha-access-count strong,
+:root :is(.lasha-home, .lasha-page) .explorer-metrics strong,
+:root :is(.lasha-home, .lasha-page) .explorer-step-number,
+:root :is(.lasha-home, .lasha-page) .inventory-heading strong,
+:root .lnp .lasha-index,
+:root .lnp-figure,
+:root .it-step-list .lasha-index,
+:root .lasha-page .network-number,
+:root .lasha-page .network-stats dd,
+:root .lasha-page .resource-card-top span:first-child,
+:root .lasha-page .calculator-results dd,
+:root .lasha-page .project-facts-list strong,
+:root .lasha-page .purchase-benefit-tiers strong,
+:root .lasha-page .rp-index,
+:root .lasha-page .rp-stats dd,
+:root .lasha-page .rp-stages strong,
+:root .lasha-page .dp-price-summary dd {
+  font-family: var(--l-fig);
+  font-weight: 700;
+  font-synthesis: none;
+  translate: 0 calc(var(--fig-shift) * var(--fig-k, 1));
+}
+
+/* ---- Morganite: card and item headings ------------------------------------------------- */
+:root .lasha-home .project-card h3,
+:root .lasha-home .dp-listing-cards h3,
+:root .lasha-home .lasha-metrics-tagline,
+:root .lnp-starting article h2,
+:root .lnp-care-text h3,
+:root .it-feature h3,
+:root .it-step-list h3,
+:root .it-card h3,
+:root .lasha-page :is(.network-card, .network-steps) h3,
+:root .lasha-page .resource-card h3,
+:root .project-upcoming h4,
+:root .lasha-page .rp-benefits h3,
+:root .lasha-page .rp-amenities h4,
+:root .lasha-page .rp-stages h3,
+:root .lasha-page .rp-path,
+:root .lasha-page .rp-cards h4,
+:root .rp-lightbox figcaption strong,
+:root .lasha-page .dp-groups h3 {
+  font-family: var(--l-fig);
+  font-weight: 700;
+  font-synthesis: none;
+  translate: 0 calc(var(--fig-shift) * var(--fig-k, 1));
+}
+
+:root .lasha-access-count span,
+:root .lnp-people h3,
+:root .lnp-steps h3,
+:root .lasha-page .purchase-benefit-closing,
+:root .lasha-page .dp-hero-facts dd,
+:root .lasha-page .dp-cards strong,
+:root .lasha-page .dp-cards h3,
+:root .lasha-page .dp-included-list dt {
+  font-family: var(--l-fig);
+  font-weight: 600;
+  font-synthesis: none;
+  translate: 0 calc(var(--fig-shift) * var(--fig-k, 1));
+}
+
+:root .lasha-page .network-emphasis { font-family: var(--l-fig); font-weight: 500; font-synthesis: none;
+  translate: 0 calc(var(--fig-shift) * var(--fig-k, 1)); }
+
+/* ---- Inter: Figma weights -------------------------------------------------------------- */
+/* Homepage */
+:root .lasha-hero-cta { font-weight: 500; }
+:root .lasha-home .lasha-metrics-label,
+:root .lasha-home .lasha-metrics-note,
+:root .lasha-about-points li { font-weight: 300; }
+:root .lasha-about-panel .lasha-eyebrow { font-weight: 500; }
+:root .project-showcase-head .lasha-eyebrow { font-weight: 400; }
+
+/* AiXESS Advantage and Broker Access */
+:root .lnp-hero-panel .lnp-hero-body,
+:root .lnp-people p,
+:root .lnp-commercial-body { font-weight: 300; }
+:root .lnp-hero-panel .lasha-eyebrow,
+:root .lnp-advantage-subtitle { font-weight: 500; }
+
+/* Reverance */
+:root .residences-page :is(.section-eyebrow, .network-lead, .network-note, .network-stats dt, .project-facts-heading p,
+  .rp-highlights li, .rp-lead, .rp-stages p, .rp-bridge, .rp-benefits p, .purchase-benefit-eyebrow,
+  .purchase-benefit-copy, .lasha-page-hero-text) { font-weight: 500; }
+:root .residences-page .project-facts-list dd span { font-weight: 300; }
+:root .residences-page .lasha-page-hero .lasha-eyebrow { font-weight: 700; }
+:root :is(.lasha-home, .lasha-page) :is(.explorer-motion-caption > span, .explorer-copy .section-eyebrow) { font-weight: 400; }
+
+/* TRESORA and DOWNTOWN ONE */
+:root .dubai-project-page :is(.dp-hero-tagline, .section-eyebrow, .lasha-page-hero .lasha-eyebrow) { font-weight: 700; }
+:root .dubai-project-page :is(.lasha-page-hero-text, .dp-hero-facts dt, .dp-columns p, .dp-text, .rp-lead, .dp-cards p,
+  .dp-included-list dd, .dp-price-summary dt) { font-weight: 500; }
+
+/* ---- Morganite letter-spacing from the Figma file (Head-tuned tracking does not carry over) --- */
+:root:not(:lang(ru)) {
+  --fig-ls: 0.02em;
+}
+:root:not(:lang(ru)) :is(.lasha-plus, .lasha-index, .lasha-home .project-facts dd, .lasha-access-count strong,
+  .lasha-access-count span, .explorer-metrics strong, .explorer-step-number, .inventory-heading strong, .lnp-figure,
+  .lasha-page .network-number, .lasha-page .network-stats dd, .lasha-page .resource-card-top span:first-child,
+  .lasha-page .calculator-results dd, .lasha-page .project-facts-list strong, .lasha-page .purchase-benefit-tiers strong,
+  .lasha-page .rp-index, .lasha-page .rp-stats dd, .lasha-page .rp-stages strong, .lasha-page .dp-price-summary dd,
+  .lasha-home .project-card h3, .lasha-home .dp-listing-cards h3, .lasha-home .lasha-metrics-tagline,
+  .lnp-starting article h2, .lnp-care-text h3, .it-feature h3, .it-step-list h3, .it-card h3,
+  .lasha-page .network-card h3, .lasha-page .network-steps h3, .lasha-page .resource-card h3, .project-upcoming h4,
+  .lasha-page .rp-benefits h3, .lasha-page .rp-amenities h4, .lasha-page .rp-stages h3, .lasha-page .rp-path,
+  .lasha-page .rp-cards h4, .rp-lightbox figcaption strong, .lasha-page .dp-groups h3, .lnp-people h3, .lnp-steps h3,
+  .lasha-page .purchase-benefit-closing, .lasha-page .dp-hero-facts dd, .lasha-page .dp-cards strong,
+  .lasha-page .dp-cards h3, .lasha-page .dp-included-list dt, .lasha-page .network-emphasis) {
+  letter-spacing: var(--fig-ls);
+}
+:root:not(:lang(ru)) .lasha-home .lasha-metrics-value { --fig-ls: 0.06em; letter-spacing: 0.06em; }
+:root:not(:lang(ru)) .lasha-about-points .lasha-index { --fig-ls: 0.04em; }
+:root:not(:lang(ru)) :is(.lasha-home .project-facts dd, .lasha-access-count strong, .lasha-home .project-card h3,
+  .lasha-home .dp-listing-cards h3) { --fig-ls: 0.01em; }
+:root:not(:lang(ru)) :is(.explorer-metrics strong, .explorer-step-number) { --fig-ls: 0em; }
+:root:not(:lang(ru)) .lnp-people .lasha-index { --fig-ls: 0.05em; }
+:root:not(:lang(ru)) .lnp-people h3 { --fig-ls: 0.03em; }
+/* In Figma the plus is set at the figure's own size; Morganite draws it small and centred. */
+:root:not(:lang(ru)) :is(.lasha-metrics-value, .project-facts dd) .lasha-plus { font-size: 1em; vertical-align: baseline; margin-left: 0; }
+
+/* 163 AVAILABLE RESIDENCES (homepage): the label was AiXESS Head Tall (1.75x). In Morganite it keeps
+   Figma's SemiBold 55 frame px at Figma's 80% line pitch (44 frame px),
+   and its last baseline sits on the count's (the line box ends 0.1em under the moved glyphs). */
+:root:not(:lang(ru)) .lasha-access-count span {
+  margin-bottom: -0.1em;
+  font-size: calc(55 / 0.93705 * var(--u));
+  line-height: 0.75;
+}
+:root:lang(pl) .lasha-access-count span { margin-bottom: -0.14em; line-height: 0.86; }
+@media (max-width: 899px) {
+  :root:not(:lang(ru)) .lasha-access-count span { font-size: min(4.75rem, 16.4vw); }
+}
+
+/* ---- Figma sizes (Kemo, 2 November 2026: "Figma font and Figma size") --------------------------
+   Each element below draws its Morganite at Figma's size through a scaled face ("AiXESS Figma NNN",
+   NNN/100 = Figma capital height / the element's capital height before, at 1440px), so its existing
+   responsive font-size rules still drive it on every screen. Its line-height grows by the same factor,
+   and --fig-k scales the baseline correction. Homepage, AiXESS Advantage and Broker Access follow their
+   Figma frames; Reverance and the Dubai pages, whose Figma frames are a different, larger layout, use
+   1.57 (the size at which Morganite is as wide as the old face), and their big figures stay in their
+   columns. Russian keeps AiXESS Head at its old size. */
+:root:not(:lang(ru)) :is(.lasha-metrics-value, .project-facts dd) .lasha-plus { font-family: inherit; }
+:root:not(:lang(ru)) .lasha-home .lasha-metrics-value {
+  --fig-k: 1.33;
+  font-family: "AiXESS Figma 133", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.1305;
+}
+:root:not(:lang(ru)) .lasha-about-points .lasha-index {
+  --fig-k: 1.69;
+  font-family: "AiXESS Figma 169", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.6900;
+}
+:root:not(:lang(ru)) .lasha-home .project-card h3 {
+  --fig-k: 1.22;
+  font-family: "AiXESS Figma 122", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 0.8662;
+}
+:root:not(:lang(ru)) .lasha-home .dp-listing-cards h3 {
+  --fig-k: 1.22;
+  font-family: "AiXESS Figma 122", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.1590;
+}
+:root:not(:lang(ru)) .lasha-home .lasha-metrics-tagline {
+  --fig-k: 1.69;
+  font-family: "AiXESS Figma 169", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.6055;
+}
+:root:not(:lang(ru)) .lasha-access-count strong {
+  --fig-k: 1.42;
+  font-family: "AiXESS Figma 142", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 0.8520;
+}
+:root:not(:lang(ru)) :is(.lasha-home, .lasha-page) .explorer-metrics strong {
+  --fig-k: 1.33;
+  font-family: "AiXESS Figma 133", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+}
+:root:not(:lang(ru)) :is(.lasha-home, .lasha-page) .explorer-step-number {
+  --fig-k: 1.69;
+  font-family: "AiXESS Figma 169", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+}
+:root:not(:lang(ru)) .lnp-starting article h2,
+:root:not(:lang(ru)) .lnp-care-text h3 {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.4915;
+}
+:root:not(:lang(ru)) .lnp-care-text .lasha-index,
+:root:not(:lang(ru)) .lnp-steps .lasha-index,
+:root:not(:lang(ru)) .it-step-list .lasha-index {
+  --fig-k: 2.0;
+  font-family: "AiXESS Figma 200", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 2.0000;
+}
+:root:not(:lang(ru)) .lnp-people .lasha-index,
+:root:not(:lang(ru)) .lnp-people h3 {
+  --fig-k: 1.42;
+  font-family: "AiXESS Figma 142", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.4200;
+}
+:root:not(:lang(ru)) .lnp-figure {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.2874;
+}
+:root:not(:lang(ru)) .lnp-steps h3 {
+  --fig-k: 1.69;
+  font-family: "AiXESS Figma 169", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.5210;
+}
+:root:not(:lang(ru)) .it-feature h3 {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.6014;
+}
+:root:not(:lang(ru)) .it-step-list h3 {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.5700;
+}
+:root:not(:lang(ru)) .it-card h3 {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.6642;
+}
+:root:not(:lang(ru)) .lasha-page .network-stats dd {
+  --fig-k: 1.07;
+  font-family: "AiXESS Figma 107", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 0.9095;
+}
+:root:not(:lang(ru)) .lasha-page .project-facts-list strong,
+:root:not(:lang(ru)) .lasha-page .purchase-benefit-closing,
+:root:not(:lang(ru)) .lasha-page .rp-benefits h3,
+:root:not(:lang(ru)) .lasha-page .network-emphasis,
+:root:not(:lang(ru)) .lasha-page .rp-amenities h4 {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.5700;
+}
+:root:not(:lang(ru)) .lasha-page .rp-stats dd {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.4130;
+}
+:root:not(:lang(ru)) .lasha-page .rp-stages strong,
+:root:not(:lang(ru)) .lasha-page .purchase-benefit-tiers strong {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.3345;
+}
+:root:not(:lang(ru)) .lasha-page .rp-stages h3,
+:root:not(:lang(ru)) .lasha-page .dp-included-list dt,
+:root:not(:lang(ru)) .lasha-page .dp-cards h3 {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.7584;
+}
+:root:not(:lang(ru)) .lasha-page .rp-index {
+  --fig-k: 2.0;
+  font-family: "AiXESS Figma 200", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 2.0000;
+}
+:root:not(:lang(ru)) .lasha-page .dp-cards strong {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.6956;
+}
+:root:not(:lang(ru)) .lasha-page .dp-hero-facts dd,
+:root:not(:lang(ru)) .lasha-page .dp-groups h3 {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.7270;
+}
+:root:not(:lang(ru)) .lasha-page .dp-price-summary dd {
+  --fig-k: 1.57;
+  font-family: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  line-height: 1.6485;
+}
+/* Headings that wrap take Figma's 80% line pitch (0.8 x 0.937 x the scale). */
+:root:not(:lang(ru)) :is(.lasha-home .lasha-metrics-tagline, .lnp-starting article h2, .lnp-care-text h3, .it-feature h3, .it-step-list h3, .it-card h3,
+  .lasha-page .purchase-benefit-closing, .lasha-page .rp-benefits h3, .lasha-page .network-emphasis,
+  .lasha-page .rp-amenities h4, .lasha-page .rp-stages h3, .lasha-page .dp-included-list dt, .lasha-page .dp-cards h3,
+  .lasha-page .dp-groups h3) { line-height: calc(0.75 * var(--fig-k)); }
+:root:not(:lang(ru)) .lnp-people h3 { line-height: calc(0.75 * var(--fig-k)); }
+/* Polish and Slovenian accents and ogoneks (Ś, Ž, Ę) need a little more pitch than Figma's English 80%. */
+:root:is(:lang(pl), :lang(sl)):not(:lang(ru)) .lasha-home p.lasha-metrics-tagline { line-height: calc(0.84 * var(--fig-k)); }
