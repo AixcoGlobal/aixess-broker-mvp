@@ -153,8 +153,12 @@ html:root[data-time-theme='night'] .tresora-page {
 /* ---- hero --------------------------------------------------------------------------------------- */
 
 .tresora-page .tr-hero {
+  box-sizing: border-box;
   min-height: max(calc(899 * var(--u)), var(--screen-full, 100lvh));
-  padding-bottom: var(--hero-bar, 0px);
+  /* The copy is centred in the first screen, between the header rule and the photo's visible bottom
+     (Kemo, 2 November 2026: the eyebrow sat 6px under the header rule). When the frame's 899px is
+     taller than the screen, the part below the first screen is left out of the centring. */
+  padding-bottom: calc(var(--hero-bar, 0px) + max(0px, calc(899 * var(--u)) - var(--screen-full, 100lvh)));
   background: #0e1e37;
 }
 .tresora-page .tr-hero::before,
@@ -164,8 +168,8 @@ html:root[data-time-theme='night'] .tresora-page {
   box-sizing: border-box;
   width: 100%;
   max-width: calc(1440 * var(--u));
-  margin-inline: auto;
-  padding: calc(6 * var(--u)) calc(70 * var(--u)) calc(60 * var(--u));
+  margin: auto;
+  padding: calc(24 * var(--u)) calc(70 * var(--u));
 }
 .tresora-page .tr-hero-copy > * { width: calc(622 * var(--u)); max-width: 100%; }
 .tresora-page .tr-hero-copy > .tr-hero-title { width: calc(623 * var(--u)); }
@@ -472,7 +476,7 @@ html:root[data-time-theme='night'] .tresora-page {
   .tresora-page .tr-hero-actions .tr-button .lasha-arrow { flex-basis: 30px; width: 30px; height: 8px; }
   .tresora-page .tr-actions { gap: 12px; }
 
-  .tresora-page .tr-hero { display: flex; flex-direction: column; }
+  .tresora-page .tr-hero { display: flex; flex-direction: column; padding-bottom: var(--hero-bar, 0px); }
   .tresora-page .tr-hero-bg { object-position: 72% 100%; }
   .tresora-page .tr-hero-copy { margin-top: auto; margin-bottom: auto; padding-top: 28px; padding-bottom: 40px; }
   .tresora-page .tr-hero-copy > * { width: 100%; }
