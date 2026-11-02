@@ -4,6 +4,10 @@
 export const DUBAI_IMAGES_COPY = {
   en: {
     tresora: {
+      sunsetPool: "Developer rendering of the pool at sunset, with loungers and parasols",
+      gymRow: "Developer rendering of the gym's treadmills facing the city skyline",
+      gymWeights: "Developer rendering of the gym's weights area with city views",
+      balcony: "Developer rendering of a resident on a curved, lit balcony at dusk",
       hero: "Developer rendering of the TRESORA tower by WADAN in Jumeirah Village Circle, with planted roof terraces",
       facade: "Developer rendering of TRESORA's façade with curved balconies and planted terraces",
       pool: "Developer rendering of TRESORA's pool deck and sun loungers beside the building",
@@ -43,6 +47,10 @@ export const DUBAI_IMAGES_COPY = {
   },
   de: {
     tresora: {
+      sunsetPool: "Visualisierung des Entwicklers: der Pool bei Sonnenuntergang mit Liegen und Sonnenschirmen",
+      gymRow: "Visualisierung des Entwicklers: Laufbänder im Fitnessraum mit Blick auf die Skyline",
+      gymWeights: "Visualisierung des Entwicklers: Hantelbereich im Fitnessraum mit Stadtblick",
+      balcony: "Visualisierung des Entwicklers: eine Bewohnerin auf einem geschwungenen, beleuchteten Balkon in der Dämmerung",
       hero: "Visualisierung des Entwicklers: der TRESORA-Turm von WADAN in Jumeirah Village Circle mit begrünten Dachterrassen",
       facade: "Visualisierung des Entwicklers: TRESORAs Fassade mit geschwungenen Balkonen und begrünten Terrassen",
       pool: "Visualisierung des Entwicklers: TRESORAs Pooldeck mit Sonnenliegen neben dem Gebäude",
@@ -85,6 +93,10 @@ export const DUBAI_IMAGES_COPY = {
   },
   pl: {
     tresora: {
+      sunsetPool: "Wizualizacja dewelopera: basen o zachodzie słońca z leżakami i parasolami",
+      gymRow: "Wizualizacja dewelopera: bieżnie w sali fitness z widokiem na panoramę miasta",
+      gymWeights: "Wizualizacja dewelopera: strefa wolnych ciężarów w sali fitness z widokiem na miasto",
+      balcony: "Wizualizacja dewelopera: mieszkanka na zaokrąglonym, podświetlonym balkonie o zmierzchu",
       hero: "Wizualizacja dewelopera: wieża TRESORA firmy WADAN w Jumeirah Village Circle z zielonymi tarasami na dachu",
       facade: "Wizualizacja dewelopera: fasada TRESORA z zaokrąglonymi balkonami i zielonymi tarasami",
       pool: "Wizualizacja dewelopera: taras basenowy TRESORA z leżakami przy budynku",
@@ -124,6 +136,10 @@ export const DUBAI_IMAGES_COPY = {
   },
   sl: {
     tresora: {
+      sunsetPool: "Vizualizacija investitorja: bazen ob sončnem zahodu z ležalniki in senčniki",
+      gymRow: "Vizualizacija investitorja: tekalne steze v fitnesu s pogledom na mesto",
+      gymWeights: "Vizualizacija investitorja: prostor za uteži v fitnesu s pogledom na mesto",
+      balcony: "Vizualizacija investitorja: stanovalka na zaobljenem, osvetljenem balkonu ob mraku",
       hero: "Vizualizacija investitorja: stolpnica TRESORA družbe WADAN v Jumeirah Village Circle z zazelenjenimi strešnimi terasami",
       facade: "Vizualizacija investitorja: fasada TRESORE z ukrivljenimi balkoni in zazelenjenimi terasami",
       pool: "Vizualizacija investitorja: bazenska terasa TRESORE z ležalniki ob stavbi",
@@ -166,6 +182,10 @@ export const DUBAI_IMAGES_COPY = {
   },
   ru: {
     tresora: {
+      sunsetPool: "Визуализация девелопера: бассейн на закате с шезлонгами и зонтиками",
+      gymRow: "Визуализация девелопера: беговые дорожки в фитнес-зале с видом на город",
+      gymWeights: "Визуализация девелопера: зона свободных весов в фитнес-зале с видом на город",
+      balcony: "Визуализация девелопера: жительница на изогнутом освещённом балконе в сумерках",
       hero: "Визуализация девелопера: башня TRESORA компании WADAN в Jumeirah Village Circle с озеленёнными террасами на крыше",
       facade: "Визуализация девелопера: фасад TRESORA с изогнутыми балконами и озеленёнными террасами",
       pool: "Визуализация девелопера: терраса с бассейном и шезлонгами у здания TRESORA",
