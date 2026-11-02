@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { DUBAI_PROJECTS_COPY } from "../dubai-projects-copy.js";
 import { DUBAI_IMAGES_COPY } from "../dubai-projects-images-copy.js";
@@ -7,6 +7,7 @@ import { CONTACT } from "../contact-copy.js";
 import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
 import "./reverance-project.css";
 import "./dubai-projects.css";
+import "./tresora-figma.css";
 
 // TRESORA and Downtown One, each on its own page: #tresora and #downtown-one, with sections at
 // #tresora/spaces and the like. The Word briefs supply the base text and section order; Kemo's
@@ -144,105 +145,238 @@ function Gallery({ items, still = false }) {
   );
 }
 
+// TRESORA as Lasha drew it (Figma frame "TRESORA", node 485:3; Kemo, 2 November 2026: "pixel perfect of
+// whats on figma"). tresora-figma.css sets it in frame pixels from 900px and restacks it on phones.
+// Kemo kept the page free of prices (no starting price or yearly rent, though the frame shows them).
+// The frame's pictures are cut from its export (public/assets/dubai/tresora-fig-*).
+
+// Lines of one width (the frame's title lockups: "TRESORA DUBAI" over "A TREASURE OF BALANCE",
+// "DESIGNED FOR" over "DIFFERENT LIFESTYLES"). The CSS gives the width and each line's Figma size; the
+// hook opens or closes each line's tracking until it spans the width, as in the frame, and only changes
+// the size when a translation is too long or short for tracking alone.
+function useFitLines(ref, deps) {
+  useEffect(() => {
+    const box = ref.current;
+    if (!box) return undefined;
+    let frame = 0;
+    const fit = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const target = box.clientWidth;
+        if (!target) return;
+        box.querySelectorAll(":scope > .tr-fit-line").forEach((line) => {
+          // Measure the bare letters, then share the leftover width among the gaps between them.
+          line.style.fontSize = "";
+          line.style.letterSpacing = "0px";
+          line.style.marginRight = "";
+          let size = parseFloat(getComputedStyle(line).fontSize);
+          const gaps = Math.max(1, line.textContent.trim().length - 1);
+          let width = line.getBoundingClientRect().width;
+          if (!size || !width) return;
+          let extra = (target - width) / gaps;
+          const most = 0.06 * size;
+          const least = 0; // Morganite is already tight: never squeeze the letters together.
+          if (extra > most || extra < least) {
+            const clamped = Math.min(most, Math.max(least, extra));
+            size = (size * (target - clamped * gaps)) / width;
+            line.style.fontSize = `${size}px`;
+            width = line.getBoundingClientRect().width;
+            extra = (target - width) / gaps;
+          }
+          line.style.letterSpacing = `${extra}px`;
+          line.style.marginRight = `${-extra}px`;
+        });
+        box.classList.add("is-fitted");
+      });
+    };
+    fit();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(fit);
+    observer?.observe(box);
+    document.fonts?.ready.then(fit).catch(() => {});
+    return () => { cancelAnimationFrame(frame); observer?.disconnect(); };
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+function FitLines({ as: Tag = "h2", id, className, lines }) {
+  const ref = useRef(null);
+  useFitLines(ref, [lines.join("|")]);
+  return (
+    <Tag id={id} ref={ref} className={`tr-fit ${className}`}>
+      {lines.map((line, index) => (
+        <Fragment key={line}>
+          {index ? " " : null}
+          <span className={`tr-fit-line tr-fit-line-${index + 1}`}>{line}</span>
+        </Fragment>
+      ))}
+    </Tag>
+  );
+}
+
+// Splits a title into two lines of about the same number of letters ("Designed for | Different Lifestyles").
+function twoLines(title) {
+  const words = title.split(/\s+/);
+  let best = 1;
+  let bestGap = Infinity;
+  for (let cut = 1; cut < words.length; cut += 1) {
+    const gap = Math.abs(words.slice(0, cut).join(" ").length - words.slice(cut).join(" ").length);
+    if (gap < bestGap) { best = cut; bestGap = gap; }
+  }
+  return [words.slice(0, best).join(" "), words.slice(best).join(" ")];
+}
+
+function Eyebrow({ children }) {
+  return <p className="tr-eyebrow">{children}</p>;
+}
+
+function TrButton({ href, onClick, label, primary = false, ...rest }) {
+  return (
+    <a className={`tr-button${primary ? " tr-button-primary" : ""}`} href={href} onClick={onClick} {...rest}>
+      <span>{label}</span><LashaArrow length={38} />
+    </a>
+  );
+}
+
+function TrRequest({ common, project, label, primary }) {
+  return <TrButton href={projectMailto(common, project, label)} label={label} primary={primary} aria-label={`${label} (${common.opensEmail})`} />;
+}
+
 export function TresoraPage({ header }) {
   const route = "tresora";
   const { common, project, images } = useDubaiCopy("tresora");
   useSectionFromHash(route);
-  const { hero, discover, highlights, spaces, pricing, included, lifestyle, location, payment, more, currency } = project;
-  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.mapQuery)}`;
+  const { hero, discover, highlights, spaces, included, lifestyle, location, payment, more } = project;
+  const [locationFirst, locationSecond] = location.title.split(/\s* ?—\s*/);
+  const paymentLines = payment.title.split(/\.\s+/).map((line) => line.replace(/\.$/, ""));
+  const gallery = [
+    [lifestyle.amenities[0], [["tresora-fig-g1a", images.pool], ["tresora-fig-g1b", images.gallery[0][1]], ["tresora-fig-g1c", images.sunsetPool]]],
+    [lifestyle.amenities[1], [["tresora-fig-g2a", images.gallery[1][1]], ["tresora-fig-g2b", images.gymRow], ["tresora-fig-g2c", images.gymWeights]]],
+    [lifestyle.exterior, [["tresora-fig-g3a", images.gallery[2][1]], ["tresora-fig-g3b", images.gallery[3][1]], ["tresora-fig-g3c", images.balcony]]],
+    [lifestyle.interior, [["tresora-fig-g4a", images.gallery[6][1]], ["tresora-fig-g4b", images.gallery[7][1]], ["tresora-fig-g4c", images.gallery[4][1]]]],
+  ];
 
   return (
     <>
-      <ProjectHero header={header} route={route} hero={hero} image="tresora-tower" imageAlt={images.hero}>
-        <p className="lasha-page-hero-text">{hero.intro}</p>
-        <dl className="dp-hero-facts">
-          {hero.facts.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
-        </dl>
-        <div className="it-hero-actions">
-          <a className="button button-primary" href={`#${route}/spaces`} onClick={sectionLinkClick(route, "spaces")}>{hero.explore}<LashaArrow length={24} /></a>
-          <RequestButton common={common} project={project} label={hero.availability} />
+      <section className="lasha-page-hero tr-hero" aria-labelledby={`${route}-title`}>
+        {header}
+        <Picture slug="tresora-fig-hero" alt={images.hero} className="tr-bg tr-hero-bg" sizes="100vw" eager />
+        <div className="tr-hero-copy">
+          <Eyebrow>{hero.eyebrow}</Eyebrow>
+          <FitLines as="h1" id={`${route}-title`} className="tr-hero-title" lines={[hero.title.join(" "), hero.subtitle]} />
+          <p className="tr-hero-intro">{hero.intro}</p>
+          <div className="tr-actions tr-hero-actions">
+            <TrRequest common={common} project={project} label={hero.availability} />
+            <TrButton href={`#${route}/spaces`} onClick={sectionLinkClick(route, "spaces")} label={hero.explore} />
+          </div>
         </div>
-      </ProjectHero>
+      </section>
 
-      <main className="page-main dp-page">
-        <section className="rp-section" id="tresora-discover" aria-labelledby="tresora-discover-title">
-          <div className="dp-media-split dp-media-split-head">
-            <SectionHeading id="tresora-discover-title" eyebrow={discover.eyebrow} title={discover.title} />
-            <Paragraphs items={discover.body} className="dp-columns dp-columns-1" />
-            <RenderFigure slug="tresora-facade" alt={images.facade} sizes="(max-width: 899px) calc(100vw - 2.5rem), 46vw" />
+      <main className="page-main tr-page">
+        <section className="tr-photo-band tr-discover" id="tresora-discover" aria-labelledby="tresora-discover-title">
+          <Picture slug="tresora-fig-discover" className="tr-bg" sizes="100vw" />
+          <div className="tr-wrap">
+            <Eyebrow>{discover.eyebrow}</Eyebrow>
+            <h2 className="tr-title tr-discover-title" id="tresora-discover-title">{discover.title}</h2>
+            <div className="tr-body tr-discover-body">{discover.body.map((text) => <p key={text}>{text}</p>)}</div>
           </div>
         </section>
 
-        <section className="rp-section rp-mist" id="tresora-highlights" aria-labelledby="tresora-highlights-title">
-          <SectionHeading id="tresora-highlights-title" title={highlights.title} />
-          <ul className="dp-cards dp-cards-3">
-            {highlights.items.map(([value, label]) => <li key={label}><strong>{value}</strong><p>{label}</p></li>)}
-          </ul>
-        </section>
-
-        <section className="rp-section" id="tresora-spaces" aria-labelledby="tresora-spaces-title">
-          <SectionHeading id="tresora-spaces-title" eyebrow={spaces.eyebrow} title={spaces.title} />
-          <Paragraphs items={spaces.body} />
-          <dl className="dp-price-summary">
-            <div><dt>{pricing.startingLabel}</dt><dd>{pricing.starting}</dd></div>
-            <div><dt>{pricing.perSqmLabel}</dt><dd>{pricing.perSqm}</dd></div>
-          </dl>
-          <h3 className="dp-list-title dp-list-title-gap">{spaces.listTitle}</h3>
-          <ul className="dp-list dp-list-2">{spaces.categories.map((name) => <li key={name}>{name}</li>)}</ul>
-          <div className="rp-actions">
-            <RequestButton common={common} project={project} label={spaces.units} primary />
-            <RequestButton common={common} project={project} label={spaces.prices} />
+        <section className="tr-ink-band tr-highlights" id="tresora-highlights" aria-labelledby="tresora-highlights-title">
+          <div className="tr-wrap">
+            <h2 className="tr-title tr-highlights-title" id="tresora-highlights-title">{highlights.title}</h2>
+            <dl className="tr-facts">
+              {highlights.items.map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
+            </dl>
           </div>
         </section>
 
-        <section className="rp-section" id="tresora-included" aria-labelledby="tresora-included-title">
-          <SectionHeading id="tresora-included-title" title={included.title} lead={included.lead} />
-          <dl className="dp-included-list">
-            {included.items.map(([title, text]) => <div key={title}><dt>{title}</dt><dd>{text}</dd></div>)}
-          </dl>
-        </section>
-
-        <section className="rp-section rp-mist" id="tresora-lifestyle" aria-labelledby="tresora-lifestyle-title">
-          <SectionHeading id="tresora-lifestyle-title" title={lifestyle.title} lead={lifestyle.lead} />
-          <div className="dp-media-split dp-media-split-reverse">
-            <div>
-              <h3 className="dp-list-title">{lifestyle.listTitle}</h3>
-              <ul className="dp-list dp-list-2">{lifestyle.amenities.map((name) => <li key={name}>{name}</li>)}</ul>
-            </div>
-            <RenderFigure slug="tresora-pool" alt={images.pool} sizes="(max-width: 899px) calc(100vw - 2.5rem), 46vw" />
-          </div>
-          <Gallery items={images.gallery} still />
-        </section>
-
-        <section className="rp-section" id="tresora-location" aria-labelledby="tresora-location-title">
-          <SectionHeading id="tresora-location-title" eyebrow={location.eyebrow} title={location.title} />
-          <div className="rp-split dp-split">
-            <div>
-              {location.body.map((text) => <p className="dp-text" key={text}>{text}</p>)}
-              <div className="rp-actions">
-                <a className="button button-primary" href={mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`${location.explore} (${common.opensMaps})`}>{location.explore}<LashaArrow length={24} /></a>
-                <RequestButton common={common} project={project} label={location.contact} />
+        <div className="tr-paper">
+          <section className="tr-spaces" id="tresora-spaces" aria-labelledby="tresora-spaces-title">
+            <figure className="tr-slant tr-spaces-figure"><Picture slug="tresora-fig-spaces" alt={images.pool} sizes="(max-width: 899px) 100vw, 57vw" /></figure>
+            <div className="tr-wrap">
+              <div className="tr-spaces-copy">
+                <Eyebrow>{spaces.eyebrow}</Eyebrow>
+                <FitLines id="tresora-spaces-title" className="tr-spaces-title" lines={twoLines(spaces.title)} />
+                <div className="tr-body tr-spaces-body">{spaces.body.map((text) => <p key={text}>{text}</p>)}</div>
+              </div>
+              <div className="tr-spaces-row">
+                <div className="tr-categories">
+                  <h3>{spaces.listTitle}</h3>
+                  <ul>{spaces.categories.map((name) => <li key={name}>{name}</li>)}</ul>
+                </div>
+                <div className="tr-actions tr-spaces-actions">
+                  <TrButton href={`#${route}/gallery`} onClick={sectionLinkClick(route, "gallery")} label={hero.explore} primary />
+                  <TrRequest common={common} project={project} label={hero.availability} />
+                </div>
               </div>
             </div>
-            <RenderFigure slug="tresora-map" alt={images.map} className="dp-map" sizes="(max-width: 899px) calc(100vw - 2.5rem), 40vw" />
+          </section>
+
+          <section className="tr-included" id="tresora-included" aria-labelledby="tresora-included-title">
+            <div className="tr-wrap">
+              <Eyebrow>{included.eyebrow}</Eyebrow>
+              <h2 className="tr-title" id="tresora-included-title">{included.title}</h2>
+              <p className="tr-body tr-included-lead">{included.lead}</p>
+              <dl className="tr-included-list">
+                {included.items.map(([title, text]) => <div key={title}><dt>{title}</dt><dd>{text}</dd></div>)}
+              </dl>
+            </div>
+          </section>
+
+          <section className="tr-lifestyle" id="tresora-lifestyle" aria-labelledby="tresora-lifestyle-title">
+            <figure className="tr-slant tr-lifestyle-figure"><Picture slug="tresora-fig-lifestyle" alt={images.sunsetPool} sizes="(max-width: 899px) 100vw, 58vw" /></figure>
+            <div className="tr-wrap">
+              <div className="tr-lifestyle-copy">
+                <Eyebrow>{lifestyle.eyebrow}</Eyebrow>
+                <h2 className="tr-title tr-lifestyle-title" id="tresora-lifestyle-title">{lifestyle.title}</h2>
+                <p className="tr-body tr-lifestyle-lead">{lifestyle.lead}</p>
+              </div>
+              <h3 className="tr-amenities-title">{lifestyle.listTitle}</h3>
+              <ol className="tr-amenities">
+                {lifestyle.amenities.map((name, index) => <li key={name}><span className="tr-amenity-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span className="tr-amenity-name">{name}</span></li>)}
+              </ol>
+            </div>
+          </section>
+
+          <section className="tr-gallery" id="tresora-gallery" aria-label={project.name}>
+            <div className="tr-wrap">
+              {gallery.map(([caption, pictures]) => (
+                <figure className="tr-gallery-group" key={caption}>
+                  <div className="tr-gallery-grid">
+                    {pictures.map(([slug, alt], index) => <Picture key={slug} slug={slug} alt={alt} className={index ? "tr-gallery-small" : "tr-gallery-large"} sizes={index ? "(max-width: 899px) 50vw, 34vw" : "(max-width: 899px) 100vw, 55vw"} />)}
+                  </div>
+                  <figcaption>{caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <section className="tr-field-band tr-location" id="tresora-location" aria-labelledby="tresora-location-title">
+          <div className="tr-wrap">
+            <Eyebrow>{location.eyebrow}</Eyebrow>
+            <FitLines id="tresora-location-title" className="tr-location-title" lines={locationSecond ? [locationFirst, locationSecond] : twoLines(location.title)} />
+            <div className="tr-body tr-location-body">{location.body.map((text) => <p key={text}>{text}</p>)}</div>
+          </div>
+        </section>
+        <figure className="tr-map"><Picture slug="tresora-fig-map" alt={images.map} sizes="100vw" /></figure>
+
+        <section className="tr-photo-band tr-payment" id="tresora-payment" aria-labelledby="tresora-payment-title">
+          <Picture slug="tresora-fig-payment" className="tr-bg" sizes="100vw" />
+          <div className="tr-wrap">
+            <Eyebrow>{payment.eyebrow}</Eyebrow>
+            <h2 className="tr-title tr-payment-title" id="tresora-payment-title">{paymentLines.map((line) => <span key={line}>{line} </span>)}</h2>
+            <div className="tr-body tr-payment-body">{payment.body.map((text) => <p key={text}>{text}</p>)}</div>
           </div>
         </section>
 
-        <section className="rp-section rp-mist" id="tresora-payment" aria-labelledby="tresora-payment-title">
-          <SectionHeading id="tresora-payment-title" eyebrow={payment.eyebrow} title={payment.title} />
-          <Paragraphs items={payment.body} />
-        </section>
-
-        <section className="rp-section dp-closing" id="tresora-more" aria-labelledby="tresora-more-title">
-          <SectionHeading id="tresora-more-title" title={more.title} />
-          <Paragraphs items={more.body} />
-          <div className="rp-actions">
-            <RequestButton common={common} project={project} label={more.contact} primary />
-            <RequestButton common={common} project={project} label={more.details} />
-          </div>
-          <div className="dp-terms" id="tresora-currency">
-            <h3>{currency.title}</h3>
-            <p>{currency.text}</p>
+        <section className="tr-ink-band tr-more" id="tresora-more" aria-labelledby="tresora-more-title">
+          <div className="tr-wrap">
+            <h2 className="tr-title tr-more-title" id="tresora-more-title">{more.title}</h2>
+            <div className="tr-body tr-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+            <div className="tr-actions tr-more-actions">
+              <TrRequest common={common} project={project} label={more.contact} />
+              <TrRequest common={common} project={project} label={more.details} />
+            </div>
           </div>
         </section>
       </main>

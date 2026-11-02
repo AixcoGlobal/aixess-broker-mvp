@@ -554,5 +554,175 @@
    1440,
    2000
   ]
+ },
+ "tresora-fig-hero": {
+  "height": 1798,
+  "width": 2880,
+  "widths": [
+   480,
+   960,
+   1440,
+   1920,
+   2880
+  ]
+ },
+ "tresora-fig-discover": {
+  "height": 1858,
+  "width": 2880,
+  "widths": [
+   480,
+   960,
+   1440,
+   1920,
+   2880
+  ]
+ },
+ "tresora-fig-payment": {
+  "height": 1466,
+  "width": 2880,
+  "widths": [
+   480,
+   960,
+   1440,
+   1920,
+   2880
+  ]
+ },
+ "tresora-fig-spaces": {
+  "height": 1019,
+  "width": 1640,
+  "widths": [
+   480,
+   960,
+   1640
+  ]
+ },
+ "tresora-fig-lifestyle": {
+  "height": 1122,
+  "width": 1676,
+  "widths": [
+   480,
+   960,
+   1676
+  ]
+ },
+ "tresora-fig-map": {
+  "height": 1620,
+  "width": 2880,
+  "widths": [
+   480,
+   960,
+   1440,
+   1920,
+   2880
+  ]
+ },
+ "tresora-fig-g1a": {
+  "height": 890,
+  "width": 1583,
+  "widths": [
+   480,
+   960,
+   1583
+  ]
+ },
+ "tresora-fig-g1b": {
+  "height": 424,
+  "width": 972,
+  "widths": [
+   480,
+   960,
+   972
+  ]
+ },
+ "tresora-fig-g1c": {
+  "height": 424,
+  "width": 973,
+  "widths": [
+   480,
+   960,
+   973
+  ]
+ },
+ "tresora-fig-g2a": {
+  "height": 890,
+  "width": 1582,
+  "widths": [
+   480,
+   960,
+   1582
+  ]
+ },
+ "tresora-fig-g2b": {
+  "height": 424,
+  "width": 972,
+  "widths": [
+   480,
+   960,
+   972
+  ]
+ },
+ "tresora-fig-g2c": {
+  "height": 424,
+  "width": 972,
+  "widths": [
+   480,
+   960,
+   972
+  ]
+ },
+ "tresora-fig-g3a": {
+  "height": 888,
+  "width": 1580,
+  "widths": [
+   480,
+   960,
+   1580
+  ]
+ },
+ "tresora-fig-g3b": {
+  "height": 424,
+  "width": 972,
+  "widths": [
+   480,
+   960,
+   972
+  ]
+ },
+ "tresora-fig-g3c": {
+  "height": 424,
+  "width": 972,
+  "widths": [
+   480,
+   960,
+   972
+  ]
+ },
+ "tresora-fig-g4a": {
+  "height": 888,
+  "width": 1578,
+  "widths": [
+   480,
+   960,
+   1578
+  ]
+ },
+ "tresora-fig-g4b": {
+  "height": 424,
+  "width": 972,
+  "widths": [
+   480,
+   960,
+   972
+  ]
+ },
+ "tresora-fig-g4c": {
+  "height": 424,
+  "width": 972,
+  "widths": [
+   480,
+   960,
+   972
+  ]
  }
 }

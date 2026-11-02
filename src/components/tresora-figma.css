@@ -1,0 +1,560 @@
+/* TRESORA, built from Lasha's Figma frame "TRESORA" (file mdoKe84QEOkpDthDFO8pyy, node 485:3, 1440 wide;
+   Kemo, 2 November 2026: "pixel perfect of whats on figma"). From 900px every size and distance is the
+   frame's, in frame pixels: --u is one frame pixel (the page scales with the window up to 1920px, like
+   the other Figma pages). Below 900px the same parts restack in one column for phones.
+   Type: Morganite (the "AiXESS Figma" face, which draws Morganite S at S / 0.93705) for titles, figures
+   and item headings, at the frame's 2% tracking and 80% line pitch; Inter for the rest, at the frame's
+   weights and tracking. Russian falls back to AiXESS Head (Morganite has no Cyrillic).
+   Colours: the frame's paper, ink and cobalt in the day theme; the afternoon and night themes swap the
+   accent and grounds the way the rest of the site does (night stays true black). No prices (Kemo). */
+
+.tresora-page {
+  --u: calc(min(100vw, 1920px) / 1440);
+  --tr-paper: #f7f7f4;
+  --tr-ink: #171a1d;
+  --tr-light: #f7f7f4;
+  --tr-accent: #2557d6;
+  --tr-button: #2557d6;
+  --tr-button-hover: #1b45b0;
+  --tr-band: #2557d6;
+  --tr-on-band: #f7f7f4;
+  --tr-ink-band: #171a1d;
+  --tr-hair: rgb(23 26 29 / 0.24);
+  --tr-hair-strong: rgb(23 26 29 / 0.75);
+  --tr-face: var(--l-fig, "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif);
+  background: var(--tr-paper);
+  color: var(--tr-ink);
+}
+
+html:root[data-time-theme='afternoon'] .tresora-page {
+  --tr-accent: #4d6e52;
+  --tr-button: #4d6e52;
+  --tr-button-hover: #3c5a41;
+  --tr-band: #9bb69e;
+  --tr-on-band: #171a1d;
+}
+
+html:root[data-time-theme='night'] .tresora-page {
+  --tr-paper: #000;
+  --tr-ink: #ecebe6;
+  --tr-accent: #c9d3dc;
+  --tr-button: #2557d6;
+  --tr-button-hover: #4a76e8;
+  --tr-band: #0d0f11;
+  --tr-on-band: #f7f7f4;
+  --tr-ink-band: #141414;
+  --tr-hair: rgb(236 235 230 / 0.24);
+  --tr-hair-strong: rgb(236 235 230 / 0.7);
+}
+
+/* ---- shared pieces --------------------------------------------------------------------------- */
+
+.tresora-page .tr-wrap {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(1440 * var(--u));
+  margin-inline: auto;
+  padding-inline: calc(70 * var(--u));
+}
+
+.tresora-page :is(.tr-photo-band, .tr-hero) { position: relative; isolation: isolate; overflow: hidden; color: var(--tr-light); }
+.tresora-page .tr-bg {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tresora-page :is(.tr-title, .tr-fit) {
+  margin: 0;
+  font-family: var(--tr-face);
+  font-weight: 700;
+  font-synthesis: none;
+  text-transform: uppercase;
+  letter-spacing: 0.0187em;
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+.tresora-page .tr-title {
+  --s: 181;
+  font-size: calc(var(--s) / 0.93705 * var(--u));
+  line-height: calc(var(--s) * 0.8 * var(--u));
+}
+.tresora-page :is(.tr-title, .tr-fit) > span { display: block; }
+
+.tresora-page .tr-eyebrow {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: var(--tr-accent);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(18.9 * var(--u));
+  font-weight: 700;
+  line-height: calc(23 * var(--u));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.tresora-page .tr-eyebrow::after {
+  flex: 0 0 calc(113 * var(--u));
+  height: 1px;
+  margin-left: calc(28 * var(--u));
+  background: currentColor;
+  opacity: 0.55;
+  content: "";
+}
+.tresora-page :is(.tr-hero, .tr-photo-band, .tr-ink-band, .tr-field-band) .tr-eyebrow { color: var(--tr-light); }
+.tresora-page .tr-field-band .tr-eyebrow { color: var(--tr-on-band); }
+
+.tresora-page .tr-body {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(20 * var(--u));
+  font-weight: 500;
+  line-height: calc(24 * var(--u));
+  letter-spacing: 0;
+}
+.tresora-page .tr-body p { margin: 0; }
+.tresora-page .tr-body p + p { margin-top: calc(24 * var(--u)); }
+
+/* Square buttons with a hairline arrow: outlined, or filled in the accent. */
+.tresora-page .tr-actions { display: flex; flex-wrap: wrap; }
+.tresora-page .tr-button {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(14 * var(--u));
+  min-height: calc(92 * var(--u));
+  padding: calc(12 * var(--u)) calc(28 * var(--u)) calc(12 * var(--u)) calc(25 * var(--u));
+  border: 1px solid currentColor;
+  color: inherit;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(20 * var(--u));
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.tresora-page .tr-button > span { white-space: nowrap; }
+.tresora-page .tr-button .lasha-arrow { flex: 0 0 calc(37 * var(--u)); width: calc(37 * var(--u)); height: calc(8 * var(--u)); min-height: 7px; overflow: visible; stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.tresora-page .tr-button .lasha-arrow path { vector-effect: non-scaling-stroke; }
+.tresora-page .tr-button:hover { background: var(--tr-ink); border-color: var(--tr-ink); color: var(--tr-paper); }
+.tresora-page :is(.tr-hero, .tr-ink-band) .tr-button:hover { background: var(--tr-light); border-color: var(--tr-light); color: #171a1d; }
+.tresora-page .tr-button-primary { border-color: var(--tr-button); background: var(--tr-button); color: #fff; }
+.tresora-page .tr-button-primary:hover { border-color: var(--tr-button-hover); background: var(--tr-button-hover); color: #fff; }
+.tresora-page .tr-button:focus-visible { outline: 2px solid var(--tr-accent); outline-offset: 3px; }
+.tresora-page :is(.tr-hero, .tr-ink-band) .tr-button:focus-visible { outline-color: var(--tr-light); }
+
+/* ---- hero --------------------------------------------------------------------------------------- */
+
+.tresora-page .tr-hero {
+  min-height: max(calc(899 * var(--u)), var(--screen-full, 100lvh));
+  padding-bottom: var(--hero-bar, 0px);
+  background: #0e1e37;
+}
+.tresora-page .tr-hero::before,
+.tresora-page .tr-hero::after { content: none; }
+.tresora-page .tr-hero-bg { object-position: 50% 100%; }
+.tresora-page .tr-hero-copy {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(1440 * var(--u));
+  margin-inline: auto;
+  padding: calc(6 * var(--u)) calc(70 * var(--u)) calc(60 * var(--u));
+}
+.tresora-page .tr-hero-copy > * { width: calc(622 * var(--u)); max-width: 100%; }
+.tresora-page .tr-hero-copy > .tr-hero-title { width: calc(623 * var(--u)); }
+.tresora-page .tr-fit { visibility: hidden; }
+.tresora-page .tr-fit.is-fitted { visibility: visible; }
+.tresora-page .tr-fit-line { width: max-content; white-space: nowrap; }
+/* Morganite here sits ~0.01em right of Figma's: pull titles back to the frame's left edge. */
+.tresora-page .tr-title,
+.tresora-page .tr-fit:not(.tr-hero-title) .tr-fit-line { margin-left: -0.0105em; }
+.tresora-page .tr-hero-title { margin-top: calc(42 * var(--u)); }
+.tresora-page .tr-hero-title .tr-fit-line-1 { font-size: calc(207 / 0.93705 * var(--u)); line-height: calc(143 * var(--u)); }
+.tresora-page .tr-hero-title .tr-fit-line-2 { font-size: calc(130.5 / 0.93705 * var(--u)); line-height: calc(104 * var(--u)); }
+.tresora-page .tr-hero-intro {
+  margin: calc(11 * var(--u)) 0 0;
+  padding-bottom: calc(31 * var(--u));
+  border-bottom: 1px solid rgb(247 247 244 / 0.6);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(17 * var(--u));
+  font-weight: 500;
+  line-height: calc(21 * var(--u));
+  letter-spacing: 0.04em;
+}
+.tresora-page .tr-hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: calc(63 * var(--u)); margin-top: calc(36 * var(--u)); }
+.tresora-page .tr-hero-actions .tr-button {
+  min-height: calc(69 * var(--u));
+  padding: calc(8 * var(--u)) calc(23 * var(--u)) calc(8 * var(--u)) calc(18 * var(--u));
+  font-size: calc(15 * var(--u));
+}
+.tresora-page .tr-hero-actions .tr-button .lasha-arrow { flex-basis: calc(33 * var(--u)); width: calc(33 * var(--u)); }
+
+/* ---- Discover TRESORA (photo band) ------------------------------------------------------------ */
+
+.tresora-page .tr-discover { min-height: calc(930 * var(--u)); background: #0f1d38; }
+.tresora-page .tr-discover .tr-bg { object-position: 50% 0%; }
+.tresora-page .tr-discover .tr-wrap { padding-top: calc(66 * var(--u)); padding-bottom: calc(66 * var(--u)); }
+.tresora-page .tr-discover-title { --s: 146; max-width: calc(640 * var(--u)); margin-top: calc(31 * var(--u)); }
+.tresora-page .tr-discover-body { max-width: calc(645 * var(--u)); margin-top: calc(28 * var(--u)); }
+
+/* ---- Project highlights (ink band) ------------------------------------------------------------ */
+
+.tresora-page .tr-ink-band { background: var(--tr-ink-band); color: var(--tr-light); }
+.tresora-page .tr-highlights .tr-wrap { padding-top: calc(107 * var(--u)); padding-bottom: calc(97 * var(--u)); }
+.tresora-page .tr-highlights-title { --s: 170; }
+.tresora-page .tr-facts { display: flex; flex-wrap: wrap; margin: calc(76 * var(--u)) 0 0; }
+.tresora-page .tr-facts > div:first-child { flex: none; width: calc(294 * var(--u)); }
+.tresora-page .tr-facts > div:nth-child(2) { flex: none; width: calc(434 * var(--u)); }
+.tresora-page .tr-facts > div {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  padding-right: calc(66 * var(--u));
+}
+.tresora-page .tr-facts > div + div { padding-left: calc(66 * var(--u)); }
+.tresora-page .tr-facts > div + div::before {
+  position: absolute;
+  top: calc(1 * var(--u));
+  bottom: calc(5 * var(--u));
+  left: 0;
+  width: 1px;
+  background: rgb(247 247 244 / 0.55);
+  content: "";
+}
+.tresora-page .tr-facts dd {
+  margin: 0;
+  font-family: var(--tr-face);
+  font-size: calc(110.7 / 0.93705 * var(--u));
+  font-weight: 600;
+  font-synthesis: none;
+  line-height: calc(88 * var(--u));
+  letter-spacing: 0.0187em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tresora-page .tr-facts dt {
+  margin-top: calc(-1 * var(--u));
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(23.8 * var(--u));
+  font-weight: 500;
+  line-height: calc(29 * var(--u));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---- paper sections ------------------------------------------------------------------------- */
+
+.tresora-page .tr-paper { overflow: hidden; background: var(--tr-paper); color: var(--tr-ink); }
+.tresora-page .tr-paper .tr-title { color: var(--tr-ink); }
+
+/* Slanted pictures: the frame clips each one along a sloping left edge and lets it run off the right. */
+.tresora-page .tr-slant { position: absolute; right: 0; margin: 0; }
+.tresora-page .tr-slant img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tresora-page .tr-spaces { position: relative; padding-top: calc(95 * var(--u)); }
+.tresora-page .tr-spaces-figure {
+  top: calc(99 * var(--u));
+  width: calc(820 * var(--u));
+  height: calc(510 * var(--u));
+  clip-path: polygon(16.22% 0, 100% 0, 100% 100%, 0 100%);
+}
+.tresora-page .tr-spaces-copy { width: calc(505 * var(--u)); }
+.tresora-page .tr-spaces-title { width: calc(491 * var(--u)); margin-top: calc(38 * var(--u)); }
+.tresora-page .tr-spaces-title .tr-fit-line-1 { font-size: calc(181 / 0.93705 * var(--u)); line-height: calc(127 * var(--u)); }
+.tresora-page .tr-spaces-title .tr-fit-line-2 { font-size: calc(114 / 0.93705 * var(--u)); line-height: calc(91 * var(--u)); }
+.tresora-page .tr-spaces-body { margin-top: calc(19 * var(--u)); }
+.tresora-page .tr-spaces-row { display: flex; align-items: flex-start; margin-top: calc(78 * var(--u)); }
+.tresora-page .tr-categories {
+  flex: 0 0 calc(468 * var(--u));
+  min-width: 0;
+  box-sizing: border-box;
+  padding-right: calc(78 * var(--u));
+  border-right: 1px solid var(--tr-hair);
+}
+.tresora-page .tr-categories h3 {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(20 * var(--u));
+  font-weight: 600;
+  line-height: calc(24 * var(--u));
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tresora-page .tr-categories ul { margin: calc(13 * var(--u)) 0 0; padding: 0; list-style: none; }
+.tresora-page .tr-categories li {
+  padding-block: calc(11 * var(--u));
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(20 * var(--u));
+  font-weight: 500;
+  line-height: calc(24 * var(--u));
+  text-transform: uppercase;
+}
+.tresora-page .tr-categories li + li { border-top: 1px solid var(--tr-hair); }
+.tresora-page .tr-categories li:last-child { padding-bottom: calc(30 * var(--u)); }
+.tresora-page .tr-spaces-actions { align-self: flex-end; margin-bottom: calc(35 * var(--u)); gap: calc(41 * var(--u)); margin-left: calc(82 * var(--u)); }
+.tresora-page .tr-spaces-actions .tr-button { min-height: calc(93 * var(--u)); }
+.tresora-page .tr-spaces-actions .tr-button-primary { min-width: calc(330 * var(--u)); padding-right: calc(17 * var(--u)); }
+.tresora-page .tr-spaces-actions .tr-button:not(.tr-button-primary) { min-width: calc(340 * var(--u)); padding-right: calc(12 * var(--u)); }
+
+/* Everything included */
+.tresora-page .tr-included .tr-wrap { padding-top: calc(100 * var(--u)); }
+.tresora-page .tr-included .tr-title { margin-top: calc(30 * var(--u)); }
+.tresora-page .tr-included-lead { max-width: calc(660 * var(--u)); margin: calc(3 * var(--u)) 0 0; }
+.tresora-page .tr-included-list { margin: calc(43 * var(--u)) 0 0; }
+.tresora-page .tr-included-list > div {
+  display: grid;
+  grid-template-columns: calc(426 * var(--u)) minmax(0, calc(640 * var(--u)));
+  align-items: center;
+  min-height: calc(117 * var(--u));
+  border-bottom: 1px solid var(--tr-hair);
+}
+.tresora-page .tr-included-list dt {
+  position: relative;
+  top: calc(7 * var(--u));
+  color: var(--tr-accent);
+  font-family: var(--tr-face);
+  font-size: calc(70 / 0.93705 * var(--u));
+  font-weight: 600;
+  font-synthesis: none;
+  line-height: calc(56 * var(--u));
+  letter-spacing: 0.0187em;
+  text-transform: uppercase;
+}
+.tresora-page .tr-included-list dd { margin: 0; font-family: Inter, system-ui, sans-serif; font-size: calc(20 * var(--u)); font-weight: 500; line-height: calc(24 * var(--u)); }
+
+/* A lifestyle designed around you */
+.tresora-page .tr-lifestyle { position: relative; padding-top: calc(133 * var(--u)); }
+.tresora-page .tr-lifestyle-figure {
+  top: calc(138 * var(--u));
+  width: calc(838 * var(--u));
+  height: calc(561 * var(--u));
+  clip-path: polygon(14.92% 0, 100% 0, 100% 100%, 0 100%);
+}
+.tresora-page .tr-lifestyle-copy { width: calc(530 * var(--u)); }
+.tresora-page .tr-lifestyle-title { margin-top: calc(32 * var(--u)); }
+.tresora-page .tr-lifestyle-lead { max-width: calc(420 * var(--u)); margin: calc(-1 * var(--u)) 0 0; }
+.tresora-page .tr-amenities-title {
+  display: flex;
+  align-items: center;
+  margin: calc(57 * var(--u)) 0 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(19 * var(--u));
+  font-weight: 600;
+  line-height: calc(23 * var(--u));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.tresora-page .tr-amenities-title::after { flex: 1 1 auto; height: 1px; margin-left: calc(16 * var(--u)); background: var(--tr-hair-strong); content: ""; }
+.tresora-page .tr-amenities {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(4, auto);
+  grid-template-columns: calc(623 * var(--u)) 1fr;
+  row-gap: calc(22 * var(--u));
+  margin: calc(43 * var(--u)) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.tresora-page .tr-amenities li { display: flex; align-items: center; min-height: calc(87 * var(--u)); }
+.tresora-page .tr-amenity-index {
+  display: flex;
+  box-sizing: border-box;
+  flex: 0 0 calc(70 * var(--u));
+  align-items: center;
+  align-self: stretch;
+  border-right: 1px solid color-mix(in srgb, var(--tr-ink) 50%, transparent);
+  color: var(--tr-accent);
+  font-family: var(--tr-face);
+  font-size: calc(91 / 0.93705 * var(--u));
+  font-weight: 700;
+  font-synthesis: none;
+  line-height: calc(87 * var(--u));
+  letter-spacing: 0.0187em;
+}
+.tresora-page .tr-amenity-name {
+  padding-left: calc(22 * var(--u));
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(28.7 * var(--u));
+  font-weight: 500;
+  line-height: calc(35 * var(--u));
+  letter-spacing: 0.02em;
+}
+
+/* Gallery: one large and two stacked pictures, a caption and a hairline per group. */
+.tresora-page .tr-gallery .tr-wrap { padding-top: calc(141 * var(--u)); padding-bottom: calc(68 * var(--u)); }
+.tresora-page .tr-gallery-group { margin: 0; border-bottom: 1px solid var(--tr-hair); }
+.tresora-page .tr-gallery-group + .tr-gallery-group { margin-top: calc(51 * var(--u)); }
+.tresora-page .tr-gallery-group:nth-of-type(3) { margin-top: calc(49 * var(--u)); }
+.tresora-page .tr-gallery-grid {
+  display: grid;
+  grid-template-columns: calc(791 * var(--u)) minmax(0, 1fr);
+  grid-template-rows: calc(212 * var(--u)) calc(212 * var(--u));
+  gap: calc(21 * var(--u)) calc(23 * var(--u));
+}
+.tresora-page .tr-gallery-grid img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tresora-page .tr-gallery-large { grid-row: 1 / span 2; }
+.tresora-page .tr-gallery-group figcaption {
+  padding-block: calc(12 * var(--u));
+  font-family: Inter, system-ui, sans-serif;
+  font-size: calc(24 * var(--u));
+  font-weight: 500;
+  line-height: calc(29 * var(--u));
+  letter-spacing: 0.02em;
+}
+
+/* ---- location (accent band) and map ---------------------------------------------------------- */
+
+.tresora-page .tr-field-band { position: relative; background: var(--tr-band); color: var(--tr-on-band); }
+.tresora-page .tr-field-band::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: calc(30 * var(--u));
+  background: linear-gradient(180deg, rgb(0 0 0 / 0), rgb(0 0 0 / 0.16));
+  content: "";
+  pointer-events: none;
+}
+.tresora-page .tr-location .tr-wrap { padding-top: calc(67 * var(--u)); padding-bottom: calc(24 * var(--u)); }
+.tresora-page .tr-location-title { width: calc(914 * var(--u)); margin-top: calc(36 * var(--u)); color: inherit; }
+.tresora-page .tr-location-title .tr-fit-line-1 { font-size: calc(180 / 0.93705 * var(--u)); line-height: calc(135 * var(--u)); }
+.tresora-page .tr-location-title .tr-fit-line-2 { font-size: calc(153 / 0.93705 * var(--u)); line-height: calc(122 * var(--u)); }
+.tresora-page .tr-location-body { max-width: calc(1300 * var(--u)); margin-top: calc(30 * var(--u)); }
+.tresora-page .tr-map { margin: 0; background: #0d1531; }
+.tresora-page .tr-map img { display: block; width: 100%; height: auto; }
+
+/* ---- payment (photo band) and closing (ink band) --------------------------------------------- */
+
+.tresora-page .tr-payment { min-height: calc(733 * var(--u)); background: #0c1a33; }
+.tresora-page .tr-payment .tr-bg { object-position: 50% 0%; }
+.tresora-page .tr-payment .tr-wrap { padding-top: calc(66 * var(--u)); padding-bottom: calc(62 * var(--u)); }
+.tresora-page .tr-payment-title { max-width: calc(700 * var(--u)); margin-top: calc(31 * var(--u)); }
+.tresora-page .tr-payment-body { max-width: calc(470 * var(--u)); margin-top: calc(14 * var(--u)); }
+
+.tresora-page .tr-more .tr-wrap { padding-top: calc(111 * var(--u)); padding-bottom: calc(100 * var(--u)); }
+.tresora-page .tr-more-body { max-width: calc(1040 * var(--u)); margin-top: calc(21 * var(--u)); }
+.tresora-page .tr-more-body p + p { margin-top: 0; }
+.tresora-page .tr-more-actions { gap: calc(73 * var(--u)); margin-top: calc(65 * var(--u)); }
+.tresora-page .tr-more-actions .tr-button:first-child { min-width: calc(306 * var(--u)); }
+.tresora-page .tr-more-actions .tr-button:last-child { min-width: calc(413 * var(--u)); padding-right: calc(33 * var(--u)); }
+
+/* ---- phones and small tablets: one column -------------------------------------------------------- */
+
+@media (max-width: 899px) {
+  /* Doubled class: lasha-home.css sets --u on .lasha-page and can load after this file. */
+  .tresora-page.tresora-page { --u: calc(100vw / 430); --g: 20px; }
+  .tresora-page .tr-wrap,
+  .tresora-page .tr-hero-copy { padding-inline: var(--g); }
+  .tresora-page .tr-title { font-size: calc(var(--s) * 0.42 / 0.93705 * var(--u)); line-height: calc(var(--s) * 0.42 * 0.8 * var(--u)); }
+  .tresora-page .tr-eyebrow { font-size: 13px; line-height: 16px; }
+  .tresora-page .tr-eyebrow::after { flex-basis: 56px; margin-left: 16px; }
+  .tresora-page .tr-body { font-size: 16px; line-height: 23px; }
+  .tresora-page .tr-body p + p { margin-top: 16px; }
+  .tresora-page .tr-button,
+  .tresora-page .tr-hero-actions .tr-button,
+  .tresora-page .tr-spaces-actions .tr-button,
+  .tresora-page .tr-more-actions .tr-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 58px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+  .tresora-page :is(.tr-spaces-actions, .tr-more-actions) .tr-button:nth-child(n) { min-width: 0; padding-right: 18px; }
+  .tresora-page .tr-button .lasha-arrow,
+  .tresora-page .tr-hero-actions .tr-button .lasha-arrow { flex-basis: 30px; width: 30px; height: 8px; }
+  .tresora-page .tr-actions { gap: 12px; }
+
+  .tresora-page .tr-hero { display: flex; flex-direction: column; }
+  .tresora-page .tr-hero-bg { object-position: 72% 100%; }
+  .tresora-page .tr-hero-copy { margin-top: auto; margin-bottom: auto; padding-top: 28px; padding-bottom: 40px; }
+  .tresora-page .tr-hero-copy > * { width: 100%; }
+  .tresora-page .tr-hero-title { margin-top: 18px; }
+  .tresora-page .tr-hero-title .tr-fit-line-1 { line-height: 0.76; }
+  .tresora-page .tr-hero-title .tr-fit-line-2 { line-height: 0.82; margin-top: 4px; }
+  .tresora-page .tr-hero-intro { margin-top: 18px; padding-bottom: 22px; font-size: 15px; line-height: 21px; letter-spacing: 0.02em; }
+  .tresora-page .tr-hero-actions { grid-template-columns: 1fr; gap: 12px; margin-top: 24px; }
+
+  .tresora-page .tr-discover { min-height: 0; }
+  .tresora-page .tr-discover .tr-bg { object-position: 78% 0%; }
+  .tresora-page .tr-discover .tr-wrap { padding-block: 56px 60px; }
+  .tresora-page .tr-discover-title { --s: 150; max-width: none; margin-top: 14px; }
+  .tresora-page .tr-discover-body { max-width: none; margin-top: 24px; }
+
+  .tresora-page .tr-highlights .tr-wrap { padding-block: 56px; }
+  .tresora-page .tr-highlights-title { --s: 170; }
+  .tresora-page .tr-facts { flex-direction: column; margin-top: 28px; }
+  .tresora-page .tr-facts > div:nth-child(n) { width: auto; padding: 18px 0; }
+  .tresora-page .tr-facts > div + div { padding-left: 0; border-top: 1px solid rgb(247 247 244 / 0.4); }
+  .tresora-page .tr-facts > div + div::before { content: none; }
+  .tresora-page .tr-facts dd { font-size: calc(64 / 0.93705 * min(1px, var(--u))); line-height: calc(52 * min(1px, var(--u))); }
+  .tresora-page .tr-facts dt { margin-top: 8px; font-size: 15px; line-height: 19px; white-space: normal; }
+  .tresora-page .tr-button > span { white-space: normal; }
+
+  .tresora-page .tr-slant { position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: 1.6; margin-bottom: 32px; }
+  .tresora-page .tr-spaces { display: flex; flex-direction: column-reverse; padding-top: 56px; }
+  .tresora-page .tr-spaces-figure { width: calc(100% - var(--g)); height: auto; margin: 32px 0 0 auto; clip-path: polygon(13% 0, 100% 0, 100% 100%, 0 100%); }
+  .tresora-page .tr-spaces-copy,
+  .tresora-page .tr-lifestyle-copy { width: auto; }
+  .tresora-page .tr-spaces-title { width: 100%; margin-top: 14px; }
+  .tresora-page .tr-spaces-title .tr-fit-line-1 { line-height: 0.77; }
+  .tresora-page .tr-spaces-title .tr-fit-line-2 { line-height: 0.8; margin-top: 4px; }
+  .tresora-page .tr-spaces-body { margin-top: 22px; }
+  .tresora-page .tr-spaces-row { flex-direction: column; align-items: stretch; margin-top: 36px; }
+  .tresora-page .tr-categories { flex: none; padding: 0; border: 0; }
+  .tresora-page .tr-categories h3 { font-size: 14px; line-height: 18px; white-space: normal; }
+  .tresora-page .tr-categories ul { margin-top: 8px; }
+  .tresora-page .tr-categories li { padding-block: 12px; font-size: 15px; line-height: 19px; }
+  .tresora-page .tr-categories li:last-child { padding-bottom: 12px; }
+  .tresora-page .tr-spaces-actions { align-self: auto; margin: 24px 0 0; }
+
+  .tresora-page .tr-included .tr-wrap { padding-top: 64px; }
+  .tresora-page .tr-included .tr-title { margin-top: 14px; }
+  .tresora-page .tr-included-lead { margin-top: 20px; }
+  .tresora-page .tr-included-list { margin-top: 24px; }
+  .tresora-page .tr-included-list dt { top: 0; }
+  .tresora-page .tr-included-list > div { grid-template-columns: 1fr; gap: 8px; min-height: 0; padding-block: 20px; }
+  .tresora-page .tr-included-list dt { font-size: calc(40 / 0.93705 * 1px); line-height: 34px; }
+  .tresora-page .tr-included-list dd { font-size: 15px; line-height: 21px; }
+
+  .tresora-page .tr-lifestyle { display: flex; flex-direction: column-reverse; padding-top: 64px; }
+  .tresora-page .tr-lifestyle-figure { width: calc(100% - var(--g)); height: auto; margin: 32px 0 0 auto; clip-path: polygon(13% 0, 100% 0, 100% 100%, 0 100%); }
+  .tresora-page .tr-lifestyle-title { margin-top: 14px; }
+  .tresora-page .tr-lifestyle-lead { max-width: none; margin-top: 20px; }
+  .tresora-page .tr-amenities-title { margin-top: 36px; font-size: 13px; line-height: 16px; }
+  .tresora-page .tr-amenities { grid-auto-flow: row; grid-template-columns: 1fr; grid-template-rows: none; row-gap: 12px; margin-top: 22px; }
+  .tresora-page .tr-amenities li { min-height: 52px; }
+  .tresora-page .tr-amenity-index { flex-basis: 46px; font-size: calc(54 / 0.93705 * 1px); line-height: 52px; }
+  .tresora-page .tr-amenity-name { padding-left: 14px; font-size: 16px; line-height: 21px; }
+
+  .tresora-page .tr-gallery .tr-wrap { padding-block: 48px 56px; }
+  .tresora-page .tr-gallery-group + .tr-gallery-group:nth-of-type(n) { margin-top: 32px; }
+  .tresora-page .tr-gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 8px; }
+  .tresora-page .tr-gallery-large { grid-column: 1 / -1; grid-row: auto; aspect-ratio: 791 / 445; }
+  .tresora-page .tr-gallery-small { aspect-ratio: 486 / 212; }
+  .tresora-page .tr-gallery-group figcaption { padding-block: 10px; font-size: 16px; line-height: 21px; }
+
+  .tresora-page .tr-location .tr-wrap { padding-block: 56px 60px; }
+  .tresora-page .tr-location-title { width: 100%; margin-top: 14px; }
+  .tresora-page .tr-location-title .tr-fit-line-1 { line-height: 0.78; }
+  .tresora-page .tr-location-title .tr-fit-line-2 { line-height: 0.8; margin-top: 4px; }
+  .tresora-page .tr-location-body { margin-top: 24px; }
+  .tresora-page .tr-map img { aspect-ratio: 1.2; object-fit: cover; object-position: 46% 50%; }
+
+  .tresora-page .tr-payment { min-height: 0; }
+  .tresora-page .tr-payment .tr-bg { object-position: 72% 0%; }
+  .tresora-page .tr-payment .tr-wrap { padding-block: 56px 64px; }
+  .tresora-page .tr-payment-title { max-width: none; margin-top: 14px; }
+  .tresora-page .tr-payment-body { max-width: none; margin-top: 22px; }
+
+  .tresora-page .tr-more .tr-wrap { padding-block: 56px 64px; }
+  .tresora-page .tr-more-body { max-width: none; margin-top: 22px; }
+  .tresora-page .tr-more-actions { margin-top: 28px; }
+}

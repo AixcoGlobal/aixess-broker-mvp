@@ -31,7 +31,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect(menu.getAllByRole("button").map((button) => button.textContent)).toEqual(["Tresora", "Downtown One"]);
     fireEvent.click(menu.getByRole("button", { name: "Tresora" }));
     expect(window.location.hash).toBe("#tresora");
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TRESORADUBAI");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TRESORA DUBAI");
 
     fireEvent.click(within(document.querySelector(".desktop-nav")).getByRole("button", { name: "PROJECTS" }));
     fireEvent.click(within(document.querySelector("#nav-group-projects")).getByRole("button", { name: "UAE / DUBAI" }));
@@ -96,40 +96,52 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
         const copy = DUBAI_PROJECTS_COPY[locale][route === "tresora" ? "tresora" : "downtown"];
         const allowed = new Set(strings(copy));
         const page = document.querySelector(".dubai-project-page");
-        const hero = page.querySelector(".dp-hero");
-        const texts = [...visibleTexts(hero), ...visibleTexts(page.querySelector(".dp-page"))];
-        expect(texts.filter((text) => !allowed.has(text))).toEqual([]);
+        if (route === "tresora") {
+          // The Figma layout sets some titles over two lines (and drops their full stops), so each piece only has to come from the copy.
+          const pieces = [...allowed, copy.hero.title.join(" ")].join("\n");
+          const texts = [...visibleTexts(page.querySelector(".tr-hero")), ...visibleTexts(page.querySelector(".tr-page"))].filter((text) => !/^0[1-8]$/.test(text));
+          expect(texts.filter((text) => !pieces.includes(text.replace(/\.$/, "")))).toEqual([]);
+          expect(page.querySelectorAll("table, a[download], dialog")).toHaveLength(0);
+        } else {
+          const texts = [...visibleTexts(page.querySelector(".dp-hero")), ...visibleTexts(page.querySelector(".dp-page"))];
+          expect(texts.filter((text) => !allowed.has(text))).toEqual([]);
+          expect(page.querySelectorAll("figcaption, table, a[download], dialog")).toHaveLength(0);
+        }
         expect(page.textContent).not.toContain("*");
-        expect(page.querySelectorAll("figcaption, table, a[download], dialog")).toHaveLength(0);
         unmount();
       });
     });
   });
 
-  it("builds TRESORA with its approved spaces, inclusions and project sections", () => {
+  it("builds TRESORA in the Figma order, with its spaces, inclusions and amenities and no prices", () => {
     window.history.replaceState({}, "", "/#tresora");
     render(<App />);
     const page = document.querySelector(".dubai-project-page");
     const copy = DUBAI_PROJECTS_COPY.en.tresora;
-    expect([...page.querySelectorAll(".dp-page h2")].map((title) => title.textContent)).toEqual([
-      copy.discover.title, copy.highlights.title, copy.spaces.title, copy.included.title, copy.lifestyle.title, copy.location.title, copy.payment.title, copy.more.title,
+    const flat = (text) => text.replace(/\s+/g, " ").trim();
+    expect(flat(page.querySelector("h1").textContent)).toBe(`${copy.hero.title.join(" ")} ${copy.hero.subtitle}`);
+    expect([...page.querySelectorAll(".tr-page h2")].map((title) => title.id)).toEqual([
+      "tresora-discover-title", "tresora-highlights-title", "tresora-spaces-title", "tresora-included-title", "tresora-lifestyle-title", "tresora-location-title", "tresora-payment-title", "tresora-more-title",
     ]);
-    expect([...page.querySelectorAll(".dp-hero-facts dd")].map((value) => value.textContent)).toEqual(["20%", "Q1 2028"]);
-    expect(page.textContent).not.toMatch(/182[.,\s\u00a0]?437/);
-    expect(copy.spaces.categories).toHaveLength(6);
-    expect(copy.lifestyle.amenities).toHaveLength(8);
-    expect(page.textContent).not.toMatch(/Penthouse|Sauna|WADAN|AED(?=[\s\d])|Floor plans|Gallery|Resident app\b/);
-    expect(document.getElementById("tresora-currency")).toHaveTextContent(`${copy.currency.title}${copy.currency.text}`);
+    expect([...page.querySelectorAll(".tr-facts dd")].map((value) => value.textContent)).toEqual(copy.highlights.items.map(([value]) => value));
+    expect([...page.querySelectorAll(".tr-categories li")].map((item) => item.textContent)).toEqual(copy.spaces.categories);
+    expect([...page.querySelectorAll(".tr-included-list dt")].map((item) => item.textContent)).toEqual(copy.included.items.map(([title]) => title));
+    expect([...page.querySelectorAll(".tr-amenity-name")].map((item) => item.textContent)).toEqual(copy.lifestyle.amenities);
+    expect(page.querySelectorAll(".tr-gallery-group")).toHaveLength(4);
+    // Kemo kept TRESORA free of prices: no starting price, rent or currency note.
+    expect(page.textContent).not.toMatch(/\$|US\s?\$|176[.,\s\u00a0]?635|4[.,\s\u00a0]?115|AED(?=[\s\d])|EUR/);
+    expect(page.textContent).not.toContain(copy.currency.text);
+    expect(page.textContent).not.toMatch(/Penthouse|Sauna|WADAN|Floor plans|Resident app\b/);
 
     const images = [...page.querySelectorAll("img")];
-    expect(images.length).toBe(DUBAI_IMAGES_COPY.en.tresora.gallery.length + 4);
+    expect(images.length).toBe(4 + 2 + 12);
     images.forEach((image) => {
-      expect(image.getAttribute("src")).toMatch(/^\/assets\/dubai\/tresora-[a-z0-9-]+\.webp$/);
-      expect(image.alt).not.toBe("");
+      expect(image.getAttribute("src")).toMatch(/^\/assets\/dubai\/tresora-fig-[a-z0-9-]+\.webp$/);
       expect(image.closest("button")).toBeNull();
     });
-    expect(page.querySelector(".dp-hero-figure img")).toHaveAttribute("loading", "eager");
-    expect([...page.querySelectorAll(".dp-page img")].filter((image) => image.getAttribute("loading") !== "lazy")).toEqual([]);
+    [...page.querySelectorAll(".tr-slant img, .tr-gallery img, .tr-map img")].forEach((image) => expect(image.alt).not.toBe(""));
+    expect(page.querySelector(".tr-hero img")).toHaveAttribute("loading", "eager");
+    expect([...page.querySelectorAll(".tr-page img")].filter((image) => image.getAttribute("loading") !== "lazy")).toEqual([]);
   });
 
   it("sends every TRESORA request as an email naming the project, never a dead link", () => {
@@ -138,24 +150,24 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     const page = document.querySelector(".dubai-project-page");
     const requests = [...page.querySelectorAll("a[href^='mailto:']")].map((link) => mailtoParts(link.href));
     expect(requests.map((request) => request.subject)).toEqual([
-      "Request Availability", "Request Available Units", "Enquire About Prices", "Contact AiXESS", "Contact AiXESS", "Request Project Details",
+      "Request Availability", "Request Availability", "Contact AiXESS", "Request Project Details",
     ].map((request) => `AiXESS · TRESORA DUBAI: ${request}`));
     requests.forEach((request) => {
       expect(request.to).toBe("info@aixess.global");
       expect(request.body).toContain("Project: TRESORA DUBAI\r\nLocation: Jumeirah Village Circle (JVC), Dubai\r\nRequest: ");
     });
     expect([...page.querySelectorAll("a")].filter((link) => ["#", ""].includes(link.getAttribute("href")))).toHaveLength(0);
-    const map = screen.getByRole("link", { name: /Explore the Location/ });
-    expect(map).toHaveAttribute("href", "https://www.google.com/maps/search/?api=1&query=Jumeirah%20Village%20Circle%2C%20Dubai");
-    expect(map).toHaveAttribute("target", "_blank");
   });
 
-  it("takes Explore Residences to TRESORA's property categories without leaving the page", () => {
+  it("takes Explore Residences to TRESORA's property categories, then on to the gallery, without leaving the page", () => {
     window.history.replaceState({}, "", "/#tresora");
     render(<App />);
-    fireEvent.click(screen.getByRole("link", { name: /Explore Residences/ }));
+    const [heroExplore, spacesExplore] = screen.getAllByRole("link", { name: /Explore Residences/ });
+    fireEvent.click(heroExplore);
     expect(window.location.hash).toBe("#tresora/spaces");
-    expect(document.activeElement).toHaveTextContent(DUBAI_PROJECTS_COPY.en.tresora.spaces.title);
+    expect(document.activeElement.textContent.replace(/\s+/g, " ").trim()).toBe(DUBAI_PROJECTS_COPY.en.tresora.spaces.title);
+    fireEvent.click(spacesExplore);
+    expect(window.location.hash).toBe("#tresora/gallery");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("TRESORA");
   });
 
