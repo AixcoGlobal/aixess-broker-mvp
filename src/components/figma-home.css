@@ -62,10 +62,12 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
   }
   :root:not(:lang(ru)) .lasha-home .lasha-metrics-value {
     margin-top: 0;
+    /* 2 November export: figures 2 lower and 1% narrower, the rule under them unmoved. */
+    padding-top: calc(4 * var(--u));
     font-family: var(--l-fig);
     font-size: calc(115 / 0.93705 * var(--u));
-    line-height: calc(124.2 * var(--u));
-    letter-spacing: 0.06em;
+    line-height: calc(120.2 * var(--u));
+    letter-spacing: 0.057em;
     translate: none;
     --fig-k: 1;
   }
@@ -116,7 +118,7 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
     max-width: calc(488 * var(--u));
     margin-top: calc(21 * var(--u));
     font-size: max(calc(16 * var(--u)), 12px);
-    line-height: normal;
+    line-height: calc(19 * var(--u));
   }
   :root .lasha-home .lasha-about-points {
     position: absolute;
@@ -128,7 +130,7 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
   }
   :root .lasha-home .lasha-about-panel { position: relative; }
   :root .lasha-home .lasha-about-points li {
-    row-gap: calc(2 * var(--u));
+    row-gap: calc(1 * var(--u));
     font-size: max(calc(15 * var(--u)), 12px);
     line-height: normal;
   }
@@ -192,8 +194,8 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
   }
   :root .lasha-home .project-facts > div:nth-child(n + 3) dt { margin-top: calc(-12.8 * var(--u)); }
   :root .lasha-home .project-card {
-    min-height: calc(374 * var(--u));
-    padding: calc(35.9 * var(--u)) calc(37 * var(--u)) calc(37 * var(--u)) calc(34 * var(--u));
+    min-height: calc(371 * var(--u));
+    padding: calc(30.9 * var(--u)) calc(37 * var(--u)) calc(35 * var(--u)) calc(32 * var(--u));
   }
   :root:not(:lang(ru)) .lasha-home .project-card h3 {
     font-family: var(--l-fig);
@@ -205,7 +207,7 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
   }
   :root .lasha-home .project-card p {
     max-width: calc(412 * var(--u));
-    margin-top: calc(-5.7 * var(--u));
+    margin-top: calc(-0.7 * var(--u));
     font-size: max(calc(16 * var(--u)), 12px);
     line-height: 1.08;
   }
@@ -216,8 +218,9 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
     padding-top: calc(15.7 * var(--u));
     border-top: max(0.5px, calc(0.5 * var(--u))) solid rgb(244 244 241 / 0.5);
   }
-  :root .lasha-home .project-card-actions { margin-top: auto; padding-top: calc(35.5 * var(--u)); }
+  :root .lasha-home .project-card-actions { margin-top: auto; padding-top: calc(34.5 * var(--u)); }
   :root .lasha-home .project-card-actions .lasha-button {
+    margin-left: calc(2 * var(--u));
     width: calc(217 * var(--u));
     min-height: 0;
     height: calc(69 * var(--u));
@@ -242,7 +245,7 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
     background: #babfc4;
     content: "";
   }
-  :root .lasha-home .lasha-access-copy { padding: calc(52 * var(--u)) calc(20 * var(--u)) 0 calc(70 * var(--u)); }
+  :root .lasha-home .lasha-access-copy { padding: calc(51.5 * var(--u)) calc(20 * var(--u)) 0 calc(70 * var(--u)); }
   :root .lasha-home .lasha-access .lasha-eyebrow {
     font-size: max(calc(15 * var(--u)), 12px);
     line-height: normal;
@@ -265,7 +268,7 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
     width: calc(417 * var(--u));
     min-height: calc(69 * var(--u));
     margin: 0;
-    padding: 0 calc(21 * var(--u)) 0 calc(31 * var(--u));
+    padding: 0 calc(21 * var(--u)) 0 calc(29 * var(--u));
     justify-content: space-between;
     font-size: max(calc(15 * var(--u)), 12px);
     line-height: normal;
@@ -279,9 +282,12 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
      thumbnails 74 with the active frame). The gallery takes the side column's height, so the two
      stay level when a translation makes the card taller. */
   :root .lasha-home .project-feature { align-items: stretch; }
-  :root .lasha-home .project-feature-gallery { grid-template-rows: minmax(0, 1fr) auto; row-gap: calc(13 * var(--u)); padding-bottom: 0; }
+  :root .lasha-home .project-feature-gallery { grid-template-rows: minmax(0, 1fr) auto; row-gap: calc(15 * var(--u)); padding-bottom: 0; }
   :root .lasha-home .project-feature-media { height: auto; min-height: 0; contain: size; }
-  :root .lasha-home .project-thumbs button { height: calc(74 * var(--u)); }
+  :root .lasha-home .project-thumbs button { height: calc(67 * var(--u)); }
+  /* 2 November export: render 608 over a 15 gap and 67 thumbnails, the others faded until chosen. */
+  :root .lasha-home .project-thumbs button:not(.is-active) img { opacity: 0.6; transition: opacity 160ms ease; }
+  :root .lasha-home .project-thumbs button:not(.is-active):is(:hover, :focus-visible) img { opacity: 1; }
   :root .lasha-home .project-facts { margin-top: 0; }
 
   /* 163 AVAILABLE RESIDENCES: count box at frame (438, 4671), Morganite Bold 255 at 108%; label box
@@ -359,7 +365,7 @@ html:root[data-time-theme='afternoon'] .lasha-home .project-card .lasha-button-p
     line-height: calc(138.24 * var(--u));
     translate: none;
   }
-  :root:not(:lang(ru)) .lasha-home .project-feature { margin-top: calc(-4.24 * var(--u)); }
+  :root:not(:lang(ru)) .lasha-home .project-feature { margin-top: calc(4.76 * var(--u)); }
   /* New projects in Dubai: not in Figma, set as its sibling title. */
   :root:not(:lang(ru)) .lasha-home .dp-listing h2 {
     margin-left: calc(-4 * var(--u));
@@ -369,8 +375,9 @@ html:root[data-time-theme='afternoon'] .lasha-home .project-card .lasha-button-p
   }
   /* Starting points: the eyebrow's 100px line box from frame y 3916, the statement's box right under
      it, Bold 160 at 80%. */
-  :root:not(:lang(ru)) .lasha-home .lasha-starting { padding-top: calc(85 * var(--u)); }
-  :root:not(:lang(ru)) .lasha-home .lasha-starting > .lasha-eyebrow { line-height: calc(100 * var(--u)); margin-left: calc(68 * var(--u)); }
+  /* 2 November export: the statement's capitals 37 under the eyebrow's, the eyebrow at x 71. */
+  :root:not(:lang(ru)) .lasha-home .lasha-starting { padding-top: calc(102 * var(--u)); }
+  :root:not(:lang(ru)) .lasha-home .lasha-starting > .lasha-eyebrow { line-height: calc(66 * var(--u)); margin-left: calc(71 * var(--u)); }
   :root:not(:lang(ru)) .lasha-home .lasha-starting h2 {
     margin: 0 0 0 calc(68 * var(--u));
     font-size: calc(160 / 0.93705 * var(--u));
