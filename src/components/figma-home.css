@@ -242,7 +242,7 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
     background: #babfc4;
     content: "";
   }
-  :root .lasha-home .lasha-access-copy { padding: calc(52 * var(--u)) 0 0 calc(70 * var(--u)); }
+  :root .lasha-home .lasha-access-copy { padding: calc(52 * var(--u)) calc(20 * var(--u)) 0 calc(70 * var(--u)); }
   :root .lasha-home .lasha-access .lasha-eyebrow {
     font-size: max(calc(15 * var(--u)), 12px);
     line-height: normal;
@@ -328,3 +328,77 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
 /* Afternoon: the card's button keeps the theme's sage button, not the pale accent used for figures. */
 html:root[data-time-theme='afternoon'] .lasha-home .project-card .lasha-button-primary { border-color: #4d6e52; background: #4d6e52; color: #fff; }
 html:root[data-time-theme='afternoon'] .lasha-home .project-card .lasha-button-primary:hover { border-color: #3c5a41; background: #3c5a41; }
+
+/* ---- Titles in Figma's Morganite (Kemo, 2 November 2026: "i need exact copy", "just keep the texts
+   as it is"): same words, Figma's face, size, tracking, line pitch and box. Phones swap the face at
+   their own sizes (Morganite here has AiXESS Head's capital height at the same font-size). Russian
+   keeps AiXESS Head. */
+:root:not(:lang(ru)) .lasha-home :is(.lasha-about-panel h2, .project-showcase h2, .dp-listing h2, .lasha-starting h2, .lasha-access h2) {
+  font-family: var(--l-fig);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+@media (min-width: 900px) {
+  /* About: box (822, 1387), Bold 125, 80%. */
+  :root:not(:lang(ru)) .lasha-home .lasha-about-panel h2 {
+    margin-left: calc(-3 * var(--u));
+    font-size: calc(125 / 0.93705 * var(--u));
+    line-height: calc(100 * var(--u));
+    translate: none;
+  }
+  :root:not(:lang(ru)) .lasha-home .lasha-about-panel h2 > * { line-height: inherit; }
+  /* Current project: box (66, 2101), Bold 128, 108%; the render starts at 2235. */
+  :root:not(:lang(ru)) .lasha-home .project-showcase h2 {
+    margin: calc(19.72 * var(--u)) 0 0 calc(-4 * var(--u));
+    font-size: calc(128 / 0.93705 * var(--u));
+    line-height: calc(138.24 * var(--u));
+    translate: none;
+  }
+  :root:not(:lang(ru)) .lasha-home .project-feature { margin-top: calc(-4.24 * var(--u)); }
+  /* New projects in Dubai: not in Figma, set as its sibling title. */
+  :root:not(:lang(ru)) .lasha-home .dp-listing h2 {
+    margin-left: calc(-4 * var(--u));
+    font-size: calc(128 / 0.93705 * var(--u));
+    line-height: calc(138.24 * var(--u));
+    translate: none;
+  }
+  /* Starting points: the eyebrow's 100px line box from frame y 3916, the statement's box right under
+     it, Bold 160 at 80%. */
+  :root:not(:lang(ru)) .lasha-home .lasha-starting { padding-top: calc(85 * var(--u)); }
+  :root:not(:lang(ru)) .lasha-home .lasha-starting > .lasha-eyebrow { line-height: calc(100 * var(--u)); margin-left: calc(68 * var(--u)); }
+  :root:not(:lang(ru)) .lasha-home .lasha-starting h2 {
+    margin: 0 0 0 calc(68 * var(--u));
+    font-size: calc(160 / 0.93705 * var(--u));
+    line-height: calc(128 * var(--u));
+    translate: none;
+  }
+  :root:not(:lang(ru)) .lasha-home .lasha-starting h2 > .lasha-accent { display: inline; margin-top: 0; }
+  :root:not(:lang(ru)) .lasha-home .lasha-starting h2 :is(span, .lasha-starting-line) { line-height: inherit; }
+  /* Broker access: box (69, 4701), Bold 120, 80%, from the top (Figma) rather than the foot. */
+  :root:not(:lang(ru)) .lasha-home .lasha-access-copy { padding-bottom: 0; }
+  :root:not(:lang(ru)) .lasha-home .lasha-access h2 {
+    margin: calc(21.85 * var(--u)) 0 0 calc(-1 * var(--u));
+    font-size: calc(120 / 0.93705 * var(--u));
+    line-height: calc(96 * var(--u));
+    translate: none;
+  }
+  :root:not(:lang(ru)) .lasha-home .lasha-access h2 > span,
+  :root:not(:lang(ru)) .lasha-home .lasha-access h2 > span + span { padding-top: 0; margin-top: 0; line-height: inherit; }
+}
+@media (min-width: 900px) {
+  /* The Tusker Grotesk line (unlicensed, $35) in Morganite Bold at its drawn 19px capitals. */
+  :root:not(:lang(ru)) .lasha-home .lasha-starting > .lasha-eyebrow {
+    font-family: var(--l-fig);
+    font-size: calc(27.2 / 0.93705 * var(--u));
+    font-weight: 700;
+    /* Tusker is wider: the tracking gives the line its drawn 500px width. */
+    letter-spacing: 0.1em;
+    translate: none;
+  }
+}
+@media (min-width: 900px) {
+  /* Polish and Slovenian accents (Ż, Ś, Č) over the line above need more than Figma's 80% pitch. */
+  :root:is(:lang(pl), :lang(sl)) .lasha-home .lasha-about-panel h2 { line-height: calc(115 * var(--u)); }
+  :root:is(:lang(pl), :lang(sl)) .lasha-home .lasha-starting h2 { line-height: calc(147 * var(--u)); }
+  :root:is(:lang(pl), :lang(sl)) .lasha-home .lasha-access h2 { line-height: calc(110 * var(--u)); }
+}
