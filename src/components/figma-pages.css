@@ -127,3 +127,79 @@ html:root:is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage-pa
   --l-field: #9bb69e;
   --l-on-field: #f7f7f4;
 }
+
+/* ---- Copy, eyebrows, buttons and How it works at the frames' Inter sizes (Kemo, 2 November 2026:
+   "i want you to spend extra time comparing each element to figma ... everything has to match").
+   Sizes fitted to the frames' line widths; like the homepage, small type keeps a 12px floor. ---- */
+@media (min-width: 900px) {
+  /* ABOUT AIXESS / WHO CAN JOIN: Medium 16, 2%, hairline 28 after the words and 110 long. */
+  :root .lnp .lnp-eyebrow {
+    font-size: max(calc(16 * var(--u)), 12px);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  :root .lnp .lnp-eyebrow::after { flex-basis: calc(110 * var(--u)); margin-left: calc(28 * var(--u)); }
+  /* THE COMMERCIAL ADVANTAGE: Medium 15.5, 2%, no rule. */
+  :root .lnp .lnp-kicker { font-size: max(calc(19.2 * var(--u)), 12px); letter-spacing: 0.02em; }
+  :root .lnp .lnp-commercial-eyebrow { font-size: max(calc(15.5 * var(--u)), 12px); letter-spacing: 0.02em; text-transform: uppercase; }
+  /* Copy beside the big titles wraps where the frames do. */
+  :root .lnp .lnp-hero-panel .lnp-hero-body { max-width: calc(470 * var(--u)); }
+  :root .lnp .lnp-join .lnp-hero-body { max-width: calc(420 * var(--u)); }
+  /* Line pitch of the copy: hero and join 125%, cards 112.5%, Advantage subtitle 110%, commercial 115%. */
+  :root .lnp .lnp-hero-body { line-height: 1.25; }
+  :root .lnp .lnp-starting p { line-height: 1.125; }
+  :root .lnp .lnp-advantage-subtitle { line-height: 1.1; }
+  :root .lnp .lnp-commercial-body { line-height: 1.15; }
+  /* Who can join: Light 13.5 at 120%. */
+  :root .lnp .lnp-people p { font-size: max(calc(13.5 * var(--u)), 12px); line-height: 1.2; }
+  /* Buttons: SemiBold 13, 2%. */
+  :root .lnp .lnp-button { font-size: max(calc(15.4 * var(--u)), 12px); letter-spacing: 0.02em; }
+
+  /* How it works (frame 1492–1726): the column rules start 4 under the eyebrow's middle; in each
+     column the figure's capitals sit 30 under the rule's top, its underline 10 under its baseline,
+     the step's capitals 20 under that, the copy's capitals 14 under the step's baseline (Light
+     13.5 at 120%), and the rule ends 21 under the copy. Columns 114 / 212 / 198 / 206. */
+  :root .lnp .lnp-steps { margin-top: calc(18.5 * var(--u)); grid-template-columns: calc(114 * var(--u)) calc(212 * var(--u)) calc(198 * var(--u)) calc(206 * var(--u)) minmax(0, 1fr); }
+  :root .lnp .lnp-steps li { padding-top: calc(26 * var(--u)); padding-bottom: calc(17.8 * var(--u)); }
+  :root:not(:lang(ru)) .lnp .lnp-steps .lasha-index { padding-bottom: 0; line-height: 1.71875; }
+  :root .lnp .lnp-steps h3 { margin-top: calc(13.8 * var(--u)); }
+  :root .lnp .lnp-steps p { margin-top: calc(-4.4 * var(--u)); font-size: max(calc(13.5 * var(--u)), 12px); line-height: 1.2; max-width: calc(180 * var(--u)); }
+}
+@media (min-width: 900px) and (max-width: 1399px) {
+  :root .lnp .lnp-steps { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+/* Who can join list at the frame's positions (BA frame, 1440): numbers 4px left of the rules, titles
+   36px after the numbers, first capitals 70px under the section's top, copy closer to its title. */
+@media (min-width: 900px) {
+  :root .lnp .lnp-people { padding-top: calc(40 * var(--u)); padding-bottom: 0; }
+  /* The section ends 56 under the panel's copy and 10 under the list's last line, as in the frame. */
+  :root .lnp .lnp-join-panel { padding-bottom: calc(52 * var(--u)); }
+  :root .lnp .lnp-people li:last-child { padding-bottom: calc(7 * var(--u)); }
+  :root .lnp .lnp-people li { grid-template-columns: calc(31 * var(--u)) minmax(0, 1fr); column-gap: 0; padding-bottom: calc(31 * var(--u) + 0.425rem); }
+  /* Lasha's first row is 7px taller: its rule sits 94 under the capitals and the next title 38 under it. */
+  :root .lnp .lnp-people li:first-child { padding-bottom: calc(38 * var(--u) + 0.425rem); }
+  :root .lnp .lnp-people li:nth-child(2) { padding-top: calc(35 * var(--u) + 0.425rem); }
+  :root .lnp .lnp-people .lasha-index { margin-left: calc(-5 * var(--u)); }
+  :root .lnp .lnp-people p { margin-top: calc(4 * var(--u)); }
+}
+
+/* Starting points (Advantage): the frame's rules run from 40 under the band's top to 18 above its foot,
+   122 before the second column and 132 before the third. Buttons are the frames' 266 x 68 boxes. */
+@media (min-width: 900px) {
+  :root .lnp .lnp-starting article + article::before { left: calc(-122 * var(--u)); bottom: 0; top: calc(20 * var(--u)); }
+  :root .lnp .lnp-starting article:nth-child(3)::before { left: calc(-132 * var(--u)); }
+  :root .lnp .lnp-button { min-width: calc(266 * var(--u)); min-height: calc(68 * var(--u)); padding-inline: calc(32 * var(--u)) calc(31 * var(--u)); }
+}
+
+/* Commercial advantage at the frame's boxes (BA frame, 1440): the cobalt box 398–806 right after the
+   first column, the render 32 after it, both 420 high; figures 26 under the box's top, copy 34 under
+   DOWN PAYMENT. */
+@media (min-width: 900px) {
+  :root .lnp .lnp-commercial { grid-template-columns: calc(326 * var(--u)) calc(408 * var(--u)) minmax(0, 1fr); column-gap: 0; }
+  :root .lnp .lnp-commercial-commission { margin-left: 0; padding-top: calc(12 * var(--u)); padding-bottom: calc(16 * var(--u)); }
+  :root .lnp .lnp-commercial-down { padding-top: calc(12 * var(--u)); }
+  :root .lnp :is(.lnp-commercial-down, .lnp-commercial-commission, .lnp-commercial-media) { min-height: calc(420 * var(--u)); }
+  :root .lnp .lnp-commercial-media { margin-left: calc(32 * var(--u)); width: calc(100% - 32 * var(--u)); }
+  :root .lnp .lnp-commercial-body { margin-top: calc(22 * var(--u)); }
+}

@@ -273,11 +273,16 @@ html:root[data-time-theme='night'] .lasha-home .project-facts dt { color: color-
 }
 
 @media (min-width: 900px) {
-  /* Render and thumbnails: frame 2235–2960 (render 637, 11 apart, thumbnails 77). */
-  :root .lasha-home .project-feature { align-items: start; }
-  :root .lasha-home .project-feature-gallery { grid-template-rows: auto auto; row-gap: calc(11 * var(--u)); padding-bottom: 0; }
-  :root .lasha-home .project-feature-media { height: calc(637 * var(--u)); min-height: 0; }
-  :root .lasha-home .project-thumbs button { height: calc(77 * var(--u)); }
+  /* Render and thumbnails beside the figures and card (Kemo, 2 November 2026: "in figma black container
+     is on same level as image carousel"): the render's top is level with the figures' top rule and
+     the thumbnail row's foot with the card's foot, as in the HOME export (render 606, 13 apart,
+     thumbnails 74 with the active frame). The gallery takes the side column's height, so the two
+     stay level when a translation makes the card taller. */
+  :root .lasha-home .project-feature { align-items: stretch; }
+  :root .lasha-home .project-feature-gallery { grid-template-rows: minmax(0, 1fr) auto; row-gap: calc(13 * var(--u)); padding-bottom: 0; }
+  :root .lasha-home .project-feature-media { height: auto; min-height: 0; contain: size; }
+  :root .lasha-home .project-thumbs button { height: calc(74 * var(--u)); }
+  :root .lasha-home .project-facts { margin-top: 0; }
 
   /* 163 AVAILABLE RESIDENCES: count box at frame (438, 4671), Morganite Bold 255 at 108%; label box
      at (623, 4794), SemiBold 55 at 80%. */
