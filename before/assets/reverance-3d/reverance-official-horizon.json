@@ -1,0 +1,19 @@
+{
+  "status": "official-source-calibrated-distant-environment",
+  "output": "public\\assets\\reverance-3d\\reverance-official-horizon.webp",
+  "resolution": [
+    3072,
+    1536
+  ],
+  "source_resolution": [
+    960,
+    540
+  ],
+  "source_frames": 97,
+  "vertical_fov_degrees": 41.09622780396063,
+  "horizontal_half_fov_degrees": 33.67893231175762,
+  "sphere_radius": 35.0,
+  "off_axis_degrees": 27.0,
+  "blend_cameras": 2,
+  "sharpen": 0.45
+}

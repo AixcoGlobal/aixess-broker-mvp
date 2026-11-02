@@ -1,0 +1,129 @@
+/* Titles on every page in Lasha's Figma face (Kemo, 2 November 2026: "do full audit of the website make
+   sure that it is exactly as on figma just dont touch texts fonts weights heights colors etc can be
+   changed"). Figma sets every title in Morganite Bold at 2% tracking and an 80% line pitch; the
+   homepage got that in figma-home.css, this file does the rest. Words, case and order stay as they were.
+   - AiXESS Advantage and Broker Access titles take their Figma frames' size, tracking and pitch from
+     900px (frames AIXESS ADVANTAGE and BROKER ACCESS, measured from their 9 October exports), in frame
+     pixels like the rest of those pages: Morganite S is S / 0.93705 here, as on the homepage.
+   - Pages and sections not drawn in Figma use the same face through the scaled faces of
+     src/lasha-fonts.css, so their responsive sizes and word fitting keep working: page titles at
+     1.38 (Figma's 130px page title at 1440), section titles and subtitles at 1.57 (Figma's 120-130px
+     section titles, and the width the old face had).
+   TRESORA is being redrawn from its own Figma frame elsewhere and keeps its titles here. Russian keeps
+   AiXESS Head (Morganite has no Cyrillic). */
+
+:root:not(:lang(ru)) {
+  --fig-title-page: "AiXESS Figma 138", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  --fig-title: "AiXESS Figma 157", "AiXESS Figma", "AiXESS Head", "Arial Narrow", sans-serif;
+  /* Figma's 80% pitch of the drawn size; accented capitals (Ä, Ś, Ž, Č) need a little more. */
+  --fig-pitch: 0.75;
+}
+:root:is(:lang(de), :lang(pl), :lang(sl)) { --fig-pitch: 0.86; }
+
+/* Page titles. */
+:root:not(:lang(ru)) :is(.lasha-page .lasha-page-hero-title:not(:where(#tresora-title)), .lnp-hero-title) {
+  --fig-k: 1.38;
+  font-family: var(--fig-title-page);
+  font-weight: 700;
+  font-synthesis: none;
+  letter-spacing: calc(0.0187em * var(--fig-k));
+  line-height: calc(var(--fig-pitch) * var(--fig-k));
+}
+
+/* Section titles and subtitles. */
+:root:not(:lang(ru)) :is(
+  .site-footer-intro h2,
+  .cookie-notice h2,
+  .lnp-advantage-title, .lnp-care h2, .lnp-join-title, .lnp-commercial h2, .lnp-process h2,
+  .it-section h2,
+  .lasha-page .network-heading h2,
+  .lasha-page .project-facts-heading h3,
+  .lasha-page .purchase-benefit h2,
+  .privacy-page.lasha-page h2,
+  :is(.lasha-home, .lasha-page) .explorer-intro-panel h2,
+  :is(.lasha-home, .lasha-page) .residence-filter-panel h2
+),
+:root:not(:lang(ru)) body:not(:where(:has(#tresora-title))) .lasha-page :is(.rp-heading h2, .rp-subtitle, .dp-hero-subtitle, h3.dp-list-title) {
+  --fig-k: 1.57;
+  font-family: var(--fig-title);
+  font-weight: 700;
+  font-synthesis: none;
+  letter-spacing: calc(0.0187em * var(--fig-k));
+  line-height: calc(var(--fig-pitch) * var(--fig-k));
+}
+:root:not(:lang(ru)) :is(.lnp-hero-title, .lnp-advantage-title, .lnp-care h2, .lnp-join-title, .lnp-commercial h2, .lnp-process h2,
+  .it-section h2, .lasha-page .lasha-page-hero-title, :is(.lasha-home, .lasha-page) .explorer-intro-panel h2,
+  :is(.lasha-home, .lasha-page) .residence-filter-panel h2) > span { line-height: inherit; }
+
+/* AiXESS Advantage and Broker Access at their Figma frames (Morganite size / tracking / pitch). */
+@media (min-width: 900px) {
+  /* TURN YOUR NETWORK INTO OPPORTUNITY.: Bold 130, 2%, 104. */
+  :root:not(:lang(ru)) body .lnp .lnp-hero-title {
+    --fig-k: 1;
+    font-family: var(--l-fig);
+    font-size: calc(130 / 0.93705 * var(--u));
+    letter-spacing: 0.0187em;
+    line-height: calc(104 * var(--u));
+  }
+  /* YOUR AIXESS ADVANTAGE: Bold 219, 0%, 170. */
+  :root:not(:lang(ru)) body .lnp .lnp-advantage-title {
+    --fig-k: 1;
+    font-family: var(--l-fig);
+    font-size: calc(219 / 0.93705 * var(--u));
+    letter-spacing: 0;
+    line-height: calc(170 * var(--u));
+  }
+  /* YOU DON'T NEED TO BE A BROKER.: Bold 190, 2%, 152. */
+  :root:not(:lang(ru)) body .lnp .lnp-join-title {
+    --fig-k: 1;
+    font-family: var(--l-fig);
+    font-size: calc(190 / 0.93705 * var(--u));
+    letter-spacing: 0.0187em;
+    line-height: calc(152 * var(--u));
+  }
+  /* DOWN PAYMENT, COMMISSION UNLOCKED: Bold 77, 2%, 62. */
+  :root:not(:lang(ru)) body .lnp .lnp-commercial h2 {
+    --fig-k: 1;
+    font-family: var(--l-fig);
+    font-size: calc(77 / 0.93705 * var(--u));
+    letter-spacing: 0.0187em;
+    line-height: calc(62 * var(--u));
+  }
+  /* FROM ACCESS TO COMMISSION: Bold 123, 0%, 100. */
+  :root:not(:lang(ru)) body .lnp .lnp-process h2 {
+    --fig-k: 1;
+    font-family: var(--l-fig);
+    font-size: calc(123 / 0.93705 * var(--u));
+    letter-spacing: 0;
+    line-height: calc(100 * var(--u));
+  }
+  :root:is(:lang(de), :lang(pl), :lang(sl)) body .lnp .lnp-hero-title { line-height: calc(118 * var(--u)); }
+  :root:is(:lang(de), :lang(pl), :lang(sl)) body .lnp .lnp-advantage-title { line-height: calc(195 * var(--u)); }
+  :root:is(:lang(de), :lang(pl), :lang(sl)) body .lnp .lnp-join-title { line-height: calc(172 * var(--u)); }
+  :root:is(:lang(de), :lang(pl), :lang(sl)) body .lnp .lnp-commercial h2 { line-height: calc(70 * var(--u)); }
+  :root:is(:lang(de), :lang(pl), :lang(sl)) body .lnp .lnp-process h2 { line-height: calc(114 * var(--u)); }
+}
+
+/* Spacing around those titles at the frames' distances (letters to letters, frame px at 1440): eyebrow
+   to capitals, title baseline to the copy's capitals, copy to button. Russian keeps AiXESS Head and
+   its old spacing. */
+@media (min-width: 900px) {
+  /* Hero: eyebrow 20 / title 29 / copy 69 / button. Who can join: eyebrow 32 / title 39 / copy. */
+  :root:not(:lang(ru)) .lnp .lnp-hero-body { margin-top: calc(4 * var(--u)); }
+  :root:not(:lang(ru)) .lnp .lnp-hero-panel .lnp-button { margin-top: calc(62 * var(--u)); }
+  :root:not(:lang(ru)) body .lnp .lnp-join-title { margin-top: calc(33 * var(--u)); }
+  /* Advantage panel: kicker 39 / title 31 / subtitle 61 / button. */
+  :root:not(:lang(ru)) body .lnp .lnp-advantage-title { margin-top: calc(38 * var(--u)); }
+  :root:not(:lang(ru)) .lnp .lnp-advantage-subtitle { margin-top: calc(-6 * var(--u)); }
+  :root:not(:lang(ru)) .lnp .lnp-advantage-panel .lnp-button { margin-top: calc(54 * var(--u)); }
+  /* Commercial row: figure baseline 31 / DOWN PAYMENT. How it works: eyebrow 34 / title. */
+  :root:not(:lang(ru)) body .lnp .lnp-commercial h2 { margin-top: calc(-1 * var(--u)); }
+  :root:not(:lang(ru)) body .lnp .lnp-process h2 { margin-top: calc(25 * var(--u)); }
+}
+
+/* Figma's colours: by day the Advantage panel is Lasha's sage with paper text, beside the cobalt hero
+   (frame AIXESS ADVANTAGE). Afternoon and night keep their theme colours. */
+html:root:is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage-panel {
+  --l-field: #9bb69e;
+  --l-on-field: #f7f7f4;
+}
