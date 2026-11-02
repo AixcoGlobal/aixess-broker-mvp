@@ -19,6 +19,8 @@ import "./components/scroll-to-top.css";
 import { PrivacyControls, PrivacyPage } from "./components/Privacy.jsx";
 import "./components/public-ui.css";
 import "./components/public-spacing.css";
+import "./components/figma-type.css";
+import "./components/figma-home.css";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { getWorkbookAvailableCount } from "./data/reveranceInventory.js";
