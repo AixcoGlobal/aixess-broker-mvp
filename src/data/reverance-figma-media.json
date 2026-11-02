@@ -1,0 +1,42 @@
+{
+ "rv-front": {
+  "width": 1242,
+  "height": 1660,
+  "widths": [
+   622,
+   1242
+  ]
+ },
+ "rv-facts": {
+  "width": 970,
+  "height": 1730,
+  "widths": [
+   485,
+   970
+  ]
+ },
+ "rv-batumi": {
+  "width": 1198,
+  "height": 1800,
+  "widths": [
+   599,
+   1198
+  ]
+ },
+ "rv-owner": {
+  "width": 1234,
+  "height": 2338,
+  "widths": [
+   617,
+   1234
+  ]
+ },
+ "rv-kpi": {
+  "width": 1520,
+  "height": 1320,
+  "widths": [
+   760,
+   1520
+  ]
+ }
+}
