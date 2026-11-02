@@ -2,10 +2,9 @@ import { Fragment, lazy, Suspense, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidation, clearFieldValidation } from "./i18n.jsx";
-import { NetworkSections, PurchaseBenefit } from "./components/NetworkSections.jsx";
-import { REVERANCE_PROJECT_COPY } from "./reverance-project-copy.js";
 import { ProjectShowcase } from "./components/ProjectShowcase.jsx";
-import { AixcoOpportunity, Ownership, PaymentStructure, ProjectGallery, WhyBatumi, WhyReverance, useProjectSectionFromHash } from "./components/ReveranceProjectInfo.jsx";
+import { ProjectGallery, useProjectSectionFromHash } from "./components/ReveranceProjectInfo.jsx";
+import { ReveranceFigmaHero, ReveranceFigmaSections } from "./components/ReveranceFigmaPage.jsx";
 import { AdvantagePageContent, BrokerAccessPageContent } from "./components/LashaNetworkPages.jsx";
 import { HomeAbout, HomeAccess, HomeHero, HomeMetrics, HomeStartingPoints, LashaPageHero } from "./components/LashaHomeSections.jsx";
 import { TimeThemeMenu } from "./components/TimeThemeMenu.jsx";
@@ -571,31 +570,16 @@ function InsightsPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenM
 }
 
 function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
-  const { t, locale } = useLanguage();
+  const { t } = useLanguage();
   useProjectSectionFromHash();
+  // Lasha's Figma frame "REVERANCE" (Kemo, 2 November 2026: "make reverance page to be exactly as on
+  // figma"), then the gallery and the Residence Explorer, which the frame does not draw.
   return (
-    <div className="route-page lasha-page residences-page">
-      <LashaPageHero
-        header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />}
-        eyebrow={t("projectReveranceBatumi")}
-        title={[t("oneBuilding"), t("yourNextMove")]}
-        image="reverance-towers"
-        variant="towers"
-        imageAlt={(REVERANCE_PROJECT_COPY[locale] || REVERANCE_PROJECT_COPY.en).heroAlt}
-        copy={t("residenceRouteCopy")}
-      />
+    <div className="route-page lasha-page residences-page rv-page">
+      <ReveranceFigmaHero header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />} />
       <main className="page-main">
-        {/* Project information from AIXCO.Global's Reverance page (Klem, 16 October 2026). AIXCO's own
-            sections, the contents bar and the FAQ are left out (Kemo and Klem, 16 October 2026). */}
         <div className="rp-contents">
-          <div className="rp-anchor" id="opportunity">
-            <NetworkSections sections={["opportunity"]} />
-            <AixcoOpportunity />
-          </div>
-          <WhyBatumi />
-          <WhyReverance />
-          <PaymentStructure><PurchaseBenefit /></PaymentStructure>
-          <Ownership />
+          <ReveranceFigmaSections />
           <ProjectGallery />
         </div>
         <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>

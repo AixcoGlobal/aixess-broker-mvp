@@ -197,7 +197,7 @@ function useFitLines(ref, deps) {
   }, deps); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function FitLines({ as: Tag = "h2", id, className, lines }) {
+export function FitLines({ as: Tag = "h2", id, className, lines }) {
   const ref = useRef(null);
   useFitLines(ref, [lines.join("|")]);
   return (
