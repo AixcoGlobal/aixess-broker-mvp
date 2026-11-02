@@ -109,13 +109,13 @@
    its old spacing. */
 @media (min-width: 900px) {
   /* Hero: eyebrow 20 / title 29 / copy 69 / button. Who can join: eyebrow 32 / title 39 / copy. */
-  :root:not(:lang(ru)) .lnp .lnp-hero-body { margin-top: calc(4 * var(--u)); }
+  :root:not(:lang(ru)) .lnp .lnp-hero-body { margin-top: calc(6 * var(--u)); }
   :root:not(:lang(ru)) .lnp .lnp-hero-panel .lnp-button { margin-top: calc(62 * var(--u)); }
   :root:not(:lang(ru)) body .lnp .lnp-join-title { margin-top: calc(33 * var(--u)); }
   /* Advantage panel: kicker 39 / title 31 / subtitle 61 / button. */
   :root:not(:lang(ru)) body .lnp .lnp-advantage-title { margin-top: calc(38 * var(--u)); }
-  :root:not(:lang(ru)) .lnp .lnp-advantage-subtitle { margin-top: calc(-6 * var(--u)); }
-  :root:not(:lang(ru)) .lnp .lnp-advantage-panel .lnp-button { margin-top: calc(54 * var(--u)); }
+  :root:not(:lang(ru)) .lnp .lnp-advantage-subtitle { margin-top: calc(-3 * var(--u)); }
+  :root:not(:lang(ru)) .lnp .lnp-advantage-panel .lnp-button { margin-top: calc(56 * var(--u)); }
   /* Commercial row: figure baseline 31 / DOWN PAYMENT. How it works: eyebrow 34 / title. */
   :root:not(:lang(ru)) body .lnp .lnp-commercial h2 { margin-top: calc(-1 * var(--u)); }
   :root:not(:lang(ru)) body .lnp .lnp-process h2 { margin-top: calc(25 * var(--u)); }
@@ -202,4 +202,51 @@ html:root:is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage-pa
   :root .lnp :is(.lnp-commercial-down, .lnp-commercial-commission, .lnp-commercial-media) { min-height: calc(420 * var(--u)); }
   :root .lnp .lnp-commercial-media { margin-left: calc(32 * var(--u)); width: calc(100% - 32 * var(--u)); }
   :root .lnp .lnp-commercial-body { margin-top: calc(22 * var(--u)); }
+}
+
+/* Broker Access against the 2 November 2026 export (BROKER_ACCESS@2x): paper #f7f7f4 by day on both
+   frame pages, How it works titles 0.032em apart, copy at most 155 wide without hyphens in English,
+   steps 4 and 5 starting 27 and 28 after their rules, rules 218 long, and the commercial render
+   framed as in the frame (shown 999 wide, its right edge at the column's, its top at the box's). */
+html:root:is([data-time-theme='day'], :not([data-time-theme])) .lasha-page:has(> .lnp) { --l-paper: #f7f7f4; background-color: #f7f7f4; }
+@media (min-width: 900px) {
+  :root:not(:lang(ru)) .lnp .lnp-steps h3 { --fig-ls: 0.032em; letter-spacing: 0.032em; margin-top: calc(11.8 * var(--u)); }
+  :root .lnp .lnp-steps p { max-width: calc(155.5 * var(--u)); margin-top: calc(-2.9 * var(--u)); line-height: 1.16; }
+  :root .lnp .lnp-steps { align-self: start; min-height: calc(218 * var(--u)); }
+  :root .lnp .lnp-steps li { padding-bottom: 0; }
+  :root .lnp .lnp-process { padding-bottom: calc(56 * var(--u)); }
+  :root:lang(en) .lnp .lnp-steps p { hyphens: manual; }
+  :root .lnp .lnp-steps li:nth-child(4) { padding-left: calc(24 * var(--u)); }
+  :root .lnp .lnp-steps li:nth-child(5) { padding-left: calc(25 * var(--u)); }
+  :root .lnp .lnp-commercial-media {
+    object-position: 96.6% 0;
+    transform: scale(1.407);
+    transform-origin: 100% 0;
+    clip-path: inset(0 0 calc(100% - 100% / 1.407) calc(100% - 100% / 1.407));
+  }
+}
+@media (min-width: 900px) {
+  /* Commercial figures at the export's widths and edges; copy at its 17px pitch. */
+  :root:not(:lang(ru)) .lnp .lnp-figure { letter-spacing: 0.028em; }
+  :root:not(:lang(ru)) .lnp .lnp-commercial-down .lnp-figure { margin-left: calc(-4 * var(--u)); }
+  :root:not(:lang(ru)) .lnp .lnp-commercial-commission .lnp-figure { margin-left: calc(2 * var(--u)); }
+  :root .lnp .lnp-commercial-body { line-height: 1.0625; }
+}
+@media (min-width: 900px) {
+  /* FROM ACCESS TO COMMISSION in the 2 November export: capitals 90 high at the same widths. */
+  :root:not(:lang(ru)) body .lnp .lnp-process h2 { font-size: calc(128 / 0.93705 * var(--u)); letter-spacing: -0.0076em; margin-top: calc(27 * var(--u)); margin-left: calc(-3 * var(--u)); }
+}
+@media (min-width: 900px) {
+  /* Hero and Who can join copy in the 2 November exports: Inter Regular 17 at a 19.33 pitch, no
+     tracking. Buttons: label 33 inside the left edge, arrow ending 33 before the right, 266 wide. */
+  :root .lnp .lnp-hero-body { font-size: max(calc(17 * var(--u)), 12px); font-weight: 400; letter-spacing: 0; line-height: 1.137; }
+  :root .lnp .lnp-button { column-gap: calc(8 * var(--u)); padding: calc(3 * var(--u)) calc(33 * var(--u)) 0; }
+}
+@media (min-width: 900px) {
+  :root:not(:lang(ru)) body .lnp .lnp-hero-title { margin-top: calc(17 * var(--u)); }
+}
+@media (min-width: 900px) {
+  /* Starting points in the 2 November export: titles 0.027em apart, copy Inter 15.6. */
+  :root:not(:lang(ru)) .lnp .lnp-starting article h2 { --fig-ls: 0.027em; letter-spacing: 0.027em; }
+  :root .lnp .lnp-starting p { font-size: max(calc(15.6 * var(--u)), 12px); }
 }

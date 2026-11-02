@@ -252,7 +252,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
           <p className="lnp-figure">100%</p>
           <h2>{page.commissionUnlocked.map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
-        <img className="lnp-commercial-media" src={image("reverance-tower-1990")} srcSet={srcSet("reverance-tower", 995)} sizes="(max-width: 899px) 100vw, 42vw" width="995" height="589" alt="" loading="lazy" decoding="async" />
+        <img className="lnp-commercial-media" src={image("reverance-tower-1990")} srcSet={srcSet("reverance-tower", 995)} sizes="(max-width: 899px) 100vw, 70vw" width="995" height="589" alt="" loading="lazy" decoding="async" />
       </section>
 
       <section className="lnp-process" aria-labelledby="lnp-process-title">
