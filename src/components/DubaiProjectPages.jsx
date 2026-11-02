@@ -240,6 +240,23 @@ function TrRequest({ common, project, label, primary }) {
   return <TrButton href={projectMailto(common, project, label)} label={label} primary={primary} aria-label={`${label} (${common.opensEmail})`} />;
 }
 
+/* Figma TRESORA frame 485:3 sets the English discover text with its own line breaks. The words stay
+   as written; a break is placed before each phrase below when the paragraph contains it. */
+const TRESORA_DISCOVER_BREAKS = ["the heart of", "residential communities", "curated retail", "around the balance", "and integrated smart", "where functionality"];
+
+function withFigmaBreaks(text) {
+  const parts = [];
+  let rest = text;
+  for (const phrase of TRESORA_DISCOVER_BREAKS) {
+    const at = rest.indexOf(` ${phrase}`);
+    if (at < 0) continue;
+    parts.push(rest.slice(0, at), <br key={phrase} className="tr-figma-break" />);
+    rest = rest.slice(at + 1);
+  }
+  parts.push(rest);
+  return parts;
+}
+
 export function TresoraPage({ header }) {
   const route = "tresora";
   const { common, project, images } = useDubaiCopy("tresora");
@@ -276,7 +293,7 @@ export function TresoraPage({ header }) {
           <div className="tr-wrap">
             <Eyebrow>{discover.eyebrow}</Eyebrow>
             <h2 className="tr-title tr-discover-title" id="tresora-discover-title">{discover.title}</h2>
-            <div className="tr-body tr-discover-body">{discover.body.map((text) => <p key={text}>{text}</p>)}</div>
+            <div className="tr-body tr-discover-body">{discover.body.map((text) => <p key={text}>{withFigmaBreaks(text)}</p>)}</div>
           </div>
         </section>
 

@@ -414,3 +414,28 @@ html:root[data-time-theme='afternoon'] .lasha-home .project-card .lasha-button-p
   :root:is(:lang(pl), :lang(sl)) .lasha-home .lasha-starting h2 { line-height: calc(147 * var(--u)); }
   :root:is(:lang(pl), :lang(sl)) .lasha-home .lasha-access h2 { line-height: calc(110 * var(--u)); }
 }
+
+/* "Check main page too" (Kemo, 2 November): the remaining differences from the HOME export. */
+@media (min-width: 900px) {
+  /* Hero subtitle: Inter Regular 17 at a 19.33 pitch (1.137), its two lines as drawn (71–471). */
+  :root .lasha-home .lasha-hero-copy p {
+    max-width: max(calc(430 * var(--u)), 26rem);
+    margin-top: calc(30 * var(--u));
+    /* The October 25 16px body floor still holds below 1355px. */
+    font-size: max(calc(17 * var(--u)), 16px);
+    line-height: 1.137;
+    /* Figma's Inter sets these lines 401 wide; ours needs 3% tracking to match. */
+    letter-spacing: 0.03em;
+  }
+  /* Emerging market opportunity: the rule 24 after the text and 2 lower. */
+  :root .lasha-home .project-showcase-head .lasha-eyebrow::after {
+    margin-left: calc(23 * var(--u));
+    translate: 0 calc(2 * var(--u));
+  }
+}
+/* By day the export draws the titles on paper, AVAILABLE RESIDENCES and the outline button in pure
+   black (#000), not the ink #171A1D of the band and the project card. */
+html:root:is([data-time-theme='day'], :not([data-time-theme])) .lasha-home :is(.project-showcase-head h2, .dp-listing h2, .lasha-starting h2 > span:not(.lasha-accent), .lasha-access h2, .lasha-access-count span, .lasha-access .lasha-button-outline) {
+  color: #000;
+}
+html:root:is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-access .lasha-button-outline { border-color: #000; }

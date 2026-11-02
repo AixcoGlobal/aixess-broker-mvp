@@ -487,6 +487,7 @@ html:root[data-time-theme='night'] .tresora-page {
   .tresora-page .tr-discover .tr-wrap { padding-block: 56px 60px; }
   .tresora-page .tr-discover-title { --s: 150; max-width: none; margin-top: 14px; }
   .tresora-page .tr-discover-body { max-width: none; margin-top: 24px; }
+  .tresora-page .tr-figma-break { display: none; }
 
   .tresora-page .tr-highlights .tr-wrap { padding-block: 56px; }
   .tresora-page .tr-highlights-title { --s: 170; }
