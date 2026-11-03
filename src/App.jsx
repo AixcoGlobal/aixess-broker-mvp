@@ -117,7 +117,14 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
       <div className="header-actions">
         <TimeThemeMenu onOpen={() => setLanguageOpen(false)} />
         <LanguageSwitcher languageOpen={languageOpen} setLanguageOpen={setLanguageOpen} />
-        <a className="button button-primary register-button" href={PORTAL_URL} data-portal="register">{t("register")}</a>
+        <button
+          className="button button-primary register-button"
+          type="button"
+          data-portal="register"
+          onClick={() => onOpenModal?.("register")}
+        >
+          {t("register")}
+        </button>
         <a className="button button-ghost login-button" href={PORTAL_URL} data-portal="login">{t("login")}</a>
       </div>
 
@@ -192,7 +199,17 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
           </Fragment>
         ))}
         <LanguageSwitcher languageOpen={languageOpen} setLanguageOpen={setLanguageOpen} />
-        <a className="mobile-register" href={PORTAL_URL} data-portal="register">{t("register")}</a>
+        <button
+          className="mobile-register"
+          type="button"
+          data-portal="register"
+          onClick={() => {
+            onToggleMenu(false);
+            onOpenModal?.("register");
+          }}
+        >
+          {t("register")}
+        </button>
         <a className="mobile-login" href={PORTAL_URL} data-portal="login">{t("login")}</a>
       </div>,
       document.body)}

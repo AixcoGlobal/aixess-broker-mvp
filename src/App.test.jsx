@@ -260,14 +260,23 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { name: /two buildings/i })).toBeInTheDocument();
   });
 
-  it("routes broker login and registration to the broker portal", () => {
+  it("opens broker registration form from navbar and routes login to broker portal", () => {
     window.history.replaceState({}, "", "/");
     render(<App />);
 
-    expect(screen.getAllByRole("link", { name: "REGISTER" })[0]).toHaveAttribute(
-      "href",
-      "https://portal.aixess.global/",
-    );
+    const registerBtn = screen.getAllByRole("button", { name: "REGISTER" })[0];
+    expect(registerBtn).toBeInTheDocument();
+    fireEvent.click(registerBtn);
+
+    const modal = screen.getByRole("dialog");
+    expect(modal).toBeInTheDocument();
+    expect(within(modal).getByLabelText("FIRST NAME")).toBeInTheDocument();
+    expect(within(modal).getByLabelText("SURNAME")).toBeInTheDocument();
+    expect(within(modal).getByLabelText("PHONE NUMBER")).toBeInTheDocument();
+    expect(within(modal).getByLabelText("EMAIL ADDRESS")).toBeInTheDocument();
+    expect(within(modal).getByLabelText("COMPANY (OPTIONAL)")).toBeInTheDocument();
+    fireEvent.click(within(modal).getByRole("button", { name: "CLOSE" }));
+
     expect(screen.getAllByRole("link", { name: "LOGIN" })[0]).toHaveAttribute(
       "href",
       "https://portal.aixess.global/",
