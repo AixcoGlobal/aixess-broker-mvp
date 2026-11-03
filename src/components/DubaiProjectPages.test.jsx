@@ -155,7 +155,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     const page = document.querySelector(".dubai-project-page");
     const requests = [...page.querySelectorAll("a[href^='mailto:']")].map((link) => mailtoParts(link.href));
     expect(requests.map((request) => request.subject)).toEqual([
-      "Request Availability", "Request Availability", "Contact AiXESS", "Request Project Details",
+      "Request Availability", "Request Availability",
     ].map((request) => `AiXESS · TRESORA DUBAI: ${request}`));
     requests.forEach((request) => {
       expect(request.to).toBe("info@aixess.global");
@@ -191,7 +191,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect(page.querySelectorAll(".dp-gallery img")).toHaveLength(DUBAI_IMAGES_COPY.en.downtown.gallery.length);
     [...page.querySelectorAll("img")].forEach((image) => expect(image.getAttribute("src")).toMatch(/^\/assets\/dubai\/downtown-[a-z0-9-]+\.webp$/));
     expect([...page.querySelectorAll("a[href^='mailto:']")].map((link) => mailtoParts(link.href).subject)).toEqual(
-      ["Request Availability", "Request Brochure", "Contact AiXESS"].map((request) => `AiXESS · DOWNTOWN ONE DUBAI: ${request}`),
+      ["Request Availability"].map((request) => `AiXESS · DOWNTOWN ONE DUBAI: ${request}`),
     );
     page.querySelectorAll("a[href^='mailto:']").forEach((link) => expect(mailtoParts(link.href).body).toContain("Location: Downtown Jebel Ali, Dubai"));
 

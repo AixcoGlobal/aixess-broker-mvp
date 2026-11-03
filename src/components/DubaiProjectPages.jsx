@@ -469,10 +469,6 @@ export function TresoraPage({ header }) {
           <div className="tr-wrap">
             <h2 className="tr-title tr-more-title" id="tresora-more-title">{more.title}</h2>
             <div className="tr-body tr-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
-            <div className="tr-actions tr-more-actions">
-              <TrRequest common={common} project={project} label={more.contact} />
-              <TrRequest common={common} project={project} label={more.details} />
-            </div>
           </div>
         </section>
       </main>
@@ -543,10 +539,6 @@ export function DowntownOnePage({ header }) {
         <section className="rp-section dp-closing" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
           <SectionHeading id="downtown-one-more-title" eyebrow={more.eyebrow} title={more.title} />
           <Paragraphs items={more.body} />
-          <div className="rp-actions">
-            <RequestButton common={common} project={project} label={more.brochure} primary />
-            <RequestButton common={common} project={project} label={more.contact} />
-          </div>
         </section>
       </main>
     </>
