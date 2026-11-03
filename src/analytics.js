@@ -45,7 +45,7 @@ export function trackOutboundLink(event) {
   const anchor = event.target.closest?.("a[href]");
   if (!anchor) return;
   const url = new URL(anchor.href, window.location.href);
-  if (url.hostname === "workw.com") track(url.pathname.endsWith("broker-login") ? "portal_login_click" : "portal_register_click");
+  if (url.hostname === "portal.aixess.global") track(anchor.dataset.portal === "register" ? "portal_register_click" : "portal_login_click");
   else if (["mailto:", "tel:"].includes(url.protocol)) track("contact_click", { target: url.protocol === "mailto:" ? "email" : "phone" });
   else if (url.hostname === "aixco.global") track("resource_click", { target: "aixco" });
   else if (/\.pdf$/i.test(url.pathname)) track("resource_click", { target: "brochure" });

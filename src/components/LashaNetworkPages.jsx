@@ -1,3 +1,4 @@
+import { PORTAL_URL } from "../portal.js";
 import { useLayoutEffect, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { LashaArrow } from "./LashaHomeSections.jsx";
@@ -35,12 +36,10 @@ const useCopy = () => {
   };
 };
 
-// Request access and partner sign-in open the Workwise broker flows, as the header's Register and Login do.
+// Request access and partner sign-in open the broker portal, as the header's Register and Login do.
 function PageButton({ variant, flow, children }) {
-  const { locale } = useLanguage();
-  const href = `https://workw.com/realestate/aixco/${flow === "register" ? "broker-signup" : "broker-login"}?lang=${encodeURIComponent(locale)}`;
   return (
-    <a className={`lasha-button lnp-button lasha-button-${variant}`} href={href}>
+    <a className={`lasha-button lnp-button lasha-button-${variant}`} href={PORTAL_URL} data-portal={flow === "register" ? "register" : "login"}>
       {children}<LashaArrow length={47} />
     </a>
   );
