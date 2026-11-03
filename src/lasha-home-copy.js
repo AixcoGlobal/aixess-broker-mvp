@@ -7,7 +7,7 @@ import { withPrices } from "./currency.js";
 // They are not yet reconciled with AiXESS_Website_Content_Final.docx or the owner
 // stock workbook: clients/transaction/completed counts, the initial down payment,
 // the 60% financing minimum and the 12% net yield are all pending confirmation
-// from Klem. Live availability (163) and the completion date come from project data.
+// from Klem. Live availability (165) and the completion date come from project data.
 export const LASHA_HOME_COPY = withPrices({
   en: {
     heroSubtitle: "Disciplined real estate investment,\ndevelopment and long-term asset management",

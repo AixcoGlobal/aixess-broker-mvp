@@ -179,7 +179,7 @@ describe("AIXESS navigation pages", () => {
     expect(within(showcase).getByRole("heading", { name: "CURRENT PROJECT IN BATUMI" })).toBeInTheDocument();
     expect(within(showcase).getByText("$59K")).toBeInTheDocument();
     expect(within(showcase).getByText("Entry from $59,000")).toBeInTheDocument();
-    expect(screen.getByText(String(163))).toBeInTheDocument();
+    expect(screen.getByText(String(165))).toBeInTheDocument();
     expect(showcase.querySelector(".project-upcoming")).not.toBeInTheDocument();
     const thumbs = within(showcase).getAllByRole("button", { name: /Show Reverance image/ });
     fireEvent.click(thumbs[1]);

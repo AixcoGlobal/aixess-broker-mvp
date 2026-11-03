@@ -4,9 +4,12 @@ import { CALCULATOR_APARTMENTS } from "../data/calculatorApartments.js";
 import { getGoldenPremiumUnit } from "../data/goldenPremiumApartments.js";
 import { GOLDEN_PREMIUM_COPY } from "../golden-premium-copy.js";
 
+// Opens on the first available Golden Premium apartment (the list changes with each inventory update).
+const DEFAULT_APARTMENT = (CALCULATOR_APARTMENTS.find(apartment => getGoldenPremiumUnit(apartment.code)) || CALCULATOR_APARTMENTS[0]).code;
+
 export default function ClientPdf({ locale, active, values, ready }) {
   const c = CLIENT_PDF_COPY[locale];
-  const [apartmentCode, setApartmentCode] = useState("A1305");
+  const [apartmentCode, setApartmentCode] = useState(DEFAULT_APARTMENT);
   const [clientName, setClientName] = useState("");
   const [clientAddress, setClientAddress] = useState("");
   const [state, setState] = useState("idle");

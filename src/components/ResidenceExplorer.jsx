@@ -26,7 +26,7 @@ import { FittedHeading } from "./FittedHeading.jsx";
 import { EXPLORER_SETTLE_PROGRESS } from "./reveranceSplatMath";
 import "./ResidenceExplorer.css";
 import { AixessLogo } from "./AixessLogo.jsx";
-import { formatEurSourcePrice } from "../currency.js";
+import { formatPrice } from "../currency.js";
 
 const loadReverance3D = () => import("./Reverance3D");
 const Reverance3D = lazy(() => loadReverance3D().then((module) => ({
@@ -507,18 +507,11 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
         <strong>{unitAreaLabel(unit, locale)}</strong>
       </div>
 
-      {goldenPremium && (
-        <div className="golden-premium-unit-meta">
-          <span>{goldenCopy.referencePrice}</span>
-          <strong>{formatEurSourcePrice(goldenPremium.price, locale)}</strong>
-        </div>
-      )}
-
       <dl className="unit-facts">
         <div><dt>{t("floor")}</dt><dd>{unit.floor || "—"}</dd></div>
         <div><dt>{t("rooms")}</dt><dd>{unit.rooms || "—"}</dd></div>
         <div><dt>{t("bedrooms")}</dt><dd>{unit.bedrooms || "—"}</dd></div>
-        <div><dt>{t("price")}</dt><dd>{unit.price ? String(unit.price) : t("onRequest")}</dd></div>
+        <div><dt>{t("price")}</dt><dd>{typeof unit.price === "number" && unit.price > 0 ? formatPrice(unit.price, locale) : t("onRequest")}</dd></div>
       </dl>
 
       {(planSource || unit.image3d) && (
