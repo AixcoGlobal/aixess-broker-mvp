@@ -2,6 +2,7 @@ import { Fragment, lazy, Suspense, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidation, clearFieldValidation } from "./i18n.jsx";
+import { pauseSmoothScroll } from "./smoothScroll.js";
 import { ProjectShowcase } from "./components/ProjectShowcase.jsx";
 import { ProjectGallery, useProjectSectionFromHash } from "./components/ReveranceProjectInfo.jsx";
 import { ReveranceFigmaHero, ReveranceFigmaSections } from "./components/ReveranceFigmaPage.jsx";
@@ -640,11 +641,13 @@ function AppContent() {
     };
     closeIfWide();
     if (root) root.inert = true;
+    pauseSmoothScroll(true);
     document.querySelector(".lasha-menu .lasha-menu-bar .menu-toggle")?.focus({ preventScroll: true });
     wide?.addEventListener?.("change", closeIfWide);
     document.addEventListener("keydown", closeOnEscape);
     return () => {
       if (root) root.inert = false;
+      pauseSmoothScroll(false);
       wide?.removeEventListener?.("change", closeIfWide);
       document.removeEventListener("keydown", closeOnEscape);
       const toggle = document.querySelector(".site-header .menu-toggle");

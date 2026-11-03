@@ -1,6 +1,9 @@
 import { createRoot } from "react-dom/client";
 import { App } from "./App.jsx";
 import "./styles.css";
+import { startSmoothScroll } from "./smoothScroll.js";
+
+startSmoothScroll();
 
 createRoot(document.getElementById("root")).render(
   <App />,
