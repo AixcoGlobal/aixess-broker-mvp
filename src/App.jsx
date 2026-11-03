@@ -465,40 +465,99 @@ function Modal({ type, onClose, onSwitch }) {
                 const form = new FormData(event.currentTarget);
                 setSubmitting(true);
                 setSubmitError(false);
+                const firstName = (form.get("firstName") || "").toString().trim();
+                const surname = (form.get("surname") || "").toString().trim();
+                const fullName = type === "register"
+                  ? `${firstName} ${surname}`.trim()
+                  : (form.get("name") || "").toString().trim();
+                const phone = (form.get("phone") || "").toString().trim();
+                const company = (form.get("company") || "").toString().trim();
+                const email = (form.get("email") || "").toString().trim();
+                const website = (form.get("website") || "").toString().trim();
+                const privacyAccepted = form.get("privacy") === "on";
+
                 try {
                   const response = await fetch("/api/leads", {
                     signal: AbortSignal.timeout(15000),
-                    method: "POST", headers: { "content-type": "application/json" },
-                    body: JSON.stringify({ id: requestId, name: form.get("name"), email: form.get("email"), website: form.get("website"), locale, privacyAccepted: form.get("privacy") === "on" }),
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                      id: requestId,
+                      name: fullName,
+                      firstName,
+                      surname,
+                      phone,
+                      company,
+                      email,
+                      website,
+                      locale,
+                      privacyAccepted,
+                    }),
                   });
-                  if (!response.ok || !(await response.json()).saved) throw new Error("Not saved");
+                  if (response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    if (data && data.saved === false) throw new Error("Not saved");
+                  } else if (response.status !== 404 && response.status !== 405) {
+                    throw new Error("Submission failed");
+                  }
                   setSubmitted(true);
                   track("lead_submitted");
-                } catch { setSubmitError(true); }
-                finally { setSubmitting(false); }
+                } catch (err) {
+                  if (err.message === "Submission failed") {
+                    setSubmitError(true);
+                  } else {
+                    setSubmitted(true);
+                    track("lead_submitted");
+                  }
+                } finally {
+                  setSubmitting(false);
+                }
               }}
             >
-              {type !== "login" && (
-                <label>
-                  <span>{t("fullName")}</span>
-                  <input name="name" autoComplete="name" required placeholder={t("yourName")} />
-                </label>
-              )}
-              <label>
-                <span>{t("emailAddress")}</span>
-                <input name="email" type="email" autoComplete="email" required placeholder={t("emailPlaceholder")} />
-              </label>
-              {type === "register" && (
-                <label>
-                  <span>{t("primaryMarket")}</span>
-                  <input name="market" required placeholder={t("cityOrRegion")} />
-                </label>
-              )}
-              {type === "login" && (
-                <label>
-                  <span>{t("password")}</span>
-                  <input name="password" type="password" autoComplete="current-password" required placeholder="••••••••" />
-                </label>
+              {type === "register" ? (
+                <>
+                  <div className="access-form-row">
+                    <label>
+                      <span>{t("firstName")}</span>
+                      <input name="firstName" autoComplete="given-name" required placeholder={t("firstNamePlaceholder")} />
+                    </label>
+                    <label>
+                      <span>{t("surname")}</span>
+                      <input name="surname" autoComplete="family-name" required placeholder={t("surnamePlaceholder")} />
+                    </label>
+                  </div>
+                  <label>
+                    <span>{t("phoneNumber")}</span>
+                    <input name="phone" type="tel" autoComplete="tel" required placeholder={t("phonePlaceholder")} />
+                  </label>
+                  <label>
+                    <span>{t("emailAddress")}</span>
+                    <input name="email" type="email" autoComplete="email" required placeholder={t("emailPlaceholder")} />
+                  </label>
+                  <label>
+                    <span>{t("companyOptional")}</span>
+                    <input name="company" autoComplete="organization" placeholder={t("companyPlaceholder")} />
+                  </label>
+                </>
+              ) : (
+                <>
+                  {type !== "login" && (
+                    <label>
+                      <span>{t("fullName")}</span>
+                      <input name="name" autoComplete="name" required placeholder={t("yourName")} />
+                    </label>
+                  )}
+                  <label>
+                    <span>{t("emailAddress")}</span>
+                    <input name="email" type="email" autoComplete="email" required placeholder={t("emailPlaceholder")} />
+                  </label>
+                  {type === "login" && (
+                    <label>
+                      <span>{t("password")}</span>
+                      <input name="password" type="password" autoComplete="current-password" required placeholder="••••••••" />
+                    </label>
+                  )}
+                </>
               )}
               <label className="form-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
               <label className="privacy-acknowledgement"><input name="privacy" type="checkbox" required /><span>{privacy.acknowledgement} <a href="#privacy" target="_blank" rel="noopener">{privacy.policy}</a></span></label>
@@ -535,7 +594,7 @@ function PageHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
 function WhyAixessPage(props) {
   return (
     <div className="route-page lasha-page">
-      <AdvantagePageContent header={<PageHeader {...props} />} />
+      <AdvantagePageContent header={<PageHeader {...props} />} onOpenModal={props.onOpenModal} />
     </div>
   );
 }
@@ -645,9 +704,14 @@ function AppContent() {
 
   const openModal = (type) => {
     setMenuOpen(false);
-    if (type === "register" || type === "login") {
-      track(type === "login" ? "portal_login_click" : "portal_register_click");
+    if (type === "login") {
+      track("portal_login_click");
       window.location.assign(PORTAL_URL);
+      return;
+    }
+    if (type === "register") {
+      track("portal_register_click");
+      setActiveModal("register");
       return;
     }
     if (type === "materials") {

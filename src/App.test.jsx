@@ -289,7 +289,17 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { name: "AiXESS360° SERVICES" })).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 3 }).filter((h) => h.closest(".lnp-care"))).toHaveLength(8);
     expect(screen.queryByText("AIXCO SUPPORTS.")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "REQUEST ACCESS" })).toHaveAttribute("href", "https://portal.aixess.global/");
+    const requestAccessButton = screen.getByRole("button", { name: "REQUEST ACCESS" });
+    expect(requestAccessButton).toBeInTheDocument();
+    fireEvent.click(requestAccessButton);
+    const modal = screen.getByRole("dialog");
+    expect(modal).toBeInTheDocument();
+    expect(within(modal).getByLabelText("FIRST NAME")).toBeInTheDocument();
+    expect(within(modal).getByLabelText("SURNAME")).toBeInTheDocument();
+    expect(within(modal).getByLabelText("PHONE NUMBER")).toBeInTheDocument();
+    expect(within(modal).getByLabelText("EMAIL ADDRESS")).toBeInTheDocument();
+    expect(within(modal).getByLabelText("COMPANY (OPTIONAL)")).toBeInTheDocument();
+    fireEvent.click(within(modal).getByRole("button", { name: "CLOSE" }));
     expect(screen.getByRole("link", { name: "PARTNER SIGN IN" })).toHaveAttribute("href", "https://portal.aixess.global/");
 
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
@@ -310,6 +320,53 @@ describe("AIXESS navigation pages", () => {
     // Klem's order (22 October 2026).
     const order = Array.from(document.querySelectorAll(".lnp-broker h1, .lnp-broker h2, .lnp-commercial-eyebrow")).map((heading) => heading.textContent);
     expect(order).toEqual(["EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM.", "YOU DON’TNEED TO BEA BROKER.", "THE COMMERCIAL ADVANTAGE", expect.any(String), expect.any(String), "FROM ACCESSTO COMMISSION", "LESS ADMINISTRATION.MORE OPPORTUNITY.", "THREE STEPS TO GET STARTED."]);
+  });
+
+  it("submits broker registration request with broker details", async () => {
+    let capturedBody = null;
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/api/leads") && init?.method === "POST") {
+        capturedBody = JSON.parse(init.body);
+        return new Response(JSON.stringify({ saved: true }), { status: 201, headers: { "content-type": "application/json" } });
+      }
+      return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+    });
+
+    try {
+      window.history.replaceState({}, "", "/#why-aixess");
+      render(<App />);
+
+      fireEvent.click(screen.getByRole("button", { name: "REQUEST ACCESS" }));
+      const modal = screen.getByRole("dialog");
+      expect(modal).toBeInTheDocument();
+
+      fireEvent.change(within(modal).getByLabelText("FIRST NAME"), { target: { value: "Giorgi" } });
+      fireEvent.change(within(modal).getByLabelText("SURNAME"), { target: { value: "Kemo" } });
+      fireEvent.change(within(modal).getByLabelText("PHONE NUMBER"), { target: { value: "+995 555 123456" } });
+      fireEvent.change(within(modal).getByLabelText("EMAIL ADDRESS"), { target: { value: "broker@aixess.global" } });
+      fireEvent.change(within(modal).getByLabelText("COMPANY (OPTIONAL)"), { target: { value: "AiXESS Capital" } });
+      fireEvent.click(within(modal).getByRole("checkbox"));
+
+      fireEvent.click(within(modal).getByRole("button", { name: "REQUEST BROKER ACCESS" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("REQUEST RECEIVED")).toBeInTheDocument();
+        expect(screen.getByText("We’ll be in touch.")).toBeInTheDocument();
+      });
+
+      expect(capturedBody).toMatchObject({
+        name: "Giorgi Kemo",
+        firstName: "Giorgi",
+        surname: "Kemo",
+        phone: "+995 555 123456",
+        email: "broker@aixess.global",
+        company: "AiXESS Capital",
+        privacyAccepted: true,
+      });
+    } finally {
+      fetchMock.mockRestore();
+    }
   });
 
   it("renders the selected page from its shareable hash route", () => {

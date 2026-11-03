@@ -37,7 +37,19 @@ const useCopy = () => {
 };
 
 // Request access and partner sign-in open the broker portal, as the header's Register and Login do.
-function PageButton({ variant, flow, children }) {
+function PageButton({ variant, flow, onClick, children }) {
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        className={`lasha-button lnp-button lasha-button-${variant}`}
+        onClick={onClick}
+        data-portal={flow === "register" ? "register" : "login"}
+      >
+        {children}<LashaArrow length={47} />
+      </button>
+    );
+  }
   return (
     <a className={`lasha-button lnp-button lasha-button-${variant}`} href={PORTAL_URL} data-portal={flow === "register" ? "register" : "login"}>
       {children}<LashaArrow length={47} />
@@ -117,7 +129,7 @@ function SplitHero({ header, eyebrow, title, body, action, media, className }) {
   );
 }
 
-export function AdvantagePageContent({ header }) {
+export function AdvantagePageContent({ header, onOpenModal }) {
   const { locale, network, home, page } = useCopy();
   const care = ADVANTAGE_SERVICES_COPY[locale] || ADVANTAGE_SERVICES_COPY.en;
   return (
@@ -128,7 +140,7 @@ export function AdvantagePageContent({ header }) {
         eyebrow={home.aboutEyebrow}
         title={network.hero}
         body={network.intro}
-        action={<PageButton variant="dark" flow="register">{network.request}</PageButton>}
+        action={<PageButton variant="dark" flow="register" onClick={onOpenModal ? () => onOpenModal("register") : undefined}>{network.request}</PageButton>}
         media={{ family: "coastal-residence", position: "82% 50%", sizes: "(max-width: 899px) 130vw, 95vw" }}
       />
 
