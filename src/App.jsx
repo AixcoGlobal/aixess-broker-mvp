@@ -26,6 +26,7 @@ import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { getWorkbookAvailableCount } from "./data/reveranceInventory.js";
 import { AixessLogo } from "./components/AixessLogo.jsx";
 import { CONTACT } from "./contact-copy.js";
+import { PORTAL_URL } from "./portal.js";
 
 const availableResidenceCount = getWorkbookAvailableCount();
 
@@ -69,14 +70,6 @@ function showContact(behavior = "smooth") {
   return true;
 }
 
-const WORKWISE_BROKER_PATHS = {
-  login: "/realestate/aixco/broker-login",
-  register: "/realestate/aixco/broker-signup",
-};
-
-function workwiseBrokerUrl(type, locale = "en") {
-  return `https://workw.com${WORKWISE_BROKER_PATHS[type]}?lang=${encodeURIComponent(locale)}`;
-}
 
 function routeFromLocation() {
   if (typeof window === "undefined") return "home";
@@ -126,8 +119,8 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
       <div className="header-actions">
         <TimeThemeMenu onOpen={() => setLanguageOpen(false)} />
         <LanguageSwitcher languageOpen={languageOpen} setLanguageOpen={setLanguageOpen} />
-        <a className="button button-primary register-button" href={workwiseBrokerUrl("register", locale)}>{t("register")}</a>
-        <a className="button button-ghost login-button" href={workwiseBrokerUrl("login", locale)}>{t("login")}</a>
+        <a className="button button-primary register-button" href={PORTAL_URL} data-portal="register">{t("register")}</a>
+        <a className="button button-ghost login-button" href={PORTAL_URL} data-portal="login">{t("login")}</a>
       </div>
 
       {/* Phones and tablets keep v4's theme icon in the bar, beside the menu button. */}
@@ -201,8 +194,8 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
           </Fragment>
         ))}
         <LanguageSwitcher languageOpen={languageOpen} setLanguageOpen={setLanguageOpen} />
-        <a className="mobile-register" href={workwiseBrokerUrl("register", locale)}>{t("register")}</a>
-        <a className="mobile-login" href={workwiseBrokerUrl("login", locale)}>{t("login")}</a>
+        <a className="mobile-register" href={PORTAL_URL} data-portal="register">{t("register")}</a>
+        <a className="mobile-login" href={PORTAL_URL} data-portal="login">{t("login")}</a>
       </div>,
       document.body)}
     </header>
@@ -657,7 +650,7 @@ function AppContent() {
     setMenuOpen(false);
     if (type === "register" || type === "login") {
       track(type === "login" ? "portal_login_click" : "portal_register_click");
-      window.location.assign(workwiseBrokerUrl(type, locale));
+      window.location.assign(PORTAL_URL);
       return;
     }
     if (type === "materials") {

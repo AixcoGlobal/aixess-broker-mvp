@@ -1,3 +1,4 @@
+import { PORTAL_URL } from "../portal.js";
 import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { REVERANCE_PROJECT_COPY } from "../reverance-project-copy.js";
@@ -111,7 +112,6 @@ function Opportunity() {
   const { locale } = useLanguage();
   const c = NETWORK_COPY[locale] || NETWORK_COPY.en;
   const number = (value) => new Intl.NumberFormat(locale).format(value);
-  const brokerLogin = `https://workw.com/realestate/aixco/broker-login?lang=${encodeURIComponent(locale)}`;
   const [eyebrow, title, subtitle, lead] = c.opportunity;
   const counts = [
     ["house", number(getWorkbookAvailableCount()), c.facts[1]],
@@ -138,7 +138,7 @@ function Opportunity() {
           </dl>
         </div>
         <div className="rv-opp-actions">
-          <a className="rv-button" href={brokerLogin}><span>{c.inside}</span><LashaArrow length={41} /></a>
+          <a className="rv-button" href={PORTAL_URL} data-portal="login"><span>{c.inside}</span><LashaArrow length={41} /></a>
           <p className="rv-opp-terms">{c.terms}</p>
         </div>
       </div>

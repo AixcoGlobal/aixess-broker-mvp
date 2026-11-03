@@ -257,17 +257,17 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { name: /two buildings/i })).toBeInTheDocument();
   });
 
-  it("routes broker login and registration to the matching Workwise flows", () => {
+  it("routes broker login and registration to the broker portal", () => {
     window.history.replaceState({}, "", "/");
     render(<App />);
 
     expect(screen.getAllByRole("link", { name: "REGISTER" })[0]).toHaveAttribute(
       "href",
-      "https://workw.com/realestate/aixco/broker-signup?lang=en",
+      "https://portal.aixess.global/",
     );
     expect(screen.getAllByRole("link", { name: "LOGIN" })[0]).toHaveAttribute(
       "href",
-      "https://workw.com/realestate/aixco/broker-login?lang=en",
+      "https://portal.aixess.global/",
     );
   });
 
@@ -286,8 +286,8 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { name: "AiXESS360° SERVICES" })).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 3 }).filter((h) => h.closest(".lnp-care"))).toHaveLength(8);
     expect(screen.queryByText("AIXCO SUPPORTS.")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "REQUEST ACCESS" })).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-signup?lang=en");
-    expect(screen.getByRole("link", { name: "PARTNER SIGN IN" })).toHaveAttribute("href", "https://workw.com/realestate/aixco/broker-login?lang=en");
+    expect(screen.getByRole("link", { name: "REQUEST ACCESS" })).toHaveAttribute("href", "https://portal.aixess.global/");
+    expect(screen.getByRole("link", { name: "PARTNER SIGN IN" })).toHaveAttribute("href", "https://portal.aixess.global/");
 
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
     expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM." })).toBeInTheDocument();
