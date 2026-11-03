@@ -13,11 +13,11 @@ function summarize(units) {
 describe("Reverance workbook inventory", () => {
   it("uses the explorer's available inventory for the marketing total", () => {
     const available = applyWorkbookInventory(snapshot).blocks.flatMap(block => block.floors.flatMap(floor => floor.units)).filter(unit => unit.status === "available");
-    expect(getWorkbookAvailableCount()).toBe(163);
+    expect(getWorkbookAvailableCount()).toBe(165);
     expect(getWorkbookAvailableCount()).toBe(available.length);
   });
   it("keeps the supplied workbook rows auditable", () => {
-    expect(FINAL_ROWS).toHaveLength(189);
+    expect(FINAL_ROWS).toHaveLength(177);
     expect(OWNED_ROWS).toHaveLength(28);
     expect(FINAL_ROWS.every((row) => row[1] === "A" || row[1] === "B")).toBe(true);
   });
@@ -30,11 +30,14 @@ describe("Reverance workbook inventory", () => {
     const [a, b] = next.blocks.map((block) => block.floors.flatMap((floor) => floor.units));
     expect(a).toHaveLength(180);
     expect(b).toHaveLength(180);
-    expect(summarize(a)).toEqual({ available: 62, reserved: 4, unavailable: 24, sold: 90 });
-    expect(summarize(b)).toEqual({ available: 101, reserved: 2, unavailable: 24, sold: 53 });
-    expect(b.find(unit => unit.name === "1305").status).toBe("reserved");
-    expect(b.find(unit => unit.name === "1306").status).toBe("reserved");
-    expect(a.find((unit) => unit.name === "1301")).toMatchObject({ status: "reserved", block: "A" });
+    expect(summarize(a)).toEqual({ available: 57, reserved: 4, unavailable: 12, sold: 107 });
+    expect(summarize(b)).toEqual({ available: 108, reserved: 4, unavailable: 12, sold: 56 });
+    expect(b.find(unit => unit.name === "1305")).toMatchObject({ status: "available", price: 63180 });
+    expect(b.find(unit => unit.name === "1306")).toMatchObject({ status: "sold", price: null });
+    expect(a.find((unit) => unit.name === "1301")).toMatchObject({ status: "sold", block: "A" });
+    expect(b.find((unit) => unit.name === "510")).toMatchObject({ status: "available", price: 56511, bedrooms: 0 });
+    expect(b.find((unit) => unit.name === "404")).toMatchObject({ status: "available", price: 98967, totalArea: 68.3 });
+    expect(a.find((unit) => unit.name === "412")).toMatchObject({ status: "sold", price: null });
     expect(a.find((unit) => unit.name === "1406")).toMatchObject({
       image2d: "/assets/reverance-pdf/A1406-plan.webp",
       image3d: "/assets/reverance-pdf/A1406-render.webp",
@@ -52,8 +55,9 @@ describe("Reverance workbook inventory", () => {
         image3d: `/assets/reverance-pdf/${code}-render.webp`,
       });
     }
-    expect(b.find((unit) => unit.name === "1301")).toMatchObject({ status: "available", block: "B", blockId: "ReveranceB" });
-    expect(a.find((unit) => unit.name === "1501")).toMatchObject({ status: "unavailable" });
+    expect(b.find((unit) => unit.name === "1301")).toMatchObject({ status: "reserved", block: "B", blockId: "ReveranceB", price: 90480 });
+    expect(a.find((unit) => unit.name === "1505")).toMatchObject({ status: "available" });
+    expect(a.find((unit) => unit.name === "1601")).toMatchObject({ status: "unavailable", price: null });
     expect(a.find((unit) => unit.name === "204")).toMatchObject({ status: "sold" });
     expect(b.find((unit) => unit.name === "204")).toMatchObject({ status: "available", totalArea: 68.3 });
     expect(next.blocks[0].floors[8].shapes[0].points).not.toEqual(next.blocks[1].floors[8].shapes[0].points);
