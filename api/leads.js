@@ -356,8 +356,11 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Email service not configured" });
     }
 
-    // Sender configuration - defaults to AiXESS
-    const notificationFrom = process.env.LEAD_NOTIFICATION_FROM || "AiXESS <notifications@aixess.global>";
+    // Sender configuration - strictly AiXESS
+    const configuredFrom = process.env.LEAD_NOTIFICATION_FROM;
+    const notificationFrom = (configuredFrom && !configuredFrom.includes("aixco"))
+      ? configuredFrom
+      : "AiXESS <notifications@aixess.global>";
 
     // Generate unique reference code
     const randomDigits = Math.floor(100000 + Math.random() * 900000);
