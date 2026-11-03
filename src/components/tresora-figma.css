@@ -6,7 +6,8 @@
    and item headings, at the frame's 2% tracking and 80% line pitch; Inter for the rest, at the frame's
    weights and tracking. Russian falls back to AiXESS Head (Morganite has no Cyrillic).
    Colours: the frame's paper, ink and cobalt in the day theme; the afternoon and night themes swap the
-   accent and grounds the way the rest of the site does (night stays true black). No prices (Kemo). */
+   accent and grounds the way the rest of the site does (night stays true black). No prices (Kemo), except
+   the one starting price in Project highlights (Kemo, 3 November 2026). */
 
 .tresora-page {
   --u: calc(min(100vw, 1920px) / 1440);
@@ -213,47 +214,84 @@ html:root[data-time-theme='night'] .tresora-page {
 .tresora-page .tr-ink-band { background: var(--tr-ink-band); color: var(--tr-light); }
 .tresora-page .tr-highlights .tr-wrap { padding-top: calc(107 * var(--u)); padding-bottom: calc(97 * var(--u)); }
 .tresora-page .tr-highlights-title { --s: 170; }
-.tresora-page .tr-facts { display: flex; flex-wrap: wrap; margin: calc(76 * var(--u)) 0 0; }
-.tresora-page .tr-facts > div:first-child { flex: none; width: calc(294 * var(--u)); }
-.tresora-page .tr-facts > div:nth-child(2) { flex: none; width: calc(434 * var(--u)); }
+/* Four figures (Kemo, 3 November 2026: "$176,000 / Starting from" added). useFactsLayout in
+   DubaiProjectPages.jsx picks the layout: one row spread across the column with equal gaps and a hairline
+   in the middle of each (never under --tr-fact-g either side), two by two with a hairline in each row, or one under another on narrow phones; --tr-fact-k shrinks all
+   figures and labels together when a language needs it. */
+.tresora-page .tr-facts {
+  --tr-fact-k: 1;
+  --tr-fact-g: calc(40 * var(--u));
+  --tr-fact-rule: rgb(247 247 244 / 0.55);
+  --tr-fact-rule-top: calc(1 * var(--u));
+  --tr-fact-rule-bottom: calc(5 * var(--u));
+  display: flex;
+  column-gap: calc(2 * var(--tr-fact-g));
+  margin: calc(76 * var(--u)) 0 0;
+}
 .tresora-page .tr-facts > div {
   position: relative;
   display: flex;
   flex-direction: column-reverse;
   justify-content: flex-end;
-  padding-right: calc(66 * var(--u));
-}
-.tresora-page .tr-facts > div + div { padding-left: calc(66 * var(--u)); }
-.tresora-page .tr-facts > div + div::before {
-  position: absolute;
-  top: calc(1 * var(--u));
-  bottom: calc(5 * var(--u));
-  left: 0;
-  width: 1px;
-  background: rgb(247 247 244 / 0.55);
-  content: "";
+  min-width: 0;
 }
 .tresora-page .tr-facts dd {
   margin: 0;
   font-family: var(--tr-face);
-  font-size: calc(110.7 / 0.93705 * var(--u));
+  font-size: calc(110.7 / 0.93705 * var(--u) * var(--tr-fact-k));
   font-weight: 600;
   font-synthesis: none;
-  line-height: calc(88 * var(--u));
+  line-height: calc(88 * var(--u) * var(--tr-fact-k));
   letter-spacing: 0.0187em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 .tresora-page .tr-facts dt {
-  margin-top: calc(-1 * var(--u));
+  margin-top: calc(-1 * var(--u) * var(--tr-fact-k));
   font-family: Inter, system-ui, sans-serif;
-  font-size: calc(23.8 * var(--u));
+  font-size: calc(23.8 * var(--u) * var(--tr-fact-k));
   font-weight: 500;
-  line-height: calc(29 * var(--u));
+  line-height: calc(29 * var(--u) * var(--tr-fact-k));
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
 }
+.tresora-page .tr-facts > div + div::before {
+  position: absolute;
+  top: var(--tr-fact-rule-top);
+  bottom: var(--tr-fact-rule-bottom);
+  width: 1px;
+  background: var(--tr-fact-rule);
+  content: "";
+}
+
+/* One row: every figure but the last grows by the same amount, so the gaps stay equal and the last
+   figure ends on the column's right edge; each hairline sits halfway across its gap. */
+.tresora-page .tr-facts:not([data-layout]),
+.tresora-page .tr-facts[data-layout="row"] { flex-direction: row; justify-content: space-between; }
+.tresora-page .tr-facts:not([data-layout]) > div,
+.tresora-page .tr-facts[data-layout="row"] > div { flex: 0 0 auto; }
+.tresora-page .tr-facts:not([data-layout]) > div + div::before,
+.tresora-page .tr-facts[data-layout="row"] > div + div::before { left: calc(-1 * var(--tr-fact-half, var(--tr-fact-g))); }
+
+/* Two by two: two columns as wide as their figures, the second ending on the column's right edge, and
+   a hairline halfway across the gap in each row. */
+.tresora-page .tr-facts[data-layout="pairs"] {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  justify-content: space-between;
+  row-gap: calc(56 * var(--u) * var(--tr-fact-k));
+}
+.tresora-page .tr-facts[data-layout="pairs"] > div:nth-child(odd)::before { content: none; }
+.tresora-page .tr-facts[data-layout="pairs"] > div:nth-child(even)::before { left: calc(-1 * var(--tr-fact-half, var(--tr-fact-g))); }
+
+/* One under another (narrow phones): a hairline between rows. */
+.tresora-page .tr-facts[data-layout="stack"] { flex-direction: column; }
+.tresora-page .tr-facts[data-layout="stack"] > div { padding: 18px 0; }
+.tresora-page .tr-facts[data-layout="stack"] > div:first-child { padding-top: 0; }
+.tresora-page .tr-facts[data-layout="stack"] > div:last-child { padding-bottom: 0; }
+.tresora-page .tr-facts[data-layout="stack"] > div + div { border-top: 1px solid rgb(247 247 244 / 0.4); }
+.tresora-page .tr-facts[data-layout="stack"] > div + div::before { content: none; }
 
 /* ---- paper sections ------------------------------------------------------------------------- */
 
@@ -495,12 +533,17 @@ html:root[data-time-theme='night'] .tresora-page {
 
   .tresora-page .tr-highlights .tr-wrap { padding-block: 56px; }
   .tresora-page .tr-highlights-title { --s: 170; }
-  .tresora-page .tr-facts { flex-direction: column; margin-top: 28px; }
-  .tresora-page .tr-facts > div:nth-child(n) { width: auto; padding: 18px 0; }
-  .tresora-page .tr-facts > div + div { padding-left: 0; border-top: 1px solid rgb(247 247 244 / 0.4); }
-  .tresora-page .tr-facts > div + div::before { content: none; }
-  .tresora-page .tr-facts dd { font-size: calc(64 / 0.93705 * min(1px, var(--u))); line-height: calc(52 * min(1px, var(--u))); }
-  .tresora-page .tr-facts dt { margin-top: 8px; font-size: 15px; line-height: 19px; white-space: normal; }
+  .tresora-page .tr-facts {
+    --tr-fact-g: 24px;
+    --tr-fact-rule-top: 2px;
+    --tr-fact-rule-bottom: 3px;
+    margin-top: 28px;
+  }
+  .tresora-page .tr-facts:not([data-layout]) { flex-direction: column; }
+  .tresora-page .tr-facts dd { font-size: calc(64 / 0.93705 * min(1px, var(--u)) * var(--tr-fact-k)); line-height: calc(52 * min(1px, var(--u)) * var(--tr-fact-k)); }
+  .tresora-page .tr-facts dt { margin-top: calc(8px * var(--tr-fact-k)); font-size: calc(15px * var(--tr-fact-k)); line-height: calc(19px * var(--tr-fact-k)); }
+  .tresora-page .tr-facts[data-layout="pairs"] { row-gap: calc(36px * var(--tr-fact-k)); }
+  .tresora-page .tr-facts[data-layout="stack"] dt { white-space: normal; }
   .tresora-page .tr-button > span { white-space: normal; }
 
   .tresora-page .tr-slant { position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: 1.6; margin-bottom: 32px; }
