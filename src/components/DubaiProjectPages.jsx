@@ -5,6 +5,7 @@ import { DUBAI_IMAGES_COPY } from "../dubai-projects-images-copy.js";
 import { dubaiImage } from "../dubai-projects-data.js";
 import { CONTACT } from "../contact-copy.js";
 import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
+import { useWordFit } from "./useWordFit.js";
 import "./reverance-project.css";
 import "./dubai-projects.css";
 import "./tresora-figma.css";
@@ -325,7 +326,9 @@ function withFigmaBreaks(text) {
   for (const phrase of TRESORA_DISCOVER_BREAKS) {
     const at = rest.indexOf(` ${phrase}`);
     if (at < 0) continue;
-    parts.push(rest.slice(0, at), <br key={phrase} className="tr-figma-break" />);
+    // The space stays before the break: it is dropped at the line end where the break shows, and it
+    // keeps the words apart on phones, where the break is hidden.
+    parts.push(rest.slice(0, at + 1), <br key={phrase} className="tr-figma-break" />);
     rest = rest.slice(at + 1);
   }
   parts.push(rest);
@@ -338,6 +341,9 @@ export function TresoraPage({ header }) {
   useSectionFromHash(route);
   const { hero, discover, highlights, spaces, included, lifestyle, location, payment, more } = project;
   const [locationFirst, locationSecond] = location.title.split(/\s* ?—\s*/);
+  // ВАША НЕДВИЖИМОСТЬ broke mid-word in Russian at every width: the title shrinks just enough to keep it whole.
+  const paymentTitleRef = useRef(null);
+  useWordFit(paymentTitleRef);
   const paymentLines = payment.title.split(/\.\s+/).map((line) => line.replace(/\.$/, ""));
   const gallery = [
     [lifestyle.amenities[0], [["tresora-fig-g1a", images.pool], ["tresora-fig-g1b", images.gallery[0][1]], ["tresora-fig-g1c", images.sunsetPool]]],
@@ -454,7 +460,7 @@ export function TresoraPage({ header }) {
           <Picture slug="tresora-fig-payment" className="tr-bg" sizes="100vw" />
           <div className="tr-wrap">
             <Eyebrow>{payment.eyebrow}</Eyebrow>
-            <h2 className="tr-title tr-payment-title" id="tresora-payment-title">{paymentLines.map((line) => <span key={line}>{line} </span>)}</h2>
+            <h2 className="tr-title tr-payment-title" id="tresora-payment-title" ref={paymentTitleRef}>{paymentLines.map((line) => <span key={line}>{line} </span>)}</h2>
             <div className="tr-body tr-payment-body">{payment.body.map((text) => <p key={text}>{text}</p>)}</div>
           </div>
         </section>
