@@ -59,6 +59,18 @@ const navItems = [
 const routeAliases = { resources: "insights", calculators: "broker-access", "broker-tools": "broker-access" };
 const validRoutes = new Set(["home", ...navItems.filter(({ key, children }) => key !== "contact" && !children).map(({ key }) => key), ...PROJECT_MARKETS.flatMap(({ children }) => children.map(({ key }) => key)), "admin", "privacy"]);
 
+export const PAGE_TITLES = {
+  home: "AiXESS — Turn Your Network Into Opportunity",
+  "why-aixess": "The AiXESS Advantage — Why AiXESS",
+  residences: "Reverance Batumi Waterfront — Luxury Living | AiXESS",
+  tresora: "TRESORA, Dubai Islands — Waterfront Residences | AiXESS",
+  "downtown-one": "Downtown One, Dubai — Prime Investment | AiXESS",
+  "broker-access": "Broker Access & Registration — AiXESS",
+  insights: "Market Insights & Intelligence — AiXESS",
+  privacy: "Privacy Policy — AiXESS",
+  admin: "Admin Dashboard — AiXESS",
+};
+
 // Scrolls to the contact footer and moves focus there, so keyboard and screen-reader users land on it too.
 function showContact(behavior = "smooth") {
   const footer = document.getElementById("contact");
@@ -71,8 +83,10 @@ function showContact(behavior = "smooth") {
 
 function routeFromLocation() {
   if (typeof window === "undefined") return "home";
-  // "#residences/payment" is a section of a page: the route is the part before the slash.
-  const requestedRoute = window.location.hash.replace(/^#/, "").split(/[?/]/)[0].trim().toLowerCase();
+  // Support both hash routes (#tresora) and clean paths (/tresora)
+  const hashPart = window.location.hash.replace(/^#\/?/, "").split(/[?/]/)[0].trim().toLowerCase();
+  const pathPart = window.location.pathname.replace(/^\/+|\/+$/g, "").split(/[?/]/)[0].trim().toLowerCase();
+  const requestedRoute = hashPart || pathPart;
   const route = routeAliases[requestedRoute] || requestedRoute;
   // An old address shows the page it now lives on, under that page's own address.
   if (route !== requestedRoute && validRoutes.has(route)) window.history.replaceState(window.history.state, "", `${window.location.pathname}#${route}`);
@@ -762,6 +776,14 @@ function AppContent() {
 
   const openModal = (type) => {
     setMenuOpen(false);
+    track("modal_open", { modal: type, page: currentPage });
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
+      window.gtag("event", "screen_view", {
+        app_name: "AiXESS",
+        screen_name: `Modal: ${type}`,
+        page_route: currentPage,
+      });
+    }
     if (type === "login") {
       track("portal_login_click");
       window.location.assign(PORTAL_URL);
@@ -831,20 +853,49 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
+    const pageTitle = PAGE_TITLES[currentPage] || PAGE_TITLES.home;
+    if (typeof document !== "undefined") {
+      document.title = pageTitle;
+    }
     const pageView = () => {
-      track("page_view");
+      track("page_view", { page: currentPage });
       if (typeof window !== "undefined" && typeof window.gtag === "function") {
-        window.gtag("event", "page_view", {
-          page_title: document.title,
+        const fullPath = window.location.pathname + (window.location.hash || (currentPage === "home" ? "" : `#${currentPage}`));
+        window.gtag("config", "G-JM3QXPQCFL", {
+          page_title: pageTitle,
           page_location: window.location.href,
-          page_path: window.location.pathname + (window.location.hash || ""),
+          page_path: fullPath,
+        });
+        window.gtag("event", "page_view", {
+          page_title: pageTitle,
+          page_location: window.location.href,
+          page_path: fullPath,
+          page_route: currentPage,
+          page_language: locale,
         });
       }
     };
     pageView();
     window.addEventListener("aixess:consent", pageView);
     return () => window.removeEventListener("aixess:consent", pageView);
-  }, [currentPage]);
+  }, [currentPage, locale]);
+
+  useEffect(() => {
+    const handleSubrouteTrack = () => {
+      if (typeof window !== "undefined" && typeof window.gtag === "function" && window.location.hash) {
+        const pageTitle = PAGE_TITLES[currentPage] || PAGE_TITLES.home;
+        window.gtag("event", "page_view", {
+          page_title: pageTitle,
+          page_location: window.location.href,
+          page_path: window.location.pathname + window.location.hash,
+          page_route: currentPage,
+          page_language: locale,
+        });
+      }
+    };
+    window.addEventListener("hashchange", handleSubrouteTrack);
+    return () => window.removeEventListener("hashchange", handleSubrouteTrack);
+  }, [currentPage, locale]);
 
   useEffect(() => {
     const visibility = () => { if (document.visibilityState === "hidden") flushAnalytics(); };

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Homepage -->
   <url>
     <loc>https://aixess.global/</loc>
     <lastmod>2026-11-04</lastmod>
@@ -12,34 +13,102 @@
     <xhtml:link rel="alternate" hreflang="sl" href="https://aixess.global/?lang=sl"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/?lang=ru"/>
   </url>
+
+  <!-- TRESORA Dubai Islands -->
   <url>
-    <loc>https://aixess.global/?lang=en</loc>
+    <loc>https://aixess.global/tresora</loc>
     <lastmod>2026-11-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aixess.global/tresora"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aixess.global/tresora?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aixess.global/tresora?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://aixess.global/tresora?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="sl" href="https://aixess.global/tresora?lang=sl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/tresora?lang=ru"/>
   </url>
+
+  <!-- Reverance Batumi Waterfront -->
   <url>
-    <loc>https://aixess.global/?lang=de</loc>
+    <loc>https://aixess.global/residences</loc>
+    <lastmod>2026-11-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aixess.global/residences"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aixess.global/residences?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aixess.global/residences?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://aixess.global/residences?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="sl" href="https://aixess.global/residences?lang=sl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/residences?lang=ru"/>
+  </url>
+
+  <!-- Downtown One Dubai -->
+  <url>
+    <loc>https://aixess.global/downtown-one</loc>
+    <lastmod>2026-11-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aixess.global/downtown-one"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aixess.global/downtown-one?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aixess.global/downtown-one?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://aixess.global/downtown-one?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="sl" href="https://aixess.global/downtown-one?lang=sl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/downtown-one?lang=ru"/>
+  </url>
+
+  <!-- Why AiXESS / The Advantage -->
+  <url>
+    <loc>https://aixess.global/why-aixess</loc>
     <lastmod>2026-11-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aixess.global/why-aixess"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aixess.global/why-aixess?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aixess.global/why-aixess?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://aixess.global/why-aixess?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="sl" href="https://aixess.global/why-aixess?lang=sl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/why-aixess?lang=ru"/>
   </url>
+
+  <!-- Broker Access & Registration -->
   <url>
-    <loc>https://aixess.global/?lang=pl</loc>
+    <loc>https://aixess.global/broker-access</loc>
     <lastmod>2026-11-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aixess.global/broker-access"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aixess.global/broker-access?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aixess.global/broker-access?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://aixess.global/broker-access?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="sl" href="https://aixess.global/broker-access?lang=sl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/broker-access?lang=ru"/>
   </url>
+
+  <!-- Market Insights & Intelligence -->
   <url>
-    <loc>https://aixess.global/?lang=sl</loc>
+    <loc>https://aixess.global/insights</loc>
     <lastmod>2026-11-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aixess.global/insights"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aixess.global/insights?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aixess.global/insights?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://aixess.global/insights?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="sl" href="https://aixess.global/insights?lang=sl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/insights?lang=ru"/>
   </url>
+
+  <!-- Privacy Policy -->
   <url>
-    <loc>https://aixess.global/?lang=ru</loc>
+    <loc>https://aixess.global/privacy</loc>
     <lastmod>2026-11-04</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aixess.global/privacy"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aixess.global/privacy?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aixess.global/privacy?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://aixess.global/privacy?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="sl" href="https://aixess.global/privacy?lang=sl"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/privacy?lang=ru"/>
   </url>
 </urlset>
