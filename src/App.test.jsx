@@ -179,7 +179,10 @@ describe("AIXESS navigation pages", () => {
     expect(within(showcase).getByRole("heading", { name: "CURRENT PROJECT IN BATUMI" })).toBeInTheDocument();
     expect(within(showcase).getByText("$59K")).toBeInTheDocument();
     expect(within(showcase).getByText("Entry from $59,000")).toBeInTheDocument();
-    expect(screen.getByText(String(165))).toBeInTheDocument();
+    // No stock figure on the homepage (Kemo, 3 November 2026): EXPLORE over AVAILABLE RESIDENCES.
+    const count = document.querySelector(".lasha-access-count");
+    expect(count.textContent).toBe("EXPLOREAVAILABLE RESIDENCES");
+    expect(screen.queryByText(String(165))).not.toBeInTheDocument();
     expect(showcase.querySelector(".project-upcoming")).not.toBeInTheDocument();
     const thumbs = within(showcase).getAllByRole("button", { name: /Show Reverance image/ });
     fireEvent.click(thumbs[1]);

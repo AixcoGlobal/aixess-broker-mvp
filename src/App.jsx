@@ -23,11 +23,8 @@ import "./components/figma-home.css";
 import "./components/figma-pages.css";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
-import { getWorkbookAvailableCount } from "./data/reveranceInventory.js";
 import { AixessLogo } from "./components/AixessLogo.jsx";
 import { CONTACT } from "./contact-copy.js";
-
-const availableResidenceCount = getWorkbookAvailableCount();
 
 const AdminDashboard = lazy(() => import("./components/AdminDashboard.jsx"));
 
@@ -614,7 +611,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
 
       {/* The Residence Explorer lives on the Reverance project page only (Kemo, 21 October 2026). */}
       <HomeStartingPoints />
-      <HomeAccess availableResidences={availableResidenceCount} onOpenModal={onOpenModal} />
+      <HomeAccess onOpenModal={onOpenModal} />
     </div>
   );
 }

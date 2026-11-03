@@ -439,3 +439,61 @@ html:root:is([data-time-theme='day'], :not([data-time-theme])) .lasha-home :is(.
   color: #000;
 }
 html:root:is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-access .lasha-button-outline { border-color: #000; }
+
+/* EXPLORE over AVAILABLE RESIDENCES (Kemo, 3 November 2026: no stock figure in public). The pair
+   fills the count column like the title beside it: EXPLORE's capitals start level with the title's
+   first line and the label's baseline sits on the title's last baseline (band y 266). Both lines
+   stay whole; useWordFit shrinks them together if a translation is wider than the column. */
+html:root .lasha-home .lasha-access-count.lasha-access-explore {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 0;
+}
+html:root .lasha-home .lasha-access-count.lasha-access-explore :is(strong, span) {
+  position: static;
+  width: auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  translate: none;
+}
+@media (min-width: 900px) {
+  /* Title beside it: capitals 84 at 87-171 and 183-267, 12 apart. EXPLORE (Morganite 175 frame px,
+     capitals 124) and the label (63 frame px, capitals 44) are equally wide and keep that 12 gap, so
+     the pair spans the title's 87-267. The em offsets reach from the line boxes to the capitals. */
+  html:root .lasha-home .lasha-access-count.lasha-access-explore { padding: 0 calc(33 * var(--u)); }
+  html:root .lasha-home .lasha-access-count.lasha-access-explore strong {
+    margin-bottom: calc(13 * var(--u) - 0.28em);
+    font-family: var(--l-fig);
+    font-size: calc(177 / 0.93705 * var(--u));
+    line-height: 1;
+  }
+  html:root .lasha-home .lasha-access-count.lasha-access-explore span {
+    margin-top: -0.0727em;
+    margin-bottom: calc(5 * var(--u) - 0.309em);
+    font-size: calc(64 / 0.93705 * var(--u));
+    line-height: 1;
+  }
+}
+@media (min-width: 900px) {
+  /* Russian keeps the AiXESS Head faces (Morganite has no Cyrillic) and its smaller title, whose
+     capitals run 136-265: EXPLORE (capitals 94) and the label (capitals 23) span the same, 12 apart. */
+  html:root:lang(ru) .lasha-home .lasha-access-count.lasha-access-explore strong {
+    margin-bottom: calc(12 * var(--u) + 0.03em);
+    font-family: var(--l-head-tall);
+    font-size: calc(81 * var(--u));
+  }
+  html:root:lang(ru) .lasha-home .lasha-access-count.lasha-access-explore span {
+    margin-top: -0.162em;
+    margin-bottom: calc(5 * var(--u) - 0.2em);
+    font-size: calc(37 * var(--u));
+  }
+}
+@media (max-width: 899px) {
+  html:root .lasha-home .lasha-access-count.lasha-access-explore { gap: 0.6rem; }
+  html:root .lasha-home .lasha-access-count.lasha-access-explore strong { font-size: min(7rem, 30vw); line-height: 1; }
+  html:root .lasha-home .lasha-access-count.lasha-access-explore span { line-height: 1; }
+}

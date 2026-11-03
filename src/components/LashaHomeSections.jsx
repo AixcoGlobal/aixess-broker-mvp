@@ -4,6 +4,7 @@ import { FittedHeading } from "./FittedHeading.jsx";
 import { NETWORK_COPY } from "../network-copy.js";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { HOME_HERO_LINES } from "../project-showcase-copy.js";
+import { useWordFit } from "./useWordFit.js";
 import { ThemedImage } from "./ThemedImage.jsx";
 
 // Lasha's hairline arrows (traced from the Figma frame); sized by the parent's CSS.
@@ -262,8 +263,12 @@ export function HomeStartingPoints() {
   );
 }
 
-export function HomeAccess({ availableResidences, onOpenModal }) {
+export function HomeAccess({ onOpenModal }) {
   const { t } = useLanguage();
+  const countRef = useRef(null);
+  // EXPLORE and AVAILABLE RESIDENCES stay one line each; a line wider than the column shrinks to fit.
+  useWordFit(countRef, "strong");
+  useWordFit(countRef, "span");
 
   return (
     <section className="lasha-access" aria-labelledby="lasha-access-title">
@@ -271,8 +276,9 @@ export function HomeAccess({ availableResidences, onOpenModal }) {
         <p className="lasha-eyebrow">{t("brokerNetwork")}</p>
         <FittedHeading id="lasha-access-title"><span>{t("yourAccess")}</span> <span>{t("startsHere").replace(/\.$/, "")}</span></FittedHeading>
       </div>
-      <p className="lasha-access-count">
-        <strong>{availableResidences}</strong>
+      {/* No stock figure in public (Kemo, 3 November 2026): EXPLORE in blue over AVAILABLE RESIDENCES. */}
+      <p className="lasha-access-count lasha-access-explore" ref={countRef}>
+        <strong>{t("explore")}</strong>
         <span>{t("availableResidences")}</span>
       </p>
       <div className="lasha-access-actions">
