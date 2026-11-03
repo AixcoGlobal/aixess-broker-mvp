@@ -396,20 +396,75 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM." })).toBeInTheDocument();
   });
 
-  it("sends material requests to AIXCO's email, since the Vercel site has no form server", () => {
-    window.history.replaceState({}, "", "/#insights");
-    const assign = vi.fn();
-    const original = window.location;
-    Object.defineProperty(window, "location", { configurable: true, value: { ...original, href: original.href, hash: original.hash, pathname: original.pathname, assign } });
+  it("opens materials request modal, submits contact details, and unlocks downloads", async () => {
+    window.localStorage.clear();
+    let capturedBody = null;
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/api/leads") && init?.method === "POST") {
+        capturedBody = JSON.parse(init.body);
+        return new Response(JSON.stringify({ saved: true }), { status: 201, headers: { "content-type": "application/json" } });
+      }
+      return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+    });
+
     try {
+      window.history.replaceState({}, "", "/#insights");
       render(<App />);
       const brochures = screen.getByRole("heading", { name: "Project Brochures" }).closest("article");
       fireEvent.click(within(brochures).getByRole("button", { name: /^request/i }));
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-      expect(assign).toHaveBeenCalledWith(`mailto:info@aixess.global?subject=${encodeURIComponent("AiXESS · Project Reverance: Request project materials")}`);
+
+      const modal = screen.getByRole("dialog");
+      expect(modal).toBeInTheDocument();
+      expect(within(modal).getByRole("heading", { name: "Request project materials." })).toBeInTheDocument();
+
+      fireEvent.change(within(modal).getByLabelText("FIRST NAME"), { target: { value: "Elena" } });
+      fireEvent.change(within(modal).getByLabelText("SURNAME"), { target: { value: "Rostova" } });
+      fireEvent.change(within(modal).getByLabelText("PHONE NUMBER"), { target: { value: "+44 20 7946 0958" } });
+      fireEvent.change(within(modal).getByLabelText("EMAIL ADDRESS"), { target: { value: "elena@example.com" } });
+      fireEvent.change(within(modal).getByLabelText("COMPANY (OPTIONAL)"), { target: { value: "London Real Estate Ltd" } });
+      fireEvent.click(within(modal).getByRole("checkbox"));
+
+      fireEvent.click(within(modal).getByRole("button", { name: "DOWNLOAD PROJECT MATERIALS" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("DOWNLOADS UNLOCKED")).toBeInTheDocument();
+        expect(screen.getByText("All materials are now unlocked.")).toBeInTheDocument();
+        expect(screen.getByRole("link", { name: "DOWNLOAD BROCHURE (PDF)" })).toHaveAttribute(
+          "href",
+          "https://www.aixco.global/aixco-global-op2/documents/reverance-brochure-en.pdf"
+        );
+      });
+
+      expect(capturedBody).toMatchObject({
+        name: "Elena Rostova",
+        firstName: "Elena",
+        surname: "Rostova",
+        phone: "+44 20 7946 0958",
+        email: "elena@example.com",
+        company: "London Real Estate Ltd",
+        kind: "materials",
+        privacyAccepted: true,
+      });
+
+      expect(window.localStorage.getItem("aixess-download-access-v1")).toBe("granted");
     } finally {
-      Object.defineProperty(window, "location", { configurable: true, value: original });
+      fetchMock.mockRestore();
+      window.localStorage.clear();
     }
+  });
+
+  it("opens broker registration form from Explore Full Opportunity button on residences page", () => {
+    window.history.replaceState({}, "", "/#residences");
+    render(<App />);
+
+    const exploreOpportunityBtn = screen.getByRole("button", { name: /EXPLORE THE FULL OPPORTUNITY INSIDE AiXESS/i });
+    expect(exploreOpportunityBtn).toBeInTheDocument();
+    fireEvent.click(exploreOpportunityBtn);
+
+    const modal = screen.getByRole("dialog");
+    expect(modal).toBeInTheDocument();
+    expect(within(modal).getByRole("heading", { name: "Register as a broker." })).toBeInTheDocument();
   });
 
   it("answers the twelve AIXCO.Global FAQ entries in a native accordion, in source order", () => {

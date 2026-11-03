@@ -26,6 +26,7 @@ import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { AixessLogo } from "./components/AixessLogo.jsx";
 import { CONTACT } from "./contact-copy.js";
 import { PORTAL_URL } from "./portal.js";
+import { getBrochureDetails, hasDownloadAccess, grantDownloadAccess, triggerBrochureDownload } from "./utils/downloadAccess.js";
 
 const AdminDashboard = lazy(() => import("./components/AdminDashboard.jsx"));
 
@@ -385,6 +386,7 @@ function Modal({ type, onClose, onSwitch }) {
   const [requestId] = useState(() => crypto.randomUUID());
 
   const panelRef = useRef(null);
+  const downloadLinkRef = useRef(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
@@ -415,6 +417,14 @@ function Modal({ type, onClose, onSwitch }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!submitted || type !== "materials") return;
+    const timer = window.setTimeout(() => {
+      downloadLinkRef.current?.click();
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [submitted, type]);
+
   const content = {
     register: {
       eyebrow: t("brokerNetwork"),
@@ -432,7 +442,7 @@ function Modal({ type, onClose, onSwitch }) {
       eyebrow: t("projectReverance"),
       title: t("projectMaterials"),
       copy: t("projectMaterialsCopy"),
-      submit: t("requestMaterials"),
+      submit: t("downloadMaterials"),
     },
   }[type];
 
@@ -467,7 +477,7 @@ function Modal({ type, onClose, onSwitch }) {
                 setSubmitError(false);
                 const firstName = (form.get("firstName") || "").toString().trim();
                 const surname = (form.get("surname") || "").toString().trim();
-                const fullName = type === "register"
+                const fullName = (type === "register" || type === "materials")
                   ? `${firstName} ${surname}`.trim()
                   : (form.get("name") || "").toString().trim();
                 const phone = (form.get("phone") || "").toString().trim();
@@ -491,6 +501,7 @@ function Modal({ type, onClose, onSwitch }) {
                       email,
                       website,
                       locale,
+                      kind: type === "materials" ? "materials" : "broker",
                       privacyAccepted,
                     }),
                   });
@@ -500,12 +511,18 @@ function Modal({ type, onClose, onSwitch }) {
                   } else if (response.status !== 404 && response.status !== 405) {
                     throw new Error("Submission failed");
                   }
+                  if (type === "materials") {
+                    grantDownloadAccess();
+                  }
                   setSubmitted(true);
                   track("lead_submitted");
                 } catch (err) {
                   if (err.message === "Submission failed") {
                     setSubmitError(true);
                   } else {
+                    if (type === "materials") {
+                      grantDownloadAccess();
+                    }
                     setSubmitted(true);
                     track("lead_submitted");
                   }
@@ -514,7 +531,7 @@ function Modal({ type, onClose, onSwitch }) {
                 }
               }}
             >
-              {type === "register" ? (
+              {type === "register" || type === "materials" ? (
                 <>
                   <div className="access-form-row">
                     <label>
@@ -571,6 +588,30 @@ function Modal({ type, onClose, onSwitch }) {
               </button>
             )}
           </>
+        ) : type === "materials" ? (
+          <div className="modal-success modal-success--download">
+            <p className="modal-eyebrow">{t("unlockDownloads")}</p>
+            <h2>{t("materialsUnlockedTitle")}</h2>
+            <p className="modal-copy">
+              {t("materialsUnlockedCopy")}
+            </p>
+            <div className="modal-download-actions">
+              <a
+                ref={downloadLinkRef}
+                href={getBrochureDetails(locale).href}
+                download={getBrochureDetails(locale).fileName}
+                target="_blank"
+                rel="noopener"
+                className="button button-primary modal-submit"
+                onClick={() => {
+                  track("resource_click", { target: "brochure" });
+                }}
+              >
+                {t("downloadBrochurePdf")}
+              </a>
+              <button className="button button-ghost" type="button" onClick={onClose}>{t("closeModal")}</button>
+            </div>
+          </div>
         ) : (
           <div className="modal-success">
             <p className="modal-eyebrow">{t("requestReceived")}</p>
@@ -628,7 +669,7 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
       <ReveranceFigmaHero header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />} />
       <main className="page-main">
         <div className="rp-contents">
-          <ReveranceFigmaSections />
+          <ReveranceFigmaSections onOpenModal={onOpenModal} />
           <ProjectGallery />
         </div>
         <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
@@ -715,11 +756,12 @@ function AppContent() {
       return;
     }
     if (type === "materials") {
-      // The Vercel site has no server to store a form, so a request for materials is an email to
-      // AIXCO's verified address (the form only ever answered "We couldn't save your request").
       track("materials_open");
-      const subject = `AiXESS · Project Reverance: ${t("projectMaterials").replace(/[.。]$/, "")}`;
-      window.location.assign(`mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}`);
+      if (hasDownloadAccess()) {
+        triggerBrochureDownload(locale);
+        return;
+      }
+      setActiveModal("materials");
       return;
     }
     setActiveModal(type);

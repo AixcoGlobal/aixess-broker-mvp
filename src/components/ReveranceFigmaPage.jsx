@@ -108,7 +108,7 @@ export function ReveranceFigmaHero({ header }) {
   );
 }
 
-function Opportunity() {
+function Opportunity({ onOpenModal }) {
   const { locale } = useLanguage();
   const c = NETWORK_COPY[locale] || NETWORK_COPY.en;
   const number = (value) => new Intl.NumberFormat(locale).format(value);
@@ -138,7 +138,13 @@ function Opportunity() {
           </dl>
         </div>
         <div className="rv-opp-actions">
-          <a className="rv-button" href={PORTAL_URL} data-portal="login"><span>{c.inside}</span><LashaArrow length={41} /></a>
+          {onOpenModal ? (
+            <button type="button" className="rv-button" onClick={() => onOpenModal("register")}>
+              <span>{c.inside}</span><LashaArrow length={41} />
+            </button>
+          ) : (
+            <a className="rv-button" href={PORTAL_URL} data-portal="login"><span>{c.inside}</span><LashaArrow length={41} /></a>
+          )}
           <p className="rv-opp-terms">{c.terms}</p>
         </div>
       </div>
@@ -430,12 +436,12 @@ function useFitBoxes(ref) {
   }, [ref, locale]);
 }
 
-export function ReveranceFigmaSections() {
+export function ReveranceFigmaSections({ onOpenModal }) {
   const ref = useRef(null);
   useFitBoxes(ref);
   return (
     <div className="rv-sections" ref={ref}>
-      <Opportunity />
+      <Opportunity onOpenModal={onOpenModal} />
       <ProjectFacts />
       <ProjectDetails />
       <WhyReverance />
