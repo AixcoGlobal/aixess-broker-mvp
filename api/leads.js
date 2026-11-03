@@ -120,45 +120,78 @@ function buildLeadNotificationHtml({ resolvedName, email, phone, company, locale
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AiXESS · Lead Notification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body, table, td, p, a, div { font-family: 'Gilroy', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important; }
+  </style>
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #141211; margin: 0; padding: 24px; color: #efefec;">
-  <div style="max-width: 600px; margin: 0 auto; background: #1b1716; border: 1px solid #2e2a28; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-    <div style="background: #141211; padding: 28px 32px; border-bottom: 2px solid #f16510; text-align: left;">
-      <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #f16510; margin-bottom: 6px;">AiXESS Global · Internal Notification</div>
-      <h1 style="margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.05em; color: #ffffff;">${leadTypeTitle}</h1>
-      <p style="margin: 6px 0 0; color: #8e8e89; font-size: 13px;">Ref: ${referenceCode}</p>
-    </div>
-    <div style="padding: 32px;">
-      <div style="display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 24px; background: rgba(241, 101, 16, 0.15); color: #f16510; border: 1px solid rgba(241, 101, 16, 0.3);">${leadTypeTitle}</div>
-      
-      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #2e2a28;">
-        <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8e8e89; letter-spacing: 0.06em; margin-bottom: 4px;">Full Name</div>
-        <div style="font-size: 16px; font-weight: 600; color: #ffffff;">${escapeHtml(resolvedName)}</div>
-      </div>
-      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #2e2a28;">
-        <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8e8e89; letter-spacing: 0.06em; margin-bottom: 4px;">Email Address</div>
-        <div style="font-size: 16px; font-weight: 500; color: #ffffff;"><a href="mailto:${escapeHtml(email)}" style="color: #f16510; text-decoration: none;">${escapeHtml(email)}</a></div>
-      </div>
-      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #2e2a28;">
-        <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8e8e89; letter-spacing: 0.06em; margin-bottom: 4px;">Phone Number</div>
-        <div style="font-size: 16px; font-weight: 500; color: #ffffff;">${escapeHtml(phone || "Not provided")}</div>
-      </div>
-      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #2e2a28;">
-        <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8e8e89; letter-spacing: 0.06em; margin-bottom: 4px;">Company / Agency</div>
-        <div style="font-size: 16px; font-weight: 500; color: #ffffff;">${escapeHtml(company || "Not provided")}</div>
-      </div>
-      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #2e2a28;">
-        <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8e8e89; letter-spacing: 0.06em; margin-bottom: 4px;">Interface Language</div>
-        <div style="font-size: 16px; font-weight: 500; color: #ffffff;">${escapeHtml(locale.toUpperCase())}</div>
-      </div>
-      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #2e2a28;">
-        <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8e8e89; letter-spacing: 0.06em; margin-bottom: 4px;">Submission Timestamp</div>
-        <div style="font-size: 14px; font-weight: 500; color: #8e8e89;">${submittedDate}</div>
+<body style="font-family: 'Gilroy', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6fb; margin: 0; padding: 28px 12px; color: #171a1d; -webkit-font-smoothing: antialiased;">
+  <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #dce7f0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(37, 87, 214, 0.08);">
+    
+    <!-- AiXESS Brand Header (Royal Cobalt Blue) -->
+    <div style="background-color: #2557d6; padding: 28px 32px; border-bottom: 3px solid #1b45b0; text-align: left;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td>
+            <a href="https://aixess.global" target="_blank" style="text-decoration: none; display: inline-block;">
+              <img src="https://aixess.global/brand/aixess-logo-white.png" alt="AiXESS" width="145" style="display: block; max-width: 145px; height: auto; border: 0;" />
+            </a>
+          </td>
+          <td style="text-align: right; vertical-align: middle;">
+            <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #dbe7ff; background: rgba(255, 255, 255, 0.15); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.25);">Internal</span>
+          </td>
+        </tr>
+      </table>
+      <div style="margin-top: 18px;">
+        <h1 style="margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.02em; color: #ffffff;">${leadTypeTitle}</h1>
+        <p style="margin: 6px 0 0; color: #dbe7ff; font-size: 13px; font-family: monospace, 'Gilroy', sans-serif;">Ref: ${referenceCode}</p>
       </div>
     </div>
-    <div style="padding: 20px 32px; background: #141211; border-top: 1px solid #2e2a28; font-size: 12px; color: #8e8e89; text-align: center;">
-      Lead dispatched from <a href="https://aixess.global" style="color: #f16510; text-decoration: none;">aixess.global</a>. Reply directly to this email to contact the lead.
+
+    <!-- Lead Info -->
+    <div style="padding: 32px 32px 24px;">
+      <div style="display: inline-block; padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 24px; background: #f0f5ff; color: #2557d6; border: 1px solid #c4d8fc;">
+        ${leadTypeTitle}
+      </div>
+
+      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #eef2f6;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.08em; margin-bottom: 4px;">Full Name</div>
+        <div style="font-size: 16px; font-weight: 700; color: #171a1d;">${escapeHtml(resolvedName)}</div>
+      </div>
+
+      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #eef2f6;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.08em; margin-bottom: 4px;">Email Address</div>
+        <div style="font-size: 16px; font-weight: 600; color: #2557d6;"><a href="mailto:${escapeHtml(email)}" style="color: #2557d6; text-decoration: none;">${escapeHtml(email)}</a></div>
+      </div>
+
+      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #eef2f6;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.08em; margin-bottom: 4px;">Phone Number</div>
+        <div style="font-size: 15px; font-weight: 500; color: #171a1d;">${escapeHtml(phone || "Not provided")}</div>
+      </div>
+
+      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #eef2f6;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.08em; margin-bottom: 4px;">Company / Agency</div>
+        <div style="font-size: 15px; font-weight: 500; color: #171a1d;">${escapeHtml(company || "Not provided")}</div>
+      </div>
+
+      <div style="margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #eef2f6;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.08em; margin-bottom: 4px;">Interface Language</div>
+        <div style="font-size: 15px; font-weight: 600; color: #171a1d;">${escapeHtml(locale.toUpperCase())}</div>
+      </div>
+
+      <div style="margin-bottom: 12px; padding-bottom: 14px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.08em; margin-bottom: 4px;">Submission Timestamp</div>
+        <div style="font-size: 13px; font-weight: 500; color: #64748b;">${submittedDate}</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding: 20px 32px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; text-align: center;">
+      Lead received from <a href="https://aixess.global" style="color: #2557d6; text-decoration: none; font-weight: 600;">aixess.global</a>. Reply directly to this message to contact the lead.
     </div>
   </div>
 </body>
@@ -179,86 +212,92 @@ function buildUserConfirmationHtml({ resolvedName, email, phone, company, locale
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escapeHtml(title)}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body, table, td, p, a, div { font-family: 'Gilroy', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important; }
+  </style>
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #141211; margin: 0; padding: 24px 12px; color: #1b1716;">
-  <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.35);">
+<body style="font-family: 'Gilroy', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6fb; margin: 0; padding: 32px 12px; color: #171a1d; -webkit-font-smoothing: antialiased;">
+  <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #dce7f0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 24px rgba(37, 87, 214, 0.08);">
     
-    <!-- AiXESS Brand Header -->
-    <div style="background-color: #1b1716; padding: 36px 32px; text-align: center; border-bottom: 3px solid #f16510;">
+    <!-- AiXESS Brand Header (Royal Cobalt Blue) -->
+    <div style="background-color: #2557d6; padding: 36px 32px 30px; text-align: center; border-bottom: 3px solid #1b45b0;">
       <a href="https://aixess.global" target="_blank" style="text-decoration: none; display: inline-block;">
-        <img src="https://aixess.global/brand/aixess-logo-white.png" alt="AiXESS" width="160" style="display: block; margin: 0 auto; max-width: 160px; height: auto; border: 0;" />
+        <img src="https://aixess.global/brand/aixess-logo-white.png" alt="AiXESS" width="165" style="display: block; margin: 0 auto; max-width: 165px; height: auto; border: 0;" />
       </a>
-      <div style="margin-top: 10px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #8e8e89;">Selected Prime Opportunities</div>
+      <div style="margin-top: 12px; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #dbe7ff; font-weight: 600;">Selected Prime Opportunities</div>
     </div>
 
     <!-- Main Content -->
-    <div style="padding: 40px 36px;">
+    <div style="padding: 38px 36px;">
       
       <!-- Reference Code Box -->
-      <div style="background-color: #fcfcfb; border: 1px solid #e5e5e2; border-left: 4px solid #f16510; padding: 18px 24px; margin-bottom: 32px; border-radius: 4px;">
-        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8e8e89; margin-bottom: 4px;">${escapeHtml(copy.referenceLabel)}</div>
-        <div style="font-size: 22px; font-weight: 700; letter-spacing: 0.05em; color: #1b1716;">${escapeHtml(referenceCode)}</div>
+      <div style="background-color: #f0f5ff; border: 1px solid #c4d8fc; border-left: 4px solid #2557d6; padding: 18px 24px; margin-bottom: 32px; border-radius: 6px;">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #2557d6; margin-bottom: 4px;">${escapeHtml(copy.referenceLabel)}</div>
+        <div style="font-size: 22px; font-weight: 800; letter-spacing: 0.05em; color: #171a1d; font-family: monospace, 'Gilroy', sans-serif;">${escapeHtml(referenceCode)}</div>
       </div>
 
-      <h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #1b1716; line-height: 1.3;">${escapeHtml(title)}</h1>
+      <h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #171a1d; line-height: 1.3;">${escapeHtml(title)}</h1>
       
-      <p style="margin: 0 0 18px; font-size: 16px; line-height: 1.65; color: #3a3836;">
+      <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.65; color: #334155;">
         ${escapeHtml(copy.salutation)} <strong>${escapeHtml(resolvedName)}</strong>,
       </p>
 
-      <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.65; color: #3a3836;">
+      <p style="margin: 0 0 24px; font-size: 15px; line-height: 1.65; color: #334155;">
         ${escapeHtml(opening)}
       </p>
 
       <!-- Details Summary -->
-      <div style="background: #fafaf8; border: 1px solid #efefec; border-radius: 6px; padding: 20px 24px; margin: 28px 0;">
-        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8e8e89; margin-bottom: 14px;">${escapeHtml(copy.detailsTitle)}</div>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 22px 24px; margin: 28px 0;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #2557d6; margin-bottom: 14px;">${escapeHtml(copy.detailsTitle)}</div>
         
         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
           <tr>
-            <td style="padding: 6px 0; color: #8e8e89; width: 40%; font-weight: 500;">${escapeHtml(copy.leadTypeLabel)}</td>
-            <td style="padding: 6px 0; color: #1b1716; font-weight: 600;">${escapeHtml(leadTypeName)}</td>
+            <td style="padding: 8px 0; color: #64748b; width: 42%; font-weight: 500; border-bottom: 1px solid #eef2f6;">${escapeHtml(copy.leadTypeLabel)}</td>
+            <td style="padding: 8px 0; color: #171a1d; font-weight: 600; text-align: right; border-bottom: 1px solid #eef2f6;">${escapeHtml(leadTypeName)}</td>
           </tr>
           <tr>
-            <td style="padding: 6px 0; color: #8e8e89; font-weight: 500;">${escapeHtml(copy.emailLabel)}</td>
-            <td style="padding: 6px 0; color: #1b1716; font-weight: 600;">${escapeHtml(email)}</td>
+            <td style="padding: 8px 0; color: #64748b; font-weight: 500; border-bottom: 1px solid #eef2f6;">${escapeHtml(copy.emailLabel)}</td>
+            <td style="padding: 8px 0; color: #171a1d; font-weight: 600; text-align: right; border-bottom: 1px solid #eef2f6;">${escapeHtml(email)}</td>
           </tr>
           ${phone ? `
           <tr>
-            <td style="padding: 6px 0; color: #8e8e89; font-weight: 500;">${escapeHtml(copy.phoneLabel)}</td>
-            <td style="padding: 6px 0; color: #1b1716; font-weight: 600;">${escapeHtml(phone)}</td>
+            <td style="padding: 8px 0; color: #64748b; font-weight: 500; border-bottom: 1px solid #eef2f6;">${escapeHtml(copy.phoneLabel)}</td>
+            <td style="padding: 8px 0; color: #171a1d; font-weight: 600; text-align: right; border-bottom: 1px solid #eef2f6;">${escapeHtml(phone)}</td>
           </tr>` : ""}
           ${company ? `
           <tr>
-            <td style="padding: 6px 0; color: #8e8e89; font-weight: 500;">${escapeHtml(copy.companyLabel)}</td>
-            <td style="padding: 6px 0; color: #1b1716; font-weight: 600;">${escapeHtml(company)}</td>
+            <td style="padding: 8px 0; color: #64748b; font-weight: 500; border-bottom: 1px solid #eef2f6;">${escapeHtml(copy.companyLabel)}</td>
+            <td style="padding: 8px 0; color: #171a1d; font-weight: 600; text-align: right; border-bottom: 1px solid #eef2f6;">${escapeHtml(company)}</td>
           </tr>` : ""}
         </table>
       </div>
 
       <!-- Next Steps -->
-      <div style="margin: 28px 0; padding: 20px 24px; border-left: 3px solid #1b1716; background: #fbfbfa;">
-        <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #1b1716; margin-bottom: 6px;">${escapeHtml(copy.nextStepsTitle)}</div>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #4a4744;">${escapeHtml(copy.nextSteps)}</p>
+      <div style="margin: 28px 0; padding: 20px 22px; border-left: 4px solid #2557d6; background: #f0f5ff; border-radius: 6px; border: 1px solid #c4d8fc; border-left: 4px solid #2557d6;">
+        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2557d6; margin-bottom: 6px;">${escapeHtml(copy.nextStepsTitle)}</div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.65; color: #334155;">${escapeHtml(copy.nextSteps)}</p>
       </div>
 
       <!-- Signoff -->
-      <div style="margin-top: 36px; padding-top: 24px; border-top: 1px solid #efefec;">
-        <p style="margin: 0; font-size: 16px; font-weight: 700; color: #1b1716;">${escapeHtml(copy.team)}</p>
-        <p style="margin: 4px 0 0; font-size: 13px; color: #8e8e89;">AiXESS Global</p>
-        <p style="margin: 10px 0 0; font-size: 13px;">
-          <a href="https://aixess.global" style="color: #f16510; text-decoration: none; font-weight: 600;">www.aixess.global</a>
-          <span style="color: #d6d6d6; margin: 0 6px;">•</span>
-          <a href="mailto:info@aixess.global" style="color: #f16510; text-decoration: none; font-weight: 600;">info@aixess.global</a>
+      <div style="margin-top: 36px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+        <p style="margin: 0; font-size: 16px; font-weight: 700; color: #171a1d;">${escapeHtml(copy.team)}</p>
+        <p style="margin: 4px 0 0; font-size: 13px; color: #64748b;">AiXESS Global</p>
+        <p style="margin: 12px 0 0; font-size: 13px;">
+          <a href="https://aixess.global" style="color: #2557d6; text-decoration: none; font-weight: 600;">www.aixess.global</a>
+          <span style="color: #cbd5e1; margin: 0 8px;">•</span>
+          <a href="mailto:info@aixess.global" style="color: #2557d6; text-decoration: none; font-weight: 600;">info@aixess.global</a>
         </p>
       </div>
 
     </div>
 
     <!-- Footer -->
-    <div style="background-color: #1b1716; padding: 28px 32px; text-align: center; color: #8e8e89; font-size: 12px; line-height: 1.6;">
-      <p style="margin: 0 0 10px;">${escapeHtml(copy.automatedNotice)}</p>
-      <p style="margin: 0; color: #5f5f5c;">© ${new Date().getFullYear()} AiXESS Global. All rights reserved.</p>
+    <div style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 26px 32px; text-align: center; color: #64748b; font-size: 12px; line-height: 1.6;">
+      <p style="margin: 0 0 8px;">${escapeHtml(copy.automatedNotice)}</p>
+      <p style="margin: 0; color: #94a3b8; font-size: 11px;">© ${new Date().getFullYear()} AiXESS Global. All rights reserved.</p>
     </div>
 
   </div>
@@ -426,28 +465,6 @@ www.aixess.global | info@aixess.global
         });
 
         let data = await res.json();
-
-        // If from domain is unverified in Resend, fall back to default verified domain if available so user request succeeds
-        if (!res.ok && data?.message && data.message.includes("not verified")) {
-          const fallbackFrom = "AiXESS <notifications@send.aixco.global>";
-          console.warn(`Sender ${notificationFrom} unverified, retrying with fallback.`);
-          res = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${resendApiKey}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              from: fallbackFrom,
-              to: [msg.to],
-              reply_to: msg.reply_to,
-              subject: msg.subject,
-              html: msg.html,
-              text: msg.text,
-            }),
-          });
-          data = await res.json();
-        }
 
         return { ok: res.ok, status: res.status, channel: msg.channel, recipient: msg.to, data };
       })
