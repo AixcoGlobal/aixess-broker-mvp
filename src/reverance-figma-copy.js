@@ -4,7 +4,8 @@
 // - overviewEyebrow: the eyebrow over PROJECT FACTS.
 // - detailsEyebrow / detailsTitle: the heading of the blue project-information band.
 // - total: the line over the three payment stages (the frame's "100% PROPERY PRICE", typo corrected).
-// - batumiLead / batumiPoints: the site's Why Batumi sentence, set as the frame's heading and list
+// - batumiLead / batumiPoints: the site's Why Batumi sentence, set as the frame's heading and list,
+//   one entry per drawn line so every line gets its dash (Figma splits "comparatively accessible / residential pricing")
 //   ("BATUMI COMBINES" over one line per point); the words are the sentence's own.
 export const REVERANCE_FIGMA_COPY = {
   en: {
@@ -13,7 +14,7 @@ export const REVERANCE_FIGMA_COPY = {
     detailsTitle: "KEY PROJECT INFORMATION",
     total: "100% PROPERTY PRICE",
     batumiLead: "Batumi combines",
-    batumiPoints: ["Black Sea tourism", "international demand", "new infrastructure", "comparatively accessible residential pricing"],
+    batumiPoints: ["Black Sea tourism", "international demand", "new infrastructure", "comparatively accessible", "residential pricing"],
   },
   de: {
     overviewEyebrow: "PROJEKTÜBERBLICK",
@@ -21,7 +22,7 @@ export const REVERANCE_FIGMA_COPY = {
     detailsTitle: "WICHTIGE PROJEKTINFORMATIONEN",
     total: "100 % DES KAUFPREISES",
     batumiLead: "Batumi vereint",
-    batumiPoints: ["Schwarzmeertourismus", "internationale Nachfrage", "neue Infrastruktur", "vergleichsweise zugängliche Wohnpreise"],
+    batumiPoints: ["Schwarzmeertourismus", "internationale Nachfrage", "neue Infrastruktur", "vergleichsweise zugängliche", "Wohnpreise"],
   },
   pl: {
     overviewEyebrow: "PRZEGLĄD PROJEKTU",
@@ -29,7 +30,7 @@ export const REVERANCE_FIGMA_COPY = {
     detailsTitle: "KLUCZOWE INFORMACJE O PROJEKCIE",
     total: "100% CENY NIERUCHOMOŚCI",
     batumiLead: "Batumi łączy",
-    batumiPoints: ["turystykę nad Morzem Czarnym", "międzynarodowy popyt", "nową infrastrukturę", "stosunkowo przystępne ceny mieszkań"],
+    batumiPoints: ["turystykę nad Morzem", "Czarnym", "międzynarodowy popyt", "nową infrastrukturę", "stosunkowo przystępne ceny", "mieszkań"],
   },
   sl: {
     overviewEyebrow: "PREGLED PROJEKTA",
@@ -37,7 +38,7 @@ export const REVERANCE_FIGMA_COPY = {
     detailsTitle: "KLJUČNI PODATKI O PROJEKTU",
     total: "100 % CENE NEPREMIČNINE",
     batumiLead: "Batumi združuje",
-    batumiPoints: ["turizem ob Črnem morju", "mednarodno povpraševanje", "novo infrastrukturo", "razmeroma dostopne stanovanjske cene"],
+    batumiPoints: ["turizem ob Črnem morju", "mednarodno povpraševanje", "novo infrastrukturo", "razmeroma dostopne", "stanovanjske cene"],
   },
   ru: {
     overviewEyebrow: "ОБЗОР ПРОЕКТА",
@@ -45,6 +46,6 @@ export const REVERANCE_FIGMA_COPY = {
     detailsTitle: "КЛЮЧЕВАЯ ИНФОРМАЦИЯ О ПРОЕКТЕ",
     total: "100% СТОИМОСТИ ОБЪЕКТА",
     batumiLead: "Батуми сочетает",
-    batumiPoints: ["черноморский туризм", "международный спрос", "новую инфраструктуру", "относительно доступные цены на жильё"],
+    batumiPoints: ["черноморский", "туризм", "международный", "спрос", "новую", "инфраструктуру", "относительно", "доступные цены", "на жильё"],
   },
 };
