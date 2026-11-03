@@ -5,6 +5,7 @@
     <lastmod>2026-11-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aixess.global/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aixess.global/?lang=en"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://aixess.global/?lang=de"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://aixess.global/?lang=pl"/>
@@ -12,39 +13,33 @@
     <xhtml:link rel="alternate" hreflang="ru" href="https://aixess.global/?lang=ru"/>
   </url>
   <url>
-    <loc>https://aixess.global/#tresora</loc>
+    <loc>https://aixess.global/?lang=en</loc>
     <lastmod>2026-11-04</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://aixess.global/#residences</loc>
+    <loc>https://aixess.global/?lang=de</loc>
     <lastmod>2026-11-04</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aixess.global/#why-aixess</loc>
+    <loc>https://aixess.global/?lang=pl</loc>
     <lastmod>2026-11-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://aixess.global/#broker-access</loc>
-    <lastmod>2026-11-04</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aixess.global/#downtown-one</loc>
+    <loc>https://aixess.global/?lang=sl</loc>
     <lastmod>2026-11-04</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aixess.global/#insights</loc>
+    <loc>https://aixess.global/?lang=ru</loc>
     <lastmod>2026-11-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
