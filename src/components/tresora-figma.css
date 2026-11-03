@@ -514,9 +514,14 @@ html:root[data-time-theme='night'] .tresora-page {
   .tresora-page .tr-hero-actions .tr-button .lasha-arrow { flex-basis: 30px; width: 30px; height: 8px; }
   .tresora-page .tr-actions { gap: 12px; }
 
-  .tresora-page .tr-hero { display: flex; flex-direction: column; padding-bottom: var(--hero-bar, 0px); }
-  .tresora-page .tr-hero-bg { object-position: 72% 100%; }
-  .tresora-page .tr-hero-copy { margin-top: auto; margin-bottom: auto; padding-top: 28px; padding-bottom: 40px; }
+  /* Phones: no text over the photos (Kemo, 3 November 2026: "text is over the picture looks difficult
+     to read"). The hero, Discover and payment photos become their own blocks and the text sits on the
+     band's plain ground beside them. The hero photo fills what the copy leaves of the first screen. */
+  .tresora-page :is(.tr-hero, .tr-photo-band) { display: flex; flex-direction: column; }
+  .tresora-page :is(.tr-hero, .tr-photo-band) .tr-bg { position: relative; z-index: auto; inset: auto; display: block; width: 100%; }
+  .tresora-page .tr-hero { padding-bottom: var(--hero-bar, 0px); }
+  .tresora-page .tr-hero-bg { flex: 1 0 0; height: auto; min-height: 220px; object-position: 76% 100%; }
+  .tresora-page .tr-hero-copy { flex: none; margin: 0; padding-top: 24px; padding-bottom: 40px; }
   .tresora-page .tr-hero-copy > * { width: 100%; }
   .tresora-page .tr-hero-title { margin-top: 18px; }
   .tresora-page .tr-hero-title .tr-fit-line-1 { line-height: 0.76; }
@@ -525,7 +530,7 @@ html:root[data-time-theme='night'] .tresora-page {
   .tresora-page .tr-hero-actions { grid-template-columns: 1fr; gap: 12px; margin-top: 24px; }
 
   .tresora-page .tr-discover { min-height: 0; }
-  .tresora-page .tr-discover .tr-bg { object-position: 78% 0%; }
+  .tresora-page .tr-discover .tr-bg { height: auto; aspect-ratio: 4 / 3; object-position: 76% 40%; }
   .tresora-page .tr-discover .tr-wrap { padding-block: 56px 60px; }
   .tresora-page .tr-discover-title { --s: 150; max-width: none; margin-top: 14px; }
   .tresora-page .tr-discover-body { max-width: none; margin-top: 24px; }
@@ -597,7 +602,7 @@ html:root[data-time-theme='night'] .tresora-page {
   .tresora-page .tr-map img { aspect-ratio: 1.2; object-fit: cover; object-position: 46% 50%; }
 
   .tresora-page .tr-payment { min-height: 0; }
-  .tresora-page .tr-payment .tr-bg { object-position: 72% 0%; }
+  .tresora-page .tr-payment .tr-bg { order: 1; height: auto; aspect-ratio: 4 / 3; object-position: 80% 0%; }
   .tresora-page .tr-payment .tr-wrap { padding-block: 56px 64px; }
   .tresora-page .tr-payment-title { max-width: none; margin-top: 14px; }
   .tresora-page .tr-payment-body { max-width: none; margin-top: 22px; }
@@ -606,3 +611,7 @@ html:root[data-time-theme='night'] .tresora-page {
   .tresora-page .tr-more-body { max-width: none; margin-top: 22px; }
   .tresora-page .tr-more-actions { margin-top: 28px; }
 }
+
+/* The payment title's line pitch follows its font size (the frame's 80% of S, S = font size x 0.93705),
+   so it stays in proportion when useWordFit shrinks a long Russian word to fit. */
+.tresora-page .tr-title.tr-payment-title { line-height: calc(0.8 * 0.93705em); }
