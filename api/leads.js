@@ -19,6 +19,7 @@ const CONFIRMATION_COPY = {
     phoneLabel: "Phone",
     companyLabel: "Agency / Company",
     automatedNotice: "This is an automated confirmation from AiXESS. Please do not reply directly to this message. For assistance, reach out to info@aixess.global.",
+    ctaButton: "Explore AiXESS Global",
     team: "The AiXESS Team",
   },
   de: {
@@ -39,6 +40,7 @@ const CONFIRMATION_COPY = {
     phoneLabel: "Telefon",
     companyLabel: "Agentur / Unternehmen",
     automatedNotice: "Dies ist eine automatische Bestätigung von AiXESS. Bei Fragen wenden Sie sich bitte an info@aixess.global.",
+    ctaButton: "AiXESS Global entdecken",
     team: "Ihr AiXESS Team",
   },
   pl: {
@@ -59,6 +61,7 @@ const CONFIRMATION_COPY = {
     phoneLabel: "Telefon",
     companyLabel: "Agencja / Firma",
     automatedNotice: "To jest automatyczne potwierdzenie z serwisu AiXESS. W razie pytań prosimy o kontakt pod adresem info@aixess.global.",
+    ctaButton: "Odkryj AiXESS Global",
     team: "Zespół AiXESS",
   },
   sl: {
@@ -74,11 +77,12 @@ const CONFIRMATION_COPY = {
     leadTypeLabel: "Vrsta zahteve",
     brokerType: "Registracija posrednika",
     materialsType: "Projektna gradiva in dokumentacija",
-    nameLabel: "Ime in priimek",
+    nameLabel: "Imię in priimek",
     emailLabel: "E-pošta",
     phoneLabel: "Telefon",
     companyLabel: "Agencija / Podjetje",
     automatedNotice: "To je samodejno potrditveno sporočilo AiXESS. Za vprašanja nam pišite na info@aixess.global.",
+    ctaButton: "Raziščite AiXESS Global",
     team: "Ekipa AiXESS",
   },
   ru: {
@@ -99,6 +103,7 @@ const CONFIRMATION_COPY = {
     phoneLabel: "Телефон",
     companyLabel: "Агентство / Компания",
     automatedNotice: "Это автоматическое уведомление от AiXESS. По всем вопросам обращайтесь на info@aixess.global.",
+    ctaButton: "Перейти на AiXESS Global",
     team: "Команда AiXESS",
   },
 };
@@ -186,6 +191,19 @@ function buildLeadNotificationHtml({ resolvedName, email, phone, company, locale
       <div style="margin-bottom: 12px; padding-bottom: 14px;">
         <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.08em; margin-bottom: 4px;">Submission Timestamp</div>
         <div style="font-size: 13px; font-weight: 500; color: #64748b;">${submittedDate}</div>
+      </div>
+
+      <!-- Action Reply Button (Matching AiXESS website button style & exact #2557d6 blue) -->
+      <div style="margin: 24px 0 8px; text-align: left;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
+          <tr>
+            <td style="background-color: #2557d6; border: 1px solid #2557d6; border-radius: 0px;">
+              <a href="mailto:${escapeHtml(email)}?subject=${encodeURIComponent(`Re: ${referenceCode} - ${leadTypeTitle}`)}" style="display: inline-block; padding: 14px 28px; font-family: 'Gilroy', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #ffffff !important; text-decoration: none; line-height: 1.2;">
+                Reply to ${escapeHtml(resolvedName)} &nbsp;&rarr;
+              </a>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
 
@@ -279,6 +297,19 @@ function buildUserConfirmationHtml({ resolvedName, email, phone, company, locale
       <div style="margin: 28px 0; padding: 20px 22px; border-left: 4px solid #2557d6; background: #f0f5ff; border-radius: 6px; border: 1px solid #c4d8fc; border-left: 4px solid #2557d6;">
         <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2557d6; margin-bottom: 6px;">${escapeHtml(copy.nextStepsTitle)}</div>
         <p style="margin: 0; font-size: 14px; line-height: 1.65; color: #334155;">${escapeHtml(copy.nextSteps)}</p>
+      </div>
+
+      <!-- Primary Action Button (Matching AiXESS website button style & exact #2557d6 blue) -->
+      <div style="margin: 32px 0 28px; text-align: left;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
+          <tr>
+            <td style="background-color: #2557d6; border: 1px solid #2557d6; border-radius: 0px;">
+              <a href="https://aixess.global" target="_blank" style="display: inline-block; padding: 16px 32px; font-family: 'Gilroy', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #ffffff !important; text-decoration: none; line-height: 1.2;">
+                ${escapeHtml(copy.ctaButton || "Explore AiXESS Global")} &nbsp;&rarr;
+              </a>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <!-- Signoff -->
