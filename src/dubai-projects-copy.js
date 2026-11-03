@@ -1,4 +1,4 @@
-import { formatUsdOnly } from "./currency.js";
+import { formatPrice, formatUsdOnly } from "./currency.js";
 
 // TRESORA and DOWNTOWN ONE, the two Dubai projects. Kemo, 26 October 2026: the two Word briefs supply
 // the base text for these pages (AiXESS_TRESORA_Website_Developer_Instructions_Final.docx and
@@ -11,6 +11,11 @@ import { formatUsdOnly } from "./currency.js";
 // corrections). "Project highlits" is spelt "Project highlights". Kemo, 26 October 2026 (the client's
 // comment): no floors or unit lists; property types only. The brief's older
 // "Starting from $182,437" is not shown.
+
+// Kemo, 3 November 2026: the Project highlights band shows one starting price, "$176,000 / Starting from",
+// as its fourth figure (an exception to the page's no-prices rule). German and Slovenian show euros
+// through src/currency.js like the site's other prices.
+const TRESORA_FROM_USD = 176000;
 
 const priceValues = (locale) => ({
   starting: formatUsdOnly(176635, locale),
@@ -80,6 +85,7 @@ export const DUBAI_PROJECTS_COPY = {
           ["JVC, Dubai", "Location"],
           ["Q1 2028", "Expected completion"],
           ["20%", "Initial payment"],
+          [formatPrice(TRESORA_FROM_USD, "en"), "Starting from"],
         ],
       },
       spaces: {
@@ -340,6 +346,7 @@ export const DUBAI_PROJECTS_COPY = {
           ["JVC, Dubai", "Lage"],
           ["Q1 2028", "Voraussichtliche Fertigstellung"],
           ["20 %", "Anfangszahlung"],
+          [formatPrice(TRESORA_FROM_USD, "de"), "Preise ab"],
         ],
       },
       spaces: {
@@ -600,6 +607,7 @@ export const DUBAI_PROJECTS_COPY = {
           ["JVC, Dubaj", "Lokalizacja"],
           ["I kw. 2028", "Planowane ukończenie"],
           ["20%", "Wpłata początkowa"],
+          [formatPrice(TRESORA_FROM_USD, "pl"), "Ceny od"],
         ],
       },
       spaces: {
@@ -860,6 +868,7 @@ export const DUBAI_PROJECTS_COPY = {
           ["JVC, Dubaj", "Lokacija"],
           ["1. četrtletje 2028", "Predvideno dokončanje"],
           ["20 %", "Začetno plačilo"],
+          [formatPrice(TRESORA_FROM_USD, "sl"), "Cene od"],
         ],
       },
       spaces: {
@@ -1120,6 +1129,7 @@ export const DUBAI_PROJECTS_COPY = {
           ["JVC, Дубай", "Расположение"],
           ["I квартал 2028", "Ожидаемое завершение"],
           ["20 %", "Первоначальный платёж"],
+          [formatPrice(TRESORA_FROM_USD, "ru"), "Цены от"],
         ],
       },
       spaces: {

@@ -147,7 +147,8 @@ function Gallery({ items, still = false }) {
 
 // TRESORA as Lasha drew it (Figma frame "TRESORA", node 485:3; Kemo, 2 November 2026: "pixel perfect of
 // whats on figma"). tresora-figma.css sets it in frame pixels from 900px and restacks it on phones.
-// Kemo kept the page free of prices (no starting price or yearly rent, though the frame shows them).
+// Kemo kept the page free of prices (no yearly rent, though the frame shows it); the one exception is
+// "$176,000 / Starting from" in Project highlights (3 November 2026).
 // The frame's pictures are cut from its export (public/assets/dubai/tresora-fig-*).
 
 // Lines of one width (the frame's title lockups: "TRESORA DUBAI" over "A TREASURE OF BALANCE",
@@ -195,6 +196,80 @@ function useFitLines(ref, deps) {
     document.fonts?.ready.then(fit).catch(() => {});
     return () => { cancelAnimationFrame(frame); observer?.disconnect(); };
   }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+// TRESORA's Project highlights: four figures (Kemo, 3 November 2026, added "$176,000 / Starting from").
+// They sit in one row, spread across the column with equal gaps and a hairline in the middle of each,
+// the last one ending at the column's right edge. A language whose figures need more room shrinks all
+// four together, at most to 85% (95% below 900px); past that they go two by two, and on a narrow phone
+// one under another.
+const FACTS_LEAST_SCALE = 0.85;
+
+function useFactsLayout(ref, deps) {
+  useEffect(() => {
+    const list = ref.current;
+    if (!list) return undefined;
+    let frame = 0;
+    const textWidth = (node) => {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      return range.getBoundingClientRect().width;
+    };
+    const fit = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const room = list.clientWidth;
+        if (!room) return;
+        // Measure at full size in the default layout; nothing paints until the frame ends.
+        delete list.dataset.layout;
+        list.style.setProperty("--tr-fact-k", "1");
+        const items = Array.from(list.children);
+        const widths = items.map((item) => Math.max(...Array.from(item.children, textWidth)));
+        // The smallest gap allowed between two figures (a hairline sits in its middle).
+        const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
+        const rowScale = Math.min(1, (room - gap * (items.length - 1) - 2) / widths.reduce((sum, width) => sum + width, 0));
+        const columns = [0, 1].map((column) => Math.max(...widths.filter((_, index) => index % 2 === column)));
+        const pairScale = Math.min(1, (room - gap - 2) / (columns[0] + columns[1]));
+        let layout = "stack";
+        let scale = Math.min(1, room / Math.max(...widths));
+        // Below 900px a row that has to shrink gives way to two by two at full size.
+        const rowLeast = pairScale >= 1 && window.matchMedia?.("(max-width: 899px)").matches ? 0.95 : FACTS_LEAST_SCALE;
+        if (rowScale >= rowLeast) [layout, scale] = ["row", rowScale];
+        else if (items.length % 2 === 0 && pairScale >= FACTS_LEAST_SCALE) [layout, scale] = ["pairs", pairScale];
+        list.dataset.layout = layout;
+        list.style.setProperty("--tr-fact-k", String(Math.floor(scale * 1000) / 1000));
+        // Text does not always shrink exactly with its size (Safari rounds it), so check the real widths.
+        for (let pass = 0; pass < 3 && scale < 1; pass += 1) {
+          const now = items.map((item) => Math.max(...Array.from(item.children, textWidth)));
+          const needed = layout === "row" ? now.reduce((sum, width) => sum + width, 0) + gap * (items.length - 1)
+            : layout === "pairs" ? Math.max(now[0], now[2] ?? 0) + Math.max(now[1], now[3] ?? 0) + gap : Math.max(...now);
+          if (needed <= room - 1) break;
+          scale *= (room - 2) / needed;
+          list.style.setProperty("--tr-fact-k", String(Math.floor(scale * 1000) / 1000));
+        }
+        // The figures spread to the column's edges, so every gap is equal: each hairline goes halfway across.
+        if (layout !== "stack" && items.length > 1) {
+          const gapNow = items[1].getBoundingClientRect().left - items[0].getBoundingClientRect().right;
+          list.style.setProperty("--tr-fact-half", `${Math.max(0, gapNow) / 2}px`);
+        } else list.style.removeProperty("--tr-fact-half");
+      });
+    };
+    fit();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(fit);
+    observer?.observe(list);
+    document.fonts?.ready.then(fit).catch(() => {});
+    return () => { cancelAnimationFrame(frame); observer?.disconnect(); };
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+function HighlightFacts({ items }) {
+  const ref = useRef(null);
+  useFactsLayout(ref, [items.flat().join("|")]);
+  return (
+    <dl className="tr-facts" ref={ref}>
+      {items.map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
+    </dl>
+  );
 }
 
 export function FitLines({ as: Tag = "h2", id, className, lines }) {
@@ -300,9 +375,7 @@ export function TresoraPage({ header }) {
         <section className="tr-ink-band tr-highlights" id="tresora-highlights" aria-labelledby="tresora-highlights-title">
           <div className="tr-wrap">
             <h2 className="tr-title tr-highlights-title" id="tresora-highlights-title">{highlights.title}</h2>
-            <dl className="tr-facts">
-              {highlights.items.map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
-            </dl>
+            <HighlightFacts items={highlights.items} />
           </div>
         </section>
 

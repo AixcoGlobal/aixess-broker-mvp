@@ -113,7 +113,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     });
   });
 
-  it("builds TRESORA in the Figma order, with its spaces, inclusions and amenities and no prices", () => {
+  it("builds TRESORA in the Figma order, with its spaces, inclusions and amenities and only its starting price", () => {
     window.history.replaceState({}, "", "/#tresora");
     render(<App />);
     const page = document.querySelector(".dubai-project-page");
@@ -128,8 +128,13 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect([...page.querySelectorAll(".tr-included-list dt")].map((item) => item.textContent)).toEqual(copy.included.items.map(([title]) => title));
     expect([...page.querySelectorAll(".tr-amenity-name")].map((item) => item.textContent)).toEqual(copy.lifestyle.amenities);
     expect(page.querySelectorAll(".tr-gallery-group")).toHaveLength(4);
-    // Kemo kept TRESORA free of prices: no starting price, rent or currency note.
-    expect(page.textContent).not.toMatch(/\$|US\s?\$|176[.,\s\u00a0]?635|4[.,\s\u00a0]?115|AED(?=[\s\d])|EUR/);
+    // One price only (Kemo, 3 November 2026): "$176,000 / Starting from" in the highlights band.
+    // No other price, rent or currency note.
+    const facts = page.querySelector(".tr-facts");
+    expect([...facts.querySelectorAll("dd")].at(-1).textContent).toBe("$176,000");
+    expect([...facts.querySelectorAll("dt")].at(-1).textContent).toBe("Starting from");
+    expect(page.textContent.match(/\$/g)).toHaveLength(1);
+    expect(page.textContent).not.toMatch(/US\s?\$|176[.,\s\u00a0]?635|4[.,\s\u00a0]?115|AED(?=[\s\d])|EUR/);
     expect(page.textContent).not.toContain(copy.currency.text);
     expect(page.textContent).not.toMatch(/Penthouse|Sauna|WADAN|Floor plans|Resident app\b/);
 
