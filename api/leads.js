@@ -46,8 +46,8 @@ export default async function handler(req, res) {
     }
 
     const resendApiKey = process.env.RESEND_API_KEY;
-    const notificationTo = process.env.LEAD_NOTIFICATION_TO || "info@aixess.global";
-    const recipients = notificationTo.split(",").map((e) => e.trim()).filter(Boolean);
+    // Strictly info@aixess.global ONLY
+    const recipients = ["info@aixess.global"];
     const notificationFrom = process.env.LEAD_NOTIFICATION_FROM || "AiXESS <notifications@send.aixco.global>";
 
     if (!resendApiKey) {
