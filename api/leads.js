@@ -136,29 +136,40 @@ Date: ${submittedDate}
 Reply directly to this email to contact the lead.
 `;
 
-    const resendRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: notificationFrom,
-        to: recipients,
-        reply_to: email,
-        subject,
-        html,
-        text,
-      }),
-    });
+    // Send to each recipient individually so a bounce/misconfiguration on one recipient doesn't block delivery to the other
+    const sendResults = await Promise.allSettled(
+      recipients.map(async (recipient) => {
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${resendApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: notificationFrom,
+            to: [recipient],
+            reply_to: email,
+            subject,
+            html,
+            text,
+          }),
+        });
+        const data = await res.json();
+        return { ok: res.ok, status: res.status, recipient, data };
+      })
+    );
 
-    const resendData = await resendRes.json();
-    if (!resendRes.ok) {
-      console.error("Resend API error:", resendData);
-      return res.status(resendRes.status).json({ error: resendData.message || "Failed to send email" });
+    const successful = sendResults
+      .filter((r) => r.status === "fulfilled" && r.value.ok)
+      .map((r) => ({ recipient: r.value.recipient, id: r.value.data.id }));
+
+    if (successful.length === 0) {
+      const firstError = sendResults.find((r) => r.status === "rejected" || !r.value?.ok);
+      console.error("Failed to send lead email:", firstError);
+      return res.status(500).json({ error: "Failed to dispatch email notifications" });
     }
 
-    return res.status(200).json({ saved: true, id: resendData.id });
+    return res.status(200).json({ saved: true, dispatched: successful });
   } catch (error) {
     console.error("Unhandled error in /api/leads:", error);
     return res.status(500).json({ error: error.message || "Internal server error" });
