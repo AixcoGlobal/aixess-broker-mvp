@@ -31,6 +31,9 @@ export function flushAnalytics() {
   fetch("/api/events", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ consent: true, events }), keepalive: true }).catch(() => {});
 }
 export function track(type, detail = {}) {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("event", type, detail);
+  }
   if (consentChoice() !== "accepted") return;
   // "#tresora/spaces" is a section of the TRESORA page: the page is the part before the slash.
   const page = window.location.hash.slice(1).split(/[?/]/)[0].toLowerCase() || "home";

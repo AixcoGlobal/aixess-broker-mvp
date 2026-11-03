@@ -831,7 +831,16 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
-    const pageView = () => track("page_view");
+    const pageView = () => {
+      track("page_view");
+      if (typeof window !== "undefined" && typeof window.gtag === "function") {
+        window.gtag("event", "page_view", {
+          page_title: document.title,
+          page_location: window.location.href,
+          page_path: window.location.pathname + (window.location.hash || ""),
+        });
+      }
+    };
     pageView();
     window.addEventListener("aixess:consent", pageView);
     return () => window.removeEventListener("aixess:consent", pageView);
