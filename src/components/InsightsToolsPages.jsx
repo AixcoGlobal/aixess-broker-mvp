@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { BookOpenText, ChartLineUp } from "@phosphor-icons/react";
 import { useLanguage } from "../i18n.jsx";
 import { AIXCO_FAQ } from "../aixco-faq-copy.js";
 import { INSIGHTS_TOOLS_COPY } from "../insights-tools-copy.js";
@@ -44,8 +43,14 @@ export function InsightsPageContent({ header, onOpenModal }) {
   ];
   const resourceMedia = [
     { src: asset("projects/reverance-front-700.webp") },
-    { icon: BookOpenText },
-    { icon: ChartLineUp },
+    {
+      src: asset("resources/buyer-guide-600.webp"),
+      srcSet: `${asset("resources/buyer-guide-600.webp")} 600w, ${asset("resources/buyer-guide-1200.webp")} 1200w`,
+    },
+    {
+      src: asset("resources/market-reports-600.webp"),
+      srcSet: `${asset("resources/market-reports-600.webp")} 600w, ${asset("resources/market-reports-1200.webp")} 1200w`,
+    },
     { family: "coastal-lifestyle", position: "62% 60%" },
   ];
   // Brochures and the lifestyle guide go through the existing materials request;
