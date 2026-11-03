@@ -505,7 +505,15 @@ html:root[data-time-theme='afternoon'] .rv-page .rv-band .rv-eyebrow { color: va
 
 .rv-page .rv-details { min-height: calc(902 * var(--u)); }
 .rv-page .rv-details .rv-frame { padding-top: calc(66 * var(--u)); padding-bottom: calc(44 * var(--u)); }
-.rv-page .rv-details-figure { bottom: 0; left: calc(50% - 40 * var(--u)); width: calc(760 * var(--u)); height: calc(660 * var(--u)); }
+/* Figma: the render runs from y 166 to the band foot (736 tall), so the tower tops and roof frames show in full. */
+.rv-page .rv-details-figure { bottom: calc(-1 * var(--rv-kpi-drop, 0) * var(--u)); left: calc(50% - 40 * var(--u)); width: calc(760 * var(--u)); height: calc(736 * var(--u)); }
+/* Longer translated titles run past x 970 where the towers rise: the render sits lower (its foot clipped
+   by the band) so the roof frames stay clear of the title, 24px under its letters. */
+@media (min-width: 900px) {
+  :root:lang(de) .rv-page .rv-details-figure { --rv-kpi-drop: 35; }
+  :root:lang(pl) .rv-page .rv-details-figure { --rv-kpi-drop: 67; }
+  :root:lang(sl) .rv-page .rv-details-figure { --rv-kpi-drop: 12; }
+}
 .rv-page .rv-details-title { margin-top: calc(19 * var(--u)); color: var(--rv-on-band); }
 .rv-page .rv-details-stats { display: flex; margin: calc(61.8 * var(--u)) 0 0 calc(5 * var(--u)); }
 .rv-page .rv-details-stats > div { box-sizing: border-box; height: calc(160 * var(--u)); padding-top: calc(11 * var(--u)); }
