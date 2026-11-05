@@ -131,8 +131,6 @@
   overflow-wrap: anywhere;
 }
 
-.it-card-media-icon { align-items: center; justify-items: center; }
-.it-card-media-icon svg { width: 54px; height: 54px; }
 
 .it-card-body { display: grid; align-content: start; gap: 0.55rem; padding: 1.3rem 1.3rem 1.5rem; }
 

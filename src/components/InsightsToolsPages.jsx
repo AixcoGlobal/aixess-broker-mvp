@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { BookOpenText, ChartLineUp } from "@phosphor-icons/react";
 import { useLanguage } from "../i18n.jsx";
 import { AIXCO_FAQ } from "../aixco-faq-copy.js";
 import { INSIGHTS_TOOLS_COPY } from "../insights-tools-copy.js";
@@ -9,6 +8,10 @@ import "./insights-tools.css";
 import { ThemedImage } from "./ThemedImage.jsx";
 
 const asset = (path) => `/assets/${path}`;
+const stockPhoto = (name) => ({
+  src: asset(`insights/${name}-800.webp`),
+  srcSet: [480, 800, 1200, 1600].map((width) => `${asset(`insights/${name}-${width}.webp`)} ${width}w`).join(", "),
+});
 
 function useCopy() {
   const { locale } = useLanguage();
@@ -44,8 +47,11 @@ export function InsightsPageContent({ header, onOpenModal }) {
   ];
   const resourceMedia = [
     { src: asset("projects/reverance-front-700.webp") },
-    { icon: BookOpenText },
-    { icon: ChartLineUp },
+    // Unsplash License photos (Kemo, 3 November 2026: the two icon placeholders needed real
+    // pictures): keys by Jakub Żerdzicki (unsplash.com/photos/bqUZEAeWuok), market charts by
+    // Carlos Muza (unsplash.com/photos/hpjSkU2UYSU). Cropped to the card's 16:10, WebP only.
+    stockPhoto("buyer-guides"),
+    stockPhoto("market-reports"),
     { family: "coastal-lifestyle", position: "62% 60%" },
   ];
   // Brochures and the lifestyle guide go through the existing materials request;
@@ -121,10 +127,6 @@ export function InsightsPageContent({ header, onOpenModal }) {
 
 function CardMedia({ media, label }) {
   if (!media) return <div className="it-card-media it-card-media-type" aria-hidden="true"><span>{label}</span></div>;
-  if (media.icon) {
-    const Icon = media.icon;
-    return <div className="it-card-media it-card-media-type it-card-media-icon" aria-hidden="true"><Icon weight="light" /></div>;
-  }
   return (
     <div className="it-card-media">
       {media.family ? (
