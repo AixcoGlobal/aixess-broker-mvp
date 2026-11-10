@@ -968,6 +968,8 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
   }
   /* The longest tagline word ("OPPORTUNITY", "ВОЗМОЖНОСТИ") must fit the half-width cell. */
   .lasha-home:lang(ru) .lasha-metrics-tagline { font-size: min(var(--v4-claim), calc((50vw - 2.35rem) / 5.1)); }
+  /* Kemo, November 10: the photo starts right under the bottom row, so neither bottom cell draws a line. */
+  .lasha-home .lasha-metrics > div:nth-child(3), .lasha-home .lasha-metrics-tagline { border-bottom: 0; }
 
   /* About: photo above the blue panel. */
   .lasha-about { grid-template-columns: minmax(0, 1fr); min-height: 0; }
