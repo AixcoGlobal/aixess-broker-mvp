@@ -718,7 +718,7 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
 function DubaiProjectPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
   const header = <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />;
   return (
-    <div className={`route-page lasha-page dubai-project-page ${currentPage}-page`}>
+    <div className={`route-page lasha-page dubai-project-page ${currentPage}-page${currentPage === "downtown-one" ? " tresora-page" : ""}`}>
       {currentPage === "tresora" ? <TresoraPage header={header} /> : <DowntownOnePage header={header} />}
     </div>
   );
