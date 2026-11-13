@@ -1,0 +1,159 @@
+485:227 "TRESORA DUBAI A TREASURE OF BALANCE" @(70,160) 624x259 align=LEFT
+   "TRESORA DUBAI\n" | Morganite Bold | 207px | lh 80% | ls 2% | #F7F7F4
+   "A TREASURE OF BALANCE" | Morganite Bold | 130.5px | lh 80% | ls 2% | #F7F7F4
+487:2 "WHERE LIFESTYLE, COMFORT AND MODERN DESIGN MEET" @(69,1019) 624x351 align=LEFT
+   "WHERE LIFESTYLE, \nCOMFORT AND \nMODERN DESIGN MEET" | Morganite Bold | 146px | lh 80% | ls 2% | #F7F7F4
+489:59 "DESIGNED FOR DIFFERENT LIFESTYLES" @(68,2510) 492x226 align=LEFT
+   "DESIGNED FOR\n" | Morganite Bold | 181px | lh 80% | ls 2% | #171A1D
+   "DIFFERENT LIFESTYLES" | Morganite Bold | 114px | lh 80% | ls 2% | #171A1D
+505:93 "A LIFESTYLE DESIGNED AROUND YOU" @(68,4526) 453x435 align=LEFT
+   "A LIFESTYLE DESIGNED \nAROUND YOU" | Morganite Bold | 181px | lh 80% | ls 2% | #171A1D
+521:161 "JUMEIRAH VILLAGE CIRCLE CONNECTED TO WHAT MATTERS" @(68,8045) 1001x263 align=LEFT
+   "JUMEIRAH VILLAGE CIRCLE\n" | Morganite Bold | 181px | lh 80% | ls 2% | #F7F7F4
+   "CONNECTED TO WHAT MATTERS" | Morganite Bold | 153px | lh 80% | ls 2% | #F7F7F4
+521:179 "YOUR PROPERTY YOUR FUTURE" @(68,9459) 1001x290 align=LEFT
+   "YOUR PROPERTY \nYOUR FUTURE" | Morganite Bold | 181px | lh 80% | ls 2% | #F7F7F4
+523:199 "DISCOVER MORE ABOUT TRESORA" @(67,10183) 1303x145 align=LEFT
+   "DISCOVER MORE ABOUT TRESORA" | Morganite Bold | 181px | lh 80% | ls 2% | #F7F7F4
+521:10 "01" @(70,5170) 40x73 align=LEFT
+   "01" | Morganite Bold | 90.989013671875px | lh 80% | ls 2% | #2557D6
+521:15 "02" @(70,5279) 45x73 align=LEFT
+   "02" | Morganite Bold | 90.989013671875px | lh 80% | ls 2% | #2557D6
+521:18 "03" @(70,5388) 45x73 align=LEFT
+   "03" | Morganite Bold | 90.989013671875px | lh 80% | ls 2% | #2557D6
+521:21 "04" @(70,5497) 48x73 align=LEFT
+   "04" | Morganite Bold | 90.989013671875px | lh 80% | ls 2% | #2557D6
+521:24 "05" @(693,5170) 45x73 align=LEFT
+   "05" | Morganite Bold | 90.989013671875px | lh 80% | ls 2% | #2557D6
+521:27 "06" @(693,5279) 45x73 align=LEFT
+   "06" | Morganite Bold | 90.989013671875px | lh 80% | ls 2% | #2557D6
+521:30 "07" @(693,5388) 42x73 align=LEFT
+   "07" | Morganite Bold | 90.989013671875px | lh 80% | ls 2% | #2557D6
+521:33 "08" @(693,5497) 45x73 align=LEFT
+   "08" | Morganite Bold | 90.989013671875px | lh 80% | ls 2% | #2557D6
+503:45 "EVERYTHING INCLUDED" @(68,3515) 784x145 align=LEFT
+   "EVERYTHING INCLUDED" | Morganite Bold | 181px | lh 80% | ls 2% | #171A1D
+505:67 "LIVING ROOM" @(70,3789) 169x56 align=LEFT
+   "LIVING ROOM" | Morganite SemiBold | 70px | lh 80% | ls 2% | #2557D6
+505:78 "KITCHEN AND LOUNDRY" @(70,3906) 302x56 align=LEFT
+   "KITCHEN AND LOUNDRY" | Morganite SemiBold | 70px | lh 80% | ls 2% | #2557D6
+505:83 "SMART HOME" @(70,4023) 172x56 align=LEFT
+   "SMART HOME" | Morganite SemiBold | 70px | lh 80% | ls 2% | #2557D6
+505:86 "INDOOR AIR MONITORING" @(70,4140) 324x56 align=LEFT
+   "INDOOR AIR MONITORING" | Morganite SemiBold | 70px | lh 80% | ls 2% | #2557D6
+505:89 "SECURITY AND WI-FI" @(70,4257) 274x56 align=LEFT
+   "SECURITY AND WI-FI" | Morganite SemiBold | 70px | lh 80% | ls 2% | #2557D6
+497:5 "US $176,635" @(620,3075) 330x107 align=LEFT
+   "US $176,635" | Morganite Bold | 133.6206817626953px | lh 80% | ls 2% | #2557D6
+497:11 "US $4,115" @(1062,3075) 261x107 align=LEFT
+   "US $4,115" | Morganite Bold | 133.6206817626953px | lh 80% | ls 2% | #2557D6
+489:30 "PROJECT HIGHLIGHTS" @(68,1937) 696x136 align=LEFT
+   "PROJECT HIGHLIGHTS" | Morganite Bold | 170px | lh 80% | ls 2% | #F7F7F4
+485:228 "PROJECT TRESORA · DUBAI" @(70,107) 274x23 align=LEFT
+   "PROJECT TRESORA · DUBAI" | Inter Bold | 18.903671264648438px | lh auto | ls 4% | #F7F7F4
+485:264 "DISCOVER TRESORA" @(69,966) 204x46 align=LEFT
+   "DISCOVER TRESORA\n" | Inter Bold | 18.903671264648438px | lh auto | ls 4% | #F7F7F4
+489:60 "FIND YOUR PERFECT SPACE" @(69,2457) 276x23 align=LEFT
+   "FIND YOUR PERFECT SPACE" | Inter Bold | 18.903671264648438px | lh auto | ls 4% | #2557D6
+505:94 "LIFESTYLE AND AMENITIES" @(69,4473) 271x23 align=LEFT
+   "LIFESTYLE AND AMENITIES" | Inter Bold | 18.903671264648438px | lh auto | ls 4% | #2557D6
+521:162 "PERFECTLY POSITIONED IN DUBAI" @(69,7992) 338x23 align=LEFT
+   "PERFECTLY POSITIONED IN DUBAI" | Inter Bold | 18.903671264648438px | lh auto | ls 4% | #F7F7F4
+521:180 "FLEXIBLE PAYMENT OPTIONS" @(69,9406) 292x23 align=LEFT
+   "FLEXIBLE PAYMENT OPTIONS" | Inter Bold | 18.903671264648438px | lh auto | ls 4% | #F7F7F4
+521:9 "PROJECT AMENITIES" @(69,5090) 209x23 align=LEFT
+   "PROJECT AMENITIES" | Inter Semi Bold | 19px | lh auto | ls 4% | #171A1D
+521:12 "Swimming Pool & Jacuzzi" @(161,5182) 360x35 align=LEFT
+   "Swimming Pool & Jacuzzi" | Inter Medium | 28.66710662841797px | lh auto | ls 2% | #171A1D
+521:74 "Swimming Pool & Jacuzzi" @(70,6167) 302x29 align=LEFT
+   "Swimming Pool & Jacuzzi" | Inter Medium | 24px | lh auto | ls 2% | #171A1D
+521:82 "Fully Equipped Fitness Gym" @(70,6716) 329x58 align=LEFT
+   "Fully Equipped Fitness Gym\n" | Inter Medium | 24px | lh auto | ls 2% | #171A1D
+521:100 "TRESORA exterior" @(70,7264) 215x29 align=LEFT
+   "TRESORA exterior" | Inter Medium | 24px | lh auto | ls 2% | #171A1D
+521:118 "Interior" @(70,7814) 86x29 align=LEFT
+   "Interior" | Inter Medium | 24px | lh auto | ls 2% | #171A1D
+521:16 "Fully Equipped Fitness Gym" @(161,5291) 393x70 align=LEFT
+   "Fully Equipped Fitness Gym\n" | Inter Medium | 28.66710662841797px | lh auto | ls 2% | #171A1D
+521:19 "Pilates Facilities" @(161,5400) 230x35 align=LEFT
+   "Pilates Facilities" | Inter Medium | 28.66710662841797px | lh auto | ls 2% | #171A1D
+521:22 "Children's Splash Park" @(161,5509) 318x35 align=LEFT
+   "Children's Splash Park" | Inter Medium | 28.66710662841797px | lh auto | ls 2% | #171A1D
+521:25 "Residents' Lounge & Co-working Spaces" @(784,5182) 576x70 align=LEFT
+   "Residents' Lounge & Co-working Spaces\n" | Inter Medium | 28.66710662841797px | lh auto | ls 2% | #171A1D
+521:28 "Ice Bath Therapy" @(784,5291) 242x35 align=LEFT
+   "Ice Bath Therapy" | Inter Medium | 28.66710662841797px | lh auto | ls 2% | #171A1D
+521:31 "BBQ & Outdoor Social Areas" @(784,5400) 398x35 align=LEFT
+   "BBQ & Outdoor Social Areas" | Inter Medium | 28.66710662841797px | lh auto | ls 2% | #171A1D
+521:34 "AI-Powered Resident App" @(784,5509) 365x35 align=LEFT
+   "AI-Powered Resident App" | Inter Medium | 28.66710662841797px | lh auto | ls 2% | #171A1D
+503:46 "QUALITY IN EVERY DETAIL" @(69,3462) 264x23 align=LEFT
+   "QUALITY IN EVERY DETAIL" | Inter Bold | 18.903671264648438px | lh auto | ls 4% | #2557D6
+497:7 "STARTING PRICE" @(621,3025) 162x23 align=LEFT
+   "STARTING PRICE" | Inter Medium | 18.678159713745117px | lh auto | ls 4% | #171A1D
+497:12 "YEARLY RENT" @(1063,3031) 134x23 align=LEFT
+   "YEARLY RENT" | Inter Medium | 18.678159713745117px | lh auto | ls 4% | #171A1D
+503:27 "AVAILABLE PROPERTY CATEGORIES" @(69,3025) 434x19 align=LEFT
+   "AVAILABLE PROPERTY CATEGORIES\n" | Inter Semi Bold | 20px | lh auto | ls 10% | #171A1D
+503:30 "STUDIOS & SMART STUDIOS" @(69,3073) 371x19 align=LEFT
+   "STUDIOS & SMART STUDIOS\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+503:31 "SMART ONE-BEDROOM RESIDENCES" @(69,3120) 371x19 align=LEFT
+   "SMART ONE-BEDROOM RESIDENCES \n\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+503:32 "ONE-BEDROOM RESIDENCES" @(69,3167) 371x19 align=LEFT
+   "ONE-BEDROOM RESIDENCES \n\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+503:33 "TWO-BEDROOM RESIDENCES" @(69,3214) 371x19 align=LEFT
+   "TWO-BEDROOM RESIDENCES\n\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+503:34 "BOUTIQUE OFFICES" @(69,3261) 371x19 align=LEFT
+   "BOUTIQUE OFFICES" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+503:35 "RETAIL SPACES" @(69,3308) 371x19 align=LEFT
+   "RETAIL SPACES" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+485:229 "Discover a new expression of modern urban living in Jumeirah Village Circle, Dubai, where contemporary architecture, thoughtfully designed residences and lifestyle amenities come together." @(70,429) 623x84 align=LEFT
+   "Discover a new expression of modern urban living in Jumeirah Village Circle, Dubai, where contemporary architecture, thoughtfully designed residences and lifestyle amenities come together.\n" | Inter Medium | 17px | lh auto | ls 4% | #F7F7F4
+485:265 "TRESORA is a contemporary mixed-use development located in the heart of Jumeirah Village Circle, one of Dubai's established residential communities. Combining elegant residences, boutique office spaces and curated retail, TRESORA offers an environment designed around the balance of work, wellness and everyday living. Thoughtfully planned interiors, contemporary architecture and integrated smart technology create a refined living experience where functionality meets modern elegance. Whether you are looking for a new home, a professional workspace or an opportunity to own property in Dubai, TRESORA offers a compelling combination of location, design and lifestyle." @(70,1398) 755x360 align=LEFT
+   "TRESORA is a contemporary mixed-use development located in \nthe heart of Jumeirah Village Circle, one of Dubai's established \nresidential communities.\n\nCombining elegant residences, boutique office spaces and \ncurated retail, TRESORA offers an environment designed \naround the balance of work, wellness and everyday living.\n\nThoughtfully planned interiors, contemporary architecture \nand integrated smart technology create a refined living \nexperience where functionality meets modern elegance.\n\nWhether you are looking for a new home, a professional workspace \nor an opportunity to own property in Dubai, TRESORA offers a \ncompelling combination of location, design and lifestyle." | Inter Medium | 20px | lh auto | ls 0% | #F7F7F4
+489:65 "From contemporary studios to spacious two-bedroom residences, TRESORA offers thoughtfully planned living spaces combining comfort, functionality and elegant design. The development also features boutique offices and retail spaces, creating a connected environment for modern living and business." @(69,2755) 511x216 align=LEFT
+   "From contemporary studios to spacious two-bedroom residences, TRESORA offers thoughtfully planned living spaces combining comfort, functionality and elegant design.\n\nThe development also features boutique offices and retail spaces, creating a connected environment for modern living and business.\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+505:101 "Experience a carefully curated selection of amenities created to support relaxation, wellness, productivity and family living." @(69,4961) 448x77 align=LEFT
+   "Experience a carefully curated selection of amenities created to support relaxation, wellness, productivity and family living." | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+521:163 "Situated in Jumeirah Village Circle (JVC), TRESORA offers a balance between residential tranquillity and urban connectivity. With convenient access to Al Khail Road and Sheikh Mohammed Bin Zayed Road, the development provides connections to major destinations across Dubai. Nearby community amenities include Circle Mall, Circle Community Park, JSS International School, Life Medical Center and Carewell Clinics." @(69,8338) 1302x273 align=LEFT
+   "Situated in Jumeirah Village Circle (JVC), TRESORA offers a balance between residential tranquillity and urban connectivity.\n\nWith convenient access to Al Khail Road and Sheikh Mohammed Bin Zayed Road, the development provides connections to major destinations across Dubai.\n\nNearby community amenities include Circle Mall, Circle Community Park, JSS International School, Life Medical Center and Carewell Clinics.\n" | Inter Medium | 20px | lh auto | ls 0% | #F7F7F4
+521:181 "Discover property ownership opportunities with flexible payment structures designed to accommodate different purchasing preferences. Multiple payment options may be available, depending on the selected property and applicable terms. Contact AiXESS to receive the latest approved payment plans, property prices and availability." @(69,9764) 476x273 align=LEFT
+   "Discover property ownership opportunities with flexible payment structures designed to accommodate different purchasing preferences.\n\nMultiple payment options may be available, depending on the selected property and \napplicable terms.\n\nContact AiXESS to receive the latest approved payment plans, property prices and availability." | Inter Medium | 20px | lh auto | ls 0% | #F7F7F4
+523:200 "Discover contemporary living and property ownership opportunities at TRESORA. Our AiXESS team is available to provide detailed project information, current property availability, floor plans and personalised assistance throughout the purchasing process." @(69,10350) 1044x273 align=LEFT
+   "Discover contemporary living and property ownership opportunities at TRESORA.\nOur AiXESS team is available to provide detailed project information, current property availability, floor plans and personalised assistance throughout the purchasing process." | Inter Medium | 20px | lh auto | ls 0% | #F7F7F4
+505:65 "Every apartment is handed over fully furnished and equipped, with a complete smart-home system." @(69,3663) 723x72 align=LEFT
+   "Every apartment is handed over fully furnished and equipped, with a complete smart-home system.\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+505:68 "LG QNED TV, Apple TV 4K, sound bar and smart voice control." @(496,3799) 592x24 align=LEFT
+   "LG QNED TV, Apple TV 4K, sound bar and smart voice control." | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+505:79 "Bosch oven, gas hob, cooker hood, coffee machine, refrigerator, microwave, dishwasher and washer-dryer." @(496,3903) 637x72 align=LEFT
+   "Bosch oven, gas hob, cooker hood, coffee machine, refrigerator, microwave, dishwasher and washer-dryer.\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+505:84 "KNX automation for lighting, climate, curtains, display panels and intercom. Compatible with Apple Home, Google Home, Alexa, SmartThings and Matter." @(496,4008) 637x96 align=LEFT
+   "KNX automation for lighting, climate, curtains, display panels and intercom. Compatible with Apple Home, Google Home, Alexa, SmartThings and Matter.\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+505:87 "Sensors for temperature, humidity, CO₂, fine dust (PM2.5 / PM10), VOCs and formaldehyde, plus light and motion sensing." @(496,4139) 637x72 align=LEFT
+   "Sensors for temperature, humidity, CO₂, fine dust (PM2.5 / PM10), VOCs and formaldehyde, plus light and motion sensing.\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+505:90 "SALTO smart door lock, 1Home Server KNX Pro and UniFi WiFi 7." @(496,4267) 616x48 align=LEFT
+   "SALTO smart door lock, 1Home Server KNX Pro and UniFi WiFi 7.\n" | Inter Medium | 20px | lh auto | ls 0% | #171A1D
+485:258 "REQUEST AVAILABILITY" @(88,588) 187x18 align=LEFT
+   "REQUEST AVAILABILITY" | Inter Semi Bold | 15px | lh auto | ls 4% | #F7F7F4
+553:260 "EXPLORE RESIDENCE" @(430,588) 166x18 align=LEFT
+   "EXPLORE RESIDENCE" | Inter Semi Bold | 15px | lh auto | ls 4% | #F7F7F4
+489:38 "JVC, DUBAI" @(70,2149) 233x89 align=LEFT
+   "JVC, DUBAI" | Morganite SemiBold | 110.70240020751953px | lh 80% | ls 2% | #F7F7F4
+489:43 "Q1 2028" @(431,2149) 171x89 align=LEFT
+   "Q1 2028" | Morganite SemiBold | 110.70240020751953px | lh 80% | ls 2% | #F7F7F4
+489:45 "20%" @(865,2149) 104x89 align=LEFT
+   "20%" | Morganite SemiBold | 110.70240020751953px | lh 80% | ls 2% | #F7F7F4
+489:39 "LOCATION" @(70,2238) 128x29 align=LEFT
+   "LOCATION" | Inter Medium | 23.77322769165039px | lh auto | ls 4% | #F7F7F4
+489:44 "EXPECTED COMPLETION" @(431,2238) 306x29 align=LEFT
+   "EXPECTED COMPLETION" | Inter Medium | 23.77322769165039px | lh auto | ls 4% | #F7F7F4
+489:46 "INITIAL PAYMENT" @(865,2238) 216x29 align=LEFT
+   "INITIAL PAYMENT" | Inter Medium | 23.77322769165039px | lh auto | ls 4% | #F7F7F4
+485:257 "EXPLORE RESIDENCES" @(644,3271) 252x21 align=LEFT
+   "EXPLORE RESIDENCES" | Inter Semi Bold | 20.08620834350586px | lh auto | ls 4% | #F4F4F1
+503:37 "REQUEST AVAILABILITY" @(1014,3271) 252x21 align=LEFT
+   "REQUEST AVAILABILITY" | Inter Semi Bold | 20.08620834350586px | lh auto | ls 4% | #171A1D
+523:217 "CONTACT AIXESS" @(94,10523) 216x22 align=LEFT
+   "CONTACT AIXESS" | Inter Semi Bold | 20px | lh auto | ls 4% | #F7F7F4
+523:223 "REQUEST PROJECT DETAILS" @(472,10523) 305x22 align=LEFT
+   "REQUEST PROJECT DETAILS" | Inter Semi Bold | 20px | lh auto | ls 4% | #F7F7F4
