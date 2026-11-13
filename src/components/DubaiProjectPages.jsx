@@ -148,8 +148,10 @@ function Gallery({ items, still = false }) {
 
 // TRESORA as Lasha drew it (Figma frame "TRESORA", node 485:3; Kemo, 2 November 2026: "pixel perfect of
 // whats on figma"). tresora-figma.css sets it in frame pixels from 900px and restacks it on phones.
-// Kemo kept the page free of prices (no yearly rent, though the frame shows it); the one exception is
-// "$176,000 / Starting from" in Project highlights (3 November 2026).
+// Prices: "$176,000 / Starting from" in Project highlights (Kemo, 3 November 2026), and the frame's two
+// figures beside the property categories (Kemo, 13 November 2026: "there should be numbers as in
+// figma ... if numbers are changed keep current ones"): the site's starting price and price per m² from
+// Kemo's 27 October photos. The frame labels the second figure "Yearly rent"; it is the price per m².
 // The frame's pictures are cut from its export (public/assets/dubai/tresora-fig-*).
 
 // Lines of one width (the frame's title lockups: "TRESORA DUBAI" over "A TREASURE OF BALANCE",
@@ -335,11 +337,14 @@ function withFigmaBreaks(text) {
   return parts;
 }
 
+// Figma writes the dollar figures "US $176,635"; the other languages keep "176.635 USD".
+const figmaUsd = (text) => text.replace(/^US\$/, "US $");
+
 export function TresoraPage({ header }) {
   const route = "tresora";
   const { common, project, images } = useDubaiCopy("tresora");
   useSectionFromHash(route);
-  const { hero, discover, highlights, spaces, included, lifestyle, location, payment, more } = project;
+  const { hero, discover, highlights, spaces, pricing, included, lifestyle, location, payment, more } = project;
   const [locationFirst, locationSecond] = location.title.split(/\s* ?—\s*/);
   // ВАША НЕДВИЖИМОСТЬ broke mid-word in Russian at every width: the title shrinks just enough to keep it whole.
   const paymentTitleRef = useRef(null);
@@ -399,9 +404,15 @@ export function TresoraPage({ header }) {
                   <h3>{spaces.listTitle}</h3>
                   <ul>{spaces.categories.map((name) => <li key={name}>{name}</li>)}</ul>
                 </div>
-                <div className="tr-actions tr-spaces-actions">
-                  <TrButton href={`#${route}/gallery`} onClick={sectionLinkClick(route, "gallery")} label={hero.explore} primary />
-                  <TrRequest common={common} project={project} label={hero.availability} />
+                <div className="tr-spaces-side">
+                  <dl className="tr-prices">
+                    <div><dt>{pricing.startingLabel}</dt><dd>{figmaUsd(pricing.starting)}</dd></div>
+                    <div><dt>{pricing.perSqmLabel}</dt><dd>{figmaUsd(pricing.perSqm)}</dd></div>
+                  </dl>
+                  <div className="tr-actions tr-spaces-actions">
+                    <TrButton href={`#${route}/gallery`} onClick={sectionLinkClick(route, "gallery")} label={hero.explore} primary />
+                    <TrRequest common={common} project={project} label={hero.availability} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -469,6 +480,10 @@ export function TresoraPage({ header }) {
           <div className="tr-wrap">
             <h2 className="tr-title tr-more-title" id="tresora-more-title">{more.title}</h2>
             <div className="tr-body tr-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+            <div className="tr-actions tr-more-actions">
+              <TrRequest common={common} project={project} label={more.contact} />
+              <TrRequest common={common} project={project} label={more.details} />
+            </div>
           </div>
         </section>
       </main>
