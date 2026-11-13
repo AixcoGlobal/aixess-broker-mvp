@@ -540,7 +540,9 @@ function Modal({ type, onClose, onSwitch }) {
                     const data = await response.json().catch(() => ({}));
                     if (data && data.saved === false) throw new Error("Not saved");
                   } else if (response.status !== 404 && response.status !== 405) {
-                    throw new Error("Submission failed");
+                    if (type !== "materials") {
+                      throw new Error("Submission failed");
+                    }
                   }
                   if (type === "materials") {
                     grantDownloadAccess();
@@ -548,12 +550,13 @@ function Modal({ type, onClose, onSwitch }) {
                   setSubmitted(true);
                   track("lead_submitted");
                 } catch (err) {
-                  if (err.message === "Submission failed") {
+                  if (type === "materials") {
+                    grantDownloadAccess();
+                    setSubmitted(true);
+                    track("lead_submitted");
+                  } else if (err.message === "Submission failed") {
                     setSubmitError(true);
                   } else {
-                    if (type === "materials") {
-                      grantDownloadAccess();
-                    }
                     setSubmitted(true);
                     track("lead_submitted");
                   }
