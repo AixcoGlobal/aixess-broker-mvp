@@ -60,5 +60,11 @@ export function triggerBrochureDownload(locale) {
   link.rel = "noopener";
   document.body.appendChild(link);
   link.click();
-  link.remove();
+  setTimeout(() => {
+    try {
+      link.remove();
+    } catch {
+      // ignore
+    }
+  }, 250);
 }
