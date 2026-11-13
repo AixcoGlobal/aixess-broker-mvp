@@ -1,0 +1,51 @@
+553:250 "DOWNTOWN ONE DUBAI THE NEXT GENERATION OF URBAN LIVING" [805x369, align=LEFT, opacity=1]
+   "DOWNTOWN ONE DUBAI\n" | Morganite Bold (w700) | size 179.3687286376953px | lh 80.0000011920929% | ls 2% | color #F7F7F4
+   "THE NEXT GENERATION OF URBAN LIVING\n" | Morganite Bold (w700) | size 104px | lh 80.0000011920929% | ls 2% | color #F7F7F4
+553:251 "SMART LIVING – STRONGER CONNECTIONS" [432x46, align=LEFT, opacity=1]
+   "SMART LIVING – STRONGER CONNECTIONS\n" | Inter Bold (w700) | size 18.903671264648438px | lh auto | ls 4% | color #F7F7F4
+553:252 "Discover Downtown One, a contemporary residential development in Downtown Jebel Ali, Dubai, designed to bring intelligent technology, refined interiors and exceptional lifestyle experiences together." [820x63, align=LEFT, opacity=1]
+   "Discover Downtown One, a contemporary residential development in Downtown Jebel " | Inter Medium (w500) | size 17px | lh auto | ls 4% | color #F7F7F4
+553:264 "REQUEST AVAILABILITY" [187x18, align=LEFT, opacity=1]
+   "REQUEST AVAILABILITY" | Inter Semi Bold (w600) | size 15px | lh auto | ls 4% | color #F7F7F4
+553:276 "PROJECT HIGHLIGHTS" [733x143, align=LEFT, opacity=1]
+   "PROJECT HIGHLIGHTS" | Morganite Bold (w700) | size 179px | lh 80.0000011920929% | ls 2% | color #F7F7F4
+553:277 "CONTEMPORARY RESIDENTIAL TOWER" [495x46, align=LEFT, opacity=1]
+   "CONTEMPORARY RESIDENTIAL TOWER\n" | Morganite SemiBold (w600) | size 71px | lh 80.0000011920929% | ls 2% | color #F7F7F4
+553:280 "20 Floors,Plus three podium floors, ground floor and basement" [485x18, align=LEFT, opacity=1]
+   "20 Floors,Plus three podium floors, ground floor and basement" | Inter Medium (w500) | size 15px | lh auto | ls 4% | color #F7F7F4
+710:4 "A LIFESTYLE DESIGNED AROUND EVERY MOMENT" [842x273, align=LEFT, opacity=1]
+   "A LIFESTYLE DESIGNED" | Morganite Bold (w700) | size 191px | lh 75% | ls 2% | color #171A1D
+   " \n" | Morganite Bold (w700) | size 179px | lh 75% | ls 2% | color #171A1D
+   "AROUND EVERY MOMENT" | Morganite Bold (w700) | size 174px | lh 75% | ls 2% | color #2557D6
+710:5 "BEYOND ORDINARY LIVING" [432x23, align=LEFT, opacity=1]
+   "BEYOND ORDINARY LIVING" | Inter Bold (w700) | size 18.903671264648438px | lh auto | ls 4% | color #2557D6
+710:24 "Enjoy a collection of thoughtfully designed spaces for relaxation, fitness, recreation and family activities. From poolside leisure to immersive fitness experiences, every amenity contributes to a modern and connected lifestyle." [799x72, align=LEFT, opacity=1]
+   "Enjoy a collection of thoughtfully designed spaces for relaxation, fitness, recr" | Inter Medium (w500) | size 20px | lh auto | ls 0% | color #171A1D
+735:64 "At Downtown One, everyday life extends beyond the residence." [799x24, align=LEFT, opacity=1]
+   "At Downtown One, everyday life extends beyond the residence." | Inter Medium (w500) | size 20px | lh auto | ls 0% | color #171A1D
+710:31 "WELLNESS & FITNESS" [393x57, align=LEFT, opacity=1]
+   "WELLNESS & FITNESS\n" | Morganite Bold (w700) | size 72px | lh 75% | ls 2% | color #171A1D
+710:57 "Immersive Fitness Studio" [532x24, align=LEFT, opacity=1]
+   "Immersive Fitness Studio" | Inter Medium (w500) | size 20px | lh auto | ls 0% | color #171A1D
+733:37 "NEARBY DESTINATIONS" [282x41, align=LEFT, opacity=1]
+   "NEARBY DESTINATIONS\n" | Morganite Bold (w700) | size 64px | lh 75% | ls 2% | color #F7F7F4
+733:36 "5–10 minutes" [127x24, align=LEFT, opacity=1]
+   "5–10 minutes" | Inter Medium (w500) | size 20px | lh auto | ls 0% | color #3BDCEA
+733:41 "Dubai Metro · Aster Cedars Hospital" [292x21, align=LEFT, opacity=1]
+   "Dubai Metro · Aster Cedars Hospital" | Inter Medium (w500) | size 17px | lh auto | ls 0% | color #F7F7F4
+733:54 "Whether commuting, exploring the city or enjoying leisure destinations, Downtown One places a variety of experiences within reach." [432x92, align=LEFT, opacity=1]
+   "Whether commuting, exploring the city or \nenjoying leisure destinations, Downto" | Inter Medium (w500) | size 19px | lh auto | ls 0% | color #F7F7F4
+736:81 "RESIDENT AMENITIES" [772x143, align=LEFT, opacity=1]
+   "RESIDENT AMENITIES" | Morganite Bold (w700) | size 191px | lh 75% | ls 2% | color #171A1D
+736:95 "Pools & Relaxation" [220x29, align=LEFT, opacity=1]
+   "Pools & Relaxation" | Inter Medium (w500) | size 24px | lh auto | ls 2% | color #171A1D
+736:68 "YOUR NEXT PROPERTY IN DUBAI STARTS HERE" [841x429, align=LEFT, opacity=1]
+   "YOUR NEXT PROPERTY \nIN DUBAI STARTS HERE\n" | Morganite Bold (w700) | size 191px | lh 75% | ls 2% | color #F7F7F4
+736:69 "DISCOVER MORE ABOUT DOWNTOWN ONE" [556x46, align=LEFT, opacity=1]
+   "DISCOVER MORE ABOUT DOWNTOWN ONE\n" | Inter Bold (w700) | size 18.903671264648438px | lh auto | ls 4% | color #F7F7F4
+736:71 "Explore the residences, floor plans, lifestyle amenities and property ownership options available at Downtown One. Our AiXESS team is ready to provide personalised project information, current prices, property availability and payment options." [831x120, align=LEFT, opacity=1]
+   "Explore the residences, floor plans, lifestyle amenities and property ownership " | Inter Medium (w500) | size 20px | lh auto | ls 0% | color #F7F7F4
+497:5 "US $176,635" [330x107, align=LEFT, opacity=1]
+   "US $176,635" | Morganite Bold (w700) | size 133.6206817626953px | lh 80.0000011920929% | ls 2% | color #2557D6
+497:7 "STARTING PRICE" [162x23, align=LEFT, opacity=1]
+   "STARTING PRICE" | Inter Medium (w500) | size 18.678159713745117px | lh auto | ls 4% | color #171A1D
