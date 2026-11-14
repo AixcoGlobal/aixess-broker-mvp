@@ -9,6 +9,7 @@ import { useWordFit } from "./useWordFit.js";
 import "./reverance-project.css";
 import "./dubai-projects.css";
 import "./tresora-figma.css";
+import "./downtown-figma.css";
 
 // TRESORA and Downtown One, each on its own page: #tresora and #downtown-one, with sections at
 // #tresora/spaces and the like. The Word briefs supply the base text and section order; Kemo's
@@ -148,8 +149,10 @@ function Gallery({ items, still = false }) {
 
 // TRESORA as Lasha drew it (Figma frame "TRESORA", node 485:3; Kemo, 2 November 2026: "pixel perfect of
 // whats on figma"). tresora-figma.css sets it in frame pixels from 900px and restacks it on phones.
-// Kemo kept the page free of prices (no yearly rent, though the frame shows it); the one exception is
-// "$176,000 / Starting from" in Project highlights (3 November 2026).
+// Prices: "$176,000 / Starting from" in Project highlights (Kemo, 3 November 2026), and the frame's two
+// figures beside the property categories (Kemo, 13 November 2026: "there should be numbers as in
+// figma ... if numbers are changed keep current ones"): the site's starting price and price per m² from
+// Kemo's 27 October photos. The frame labels the second figure "Yearly rent"; it is the price per m².
 // The frame's pictures are cut from its export (public/assets/dubai/tresora-fig-*).
 
 // Lines of one width (the frame's title lockups: "TRESORA DUBAI" over "A TREASURE OF BALANCE",
@@ -335,11 +338,50 @@ function withFigmaBreaks(text) {
   return parts;
 }
 
+// The two price figures keep the frame's size unless a language's figure (Russian "4 115 USD" in AiXESS
+// Head) would run past the hairline or the column: then both shrink together, just enough.
+function usePriceFit(ref, deps) {
+  useEffect(() => {
+    const list = ref.current;
+    if (!list) return undefined;
+    let frame = 0;
+    const fit = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        list.style.setProperty("--tr-price-k", "1");
+        const [first, second] = list.querySelectorAll("dd");
+        // Phones let the two figures wrap under each other instead.
+        if (!first || !second || window.matchMedia?.("(max-width: 899px)").matches) return;
+        const width = (node) => { const range = document.createRange(); range.selectNodeContents(node); return range.getBoundingClientRect().width; };
+        const box = list.getBoundingClientRect();
+        const firstRoom = second.parentElement.getBoundingClientRect().left - box.left - 70 * (Math.min(document.documentElement.clientWidth, 1920) / 1440);
+        const secondRoom = box.right - second.getBoundingClientRect().left;
+        const k = Math.min(1, firstRoom / width(first), secondRoom / width(second));
+        if (k < 1) list.style.setProperty("--tr-price-k", String(Math.floor(k * 1000) / 1000));
+      });
+    };
+    fit();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(fit);
+    observer?.observe(list);
+    document.fonts?.ready.then(fit).catch(() => {});
+    return () => { cancelAnimationFrame(frame); observer?.disconnect(); };
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+function PriceFigures({ items }) {
+  const ref = useRef(null);
+  usePriceFit(ref, [items.flat().join("|")]);
+  return <dl className="tr-prices" ref={ref}>{items.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>;
+}
+
+// Figma writes the dollar figures "US $176,635"; the other languages keep "176.635 USD".
+const figmaUsd = (text) => text.replace(/^US\$/, "US $");
+
 export function TresoraPage({ header }) {
   const route = "tresora";
   const { common, project, images } = useDubaiCopy("tresora");
   useSectionFromHash(route);
-  const { hero, discover, highlights, spaces, included, lifestyle, location, payment, more } = project;
+  const { hero, discover, highlights, spaces, pricing, included, lifestyle, location, payment, more } = project;
   const [locationFirst, locationSecond] = location.title.split(/\s* ?—\s*/);
   // ВАША НЕДВИЖИМОСТЬ broke mid-word in Russian at every width: the title shrinks just enough to keep it whole.
   const paymentTitleRef = useRef(null);
@@ -399,9 +441,12 @@ export function TresoraPage({ header }) {
                   <h3>{spaces.listTitle}</h3>
                   <ul>{spaces.categories.map((name) => <li key={name}>{name}</li>)}</ul>
                 </div>
-                <div className="tr-actions tr-spaces-actions">
-                  <TrButton href={`#${route}/gallery`} onClick={sectionLinkClick(route, "gallery")} label={hero.explore} primary />
-                  <TrRequest common={common} project={project} label={hero.availability} />
+                <div className="tr-spaces-side">
+                  <PriceFigures items={[[pricing.startingLabel, figmaUsd(pricing.starting)], [pricing.perSqmLabel, figmaUsd(pricing.perSqm)]]} />
+                  <div className="tr-actions tr-spaces-actions">
+                    <TrButton href={`#${route}/gallery`} onClick={sectionLinkClick(route, "gallery")} label={hero.explore} primary />
+                    <TrRequest common={common} project={project} label={hero.availability} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -469,6 +514,10 @@ export function TresoraPage({ header }) {
           <div className="tr-wrap">
             <h2 className="tr-title tr-more-title" id="tresora-more-title">{more.title}</h2>
             <div className="tr-body tr-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+            <div className="tr-actions tr-more-actions">
+              <TrRequest common={common} project={project} label={more.contact} />
+              <TrRequest common={common} project={project} label={more.details} />
+            </div>
           </div>
         </section>
       </main>
@@ -476,69 +525,162 @@ export function TresoraPage({ header }) {
   );
 }
 
+// DOWNTOWN ONE as Lasha drew it (Figma frame "DOWNTOWN ONE", node 553:232, 1440 x 8358; Kemo,
+// 13 November 2026: "make pixel perfect copy of that figma page design"). downtown-figma.css sets it in
+// frame pixels from 900px (shared pieces from tresora-figma.css) and restacks it on phones. The words are
+// the site's; the frame's headings (Project highlights, Resident amenities, Exterior, Interior) are
+// translated. Pictures: the developer's renders in the frame's crops (each mask's image box, in frame
+// pixels relative to the mask: [x, y, width, height]); the hero, highlights, entertainment and map
+// pictures are the frame's own 2x exports.
+const DT_AMENITY_PICTURES = [
+  ["downtown-gym", [0.753, -169.532, 819.964, 579.74]],
+  ["downtown-pool", [0, -186, 818, 578]],
+  ["downtown-fig-ent", [0, 0, 818, 332]],
+  ["downtown-kids", [0, -92, 818, 578]],
+];
+
+// Resident amenities: one big picture and two small ones per row. Slots where the frame shows TRESORA
+// pictures (WADAN's pool and façade) carry Downtown One's own renders, cropped to the slot.
+const DT_GALLERY = [
+  ["pools", [["downtown-pool", [0, -112, 790, 559]], ["downtown-kids", null], ["downtown-aerial", null, "50% 62%"]]],
+  ["wellness", [["downtown-gym", [-87.994, -226.551, 1095.747, 774.727]], ["downtown-golf", [0, -65.968, 486.82, 344.197]], ["downtown-cycling", [0, -66, 487, 344]]]],
+  ["exterior", [["downtown-fig-tower", [0, 0, 790, 444]], ["downtown-podium", null, "50% 70%"], ["downtown-street", null, "50% 66%"]]],
+  ["interior", [["downtown-living", [0, -90, 788, 557]], ["downtown-kitchen", [0, -119, 486, 344]], ["downtown-bedroom", [-0.25, -94.823, 486.271, 343.809]]]],
+];
+
+function CropPicture({ slug, alt, box, crop, position, sizes, className = "" }) {
+  const [width, height] = box;
+  const pct = (value, of) => `${(value / of) * 100}%`;
+  const imageStyle = crop
+    ? { left: pct(crop[0], width), top: pct(crop[1], height), width: pct(crop[2], width), height: pct(crop[3], height) }
+    : { inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: position || "50% 50%" };
+  const image = dubaiImage(slug);
+  return (
+    <div className={`dt-crop ${className}`} style={{ aspectRatio: `${width} / ${height}` }}>
+      <img src={image.src} srcSet={image.srcSet} sizes={sizes} width={image.width} height={image.height} alt={alt} loading="lazy" decoding="async" style={imageStyle} />
+    </div>
+  );
+}
+
+// "Dubai Metro and Aster Cedars Hospital — approximately 5–10 minutes" → ["5–10 minutes", places].
+function nearbyGroup(line) {
+  const [places, time = ""] = line.split(/\s+—\s+/);
+  // The frame lists the places with middle dots: "Dubai Metro · Aster Cedars Hospital".
+  const dotted = places.split(/,\s+|\s+(?:and|und|i|in|и)\s+/).join(" · ");
+  return [time.replace(/^(approximately|ca\.|ok\.|približno|примерно)\s+/i, ""), dotted];
+}
+
 export function DowntownOnePage({ header }) {
   const route = "downtown-one";
   const { common, project, images } = useDubaiCopy("downtown");
   useSectionFromHash(route);
-  const { hero, highlights, amenities, location, more } = project;
+  const { hero, highlights, amenities, location, more, figma } = project;
+  const [locationFirst, locationSecond] = location.title.split(/\s* ?—\s*/);
+  const alt = Object.fromEntries(images.gallery);
+  alt["downtown-fig-tower"] = images.hero;
+  alt["downtown-fig-ent"] = images.entertainment;
+  // The frame's order: Wellness, Pools, Entertainment, Family; the highlights in the frame's order too.
+  const highlightOrder = [0, 4, 5, 3, 1, 2];
+  const captions = { pools: amenities.groups[1][0], wellness: amenities.groups[0][0], exterior: figma.exterior, interior: figma.interior };
 
   return (
     <>
-      <ProjectHero header={header} route={route} hero={hero} image="downtown-tower" imageAlt={images.hero}>
-        {hero.body.map((text) => <p className="lasha-page-hero-text" key={text}>{text}</p>)}
-        <div className="it-hero-actions">
-          <a className="button button-primary" href={`#${route}/highlights`} onClick={sectionLinkClick(route, "highlights")}>{hero.explore}<LashaArrow length={24} /></a>
-          <RequestButton common={common} project={project} label={hero.availability} />
+      <section className="lasha-page-hero tr-hero dt-hero" aria-labelledby={`${route}-title`}>
+        {header}
+        <Picture slug="downtown-fig-hero" alt={images.hero} className="tr-bg tr-hero-bg" sizes="100vw" eager />
+        <div className="tr-hero-copy">
+          <Eyebrow>{hero.tagline}</Eyebrow>
+          <FitLines as="h1" id={`${route}-title`} className="tr-hero-title" lines={[hero.title.join(" "), hero.subtitle]} />
+          <p className="tr-hero-intro">{hero.body[0]}</p>
+          <div className="tr-actions tr-hero-actions">
+            <TrRequest common={common} project={project} label={hero.availability} />
+            <TrButton href={`#${route}/highlights`} onClick={sectionLinkClick(route, "highlights")} label={hero.explore} />
+          </div>
         </div>
-      </ProjectHero>
+      </section>
 
-      <main className="page-main dp-page">
-        <section className="rp-section" id="downtown-one-highlights" aria-labelledby="downtown-one-highlights-title">
-          <SectionHeading id="downtown-one-highlights-title" title={highlights.title} />
-          <ul className="dp-cards dp-cards-3">
-            {highlights.items.map(([value, title, line]) => (
-              <li key={title}>
-                <strong>{value}</strong>
-                <h3>{title}</h3>
-                <p>{line}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="rp-section rp-mist" id="downtown-one-amenities" aria-labelledby="downtown-one-amenities-title">
-          <SectionHeading id="downtown-one-amenities-title" eyebrow={amenities.eyebrow} title={amenities.title} />
-          <Paragraphs items={amenities.body} />
-          <div className="dp-groups">
-            {amenities.groups.map(([group, items]) => (
-              <section key={group} aria-label={group}>
-                <h3>{group}</h3>
-                <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>
-              </section>
-            ))}
+      <main className="page-main tr-page dt-page">
+        <section className="tr-photo-band dt-highlights" id="downtown-one-highlights" aria-labelledby="downtown-one-highlights-title">
+          <Picture slug="downtown-fig-highlights" className="tr-bg" sizes="100vw" />
+          <div className="tr-wrap">
+            <h2 className="tr-title dt-highlights-title" id="downtown-one-highlights-title">{figma.highlights}</h2>
+            <dl className="dt-facts">
+              {highlightOrder.map((index) => {
+                const [value, title, line] = highlights.items[index];
+                return <div key={title}><dt>{title}</dt><dd>{value} – {line}</dd></div>;
+              })}
+            </dl>
           </div>
         </section>
 
-        <section className="rp-section" id="downtown-one-gallery" aria-label={project.name}>
-          <Gallery items={images.gallery} />
-        </section>
-
-        <section className="rp-section rp-mist" id="downtown-one-location" aria-labelledby="downtown-one-location-title">
-          <SectionHeading id="downtown-one-location-title" eyebrow={location.eyebrow} title={location.title} />
-          <div className="rp-split dp-split">
-            <div>
-              {location.body.map((text) => <p className="dp-text" key={text}>{text}</p>)}
-              <h3 className="dp-list-title">{location.nearbyTitle}</h3>
-              <ul className="dp-list dp-list-1">{location.nearby.map((item) => <li key={item}>{item}</li>)}</ul>
-              <p className="dp-text dp-text-after">{location.closing}</p>
+        <section className="dt-amenities" id="downtown-one-amenities" aria-labelledby="downtown-one-amenities-title">
+          <div className="tr-wrap">
+            <Eyebrow>{amenities.eyebrow}</Eyebrow>
+            <h2 className="tr-title dt-amenities-title" id="downtown-one-amenities-title">
+              <span>{figma.amenityLines[0]}</span>{" "}
+              <span className="dt-accent">{figma.amenityLines[1]}</span>
+            </h2>
+            <div className="tr-body dt-amenities-body">{amenities.body.map((text) => <p key={text}>{text}</p>)}</div>
+            <div className="dt-amenity-rows">
+              {amenities.groups.map(([group, items], index) => (
+                <section className={`dt-amenity dt-amenity-${index + 1}`} key={group} aria-label={group}>
+                  <CropPicture slug={DT_AMENITY_PICTURES[index][0]} alt={alt[DT_AMENITY_PICTURES[index][0]]} box={[818, 333]} crop={DT_AMENITY_PICTURES[index][1]} sizes="(max-width: 899px) 100vw, 57vw" className="dt-amenity-picture" />
+                  <div className="dt-amenity-list">
+                    <h3>{group}</h3>
+                    <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>
+                  </div>
+                </section>
+              ))}
             </div>
-            <RenderFigure slug="downtown-map" alt={images.map} className="dp-map" sizes="(max-width: 899px) calc(100vw - 2.5rem), 40vw" />
           </div>
         </section>
 
-        <section className="rp-section dp-closing" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
-          <SectionHeading id="downtown-one-more-title" eyebrow={more.eyebrow} title={more.title} />
-          <Paragraphs items={more.body} />
+        <section className="dt-location" id="downtown-one-location" aria-labelledby="downtown-one-location-title">
+          <div className="tr-wrap">
+            <Eyebrow>{location.eyebrow}</Eyebrow>
+            <h2 className="tr-title dt-location-title" id="downtown-one-location-title">
+              <span>{locationFirst}</span>{" "}
+              {locationSecond && <span className="dt-accent">{locationSecond}</span>}
+            </h2>
+            <div className="tr-body dt-location-body">{location.body.map((text) => <p key={text}>{text}</p>)}</div>
+            <div className="dt-nearby">
+              <CropPicture slug="downtown-fig-map" alt={images.map} box={[818, 573]} crop={[0, 0, 818, 573]} sizes="(max-width: 899px) 100vw, 57vw" className="dt-map" />
+              <div className="dt-nearby-copy">
+                <h3>{location.nearbyTitle}</h3>
+                <dl>
+                  {location.nearby.map((line) => {
+                    const [time, places] = nearbyGroup(line);
+                    return <div key={line}><dt>{time}</dt><dd>{places}</dd></div>;
+                  })}
+                </dl>
+                <p>{location.closing}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="dt-gallery" id="downtown-one-gallery" aria-labelledby="downtown-one-gallery-title">
+          <div className="tr-wrap">
+            <h2 className="tr-title dt-gallery-title" id="downtown-one-gallery-title">{figma.gallery}</h2>
+            {DT_GALLERY.map(([key, pictures]) => (
+              <figure className="dt-gallery-group" key={key}>
+                <div className="dt-gallery-grid">
+                  {pictures.map(([slug, crop, position], index) => (
+                    <CropPicture key={slug} slug={slug} alt={alt[slug]} box={index ? [486, 212] : [790, 445]} crop={crop} position={position} className={index ? "dt-gallery-small" : "dt-gallery-large"} sizes={index ? "(max-width: 899px) 50vw, 34vw" : "(max-width: 899px) 100vw, 55vw"} />
+                  ))}
+                </div>
+                <figcaption>{captions[key]}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <section className="tr-ink-band dt-more" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
+          <div className="tr-wrap">
+            <Eyebrow>{more.eyebrow}</Eyebrow>
+            <h2 className="tr-title dt-more-title" id="downtown-one-more-title">{more.title}</h2>
+            <div className="tr-body dt-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+          </div>
         </section>
       </main>
     </>
