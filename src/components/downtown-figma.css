@@ -50,6 +50,8 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
 .downtown-one-page .dt-facts > div { display: flex; flex-direction: column; }
 .downtown-one-page .dt-facts > div + div { margin-top: calc(38.07 * var(--u)); }
 .downtown-one-page .dt-facts dt {
+  position: relative;
+  top: calc(6 * var(--u));
   margin-left: -0.0105em;
   font-family: var(--tr-face);
   font-size: calc(71 / 0.93705 * var(--u));
@@ -118,11 +120,11 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
 .downtown-one-page .dt-location .tr-eyebrow::after { margin-left: calc(26 * var(--u)); }
 .downtown-one-page .dt-location-title { margin-top: calc(28 * var(--u)); }
 .downtown-one-page .dt-location-title > span:first-child { display: block; font-size: calc(191 / 0.93705 * var(--u)); line-height: calc(143.25 * var(--u)); }
-.downtown-one-page .dt-location-title > .dt-accent { font-size: calc(108.2 / 0.93705 * var(--u)); line-height: calc(76 * var(--u)); }
+.downtown-one-page .dt-location-title > .dt-accent { margin-top: calc(-5 * var(--u)); margin-bottom: calc(5 * var(--u)); font-size: calc(108.2 / 0.93705 * var(--u)); line-height: calc(76 * var(--u)); }
 .downtown-one-page .dt-location-body { max-width: calc(845 * var(--u)); margin-top: calc(26 * var(--u)); }
-.downtown-one-page .dt-nearby { display: flex; margin-top: calc(15 * var(--u)); background: var(--dt-panel); color: #f7f7f4; }
+.downtown-one-page .dt-nearby { display: flex; margin-top: calc(42.5 * var(--u)); background: var(--dt-panel); color: #f7f7f4; }
 .downtown-one-page .dt-map { flex: 0 0 calc(818 * var(--u)); }
-.downtown-one-page .dt-nearby-copy { flex: 1 1 auto; min-width: 0; padding: calc(52 * var(--u)) calc(40 * var(--u)) calc(30 * var(--u)) calc(35 * var(--u)); }
+.downtown-one-page .dt-nearby-copy { flex: 1 1 auto; min-width: 0; padding: calc(52 * var(--u)) calc(40 * var(--u)) calc(18 * var(--u)) calc(35 * var(--u)); }
 .downtown-one-page .dt-nearby-copy h3 {
   margin: 0;
   font-family: var(--tr-face);
@@ -141,13 +143,13 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
 
 /* ---- Resident amenities (gallery) -------------------------------------------------------------- */
 
-.downtown-one-page .dt-gallery .tr-wrap { padding-top: calc(175 * var(--u)); padding-bottom: calc(29 * var(--u)); }
+.downtown-one-page .dt-gallery .tr-wrap { padding-top: calc(175 * var(--u)); padding-bottom: calc(77 * var(--u)); }
 .downtown-one-page .dt-gallery-title { --s: 191; line-height: calc(143.25 * var(--u)); }
 .downtown-one-page .dt-gallery-group { margin: calc(45 * var(--u)) 0 0; padding-bottom: calc(12 * var(--u)); border-bottom: 1px solid var(--tr-hair-strong); }
-.downtown-one-page .dt-gallery-group + .dt-gallery-group { margin-top: calc(52 * var(--u)); }
+.downtown-one-page .dt-gallery-group + .dt-gallery-group { margin-top: calc(51 * var(--u)); }
 .downtown-one-page .dt-gallery-grid { display: grid; grid-template-columns: calc(790 * var(--u)) calc(486 * var(--u)); grid-template-rows: auto auto; column-gap: calc(23 * var(--u)); row-gap: calc(21 * var(--u)); }
 .downtown-one-page .dt-gallery-large { grid-row: span 2; }
-.downtown-one-page .dt-gallery-group figcaption { margin-top: calc(12 * var(--u)); font-family: Inter, system-ui, sans-serif; font-size: calc(24 * var(--u)); font-weight: 500; line-height: calc(29 * var(--u)); }
+.downtown-one-page .dt-gallery-group figcaption { margin-top: calc(12 * var(--u)); font-family: Inter, system-ui, sans-serif; font-size: calc(24 * var(--u)); font-weight: 500; line-height: calc(29 * var(--u)); letter-spacing: 0.02em; }
 
 /* ---- Discover more (ink band) --------------------------------------------------------------- */
 
@@ -168,7 +170,7 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
   .downtown-one-page .dt-highlights .tr-wrap { padding-block: 56px 48px; }
   .downtown-one-page .dt-facts { margin-top: 28px; }
   .downtown-one-page .dt-facts > div + div { margin-top: 24px; }
-  .downtown-one-page .dt-facts dt { font-size: calc(40px / 0.93705); line-height: 34px; }
+  .downtown-one-page .dt-facts dt { top: 0; font-size: calc(40px / 0.93705); line-height: 34px; }
   .downtown-one-page .dt-facts dd { margin-top: 6px; font-size: 15px; line-height: 20px; }
   .downtown-one-page .dt-amenities .tr-wrap { padding-block: 56px 56px; }
   .downtown-one-page .dt-amenities-title > span:first-child,
