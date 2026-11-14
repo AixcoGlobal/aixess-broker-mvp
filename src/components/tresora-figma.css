@@ -465,9 +465,16 @@ html:root[data-time-theme='night'] .tresora-page {
   font-size: calc(91 / 0.93705 * var(--u));
   font-weight: 700;
   font-synthesis: none;
-  line-height: calc(87 * var(--u));
+  line-height: calc(87 * var(--u) - var(--tr-num-drop));
   letter-spacing: 0.0187em;
+  /* Morganite's digits sit about 0.09em above the centre of their line box. Half of this padding
+     moves them down by that much, so each number's ink is centred on its rule and on the text beside
+     it (Kemo 14 Nov). The line box shrinks by the same amount, so the row keeps its height. Russian
+     uses the older face, whose digits sit only slightly high. */
+  --tr-num-drop: 0.18em;
+  padding-top: var(--tr-num-drop);
 }
+:root:lang(ru) .tresora-page .tr-amenity-index { --tr-num-drop: 0.05em; }
 .tresora-page .tr-amenity-name {
   padding-left: calc(22 * var(--u));
   font-family: Inter, system-ui, sans-serif;
@@ -638,7 +645,7 @@ html:root[data-time-theme='night'] .tresora-page {
   .tresora-page .tr-amenities-title { margin-top: 36px; font-size: 13px; line-height: 16px; }
   .tresora-page .tr-amenities { grid-auto-flow: row; grid-template-columns: 1fr; grid-template-rows: none; row-gap: 12px; margin-top: 22px; }
   .tresora-page .tr-amenities li { min-height: 52px; }
-  .tresora-page .tr-amenity-index { flex-basis: 46px; font-size: calc(54 / 0.93705 * 1px); line-height: 52px; }
+  .tresora-page .tr-amenity-index { flex-basis: 46px; font-size: calc(54 / 0.93705 * 1px); line-height: calc(52px - var(--tr-num-drop)); }
   .tresora-page .tr-amenity-name { padding-left: 14px; font-size: 16px; line-height: 21px; }
 
   .tresora-page .tr-gallery .tr-wrap { padding-block: 48px 56px; }
