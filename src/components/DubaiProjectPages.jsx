@@ -4,6 +4,7 @@ import { DUBAI_PROJECTS_COPY } from "../dubai-projects-copy.js";
 import { DUBAI_IMAGES_COPY } from "../dubai-projects-images-copy.js";
 import { dubaiImage } from "../dubai-projects-data.js";
 import { CONTACT } from "../contact-copy.js";
+import { siteFormClick } from "../enquiry.js";
 import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
 import { useWordFit } from "./useWordFit.js";
 import "./reverance-project.css";
@@ -35,10 +36,42 @@ export function projectMailto(common, project, request) {
   return `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-// The button's own words are the request named in the email.
+// The same words in English, for the AiXESS team's copy of the request.
+function englishWords(locale, label) {
+  const find = (node, path) => {
+    if (node === label) return path;
+    if (!node || typeof node !== "object") return null;
+    for (const [key, value] of Object.entries(node)) {
+      const found = find(value, [...path, key]);
+      if (found) return found;
+    }
+    return null;
+  };
+  const path = find(DUBAI_PROJECTS_COPY[locale] || DUBAI_PROJECTS_COPY.en, []);
+  const english = path?.reduce((node, key) => node?.[key], DUBAI_PROJECTS_COPY.en);
+  return typeof english === "string" ? english : label;
+}
+
+// A request button opens the request form (Kemo, 14 November 2026: "it should be a form where user
+// fills it out"); the team gets it by email and the visitor a confirmation. The mailto stays as the
+// link's fallback (middle-click, no script).
+function useRequestForm(project, label) {
+  const { locale } = useLanguage();
+  return siteFormClick(() => ({
+    type: "enquiry",
+    project: project.name || project.hero.title.join(" "),
+    place: project.place,
+    request: label,
+    requestEn: englishWords(locale, label),
+    route: window.location.hash.replace(/^#/, "").split("/")[0].toLowerCase(),
+  }));
+}
+
+// The button's own words are the request.
 function RequestButton({ common, project, label, primary = false }) {
+  const onClick = useRequestForm(project, label);
   return (
-    <a className={`button ${primary ? "button-primary" : "button-ghost"}`} href={projectMailto(common, project, label)} aria-label={`${label} (${common.opensEmail})`}>
+    <a className={`button ${primary ? "button-primary" : "button-ghost"}`} href={projectMailto(common, project, label)} onClick={onClick} aria-haspopup="dialog">
       {label}<LashaArrow length={24} />
     </a>
   );
@@ -316,7 +349,8 @@ function TrButton({ href, onClick, label, primary = false, ...rest }) {
 }
 
 function TrRequest({ common, project, label, primary }) {
-  return <TrButton href={projectMailto(common, project, label)} label={label} primary={primary} aria-label={`${label} (${common.opensEmail})`} />;
+  const onClick = useRequestForm(project, label);
+  return <TrButton href={projectMailto(common, project, label)} onClick={onClick} label={label} primary={primary} aria-haspopup="dialog" />;
 }
 
 /* Figma TRESORA frame 485:3 sets the English discover text with its own line breaks. The words stay
