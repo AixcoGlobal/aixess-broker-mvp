@@ -169,6 +169,9 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", c
   const ref = useRef(null);
   const { locale } = useLanguage();
   useHeaderOnLightSky(ref, lightSky?.ranges, locale);
+  // ВОЗМОЖНОСТЬЮ and ПЛАТФОРМА broke mid-word on 320px phones: the title shrinks only then.
+  const titleRef = useRef(null);
+  useWordFit(titleRef, undefined, { words: true });
   return (
     <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes}>
       {header}
@@ -179,7 +182,7 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", c
       )}
       <div className="lasha-page-hero-copy">
         {eyebrow && <p className="lasha-eyebrow">{eyebrow}</p>}
-        <Title className="lasha-page-hero-title">{lines.map((line) => <span key={line}>{line}</span>)}</Title>
+        <Title className="lasha-page-hero-title" ref={titleRef}>{lines.map((line) => <span key={line}>{line}</span>)}</Title>
         {copy && <p className="lasha-page-hero-text">{copy}</p>}
         {children}
       </div>

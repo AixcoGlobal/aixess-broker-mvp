@@ -329,7 +329,10 @@ html:root[data-time-theme='night'] .tresora-page {
   line-height: calc(24 * var(--u));
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  white-space: nowrap;
+  /* One line in English as in Figma (it may use the column's right padding); longer
+     translations wrap before the hairline instead of running across it. */
+  margin-right: calc(-56 * var(--u));
+  text-wrap: balance;
 }
 .tresora-page .tr-categories ul { margin: calc(13 * var(--u)) 0 0; padding: 0; list-style: none; }
 .tresora-page .tr-categories li {
@@ -608,7 +611,7 @@ html:root[data-time-theme='night'] .tresora-page {
   .tresora-page .tr-spaces-body { margin-top: 22px; }
   .tresora-page .tr-spaces-row { flex-direction: column; align-items: stretch; margin-top: 36px; }
   .tresora-page .tr-categories { flex: none; padding: 0; border: 0; }
-  .tresora-page .tr-categories h3 { font-size: 14px; line-height: 18px; white-space: normal; }
+  .tresora-page .tr-categories h3 { font-size: 14px; line-height: 18px; white-space: normal; margin-right: 0; }
   .tresora-page .tr-categories ul { margin-top: 8px; }
   .tresora-page .tr-categories li { padding-block: 12px; font-size: 15px; line-height: 19px; }
   .tresora-page .tr-categories li:last-child { padding-bottom: 12px; }

@@ -377,6 +377,14 @@ function PriceFigures({ items }) {
 // Figma writes the dollar figures "US $176,635"; the other languages keep "176.635 USD".
 const figmaUsd = (text) => text.replace(/^US\$/, "US $");
 
+// A section title whose longest word is wider than its column (Russian ВСТРЕЧАЮТСЯ, НЕДВИЖИМОСТЬ,
+// Polish ZAPROJEKTOWANY) shrinks just enough to keep that word whole; titles that fit keep their size.
+function WordFitTitle({ className, id, children }) {
+  const ref = useRef(null);
+  useWordFit(ref, undefined, { words: true });
+  return <h2 className={className} id={id} ref={ref}>{children}</h2>;
+}
+
 export function TresoraPage({ header }) {
   const route = "tresora";
   const { common, project, images } = useDubaiCopy("tresora");
@@ -415,7 +423,7 @@ export function TresoraPage({ header }) {
           <Picture slug="tresora-fig-discover" className="tr-bg" sizes="100vw" />
           <div className="tr-wrap">
             <Eyebrow>{discover.eyebrow}</Eyebrow>
-            <h2 className="tr-title tr-discover-title" id="tresora-discover-title">{discover.title}</h2>
+            <WordFitTitle className="tr-title tr-discover-title" id="tresora-discover-title">{discover.title}</WordFitTitle>
             <div className="tr-body tr-discover-body">{discover.body.map((text) => <p key={text}>{withFigmaBreaks(text)}</p>)}</div>
           </div>
         </section>
@@ -468,7 +476,7 @@ export function TresoraPage({ header }) {
             <div className="tr-wrap">
               <div className="tr-lifestyle-copy">
                 <Eyebrow>{lifestyle.eyebrow}</Eyebrow>
-                <h2 className="tr-title tr-lifestyle-title" id="tresora-lifestyle-title">{lifestyle.title}</h2>
+                <WordFitTitle className="tr-title tr-lifestyle-title" id="tresora-lifestyle-title">{lifestyle.title}</WordFitTitle>
                 <p className="tr-body tr-lifestyle-lead">{lifestyle.lead}</p>
               </div>
               <h3 className="tr-amenities-title">{lifestyle.listTitle}</h3>
@@ -603,7 +611,7 @@ export function DowntownOnePage({ header }) {
         <section className="tr-photo-band dt-highlights" id="downtown-one-highlights" aria-labelledby="downtown-one-highlights-title">
           <Picture slug="downtown-fig-highlights" className="tr-bg" sizes="100vw" />
           <div className="tr-wrap">
-            <h2 className="tr-title dt-highlights-title" id="downtown-one-highlights-title">{figma.highlights}</h2>
+            <WordFitTitle className="tr-title dt-highlights-title" id="downtown-one-highlights-title">{figma.highlights}</WordFitTitle>
             <dl className="dt-facts">
               {highlightOrder.map((index) => {
                 const [value, title, line] = highlights.items[index];
@@ -678,7 +686,7 @@ export function DowntownOnePage({ header }) {
         <section className="tr-ink-band dt-more" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
           <div className="tr-wrap">
             <Eyebrow>{more.eyebrow}</Eyebrow>
-            <h2 className="tr-title dt-more-title" id="downtown-one-more-title">{more.title}</h2>
+            <WordFitTitle className="tr-title dt-more-title" id="downtown-one-more-title">{more.title}</WordFitTitle>
             <div className="tr-body dt-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
           </div>
         </section>
