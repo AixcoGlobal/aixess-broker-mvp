@@ -15,6 +15,7 @@ import { ThemedImage } from "./ThemedImage.jsx";
 import { Lightbox, useProjectInfoCopy } from "./ReveranceProjectInfo.jsx";
 import { useWordFit } from "./useWordFit.js";
 import "./reverance-figma.css";
+import { assetUrl } from "../assetUrl.js";
 
 // The Project Reverance page as Lasha drew it: Figma frame "REVERANCE" (file mdoKe84QEOkpDthDFO8pyy,
 // node 405:327, 1440 × 10586; Kemo, 2 November 2026: "make reverance page to be exactly as on figma").
@@ -26,7 +27,7 @@ import "./reverance-figma.css";
 
 function figmaImage(slug) {
   const meta = MEDIA[slug];
-  const url = (width) => `/assets/projects/reverance-figma/${slug}-${width}.webp`;
+  const url = (width) => assetUrl(`/assets/projects/reverance-figma/${slug}-${width}.webp`);
   return { src: url(meta.widths.at(-1)), srcSet: meta.widths.map((w) => `${url(w)} ${w}w`).join(", "), width: meta.width, height: meta.height };
 }
 
@@ -37,7 +38,7 @@ function FigmaPicture({ slug, className, alt = "", sizes }) {
 
 function galleryImage(slug) {
   const meta = GALLERY_SIZES[slug];
-  const url = (width) => `/assets/projects/gallery/${slug}-${width}.webp`;
+  const url = (width) => assetUrl(`/assets/projects/gallery/${slug}-${width}.webp`);
   return { src: url(meta.widths[Math.min(1, meta.widths.length - 1)]), srcSet: meta.widths.map((w) => `${url(w)} ${w}w`).join(", "), width: meta.width, height: meta.height };
 }
 

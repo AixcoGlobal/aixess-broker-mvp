@@ -1,4 +1,5 @@
 import SIZES from "./theme-photo-sizes.json";
+import { assetUrl } from "../assetUrl.js";
 
 // Brand photography in day / afternoon / night versions of one scene (Benji and Giorgi,
 // 13 October 2026), so every marketing photo follows the time-of-day theme. These are
@@ -8,7 +9,7 @@ import SIZES from "./theme-photo-sizes.json";
 // scripts/import-theme-photos.py.
 export const THEME_PHOTOS = SIZES;
 
-export const themePhotoUrl = (family, theme, width) => `/assets/themed/${family}-${theme}-${width}.webp`;
+export const themePhotoUrl = (family, theme, width) => assetUrl(`/assets/themed/${family}-${theme}-${width}.webp`);
 
 /** The WebP sources for one family in one theme: src (closest to defaultWidth), srcSet, width, height. */
 export function themePhoto(family, theme, defaultWidth = 1200) {

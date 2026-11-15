@@ -8,6 +8,7 @@ import { CALCULATOR_APARTMENTS } from "../data/calculatorApartments.js";
 import { getGoldenPremiumUnit } from "../data/goldenPremiumApartments.js";
 import { GOLDEN_PREMIUM_COPY } from "../golden-premium-copy.js";
 import bPlans from "../data/reveranceBPlans.json";
+import { assetUrl } from "../assetUrl.js";
 
 const W = 595.28, H = 841.89, M = 44, WIDTH = W - M * 2;
 const ink = rgb(.08, .08, .08), muted = rgb(.35, .35, .35), orange = rgb(.75, .3, .02);
@@ -32,7 +33,7 @@ export async function loadClientPdfAssets(unit) {
   const [snapshot, logo, ...fonts] = await Promise.all([
     unit.block === "B" ? Promise.resolve(bPlans) : asset("/data/reverance-a.json", true),
     asset("/brand/aixess-logo-white.png"),
-    ...PDF_FONT_FILES.map(file => asset(`/fonts/client-pdf/${file}`)),
+    ...PDF_FONT_FILES.map(file => asset(assetUrl(`/fonts/client-pdf/${file}`))),
   ]);
   const floor = snapshot.floors.find(item => item.number === unit.floor);
   const shape = floor?.shapes.find(item => item.target === unit.code.slice(1));

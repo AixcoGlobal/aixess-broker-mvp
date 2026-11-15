@@ -6,8 +6,9 @@ import { LashaArrow, LashaPageHero } from "./LashaHomeSections.jsx";
 import { useWordFit } from "./useWordFit.js";
 import "./insights-tools.css";
 import { ThemedImage } from "./ThemedImage.jsx";
+import { assetUrl } from "../assetUrl.js";
 
-const asset = (path) => `/assets/${path}`;
+const asset = (path) => assetUrl(`/assets/${path}`);
 
 function useCopy() {
   const { locale } = useLanguage();

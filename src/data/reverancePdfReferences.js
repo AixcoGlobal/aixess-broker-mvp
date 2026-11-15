@@ -1,3 +1,4 @@
+import { assetUrl } from "../assetUrl.js";
 // Visual references extracted from the supplied Reverance renders and
 // floorplans dossier. Workbook data remains authoritative for status, area,
 // and price; these references only make the unit detail visuals local and
@@ -13,8 +14,8 @@ export const REVERANCE_PDF_REFERENCE_CODES = Object.freeze(PDF_REFERENCE_CODES);
 
 const REFERENCES = new Map(
   PDF_REFERENCE_CODES.map((code) => [code, Object.freeze({
-    image2d: `/assets/reverance-pdf/${code}-plan.webp`,
-    image3d: `/assets/reverance-pdf/${code}-render.webp`,
+    image2d: assetUrl(`/assets/reverance-pdf/${code}-plan.webp`),
+    image3d: assetUrl(`/assets/reverance-pdf/${code}-render.webp`),
   })]),
 );
 
