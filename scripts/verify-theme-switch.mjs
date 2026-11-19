@@ -5,8 +5,8 @@
 import { chromium } from "playwright";
 
 const base = process.env.AIXESS_URL || "http://127.0.0.1:5180/";
-// Tresora's photos are the developer's own renders and have no theme versions; Reverance's amenities likewise.
-const routes = (process.env.QA_ROUTES || "home,why-aixess,broker-access,residences,downtown-one").split(",");
+// Galleries of interiors and amenities (Reverance, Tresora, Downtown One) are official renders and stay as they are.
+const routes = (process.env.QA_ROUTES || "home,why-aixess,broker-access,residences,tresora,downtown-one").split(",");
 const browser = await chromium.launch();
 const page = await (await browser.newContext({ reducedMotion: "reduce", viewport: { width: 1440, height: 900 } })).newPage();
 const failures = [];
@@ -39,12 +39,19 @@ for (const route of routes) {
   await page.evaluate(() => document.fonts.ready);
   const seen = {};
   for (const mode of ["day", "afternoon", "night", "day"]) {
-    // Open the menu as a mouse user does (hover; a click toggles it), then choose the theme.
+    // Open the menu as a mouse user does: move onto the icon and click it. The menu must be open
+    // afterwards (hovering opens it, and the click once closed it again).
     const button = page.locator(".site-header .time-theme-menu__button").first();
     const option = page.locator(`.time-theme-menu__option[data-kind="${mode}"]`).first();
     await page.mouse.move(5, 5);
     await button.hover();
-    if (!(await option.isVisible())) await button.click();
+    await page.waitForTimeout(120);
+    await button.click();
+    await page.waitForTimeout(250);
+    if (!(await option.isVisible())) {
+      failures.push(`${route}: hover then click on the theme icon left the menu closed`);
+      await button.click();
+    }
     await option.click();
     await page.waitForTimeout(1800);
     const theme = await page.evaluate(() => document.documentElement.dataset.timeTheme);

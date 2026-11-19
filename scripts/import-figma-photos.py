@@ -97,7 +97,8 @@ def main(source: Path) -> None:
 def reference(name, manifest):
     """The Figma photo at its full manifest size (from the largest WebP written)."""
     entry = manifest[name]
-    image = Image.open(OUT / f"{name}-{entry['widths'][-1]}.webp").convert("RGB")
+    base = ROOT / "public" / entry["base"].lstrip("/") if entry.get("base") else OUT / name
+    image = Image.open(f"{base}-{entry['widths'][-1]}.webp").convert("RGB")
     return image.resize((entry["width"], entry["height"]), Image.LANCZOS)
 
 

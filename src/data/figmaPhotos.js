@@ -12,6 +12,8 @@ import SIZES from "./figma-photo-sizes.json";
 export const FIGMA_PHOTOS = SIZES;
 
 const url = (file, width) => `/assets/figma/${file}-${width}.webp`;
+// A photo whose own file lives elsewhere (TRESORA's renders in /assets/dubai) names it in `base`.
+const baseUrl = (entry, name, width) => (entry.base ? `${entry.base}-${width}.webp` : url(name, width));
 
 /** The look a Figma photo shows in a theme: its own version for that theme, or its Figma light. */
 export function figmaPhotoLight(name, theme = "day") {
@@ -24,7 +26,7 @@ export function figmaPhoto(name, defaultWidth = 1200, theme = "day") {
   const entry = SIZES[name];
   const version = entry.themes?.[theme];
   const { width, height, widths } = version ?? entry;
-  const file = version ? `${name}-${theme}` : name;
+  const at = (w) => (version ? url(`${name}-${theme}`, w) : baseUrl(entry, name, w));
   const fallback = widths.find((w) => w >= defaultWidth) ?? widths.at(-1);
-  return { width, height, src: url(file, fallback), srcSet: widths.map((w) => `${url(file, w)} ${w}w`).join(", ") };
+  return { width, height, src: at(fallback), srcSet: widths.map((w) => `${at(w)} ${w}w`).join(", ") };
 }

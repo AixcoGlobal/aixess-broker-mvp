@@ -37,7 +37,13 @@ export function projectMailto(common, project, request) {
 }
 
 
+// TRESORA's scene renders have versions for the other times of day (src/data/figma-photo-sizes.json).
+const THEMED_TRESORA = new Set(["tresora-fig-hero", "tresora-fig-discover", "tresora-fig-spaces", "tresora-fig-lifestyle", "tresora-fig-payment"]);
+
 function Picture({ slug, alt = "", sizes, className, eager = false }) {
+  if (THEMED_TRESORA.has(slug)) {
+    return <ThemedImage figma={slug} className={className} sizes={sizes} alt={alt} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : undefined} decoding="async" />;
+  }
   const image = dubaiImage(slug);
   return <img className={className} src={image.src} srcSet={image.srcSet} sizes={sizes} width={image.width} height={image.height} alt={alt} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : undefined} decoding="async" />;
 }

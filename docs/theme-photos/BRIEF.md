@@ -80,3 +80,16 @@ Either:
 
 Claude then aligns each one to its source, makes the web sizes and wires them into the theme
 switcher (`scripts/import-figma-photos.py --themes incoming/theme-photos`).
+
+## TRESORA (added 19 November 2026)
+
+Sources in the repository (official WADAN renders: change only the light, keep the architecture,
+the WADAN lettering and the facade light lines exactly):
+
+| source | what it shows | make |
+| --- | --- | --- |
+| `public/assets/dubai/tresora-fig-hero-2880.webp` | TRESORA tower at dusk across the water, palms | `tresora-fig-hero-day`, `tresora-fig-hero-afternoon` |
+| `public/assets/dubai/tresora-fig-discover-2880.webp` | Woman on a curved balcony with light lines, dusk sky | `tresora-fig-discover-day`, `tresora-fig-discover-afternoon` |
+| `public/assets/dubai/tresora-fig-spaces-1640.webp` | Pool deck with umbrellas and two people, daylight | `tresora-fig-spaces-afternoon`, `tresora-fig-spaces-night` |
+| `public/assets/dubai/tresora-fig-lifestyle-1676.webp` | Infinity pool at golden hour, sun low | `tresora-fig-lifestyle-day`, `tresora-fig-lifestyle-night` |
+| `public/assets/dubai/tresora-fig-payment-2880.webp` | TRESORA tower at night against a navy sky | `tresora-fig-payment-day`, `tresora-fig-payment-afternoon` |
