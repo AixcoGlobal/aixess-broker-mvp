@@ -14,12 +14,15 @@ night ... beautiful lights to buildings during night ... realistic"; brief in do
 
     python3 scripts/import-figma-photos.py --themes <folder of <name>-<theme>.png|jpg|webp>
     python3 scripts/import-figma-photos.py --from-themed reverance-hero=reverance-towers
+    python3 scripts/import-figma-photos.py --onto downtown-fig-hero=downtown-hero
 
 --themes takes relit versions of the Figma photos (theme = day, afternoon or night) and lines each
 one up with its Figma photo before writing it: feature matching finds any shift, scale or crop the
 image model introduced, so the theme cross-fade never jumps; uncovered edges are filled from the
 nearest pixels. --from-themed does the same for an existing brand family's afternoon and night
-(public/assets/themed). Both write public/assets/figma/<name>-<theme>-<width>.webp, at the Figma
+(public/assets/themed). --onto gives a cut of a Figma photo that lives in public/assets/dubai
+(src/data/dubai-media.json) the theme versions of that Figma photo, placed by matching the two in
+the same light. All three write public/assets/figma/<name>-<theme>-<width>.webp, at the Figma
 photo's own size and widths, and list them under "themes" in the manifest. Needs opencv-python.
 """
 import json
@@ -102,7 +105,7 @@ def reference(name, manifest):
     return image.resize((entry["width"], entry["height"]), Image.LANCZOS)
 
 
-def find_placement(candidate, target):
+def find_placement(candidate, target, any_scale=False):
     """The similarity transform (2 x 3) that puts `candidate` onto `target`, or None if unsure."""
     import cv2
     import numpy as np
@@ -137,7 +140,7 @@ def find_placement(candidate, target):
         if found is None or inliers is None or int(inliers.sum()) < 60:
             continue
         s = float(np.hypot(found[0, 0], found[1, 0]))
-        if 0.8 < s / expected < 1.25 and abs(np.degrees(np.arctan2(found[1, 0], found[0, 0]))) < 2:
+        if (0.25 < s < 4 if any_scale else 0.8 < s / expected < 1.25) and abs(np.degrees(np.arctan2(found[1, 0], found[0, 0]))) < 2:
             return found, int(inliers.sum())
     return None, 0
 
@@ -199,11 +202,35 @@ def from_themed(pair: str) -> None:
     MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
 
 
+def onto(pair: str) -> None:
+    name, source = pair.split("=")
+    manifest = json.loads(MANIFEST.read_text())
+    media = json.loads((ROOT / "src/data/dubai-media.json").read_text())[name]
+    entry = {"width": media["width"], "height": media["height"], "widths": media["widths"], "base": f"/assets/dubai/{name}"}
+    if manifest[source].get("light"):
+        entry["light"] = manifest[source]["light"]
+    manifest[name] = entry
+    # The cut and the Figma photo show the same light: place one on the other, then reuse that placement.
+    # A cut can be any part of the photo, at any scale.
+    matrix, found = find_placement(reference(source, manifest), reference(name, manifest), any_scale=True)
+    if matrix is None:
+        sys.exit(f"{source} does not line up with {name}")
+    print(f"{source} on {name}: {found} matches")
+    for theme, version in manifest[source].get("themes", {}).items():
+        image = Image.open(OUT / f"{source}-{theme}-{version['widths'][-1]}.webp").convert("RGB")
+        image = image.resize((manifest[source]["width"], manifest[source]["height"]), Image.LANCZOS)
+        add_theme(name, theme, image, manifest, matrix)
+    MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "--themes":
         themes(Path(sys.argv[2]))
     elif sys.argv[1] == "--from-themed":
         for pair in sys.argv[2:]:
             from_themed(pair)
+    elif sys.argv[1] == "--onto":
+        for pair in sys.argv[2:]:
+            onto(pair)
     else:
         main(Path(sys.argv[1]))

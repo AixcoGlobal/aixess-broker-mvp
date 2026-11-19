@@ -40,7 +40,10 @@ export function projectMailto(common, project, request) {
 
 
 // TRESORA's scene renders have versions for the other times of day (src/data/figma-photo-sizes.json).
-const THEMED_TRESORA = new Set(["tresora-fig-hero", "tresora-fig-discover", "tresora-fig-spaces", "tresora-fig-lifestyle", "tresora-fig-payment"]);
+// Pictures with day / afternoon / night versions (src/data/figma-photo-sizes.json, Kemo 19 November 2026).
+const THEMED = new Set(["tresora-fig-hero", "tresora-fig-discover", "tresora-fig-spaces", "tresora-fig-lifestyle", "tresora-fig-payment", "downtown-fig-hero", "downtown-fig-ent"]);
+// DOWNTOWN ONE's highlights band stays the dusk render in every theme: its six items run down over the
+// palms and the street, where no ink reads on a daylight version (checked 19 November 2026).
 // The same words in English, for the AiXESS team's copy of the request.
 function englishWords(locale, label) {
   const find = (node, path) => {
@@ -83,7 +86,7 @@ function RequestButton({ common, project, label, primary = false }) {
 }
 
 function Picture({ slug, alt = "", sizes, className, eager = false }) {
-  if (THEMED_TRESORA.has(slug)) {
+  if (THEMED.has(slug)) {
     return <ThemedImage figma={slug} className={className} sizes={sizes} alt={alt} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : undefined} decoding="async" />;
   }
   const image = dubaiImage(slug);
@@ -555,7 +558,11 @@ function CropPicture({ slug, alt, box, crop, position, sizes, className = "" }) 
   const image = dubaiImage(slug);
   return (
     <div className={`dt-crop ${className}`} style={{ aspectRatio: `${width} / ${height}` }}>
-      <img src={image.src} srcSet={image.srcSet} sizes={sizes} width={image.width} height={image.height} alt={alt} loading="lazy" decoding="async" style={imageStyle} />
+      {THEMED.has(slug) ? (
+        <ThemedImage figma={slug} sizes={sizes} alt={alt} loading="lazy" decoding="async" style={imageStyle} />
+      ) : (
+        <img src={image.src} srcSet={image.srcSet} sizes={sizes} width={image.width} height={image.height} alt={alt} loading="lazy" decoding="async" style={imageStyle} />
+      )}
     </div>
   );
 }

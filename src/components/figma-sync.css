@@ -33,10 +33,15 @@
   html:root:not(#fs) .lasha-home .lasha-hero-copy {
     /* AIXESS's capitals 70–610 wide, from y 123 (TO MARKET 70–608 from y 436). */
     --poster-w: calc(550 * var(--u));
+    /* Centred between the header's foot and the photo's foot, never right under the navigation
+       (Kemo, 19 November 2026: "look how close things are to navbar", as on AixcoGlobal). */
     position: absolute;
-    /* The frame's 126, but at least 16px under the real header on narrower windows. */
-    top: max(calc(126 * var(--u)), calc(var(--hero-header, 100px) + 16px));
+    top: var(--hero-header, 101px);
+    bottom: 0;
     left: calc(69 * var(--u));
+    display: grid;
+    align-content: safe center;
+    justify-items: start;
     margin: 0;
     padding: 0;
   }
@@ -1318,9 +1323,9 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
 @media (min-width: 900px) {
   /* Heroes: the frames' 899 (TRESORA) and 932 (DOWNTOWN ONE), copy where the frames place it
      (eyebrow boxes at 107 and 109) rather than centred in the window. */
-  html:root:not(#fs) .tresora-page .tr-hero { height: calc(var(--tr-hero-h, 899) * var(--u)); min-height: 0; padding: 0; }
+
   
-  html:root:not(#fs) .tresora-page .tr-hero-copy { position: absolute; top: calc((var(--tr-copy-y, 107) - 24) * var(--u)); left: 0; margin: 0; }
+
   
 }
 @media (min-width: 900px) {
@@ -1493,13 +1498,17 @@ html:root:not(#fs) .lasha-hero > .site-header :is(.login-button, .menu-toggle) {
 html:root:not(#fs) .lasha-hero > .site-header :is(.login-button, .menu-toggle):hover { border-color: #fff; background: #fff; color: #171a1d; }
 
 /* The frames draw no header; the site's floats over every hero (86px tall below 1400px, 101px from
-   1400px). Hero copy keeps the frame's position wherever that clears the header, and otherwise sits
-   12px under it, so nothing runs into the logo or the menu. */
+   1400px). Hero copy is centred between the header's foot and the hero's (or panel's) foot, as on
+   AixcoGlobal (Kemo, 19 November 2026: "look how close things are to navbar ... fix it on all pages"). */
 @media (min-width: 900px) {
   html:root:not(#fs) body { --site-header-h: 86px; }
-  html:root:not(#fs) .tresora-page .tr-hero-copy { top: max(calc((var(--tr-copy-y, 107) - 24) * var(--u)), calc(var(--site-header-h) + 6px - 24px)); }
-  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-panel { padding-top: max(calc(74 * var(--u)), calc(var(--site-header-h) + 12px)); }
-  html:root:not(#fs) .lnp-broker .lasha-page-hero-copy { top: max(calc(139 * var(--u)), calc(var(--site-header-h) + 12px)); }
+  /* The frame's 686 panel leaves the copy right under the header: the panel grows to keep the same
+     room above the eyebrow and below the button (Kemo, 19 November 2026). */
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-panel { display: grid; align-content: safe center; padding-top: calc(var(--site-header-h) + 72 * var(--u)); padding-bottom: calc(72 * var(--u)); }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-copy { top: var(--site-header-h); bottom: 0; display: grid; align-content: safe center; }
+  /* REVERANCE keeps its copy top-left on the sky, at the frame's 189 but never closer to the header
+     than on the frame at 1440 (88px from the header's foot to the eyebrow). */
+  html:root:not(#fs) .rv-page .rv-hero-copy { top: max(calc(189 * var(--u)), calc(var(--site-header-h) + 58px)); }
 }
 @media (min-width: 1400px) {
   html:root:not(#fs) body { --site-header-h: 101px; }
@@ -1634,3 +1643,22 @@ html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero:has(> .
    skies, so while one of them is on screen the copy takes the deep ink of the project's own navy
    (colour only, 19 November 2026). The night version keeps the light copy. */
 
+
+/* TRESORA and DOWNTOWN ONE: the developers' renders are dusk scenes, so their copy is light. While the
+   relit day or afternoon version is on screen (data-photo-light), the copy over it takes ink, so it
+   stays readable on the bright sky (Kemo, 19 November 2026: theme photos on every page). */
+html:root:not(#fs) .tresora-page :is(.tr-hero, .tr-photo-band):has(> .tr-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) {
+  --tr-light: #171a1d;
+  color: #171a1d;
+}
+html:root:not(#fs) .tresora-page :is(.tr-hero, .tr-photo-band):has(> .tr-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) .tr-button {
+  /* Solid, so the label reads over the palms and towers at the photo's foot. */
+  border-color: #171a1d;
+  background: #171a1d;
+  color: #f7f7f4;
+}
+html:root:not(#fs) .tresora-page :is(.tr-hero, .tr-photo-band):has(> .tr-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) .tr-button:hover {
+  border-color: #2557d6;
+  background: #2557d6;
+  color: #fff;
+}

@@ -673,5 +673,76 @@
         ]
       }
     }
+  },
+  "downtown-fig-hero": {
+    "width": 2880,
+    "height": 1890,
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "base": "/assets/dubai/downtown-fig-hero",
+    "light": "night",
+    "themes": {
+      "afternoon": {
+        "width": 2880,
+        "height": 1890,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      },
+      "day": {
+        "width": 2880,
+        "height": 1890,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      }
+    }
+  },
+  "downtown-fig-ent": {
+    "width": 1636,
+    "height": 664,
+    "widths": [
+      480,
+      960,
+      1440,
+      1636
+    ],
+    "base": "/assets/dubai/downtown-fig-ent",
+    "light": "night",
+    "themes": {
+      "afternoon": {
+        "width": 1636,
+        "height": 664,
+        "widths": [
+          480,
+          960,
+          1440,
+          1636
+        ]
+      },
+      "day": {
+        "width": 1636,
+        "height": 664,
+        "widths": [
+          480,
+          960,
+          1440,
+          1636
+        ]
+      }
+    }
   }
 }
