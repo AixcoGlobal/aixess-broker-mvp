@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { AIXCO_FAQ } from "../aixco-faq-copy.js";
 import { INSIGHTS_TOOLS_COPY } from "../insights-tools-copy.js";
@@ -22,7 +22,8 @@ function SectionHeading({ id, eyebrow, title, copy, children }) {
     <div className="it-heading">
       <div>
         <p className="it-eyebrow">{eyebrow}</p>
-        <h2 id={id} ref={titleRef}>{(Array.isArray(title) ? title : [title]).map((line) => <span key={line}>{line}</span>)}</h2>
+        {/* A space between the lines keeps the heading's accessible name in words. */}
+        <h2 id={id} ref={titleRef}>{(Array.isArray(title) ? title : [title]).map((line, index) => <Fragment key={line}>{index ? " " : null}<span>{line}</span></Fragment>)}</h2>
         {copy && <p className="it-lead">{copy}</p>}
       </div>
       {children}

@@ -37,8 +37,8 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     fireEvent.click(within(document.querySelector("#nav-group-projects")).getByRole("button", { name: "UAE / DUBAI" }));
     fireEvent.click(within(document.querySelector("#nav-market-dubai")).getByRole("button", { name: "Downtown One" }));
     expect(window.location.hash).toBe("#downtown-one");
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("DOWNTOWN ONEDUBAI");
-    expect(document.querySelector(".dp-page").textContent).not.toContain("TRESORA");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("DOWNTOWN ONE DUBAI");
+    expect(document.querySelector(".dt-page").textContent).not.toContain("TRESORA");
   });
 
   it("shows two distinct homepage cards that open the two project pages, and Back returns home", () => {
@@ -103,9 +103,12 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
           expect(texts.filter((text) => !pieces.includes(text.replace(/\.$/, "")))).toEqual([]);
           expect(page.querySelectorAll("table, a[download], dialog")).toHaveLength(0);
         } else {
-          const texts = [...visibleTexts(page.querySelector(".dp-hero")), ...visibleTexts(page.querySelector(".dp-page"))];
-          expect(texts.filter((text) => !allowed.has(text))).toEqual([]);
-          expect(page.querySelectorAll("figcaption, table, a[download], dialog")).toHaveLength(0);
+          // Built from the TRESORA parts in Lasha's DOWNTOWN ONE frame: titles may run over two lines and
+          // the gallery's interior row borrows the site's own "Interior" label.
+          const pieces = [...allowed, copy.hero.title.join(" "), DUBAI_PROJECTS_COPY[locale].tresora.lifestyle.interior].join("\n");
+          const texts = [...visibleTexts(page.querySelector(".tr-hero")), ...visibleTexts(page.querySelector(".dt-page"))];
+          expect(texts.filter((text) => !pieces.includes(text.replace(/\.$/, "")))).toEqual([]);
+          expect(page.querySelectorAll("table, a[download], dialog")).toHaveLength(0);
         }
         expect(page.textContent).not.toContain("*");
         unmount();
@@ -181,15 +184,18 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     render(<App />);
     const page = document.querySelector(".dubai-project-page");
     const copy = DUBAI_PROJECTS_COPY.en.downtown;
-    expect([...page.querySelectorAll(".dp-page h2")].map((title) => title.textContent)).toEqual([
+    const words = (text) => text.replace(/[—\s]+/g, " ").trim();
+    expect([...page.querySelectorAll(".dt-page h2")].map((title) => words(title.textContent))).toEqual([
       copy.highlights.title, copy.amenities.title, copy.location.title, copy.more.title,
-    ]);
-    expect([...page.querySelectorAll(".dp-cards strong")].map((value) => value.textContent)).toEqual(["20 Floors", "10%", "December 2029", "AI-Powered", "Metro & Road", "20+ Amenities"]);
+    ].map(words));
+    // The six highlights in the frame's order, every figure kept.
+    expect([...page.querySelectorAll(".dt-highlight-value")].map((value) => value.textContent)).toEqual(["20 Floors", "Metro & Road", "20+ Amenities", "AI-Powered", "10%", "December 2029"]);
     expect(copy.amenities.groups.flatMap(([, items]) => items)).toHaveLength(21);
     expect(page.textContent).not.toMatch(/DOWNTOWN DUBAI|SAMANA|AED(?=[\s\d])|PDC|Shallow Pool|Cigar Lounge|Outdoor Shower|Here add pictures|_{3,}/);
     expect(screen.getByText("Dubai Metro and Aster Cedars Hospital — approximately 5–10 minutes")).toBeInTheDocument();
-    expect(page.querySelectorAll(".dp-gallery img")).toHaveLength(DUBAI_IMAGES_COPY.en.downtown.gallery.length);
-    [...page.querySelectorAll("img")].forEach((image) => expect(image.getAttribute("src")).toMatch(/^\/assets\/dubai\/downtown-[a-z0-9-]+\.webp$/));
+    // The frame's twelve gallery slots, every one a Downtown One render (never a TRESORA photo).
+    expect(page.querySelectorAll(".dt-gallery img")).toHaveLength(12);
+    [...page.querySelectorAll("img")].forEach((image) => expect(image.getAttribute("src")).toMatch(/^\/assets\/(dubai|figma)\/downtown-[a-z0-9-]+\.webp$/));
     expect([...page.querySelectorAll("a[href^='mailto:']")].map((link) => mailtoParts(link.href).subject)).toEqual(
       ["Request Availability"].map((request) => `AiXESS · DOWNTOWN ONE DUBAI: ${request}`),
     );

@@ -103,14 +103,14 @@ describe("AIXESS navigation pages", () => {
     expect(document.documentElement.dataset.timeTheme).toBe("day");
   });
 
-  it("gives Broker Access the refined coastal hero and the modern workspace building, not the old marina or Reverance render", () => {
+  it("gives Broker Access the Figma frame's hero and workspace photos in every theme, not the old marina or Reverance render", () => {
     window.localStorage.setItem("aixess-time-theme", "afternoon");
     resetTimeThemeForTests();
     window.history.replaceState({}, "", "/#broker-access");
     render(<App />);
-    expect(document.querySelector(".lasha-page-hero-media").dataset.themePhoto).toBe("broker-tools-refined-afternoon");
+    expect(document.querySelector(".lasha-page-hero-media").getAttribute("src")).toMatch(/\/assets\/figma\/broker-hero-/);
     const workspace = document.querySelector(".it-workspace-photo");
-    expect(workspace.dataset.themePhoto).toBe("workspace-building-afternoon");
+    expect(workspace.getAttribute("src")).toMatch(/\/assets\/figma\/broker-workspace-/);
     expect(workspace).toHaveAttribute("loading", "lazy");
     expect(document.body.innerHTML).not.toMatch(/marina-towers|reverance-hero-/);
   });
@@ -121,7 +121,7 @@ describe("AIXESS navigation pages", () => {
     window.history.replaceState({}, "", "/#residences");
     render(<App />);
     const hero = document.querySelector(".rv-hero-media");
-    expect(hero.dataset.themePhoto).toBe("reverance-towers-night");
+    expect(hero.getAttribute("src")).toMatch(/\/assets\/figma\/reverance-hero-/);
     expect(hero.getAttribute("alt")).toMatch(/Official render of the two Project Reverance towers/);
     expect(screen.getByRole("heading", { name: "PROJECT FACTS" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "More Upfront. More Value." })).toBeInTheDocument();
@@ -324,11 +324,11 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByText("How it works")).toBeInTheDocument();
     expect(screen.getByText("Request AiXESS access")).toBeInTheDocument();
     expect(screen.getByText("Client pays the required down payment")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "LESS ADMINISTRATION.MORE OPPORTUNITY." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "LESS ADMINISTRATION. MORE OPPORTUNITY." })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "THREE STEPS TO GET STARTED." })).toBeInTheDocument();
     // Klem's order (22 October 2026).
     const order = Array.from(document.querySelectorAll(".lnp-broker h1, .lnp-broker h2, .lnp-commercial-eyebrow")).map((heading) => heading.textContent);
-    expect(order).toEqual(["EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM.", "YOU DON’TNEED TO BEA BROKER.", "THE COMMERCIAL ADVANTAGE", expect.any(String), expect.any(String), "FROM ACCESSTO COMMISSION", "LESS ADMINISTRATION.MORE OPPORTUNITY.", "THREE STEPS TO GET STARTED."]);
+    expect(order).toEqual(["EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM.", "YOU DON’TNEED TO BEA BROKER.", "THE COMMERCIAL ADVANTAGE", expect.any(String), expect.any(String), "FROM ACCESSTO COMMISSION", "LESS ADMINISTRATION. MORE OPPORTUNITY.", "THREE STEPS TO GET STARTED."]);
   });
 
   it("submits broker registration request with broker details", async () => {

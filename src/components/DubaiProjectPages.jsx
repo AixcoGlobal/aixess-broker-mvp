@@ -523,7 +523,7 @@ export function DowntownOnePage({ header }) {
         <section className="tr-ink-band tr-more dt-more" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
           <div className="tr-wrap">
             <Eyebrow>{more.eyebrow}</Eyebrow>
-            <h2 className="tr-title dt-more-title" id="downtown-one-more-title">{twoLines(more.title).map((line) => <span key={line}>{line}</span>)}</h2>
+            <h2 className="tr-title dt-more-title" id="downtown-one-more-title">{twoLines(more.title).map((line, index) => <Fragment key={line}>{index ? " " : null}<span>{line}</span></Fragment>)}</h2>
             <div className="tr-body tr-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
           </div>
         </section>

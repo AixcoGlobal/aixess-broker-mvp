@@ -17,12 +17,13 @@
     padding: 0;
     display: block;
   }
-  /* The photo layer: x −89, 1593.4 × 995, cover. */
+  /* The photo layer: x −89, 1593.4 × 995, cover. It follows the frame's width (cqi), so a window
+     shorter than 1440:992, where the copy scales by height, still has the photo edge to edge. */
   html:root:not(#fs) .lasha-home .lasha-hero-media {
-    inset: 0 auto auto calc(-89 * var(--u));
-    width: calc(1593.4 * var(--u));
-    height: calc(995 * var(--u));
-    object-position: 50% 50%;
+    inset: 0 auto auto calc(-89 * 100cqi / 1440);
+    width: calc(1593.4 * 100cqi / 1440);
+    height: max(calc(995 * 100cqi / 1440), 100%);
+    object-position: 50% 0%;
   }
   /* The frame draws no wash behind the copy. */
   html:root:not(#fs) .lasha-home .lasha-hero-frame::after { display: none; }
@@ -30,7 +31,8 @@
     /* AIXESS's capitals 70–610 wide, from y 123 (TO MARKET 70–608 from y 436). */
     --poster-w: calc(550 * var(--u));
     position: absolute;
-    top: calc(126 * var(--u));
+    /* The frame's 126, but at least 16px under the real header on narrower windows. */
+    top: max(calc(126 * var(--u)), calc(var(--hero-header, 100px) + 16px));
     left: calc(69 * var(--u));
     margin: 0;
     padding: 0;
@@ -1113,7 +1115,13 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
 html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c0c0c); color: var(--l-ink); }
 .dt-lifestyle-title > :last-child, .dt-location-title > :last-child { color: #2557d6; }
 .dt-groups { display: grid; gap: 2.5rem; margin-top: 2.5rem; }
-.dt-group-photo { display: block; width: 100%; aspect-ratio: 818 / 333; object-fit: cover; }
+.dt-group-photo { display: block; width: 100%; height: auto; aspect-ratio: 818 / 333; object-fit: cover; }
+/* The highlights band's night ground behind its light type when the photo sits above it on phones. */
+.dt-highlights { background: #0e1e37; }
+@media (max-width: 899px) {
+  .tresora-page .dt-highlights .tr-bg { height: auto; aspect-ratio: 4 / 3; object-position: 58% 50%; }
+  .tresora-page .dt-highlights .tr-wrap { padding-block: 48px 56px; }
+}
 .dt-group h3 { margin: 1.25rem 0 0.5rem; font-family: var(--l-fig); font-size: 2.4rem; font-weight: 700; line-height: 0.85; letter-spacing: 0.02em; }
 .dt-group ul { margin: 0; padding: 0; list-style: none; }
 .dt-group li { padding: 0.45rem 0; border-bottom: 1px solid #bababa; font-size: 1rem; font-weight: 500; }
@@ -1325,4 +1333,22 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
   html:root:not(#fs) .dt-group:nth-child(2) .dt-group-photo { --bx: 0; --by: 0; --bw: 818; --bh: 333; --lx: 0; --ly: -186; --lw: 818; --lh: 578; }
   html:root:not(#fs) .dt-group:nth-child(3) .dt-group-photo { --bx: 0; --by: 0; --bw: 818; --bh: 332; --lx: 0; --ly: -124; --lw: 818; --lh: 579; }
   html:root:not(#fs) .dt-group:nth-child(4) .dt-group-photo { --bx: 0; --by: 0; --bw: 818; --bh: 332; --lx: 0; --ly: -92; --lw: 818; --lh: 578; }
+}
+
+/* The HOME frame's photo is dark glass under the header's right end, in every theme: the sign-in
+   button and the collapsed MENU button take white there so they stay readable. */
+html:root:not(#fs) .lasha-hero > .site-header :is(.login-button, .menu-toggle) { border-color: rgb(255 255 255 / 0.85); background: rgb(0 0 0 / 0.12); color: #fff; }
+html:root:not(#fs) .lasha-hero > .site-header :is(.login-button, .menu-toggle):hover { border-color: #fff; background: #fff; color: #171a1d; }
+
+/* The frames draw no header; the site's floats over every hero (86px tall below 1400px, 101px from
+   1400px). Hero copy keeps the frame's position wherever that clears the header, and otherwise sits
+   12px under it, so nothing runs into the logo or the menu. */
+@media (min-width: 900px) {
+  html:root:not(#fs) body { --site-header-h: 86px; }
+  html:root:not(#fs) .tresora-page .tr-hero-copy { top: max(calc((var(--tr-copy-y, 107) - 24) * var(--u)), calc(var(--site-header-h) + 6px - 24px)); }
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-panel { padding-top: max(calc(74 * var(--u)), calc(var(--site-header-h) + 12px)); }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-copy { top: max(calc(139 * var(--u)), calc(var(--site-header-h) + 12px)); }
+}
+@media (min-width: 1400px) {
+  html:root:not(#fs) body { --site-header-h: 101px; }
 }
