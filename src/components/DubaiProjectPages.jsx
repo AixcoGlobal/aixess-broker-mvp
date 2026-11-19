@@ -424,22 +424,26 @@ export function TresoraPage({ header }) {
 const DOWNTOWN_HIGHLIGHT_ORDER = [0, 4, 5, 3, 1, 2];
 const DOWNTOWN_ROW_IMAGES = ["downtown-gym", "downtown-pool", "downtown-entertainment", "downtown-kids"];
 // Gallery photos the frame crops from a larger layer (figma-sync.css); the rest fill their boxes.
-const CROPPED = new Set(["1-1", "2-1", "2-2", "2-3", "3-1", "4-1", "4-2", "4-3"]);
+const CROPPED = new Set(["1-1", "2-1", "2-2", "2-3", "4-1", "4-2", "4-3"]);
 
 export function DowntownOnePage({ header }) {
   const route = "downtown-one";
-  const { common, project, all, images } = useDubaiCopy("downtown");
+  const { common, project, images } = useDubaiCopy("downtown");
   useSectionFromHash(route);
   const { hero, highlights, amenities, location, more } = project;
-  const [locationFirst, locationSecond] = location.title.split(/\s* ?—\s*/);
+  // The title keeps its dash; the frame's line break falls after it.
+  const [locationFirst, locationSecond] = location.title.split(/(?<=—)\s*/);
   const groups = Object.fromEntries(amenities.groups);
-  const [wellness, pools] = amenities.groups.map(([name]) => name);
+  // All fifteen of the site's renders, in the frame's rows (a fifth row for the three the frame has
+  // no slot for). The rows carry no captions: the site's gallery has none.
+  const shot = (slug) => [slug, images.gallery.find(([name]) => name === slug)[1]];
   const gallery = [
-    [pools, [["downtown-pool", images.gallery[0][1]], ["downtown-kids", images.gallery[1][1]], ["downtown-aerial", images.gallery[7][1]]]],
-    [wellness, [["downtown-gym", images.gallery[2][1]], ["downtown-golf", images.gallery[3][1]], ["downtown-cycling", images.gallery[4][1]]]],
-    ["", [["downtown-hero", images.hero], ["downtown-podium", images.gallery[8][1]], ["downtown-street", images.gallery[6][1]]]],
-    [all.tresora.lifestyle.interior, [["downtown-living", images.gallery[10][1]], ["downtown-kitchen", images.gallery[12][1]], ["downtown-bedroom", images.gallery[13][1]]]],
-  ];
+    ["downtown-pool", "downtown-kids", "downtown-studio"],
+    ["downtown-gym", "downtown-golf", "downtown-cycling"],
+    ["downtown-aerial", "downtown-podium", "downtown-street"],
+    ["downtown-living", "downtown-kitchen", "downtown-bedroom"],
+    ["downtown-lobby", "downtown-living-dusk", "downtown-bathroom"],
+  ].map((row) => ["", row.map(shot)]);
   const photo = (slug, alt, className, sizes) => (slug.startsWith("downtown-hero") || slug === "downtown-entertainment"
     ? <img className={className} {...figmaPhoto(slug, 1200)} sizes={sizes} alt={alt} loading="lazy" decoding="async" />
     : <Picture slug={slug} alt={alt} className={className} sizes={sizes} />);

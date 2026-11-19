@@ -31,8 +31,15 @@ export function FittedHeading({ as: Tag = "h2", children, fillLines = false, max
           if (!width) return;
           const fitted = parseFloat(getComputedStyle(line).fontSize) * available / width;
           if (index === 0) first = fitted;
-          const size = index === 0 ? fitted : Math.min(fitted, first * maxLineRatio);
+          let size = index === 0 ? fitted : Math.min(fitted, first * maxLineRatio);
           line.style.fontSize = `${Math.floor(size * 100) / 100}px`;
+          // Glyph widths are not quite linear in the size (kerning, rounding): one correction pass
+          // keeps a line that still runs past the width inside it.
+          const after = line.getBoundingClientRect().width;
+          if (after > available) {
+            size *= available / after;
+            line.style.fontSize = `${Math.floor(size * 100) / 100}px`;
+          }
         });
         heading.dataset.fitReady = "true";
         return;

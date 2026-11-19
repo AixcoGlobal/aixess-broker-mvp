@@ -39,7 +39,7 @@
   }
   html:root:not(#fs) .lasha-home .lasha-hero h1 > span + span { margin-top: calc(15 * var(--u)); }
   /* Subtitle: Inter Regular 18, its two lines from y 650 (glyph tops 653 and 673). */
-  html:root:not(#fs) .lasha-home .lasha-hero-copy p {
+    html:root:not(#fs) .lasha-home .lasha-hero-copy p {
     /* Lines break where the frame's 534px box breaks them, not at the copy's own line break. */
     max-width: calc(534 * var(--u));
     margin-top: calc(31 * var(--u));
@@ -48,11 +48,13 @@
     font-weight: 400;
     line-height: calc(19.4 * var(--u));
     letter-spacing: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-hero-copy p {
     color: #000;
   }
   /* EXPLORE INVESTMENTS: a 303 × 61 outline (1.19 ink stroke) at y 714, Inter SemiBold 16, 4% tracked,
      the 32px arrow at x 325. */
-  html:root:not(#fs) .lasha-home .lasha-hero-cta {
+    html:root:not(#fs) .lasha-home .lasha-hero-cta {
     box-sizing: border-box;
     width: calc(303 * var(--u));
     min-width: 0;
@@ -61,17 +63,23 @@
     margin-top: calc(26 * var(--u));
     padding: 0 calc(14 * var(--u)) 0 calc(21 * var(--u));
     gap: 0;
-    background: transparent;
-    border: max(1px, calc(1.19 * var(--u))) solid #171a1d;
-    color: #171a1d;
+    border: max(1px, calc(1.19 * var(--u))) solid;
     font-size: calc(16 * var(--u));
     font-weight: 600;
     letter-spacing: 0.04em;
     line-height: 1;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-hero-cta {
+    background: transparent;
+    border-color: #171a1d;
+    color: #171a1d;
+  }
   html:root:not(#fs) .lasha-home .lasha-hero-cta .lasha-arrow { flex: 0 0 calc(32.2 * var(--u)); width: calc(32.2 * var(--u)); height: calc(10 * var(--u)); }
   html:root:not(#fs) .lasha-home .lasha-hero-cta .lasha-arrow path { stroke-width: 1.2; }
-  html:root:not(#fs) .lasha-home .lasha-hero-cta:hover { background: #171a1d; color: #f4f4f1; }
+    html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-hero-cta:hover {
+    background: #171a1d;
+    color: #f4f4f1;
+  }
 }
 
 /* Every frame's ground is #f7f7f4 (the light type on ink grounds stays #f4f4f1). Day theme only;
@@ -88,15 +96,19 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     margin-top: calc(-4 * var(--u));
     object-fit: cover;
   }
-  html:root:not(#fs) .lasha-home .lasha-about-panel { color: #fff; }
+    html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-about-panel {
+    color: #fff;
+  }
   /* ABOUT AIXESS: Inter Bold 13, 2% tracked, white, then the 113.5 rule 17 after it. */
-  html:root:not(#fs) .lasha-home .lasha-about-panel .lasha-eyebrow {
+    html:root:not(#fs) .lasha-home .lasha-about-panel .lasha-eyebrow {
     flex-direction: row;
     justify-content: flex-start;
     margin-left: calc(-3 * var(--u));
-    color: #fff;
     font-weight: 700;
     letter-spacing: 0.02em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-about-panel .lasha-eyebrow {
+    color: #fff;
   }
   html:root:not(#fs) .lasha-home .lasha-eyebrow-lead::after { margin: 0 0 0 calc(17 * var(--u)); background: #f4f4f1; }
   /* The title's box is 596 wide in the frame; narrower, it would be shrunk to fit. */
@@ -106,7 +118,9 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     font-size: calc(128 / 0.93705 * var(--u));
     line-height: calc(102.4 * var(--u));
   }
-  html:root:not(#fs) .lasha-home .lasha-about-body { color: #fff; }
+    html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-about-body {
+    color: #fff;
+  }
 }
 
 @media (min-width: 900px) {
@@ -189,7 +203,7 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     column-gap: calc(16 * var(--u));
     margin-top: calc(16 * var(--u));
   }
-  html:root:not(#fs) .lasha-home .dp-listing-cards article {
+    html:root:not(#fs) .lasha-home .dp-listing-cards article {
     --text-x: calc(24 * var(--u));
     position: relative;
     display: block;
@@ -197,6 +211,8 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     height: calc(837 * var(--u));
     padding: 0;
     border: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .dp-listing-cards article {
     background: #dce7f0;
   }
   html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) article { --text-x: calc(31 * var(--u)); }
@@ -236,18 +252,19 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     display: flex;
     gap: calc(16 * var(--u));
   }
-  html:root:not(#fs) .lasha-home .dp-listing-eyebrow > p {
+    html:root:not(#fs) .lasha-home .dp-listing-eyebrow > p {
     margin: 0;
-    color: #2557d6;
     font-size: calc(16 * var(--u));
     font-weight: 700;
     line-height: calc(17.3 * var(--u));
     letter-spacing: 0;
     text-transform: uppercase;
   }
-  html:root:not(#fs) .lasha-home .dp-listing-cards h3 {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .dp-listing-eyebrow > p {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .lasha-home .dp-listing-cards h3 {
     top: calc(584 * var(--u));
-    color: #000;
     font-family: var(--l-fig);
     font-size: calc(80 / 0.93705 * var(--u));
     font-weight: 700;
@@ -256,18 +273,24 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     translate: none;
     white-space: nowrap;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .dp-listing-cards h3 {
+    color: #000;
+  }
   html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) h3 { top: calc(591 * var(--u)); }
-  html:root:not(#fs) .lasha-home .dp-listing-meta {
+    html:root:not(#fs) .lasha-home .dp-listing-meta {
     top: calc(677 * var(--u));
     width: calc(592 * var(--u));
     padding-top: calc(13 * var(--u) - 2px);
-    border-top: 2px solid #babfc4;
-    color: #171a1d;
+    border-top: 2px solid;
     font-size: calc(16 * var(--u));
     font-weight: 500;
     line-height: calc(17.3 * var(--u));
     letter-spacing: 0;
     text-transform: none;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .dp-listing-meta {
+    border-top-color: #babfc4;
+    color: #171a1d;
   }
   html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(1) :is(.dp-listing-meta, .lasha-button) { left: calc(25 * var(--u)); }
   html:root:not(#fs) .lasha-home .dp-listing .lasha-button {
@@ -291,8 +314,7 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
   /* Different starting points: frame 4082–4669. The eyebrow is Inter Bold 20 now (capitals from
      4184), the title's box at 4228 (capitals from 4220), the access band's rule at 4669. */
   html:root:not(#fs) .lasha-home .lasha-starting { padding-top: calc(96.2 * var(--u)); padding-bottom: calc(57 * var(--u)); }
-  html:root:not(#fs) .lasha-home .lasha-starting > .lasha-eyebrow {
-    color: #2557d6;
+    html:root:not(#fs) .lasha-home .lasha-starting > .lasha-eyebrow {
     font-family: Inter, sans-serif;
     font-size: calc(20 * var(--u));
     font-weight: 700;
@@ -300,6 +322,9 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     letter-spacing: 0;
     text-transform: uppercase;
     translate: none;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-starting > .lasha-eyebrow {
+    color: #2557d6;
   }
   html:root:not(#fs) .lasha-home .lasha-starting h2 { margin-top: calc(24.8 * var(--u)); }
 }
@@ -344,16 +369,23 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
 @media (min-width: 900px) {
   /* Hero: frame 0–686. Blue panel 773 wide, the photo "999 1" 686 × 686 from x 773. */
   html:root:not(#fs) .lnp-hero-advantage { height: calc(686 * var(--u)); min-height: 0; grid-template-columns: calc(773 * var(--u)) calc(686 * var(--u)); overflow: hidden; }
-  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-panel { display: block; height: calc(686 * var(--u)); min-height: 0; padding: calc(74 * var(--u)) 0 0 calc(71 * var(--u)); background: #2557d6; }
+    html:root:not(#fs) .lnp-hero-advantage .lnp-hero-panel {
+    display: block;
+    height: calc(686 * var(--u));
+    min-height: 0;
+    padding: calc(74 * var(--u)) 0 0 calc(71 * var(--u));
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-hero-advantage .lnp-hero-panel {
+    background: #2557d6;
+  }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-copy { display: block; width: auto; max-width: none; margin: 0; padding: 0; }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media { width: calc(686 * var(--u)); height: calc(686 * var(--u)); }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
   /* ABOUT AIXESS: Inter Bold 20, 2% tracked, then the 113.5 rule at x 254. */
-  html:root:not(#fs) .lnp-hero-advantage .lnp-eyebrow {
+    html:root:not(#fs) .lnp-hero-advantage .lnp-eyebrow {
     display: flex;
     align-items: center;
     margin: 0;
-    color: #fff;
     font-family: Inter, sans-serif;
     font-size: calc(20 * var(--u));
     font-weight: 700;
@@ -361,10 +393,12 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0.02em;
     text-transform: uppercase;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-hero-advantage .lnp-eyebrow {
+    color: #fff;
+  }
   /* TURN YOUR / NETWORK INTO / OPPORTUNITY.: Morganite Bold 140 on 112, 2% tracked, box at 118. */
-  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-title {
+    html:root:not(#fs) .lnp-hero-advantage .lnp-hero-title {
     margin: calc(22.4 * var(--u)) 0 0;
-    color: #f7f7f4;
     font-family: var(--l-fig);
     font-size: calc(140 / 0.93705 * var(--u));
     font-weight: 700;
@@ -372,16 +406,21 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0.02em;
     translate: none;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-hero-advantage .lnp-hero-title {
+    color: #f7f7f4;
+  }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-title > span { display: block; line-height: calc(112 * var(--u)); }
   /* Body: Inter Medium 16 on 19.4, 4% tracked, 488 wide at 457. */
-  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-body {
+    html:root:not(#fs) .lnp-hero-advantage .lnp-hero-body {
     max-width: calc(488 * var(--u));
     margin: calc(3 * var(--u)) 0 0;
-    color: #fff;
     font-size: calc(16 * var(--u));
     font-weight: 500;
     line-height: calc(19.4 * var(--u));
     letter-spacing: 0.04em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-hero-advantage .lnp-hero-body {
+    color: #fff;
   }
   /* The site's outline buttons in the frame's 267 × 69 size, Inter SemiBold 15, text 32 in. */
   html:root:not(#fs) .lnp-advantage :is(.lnp-hero-copy, .lnp-advantage-panel) .lasha-button {
@@ -406,12 +445,14 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
 
   /* Starting points: frame 686–900 on #dce7f0; titles Morganite Bold 65 at x 71 / 547 / 992 (box 737),
      lines Inter 15 on 18.2, 4% tracked (box 804); rules at x 424 and 891 from 725. */
-  html:root:not(#fs) .lnp-advantage .lnp-starting {
+    html:root:not(#fs) .lnp-advantage .lnp-starting {
     height: calc(214 * var(--u));
     min-height: 0;
     padding: calc(51 * var(--u)) 0 0 calc(71 * var(--u));
     grid-template-columns: calc(476 * var(--u)) calc(445 * var(--u)) minmax(0, 1fr);
     column-gap: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage .lnp-starting {
     background: #dce7f0;
   }
   html:root:not(#fs) .lnp-advantage .lnp-starting article { position: relative; padding: 0; border: 0; }
@@ -427,9 +468,8 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     background: #babfc4;
   }
   html:root:not(#fs) .lnp-advantage .lnp-starting article:nth-child(3)::before { left: calc(-101 * var(--u)); height: calc(157 * var(--u)); }
-  html:root:not(#fs) .lnp-advantage .lnp-starting h2 {
+    html:root:not(#fs) .lnp-advantage .lnp-starting h2 {
     margin: 0;
-    color: #000;
     font-family: var(--l-fig);
     font-size: calc(65 / 0.93705 * var(--u));
     font-weight: 700;
@@ -438,26 +478,36 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     translate: none;
     white-space: nowrap;
   }
-  html:root:not(#fs) .lnp-advantage .lnp-starting p {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage .lnp-starting h2 {
+    color: #000;
+  }
+    html:root:not(#fs) .lnp-advantage .lnp-starting p {
     max-width: calc(210 * var(--u));
     margin: calc(2 * var(--u)) 0 0;
-    color: #000;
     font-size: calc(15 * var(--u));
     font-weight: 400;
     line-height: calc(18.2 * var(--u));
     letter-spacing: 0.04em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage .lnp-starting p {
+    color: #000;
   }
   html:root:not(#fs) .lnp-advantage .lnp-starting article:nth-child(3) p { max-width: calc(309 * var(--u)); }
 
   /* More than access: frame 900–1579. Photo 656 × 679 (its 1208 layer from x −404), sage panel. */
   html:root:not(#fs) .lnp-advantage-split { height: calc(679 * var(--u)); min-height: 0; grid-template-columns: calc(656 * var(--u)) calc(784 * var(--u)); }
   html:root:not(#fs) .lnp-advantage-media { width: 100%; height: calc(679 * var(--u)); object-fit: cover; object-position: 73.19% 50%; }
-  html:root:not(#fs) .lnp-advantage-panel { display: block; padding: calc(81 * var(--u)) 0 0 calc(69 * var(--u)); background: #9bb69e; }
-  html:root:not(#fs) .lnp-advantage-panel .lnp-kicker {
+    html:root:not(#fs) .lnp-advantage-panel {
+    display: block;
+    padding: calc(81 * var(--u)) 0 0 calc(69 * var(--u));
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage-panel {
+    background: #9bb69e;
+  }
+    html:root:not(#fs) .lnp-advantage-panel .lnp-kicker {
     display: flex;
     align-items: center;
     margin: 0;
-    color: #f7f7f4;
     font-family: Inter, sans-serif;
     font-size: calc(20 * var(--u));
     font-weight: 600;
@@ -465,9 +515,11 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0;
     text-transform: uppercase;
   }
-  html:root:not(#fs) .lnp-advantage-title {
-    margin: calc(31.4 * var(--u)) 0 0;
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage-panel .lnp-kicker {
     color: #f7f7f4;
+  }
+    html:root:not(#fs) .lnp-advantage-title {
+    margin: calc(31.4 * var(--u)) 0 0;
     font-family: var(--l-fig);
     font-size: calc(220 / 0.93705 * var(--u));
     font-weight: 700;
@@ -475,15 +527,20 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0;
     translate: none;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage-title {
+    color: #f7f7f4;
+  }
   html:root:not(#fs) .lnp-advantage-title > span { display: block; line-height: calc(169.4 * var(--u)); }
-  html:root:not(#fs) .lnp-advantage-subtitle {
+    html:root:not(#fs) .lnp-advantage-subtitle {
     max-width: calc(392 * var(--u));
     margin: calc(-1.8 * var(--u)) 0 0;
-    color: #f7f7f4;
     font-size: calc(16 * var(--u));
     font-weight: 500;
     line-height: calc(19.4 * var(--u));
     letter-spacing: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage-subtitle {
+    color: #f7f7f4;
   }
   html:root:not(#fs) .lnp-advantage-panel .lasha-button { margin-top: calc(51 * var(--u)); }
 
@@ -513,17 +570,18 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     height: calc(277 * var(--u));
     background: #5f5f5f;
   }
-  html:root:not(#fs) .lnp-care-eyebrow {
+    html:root:not(#fs) .lnp-care-eyebrow {
     margin: 0;
-    color: #2557d6;
     font-size: calc(14 * var(--u));
     font-weight: 700;
     line-height: calc(15.1 * var(--u));
     letter-spacing: 0.02em;
   }
-  html:root:not(#fs) .lnp-care-head h2 {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-care-eyebrow {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .lnp-care-head h2 {
     margin: calc(35.9 * var(--u)) 0 0;
-    color: #171a1d;
     font-family: var(--l-fig);
     font-size: calc(110 / 0.93705 * var(--u));
     font-weight: 600;
@@ -532,27 +590,39 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     text-transform: uppercase;
     translate: none;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-care-head h2 {
+    color: #171a1d;
+  }
   html:root:not(#fs) .lnp-care-head h2 > span { display: block; line-height: calc(86.9 * var(--u)); }
   /* AIXESS is set at 235 (capitals 1701–1866), 360° SERVICES at 110 (1876–1952). */
   html:root:not(#fs) .lnp-care-head h2 > span:first-child { font-size: calc(235 / 0.93705 * var(--u)); line-height: calc(166 * var(--u)); }
-  html:root:not(#fs) .lnp-care-head h2 > span + span { margin-top: calc(-8 * var(--u)); color: #2557d6; }
+    html:root:not(#fs) .lnp-care-head h2 > span + span {
+    margin-top: calc(-8 * var(--u));
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-care-head h2 > span + span {
+    color: #2557d6;
+  }
   html:root:not(#fs) .lnp-care-copy { margin: 0; padding-top: calc(44 * var(--u)); }
-  html:root:not(#fs) .lnp-care-subtitle {
+    html:root:not(#fs) .lnp-care-subtitle {
     margin: 0;
-    color: #171a1d;
     font-size: calc(28 * var(--u));
     font-weight: 700;
     line-height: calc(30.2 * var(--u));
     letter-spacing: 0.02em;
   }
-  html:root:not(#fs) .lnp-care-intro {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-care-subtitle {
+    color: #171a1d;
+  }
+    html:root:not(#fs) .lnp-care-intro {
     max-width: calc(860 * var(--u));
     margin: calc(15.8 * var(--u)) 0 0;
-    color: #1e1e1e;
     font-size: calc(28 * var(--u));
     font-weight: 500;
     line-height: calc(30.2 * var(--u));
     letter-spacing: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-care-intro {
+    color: #1e1e1e;
   }
   /* The octagon diagram: frame y 2114–2830, everything in frame pixels from its top. */
   html:root:not(#fs) .lnp-journey { position: absolute; top: calc(535 * var(--u)); left: 0; width: calc(1440 * var(--u)); height: calc(716 * var(--u)); }
@@ -564,23 +634,27 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-journey-index { position: absolute; top: calc(3 * var(--u)); left: 0; font-size: calc(58.6 / 0.93705 * var(--u)); line-height: calc(46.3 * var(--u)); translate: none; }
   html:root:not(#fs) .lnp-journey-icon { position: absolute; top: calc(var(--iy) * var(--u)); left: calc(var(--ix) * var(--u)); width: calc(var(--iw) * var(--u)); height: auto; margin: 0; }
   html:root:not(#fs) .lnp-journey-item > :is(h3, p) { position: absolute; left: calc(var(--tx) * var(--u)); margin: 0; padding: 0; border: 0; }
-  html:root:not(#fs) .lnp-journey-item h3 {
+    html:root:not(#fs) .lnp-journey-item h3 {
     top: calc(2 * var(--u));
     width: calc(var(--tw) * var(--u));
-    color: #171a1d;
     font-size: calc(54.02 / 0.93705 * var(--u));
     line-height: calc(42.7 * var(--u));
     letter-spacing: 0;
     translate: none;
   }
-  html:root:not(#fs) .lnp-journey-item p {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-journey-item h3 {
+    color: #171a1d;
+  }
+    html:root:not(#fs) .lnp-journey-item p {
     top: calc(96 * var(--u));
     width: calc(var(--dw) * var(--u));
     padding: 0;
-    color: #1e1e1e;
     font-size: calc(16 * var(--u));
     line-height: calc(17.3 * var(--u));
     letter-spacing: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-journey-item p {
+    color: #1e1e1e;
   }
   /* Each service: number at (x, y) of the frame minus 2114, rule, title and icon offsets from it. */
   html:root:not(#fs) .lnp-journey-item-1 { --x: 88; --y: 0; --rx: 49; --tx: 76; --ix: -18; --iy: 66; --iw: 48; --tw: 224; --dw: 197; }
@@ -602,20 +676,21 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-broker .lasha-page-hero-media { inset: calc(-41 * var(--u)) auto auto calc(-67 * var(--u)); width: calc(1672 * var(--u)); max-width: none; height: calc(941 * var(--u)); object-fit: cover; object-position: 50% 50%; }
   html:root:not(#fs) .lnp-broker .lasha-page-hero::after { display: none; }
   html:root:not(#fs) .lnp-broker .lasha-page-hero-copy { position: absolute; top: calc(139 * var(--u)); left: calc(69 * var(--u)); width: calc(760 * var(--u)); max-width: none; margin: 0; padding: 0; }
-  html:root:not(#fs) .lnp-broker .lasha-page-hero-copy .lasha-eyebrow {
+    html:root:not(#fs) .lnp-broker .lasha-page-hero-copy .lasha-eyebrow {
     margin: 0;
-    color: #171a1d;
     font-size: calc(18.9 * var(--u));
     font-weight: 700;
     line-height: calc(22.9 * var(--u));
     letter-spacing: 0.04em;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .lasha-page-hero-copy .lasha-eyebrow {
+    color: #171a1d;
+  }
   html:root:not(#fs) .lnp-broker .lasha-page-hero-copy .lasha-eyebrow::after { flex: 0 0 calc(113.5 * var(--u)); width: calc(113.5 * var(--u)); height: 1px; margin-left: calc(24 * var(--u)); background: #171a1d; }
-  html:root:not(#fs) .lnp-broker .lasha-page-hero-title {
+    html:root:not(#fs) .lnp-broker .lasha-page-hero-title {
     width: calc(643 * var(--u));
     height: calc(292 * var(--u));
     margin: calc(13.7 * var(--u)) 0 0;
-    color: #171a1d;
     font-family: var(--l-fig);
     font-size: calc(147 / 0.93705 * var(--u));
     font-weight: 700;
@@ -623,17 +698,22 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     translate: none;
     white-space: nowrap;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .lasha-page-hero-title {
+    color: #171a1d;
+  }
   html:root:not(#fs) .lnp-broker .lasha-page-hero-title > span { display: block; width: max-content; line-height: 0.75; }
-  html:root:not(#fs) .lnp-broker .lasha-page-hero-text {
+    html:root:not(#fs) .lnp-broker .lasha-page-hero-text {
     max-width: calc(699 * var(--u));
     margin: calc(3.4 * var(--u)) 0 0;
     /* Two even lines, as the frame breaks it ("…gives you the / tools, …"). */
     text-wrap: balance;
-    color: #171a1d;
     font-size: calc(17 * var(--u));
     font-weight: 500;
     line-height: calc(20.6 * var(--u));
     letter-spacing: 0.04em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .lasha-page-hero-text {
+    color: #171a1d;
   }
   html:root:not(#fs) .lnp-broker .it-hero-actions { gap: calc(36.2 * var(--u)); margin: calc(41.8 * var(--u)) 0 0; }
   html:root:not(#fs) .lnp-broker .it-hero-actions .button {
@@ -649,17 +729,34 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0.04em;
     line-height: 1;
   }
-  html:root:not(#fs) .lnp-broker .it-hero-actions .button-primary { background: #2557d6; color: #f4f4f1; border: 0; }
-  html:root:not(#fs) .lnp-broker .it-hero-actions .button-ghost { width: calc(303.1 * var(--u)); height: calc(82.9 * var(--u)); border: max(1px, calc(1.19 * var(--u))) solid #000; background: transparent; color: #171a1d; }
+    html:root:not(#fs) .lnp-broker .it-hero-actions .button-primary {
+    border: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-hero-actions .button-primary {
+    background: #2557d6;
+    color: #f4f4f1;
+  }
+    html:root:not(#fs) .lnp-broker .it-hero-actions .button-ghost {
+    width: calc(303.1 * var(--u));
+    height: calc(82.9 * var(--u));
+    border: max(1px, calc(1.19 * var(--u))) solid;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-hero-actions .button-ghost {
+    border-color: #000;
+    background: transparent;
+    color: #171a1d;
+  }
   html:root:not(#fs) .lnp-broker .it-hero-actions .button .lasha-arrow { flex: 0 0 calc(32.2 * var(--u)); width: calc(32.2 * var(--u)); }
-  html:root:not(#fs) .lnp-broker .it-hero-note {
+    html:root:not(#fs) .lnp-broker .it-hero-note {
     max-width: none;
     margin: calc(25.1 * var(--u)) 0 0;
-    color: #171a1d;
     font-size: calc(14 * var(--u));
     font-weight: 500;
     line-height: calc(16.9 * var(--u));
     letter-spacing: 0.04em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-hero-note {
+    color: #171a1d;
   }
 }
 
@@ -668,21 +765,28 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
      y 894), the list from x 1062: rows at 948 / 1081 / 1214 / 1347 / 1480, 301 rules at 1045 / 1186 /
      1317 / 1452 from x 1067. */
   html:root:not(#fs) .lnp-join { height: calc(677 * var(--u)); min-height: 0; grid-template-columns: calc(656 * var(--u)) calc(385 * var(--u)) minmax(0, 1fr); }
-  html:root:not(#fs) .lnp-join-panel { display: block; padding: calc(74 * var(--u)) 0 0 calc(71 * var(--u)); background: #2557d6; }
-  html:root:not(#fs) .lnp-join-panel .lnp-eyebrow {
+    html:root:not(#fs) .lnp-join-panel {
+    display: block;
+    padding: calc(74 * var(--u)) 0 0 calc(71 * var(--u));
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-join-panel {
+    background: #2557d6;
+  }
+    html:root:not(#fs) .lnp-join-panel .lnp-eyebrow {
     display: flex;
     align-items: center;
     margin: 0;
-    color: #fff;
     font-size: calc(16 * var(--u));
     font-weight: 500;
     line-height: calc(17.3 * var(--u));
     letter-spacing: 0.02em;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-join-panel .lnp-eyebrow {
+    color: #fff;
+  }
   html:root:not(#fs) .lnp-join-panel .lnp-eyebrow::after { flex: 0 0 calc(113.5 * var(--u)); width: calc(113.5 * var(--u)); height: 1px; margin-left: calc(21 * var(--u)); background: #f4f4f1; }
-  html:root:not(#fs) .lnp-join-title {
+    html:root:not(#fs) .lnp-join-title {
     margin: calc(33.7 * var(--u)) 0 0 calc(-1 * var(--u));
-    color: #f7f7f4;
     font-family: var(--l-fig);
     font-size: calc(190 / 0.93705 * var(--u));
     font-weight: 700;
@@ -690,15 +794,20 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0.02em;
     translate: none;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-join-title {
+    color: #f7f7f4;
+  }
   html:root:not(#fs) .lnp-join-title > span { line-height: calc(152 * var(--u)); }
-  html:root:not(#fs) .lnp-join-panel .lnp-hero-body {
+    html:root:not(#fs) .lnp-join-panel .lnp-hero-body {
     max-width: calc(452 * var(--u));
     margin: calc(6 * var(--u)) 0 0;
-    color: #f7f7f4;
     font-size: calc(16 * var(--u));
     font-weight: 400;
     line-height: calc(19.4 * var(--u));
     letter-spacing: 0.04em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-join-panel .lnp-hero-body {
+    color: #f7f7f4;
   }
   html:root:not(#fs) .lnp-join-media { height: calc(677 * var(--u)); }
   html:root:not(#fs) .lnp-join-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
@@ -720,12 +829,11 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-people > li:nth-child(3) { --top: 314; --rule: 103; --dw: 230; }
   html:root:not(#fs) .lnp-people > li:nth-child(4) { --top: 447; --rule: 105; --dw: 247; --dy: -2; }
   html:root:not(#fs) .lnp-people > li:nth-child(5) { --top: 580; --dw: 257; --tx: 37; }
-  html:root:not(#fs) .lnp-people .lasha-index {
+    html:root:not(#fs) .lnp-people .lasha-index {
     position: absolute;
     top: 0;
     left: 0;
     margin: 0;
-    color: #2557d6;
     font-family: var(--l-fig);
     font-size: calc(40 / 0.93705 * var(--u));
     font-weight: 700;
@@ -733,10 +841,12 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0.05em;
     translate: none;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-people .lasha-index {
+    color: #2557d6;
+  }
   html:root:not(#fs) .lnp-people li > div { position: absolute; top: 0; left: calc(var(--tx, 35) * var(--u)); }
-  html:root:not(#fs) .lnp-people h3 {
+    html:root:not(#fs) .lnp-people h3 {
     margin: 0;
-    color: #000;
     font-family: var(--l-fig);
     font-size: calc(40 / 0.93705 * var(--u));
     font-weight: 600;
@@ -745,15 +855,20 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     translate: none;
     white-space: nowrap;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-people h3 {
+    color: #000;
+  }
   html:root:not(#fs) .lnp-people > li:first-child h3 { letter-spacing: 0; }
-  html:root:not(#fs) .lnp-people p {
+    html:root:not(#fs) .lnp-people p {
     width: calc(var(--dw) * var(--u));
     margin: calc((var(--dy, 0) - 3) * var(--u)) 0 0;
-    color: #171a1d;
     font-size: calc(14 * var(--u));
     font-weight: 300;
     line-height: calc(16.9 * var(--u));
     letter-spacing: 0.04em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-people p {
+    color: #171a1d;
   }
 }
 
@@ -764,22 +879,31 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
      x −7.9). Capitals: figures 1779, titles 2021 (and 2083), body from 2108. */
   html:root:not(#fs) .lnp-commercial { position: relative; display: block; height: calc(596 * var(--u)); min-height: 0; padding: 0; }
   html:root:not(#fs) .lnp-commercial::before { content: ""; position: absolute; top: calc(76 * var(--u)); left: 0; width: 100%; height: 0.5px; background: #5f5f5f; }
-  html:root:not(#fs) .lnp-commercial-eyebrow {
+    html:root:not(#fs) .lnp-commercial-eyebrow {
     position: absolute;
     top: calc(149 * var(--u));
     left: calc(70 * var(--u));
     margin: 0;
-    color: #2557d6;
     font-size: calc(16 * var(--u));
     font-weight: 500;
     line-height: calc(17.3 * var(--u));
     letter-spacing: 0;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-eyebrow {
+    color: #2557d6;
+  }
   html:root:not(#fs) :is(.lnp-commercial-down, .lnp-commercial-commission) { position: absolute; top: calc(174 * var(--u)); display: block; height: calc(422 * var(--u)); margin: 0; padding: 0; }
   html:root:not(#fs) :is(.lnp-commercial-down, .lnp-commercial-commission) { --fig-y: 47; --h2-y: -6; --body-y: 17; }
   html:root:not(#fs) .lnp-commercial-down { left: calc(70 * var(--u)); width: calc(328 * var(--u)); }
   html:root:not(#fs) .lnp-commercial-down .lnp-figure { position: relative; left: calc(-3 * var(--u)); }
-  html:root:not(#fs) .lnp-commercial-commission { left: calc(398 * var(--u)); width: calc(409 * var(--u)); padding-left: calc(27 * var(--u)); background: #2557d6; }
+    html:root:not(#fs) .lnp-commercial-commission {
+    left: calc(398 * var(--u));
+    width: calc(409 * var(--u));
+    padding-left: calc(27 * var(--u));
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-commission {
+    background: #2557d6;
+  }
   html:root:not(#fs) .lnp-commercial .lnp-figure {
     margin: calc(var(--fig-y, 0) * var(--u)) 0 0;
     font-family: var(--l-fig);
@@ -789,8 +913,12 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0.02em;
     translate: none;
   }
-  html:root:not(#fs) .lnp-commercial-down .lnp-figure { color: #171a1d; }
-  html:root:not(#fs) .lnp-commercial-commission .lnp-figure { color: #f7f7f4; }
+    html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-down .lnp-figure {
+    color: #171a1d;
+  }
+    html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-commission .lnp-figure {
+    color: #f7f7f4;
+  }
   html:root:not(#fs) .lnp-commercial h2 {
     margin: calc(var(--h2-y, 0) * var(--u)) 0 0;
     font-family: var(--l-fig);
@@ -801,16 +929,22 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     translate: none;
   }
   html:root:not(#fs) .lnp-commercial h2 > span { display: block; line-height: calc(62.4 * var(--u)); }
-  html:root:not(#fs) .lnp-commercial-down h2 { color: #000; }
-  html:root:not(#fs) .lnp-commercial-commission h2 { color: #f7f7f4; }
-  html:root:not(#fs) .lnp-commercial-body {
+    html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-down h2 {
+    color: #000;
+  }
+    html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-commission h2 {
+    color: #f7f7f4;
+  }
+    html:root:not(#fs) .lnp-commercial-body {
     max-width: calc(281 * var(--u));
     margin: calc(var(--body-y, 0) * var(--u)) 0 0;
-    color: #171a1d;
     font-size: calc(16 * var(--u));
     font-weight: 500;
     line-height: calc(17.3 * var(--u));
     letter-spacing: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-body {
+    color: #171a1d;
   }
   html:root:not(#fs) .lnp-commercial-frame { position: absolute; top: calc(174 * var(--u)); left: calc(837 * var(--u)); width: calc(602 * var(--u)); height: calc(422 * var(--u)); overflow: hidden; }
   html:root:not(#fs) .lnp-commercial-frame img { position: absolute; top: 0; left: calc(-7.9 * var(--u)); width: calc(765.7 * var(--u)); max-width: none; height: calc(431 * var(--u)); min-height: 0; margin: 0; object-fit: cover; object-position: 50% 50%; transform: none; clip-path: none; }
@@ -821,12 +955,30 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
      (Morganite SemiBold 128 on 99.8); steps from x 512 / 648 / 861 / 1063 / 1269: numbers 2277, 54px
      rules 2322, titles 2337 (Morganite SemiBold 95), lines 2419 (Inter 13 on 15.7, 4% tracked);
      column rules at x 626 / 838 / 1037 / 1243 from 2250, 219 long. */
-  html:root:not(#fs) .lnp-process { position: relative; display: block; height: calc(373 * var(--u)); min-height: 0; padding: 0; border-bottom: 0.5px solid #5f5f5f; }
+    html:root:not(#fs) .lnp-process {
+    position: relative;
+    display: block;
+    height: calc(373 * var(--u));
+    min-height: 0;
+    padding: 0;
+    border-bottom: 0.5px solid;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-process {
+    border-bottom-color: #5f5f5f;
+  }
   html:root:not(#fs) .lnp-process-heading { position: absolute; top: calc(74 * var(--u)); left: calc(69 * var(--u)); margin: 0; }
-  html:root:not(#fs) .lnp-process-eyebrow { margin: 0; color: #2557d6; font-size: calc(20 * var(--u)); font-weight: 500; line-height: calc(21.6 * var(--u)); letter-spacing: 0; }
-  html:root:not(#fs) .lnp-process h2 {
+    html:root:not(#fs) .lnp-process-eyebrow {
+    margin: 0;
+    font-size: calc(20 * var(--u));
+    font-weight: 500;
+    line-height: calc(21.6 * var(--u));
+    letter-spacing: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-process-eyebrow {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .lnp-process h2 {
     margin: calc(19.4 * var(--u)) 0 0 calc(-1 * var(--u));
-    color: #000;
     font-family: var(--l-fig);
     font-size: calc(128 / 0.93705 * var(--u));
     font-weight: 600;
@@ -834,23 +986,27 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0;
     translate: none;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-process h2 {
+    color: #000;
+  }
   html:root:not(#fs) .lnp-process h2 > span { display: block; line-height: calc(99.8 * var(--u)); }
   html:root:not(#fs) .lnp-steps { position: absolute; inset: 0; display: block; min-height: 0; margin: 0; padding: 0; }
   html:root:not(#fs) .lnp-steps > li { position: absolute; top: calc(104 * var(--u)); left: calc(var(--x) * var(--u)); display: block; width: calc(240 * var(--u)); padding: 0; border: 0; }
-  html:root:not(#fs) .lnp-steps > li:nth-child(1) { --x: 512; --dw: 103; }
-  html:root:not(#fs) .lnp-steps > li:nth-child(2) { --x: 648; --dw: 146; --rx: -22; }
-  html:root:not(#fs) .lnp-steps > li:nth-child(3) { --x: 861; --dw: 157; --rx: -23; }
-  html:root:not(#fs) .lnp-steps > li:nth-child(4) { --x: 1063; --dw: 143; --rx: -26; }
-  html:root:not(#fs) .lnp-steps > li:nth-child(5) { --x: 1269; --dw: 106; --rx: -26; --dy: 1; }
+  /* --cw: the room to the next column's rule (or the frame's right margin), so a long translated
+     title shrinks with the others instead of running past it. */
+  html:root:not(#fs) .lnp-steps > li:nth-child(1) { --x: 512; --dw: 103; --cw: 108; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(2) { --x: 648; --dw: 146; --rx: -22; --cw: 184; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(3) { --x: 861; --dw: 157; --rx: -23; --cw: 170; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(4) { --x: 1063; --dw: 143; --rx: -26; --cw: 174; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(5) { --x: 1269; --dw: 106; --rx: -26; --dy: 1; --cw: 120; }
   html:root:not(#fs) .lnp-steps > li::before { content: ""; position: absolute; top: calc(-27 * var(--u)); left: calc(var(--rx) * var(--u)); width: 0.5px; height: calc(219 * var(--u)); background: #5f5f5f; }
   html:root:not(#fs) .lnp-steps > li:first-child::before { content: none; }
   html:root:not(#fs) .lnp-steps > li::after { content: ""; position: absolute; top: calc(45 * var(--u)); left: 0; width: calc(54 * var(--u)); height: 0.5px; background: #5f5f5f; }
-  html:root:not(#fs) .lnp-steps .lasha-index {
+    html:root:not(#fs) .lnp-steps .lasha-index {
     position: absolute;
     top: 0;
     left: 0;
     margin: 0;
-    color: #2557d6;
     font-family: var(--l-fig);
     font-size: calc(48 / 0.93705 * var(--u));
     font-weight: 700;
@@ -858,12 +1014,14 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0.02em;
     translate: none;
   }
-  html:root:not(#fs) .lnp-steps h3 {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-steps .lasha-index {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .lnp-steps h3 {
     position: absolute;
     top: calc(60 * var(--u));
     left: calc(-1 * var(--u));
     margin: 0;
-    color: #000;
     font-family: var(--l-fig);
     font-size: calc(95 / 0.93705 * var(--u));
     font-weight: 600;
@@ -872,18 +1030,23 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     translate: none;
     white-space: nowrap;
   }
-  html:root:not(#fs) .lnp-steps p {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-steps h3 {
+    color: #000;
+  }
+    html:root:not(#fs) .lnp-steps p {
     position: absolute;
     top: calc((142 + var(--dy, 0)) * var(--u));
     left: calc(-1 * var(--u));
     width: calc(var(--dw) * var(--u));
     max-width: none;
     margin: 0;
-    color: #171a1d;
     font-size: calc(13 * var(--u));
     font-weight: 400;
     line-height: calc(15.7 * var(--u));
     letter-spacing: 0.04em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-steps p {
+    color: #171a1d;
   }
 }
 
@@ -893,23 +1056,32 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
      photo "kk 1" 632 × 421 at x 808, y 2621. A 1300 rule at 3081; services in two columns
      (01–03 at x 70, 04–06 at x 787) at rows 3136 / 3320 / 3503: number, a 64 rule 45 in, title
      60.5 in (Morganite SemiBold 69), line 64 down; row rules at 3275 and 3465. */
-  html:root:not(#fs) .lnp-broker .it-section:not(.it-steps) { position: relative; height: calc(1145 * var(--u)); min-height: 0; padding: 0; background: #f7f7f4; }
+    html:root:not(#fs) .lnp-broker .it-section:not(.it-steps) {
+    position: relative;
+    height: calc(1145 * var(--u));
+    min-height: 0;
+    padding: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-section:not(.it-steps) {
+    background: #f7f7f4;
+  }
   html:root:not(#fs) .lnp-broker .it-workspace-intro { position: static; display: block; }
   html:root:not(#fs) .lnp-broker .it-workspace-intro .it-heading { position: absolute; top: calc(72 * var(--u)); left: calc(70 * var(--u)); display: block; width: calc(620 * var(--u)); }
-  html:root:not(#fs) .lnp-broker .it-heading .it-eyebrow {
+    html:root:not(#fs) .lnp-broker .it-heading .it-eyebrow {
     display: flex;
     align-items: center;
     margin: 0;
-    color: #2557d6;
     font-size: calc(18.9 * var(--u));
     font-weight: 700;
     line-height: calc(22.9 * var(--u));
     letter-spacing: 0.04em;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-heading .it-eyebrow {
+    color: #2557d6;
+  }
   html:root:not(#fs) .lnp-broker .it-heading .it-eyebrow::after { content: ""; flex: 0 0 calc(113.5 * var(--u)); width: calc(113.5 * var(--u)); height: 1px; margin-left: calc(var(--rule-gap, 20) * var(--u)); background: #2557d6; }
-  html:root:not(#fs) .lnp-broker .it-heading h2 {
+    html:root:not(#fs) .lnp-broker .it-heading h2 {
     margin: calc(14.1 * var(--u)) 0 0 calc(-2 * var(--u));
-    color: #000;
     font-family: var(--l-fig);
     font-size: calc(150 / 0.93705 * var(--u));
     font-weight: 600;
@@ -917,21 +1089,28 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0;
     translate: none;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-heading h2 {
+    color: #000;
+  }
   html:root:not(#fs) .lnp-broker .it-heading h2 > span { display: block; font-size: inherit; line-height: calc(117 * var(--u)); }
-  html:root:not(#fs) .lnp-broker .it-workspace-intro h2 > span + span { color: #2557d6; }
-  html:root:not(#fs) .lnp-broker .it-heading .it-lead {
+    html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-workspace-intro h2 > span + span {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .lnp-broker .it-heading .it-lead {
     max-width: calc(557 * var(--u));
     margin: calc(5 * var(--u)) 0 0;
-    color: #171a1d;
     font-size: calc(21 * var(--u));
     font-weight: 500;
     line-height: calc(25.6 * var(--u));
     letter-spacing: 0;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-heading .it-lead {
+    color: #171a1d;
+  }
   html:root:not(#fs) .lnp-broker .it-workspace-photo { position: absolute; top: calc(74 * var(--u)); left: calc(808 * var(--u)); width: calc(632 * var(--u)); height: calc(421 * var(--u)); max-width: none; margin: 0; object-fit: cover; }
   html:root:not(#fs) .lnp-broker .it-features { position: absolute; inset: 0; display: block; margin: 0; padding: 0; }
   html:root:not(#fs) .lnp-broker .it-features::before { content: ""; position: absolute; top: calc(535 * var(--u)); left: calc(70 * var(--u)); width: calc(1300 * var(--u)); height: 0.5px; background: #5f5f5f; }
-  html:root:not(#fs) .lnp-broker .it-feature {
+    html:root:not(#fs) .lnp-broker .it-feature {
     position: absolute;
     top: calc(var(--y) * var(--u));
     left: calc(var(--x) * var(--u));
@@ -940,8 +1119,10 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     min-height: 0;
     padding: 0;
     border: 0;
-    background: transparent;
     box-shadow: none;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-feature {
+    background: transparent;
   }
   html:root:not(#fs) .lnp-broker .it-feature:nth-child(1) { --x: 70; --y: 590; --dw: 409; --rule: 139; --rw: 588; }
   html:root:not(#fs) .lnp-broker .it-feature:nth-child(2) { --x: 70; --y: 774; --dw: 463; --rule: 145; --rw: 588; }
@@ -951,11 +1132,10 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-broker .it-feature:nth-child(6) { --x: 787; --y: 957; --dw: 490; }
   html:root:not(#fs) .lnp-broker .it-feature::before { content: ""; position: absolute; top: 0; left: calc(45 * var(--u)); width: 0.5px; height: calc(64 * var(--u)); background: #5f5f5f; }
   html:root:not(#fs) .lnp-broker .it-feature::after { content: ""; position: absolute; top: calc(var(--rule, 0) * var(--u)); left: 0; width: calc(var(--rw, 0) * var(--u)); height: 0.5px; background: #5f5f5f; }
-  html:root:not(#fs) .lnp-broker .it-feature h3 {
+    html:root:not(#fs) .lnp-broker .it-feature h3 {
     position: static;
     margin: 0;
     padding-left: calc(60.5 * var(--u));
-    color: #000;
     font-family: var(--l-fig);
     font-size: calc(69 / 0.93705 * var(--u));
     font-weight: 600;
@@ -964,29 +1144,44 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     translate: none;
     white-space: nowrap;
   }
-  html:root:not(#fs) .lnp-broker .it-feature-index {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-feature h3 {
+    color: #000;
+  }
+    html:root:not(#fs) .lnp-broker .it-feature-index {
     position: absolute;
     top: 0;
     left: 0;
-    color: #2557d6;
     font-weight: 700;
     letter-spacing: 0.05em;
   }
-  html:root:not(#fs) .lnp-broker .it-feature p {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-feature-index {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .lnp-broker .it-feature p {
     width: calc(var(--dw) * var(--u));
     max-width: none;
     margin: calc(-5 * var(--u)) 0 0 calc(60.5 * var(--u));
-    color: #171a1d;
     font-size: calc(16 * var(--u));
     font-weight: 500;
     line-height: calc(19.4 * var(--u));
     letter-spacing: 0.04em;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-feature p {
+    color: #171a1d;
+  }
 
   /* Three steps: frame 3691–4466 on #dce7f0. Eyebrow box 3747 (rule at x 348), title box 3785;
      steps at x 70 / 562 / 1054: numbers 4073 (Morganite ExtraBold 96, 5% tracked), joined by 365 blue
      lines at 4112 that end in 11px squares; titles 4168, lines 4237; button 333 × 66 at 4351. */
-  html:root:not(#fs) .lnp-broker .it-steps { position: relative; height: calc(775 * var(--u)); min-height: 0; padding: 0; background: #dce7f0; }
+    html:root:not(#fs) .lnp-broker .it-steps {
+    position: relative;
+    height: calc(775 * var(--u));
+    min-height: 0;
+    padding: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-steps {
+    background: #dce7f0;
+  }
   html:root:not(#fs) .lnp-broker .it-steps .it-heading { --rule-gap: 21; position: absolute; top: calc(56 * var(--u)); left: calc(70 * var(--u)); display: block; width: calc(610 * var(--u)); }
   html:root:not(#fs) .lnp-broker .it-steps .it-heading h2 { margin-left: 0; }
   html:root:not(#fs) .lnp-broker .it-step-list { position: absolute; top: calc(382 * var(--u)); left: 0; width: 100%; display: block; margin: 0; padding: 0; }
@@ -996,10 +1191,9 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-broker .it-step-list > li:nth-child(3) { --x: 1054; --dw: 317; }
   html:root:not(#fs) .lnp-broker .it-step-list > li:not(:last-child)::before { content: ""; position: absolute; top: calc(39 * var(--u)); left: calc(74 * var(--u)); width: calc(365 * var(--u)); height: 1px; background: #2557d6; }
   html:root:not(#fs) .lnp-broker .it-step-list > li:not(:last-child)::after { content: ""; position: absolute; top: calc(33 * var(--u)); left: calc(439 * var(--u)); width: calc(11 * var(--u)); height: calc(11 * var(--u)); background: #2557d6; }
-  html:root:not(#fs) .lnp-broker .it-step-list .lasha-index {
+    html:root:not(#fs) .lnp-broker .it-step-list .lasha-index {
     display: block;
     margin: 0;
-    color: #2557d6;
     font-family: var(--l-fig);
     font-size: calc(96 / 0.93705 * var(--u));
     font-weight: 800;
@@ -1007,12 +1201,14 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     letter-spacing: 0.05em;
     translate: none;
   }
-  html:root:not(#fs) .lnp-broker .it-step-list h3 {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-step-list .lasha-index {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .lnp-broker .it-step-list h3 {
     position: absolute;
     top: calc(95 * var(--u));
     left: 0;
     margin: 0;
-    color: #000;
     font-family: var(--l-fig);
     font-size: calc(69 / 0.93705 * var(--u));
     font-weight: 600;
@@ -1021,20 +1217,25 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     translate: none;
     white-space: nowrap;
   }
-  html:root:not(#fs) .lnp-broker .it-step-list p {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-step-list h3 {
+    color: #000;
+  }
+    html:root:not(#fs) .lnp-broker .it-step-list p {
     position: absolute;
     top: calc(164 * var(--u));
     left: 0;
     width: calc(var(--dw) * var(--u));
     max-width: none;
     margin: 0;
-    color: #171a1d;
     font-size: calc(16 * var(--u));
     font-weight: 500;
     line-height: calc(19.4 * var(--u));
     letter-spacing: 0.04em;
   }
-  html:root:not(#fs) .lnp-broker .it-steps > .button {
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-step-list p {
+    color: #171a1d;
+  }
+    html:root:not(#fs) .lnp-broker .it-steps > .button {
     position: absolute;
     top: calc(660 * var(--u));
     left: calc(70 * var(--u));
@@ -1047,12 +1248,14 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     padding: 0 calc(18 * var(--u)) 0 calc(21 * var(--u));
     justify-content: space-between;
     white-space: nowrap;
-    background: #2557d6;
-    color: #f4f4f1;
     font-size: calc(17.9 * var(--u));
     font-weight: 600;
     letter-spacing: 0.04em;
     line-height: 1;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-steps > .button {
+    background: #2557d6;
+    color: #f4f4f1;
   }
   html:root:not(#fs) .lnp-broker .it-steps > .button .lasha-arrow { flex: 0 0 calc(32.2 * var(--u)); width: calc(32.2 * var(--u)); }
 }
@@ -1153,38 +1356,65 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
     pointer-events: none;
   }
   html:root:not(#fs) .dt-highlights .tr-wrap { position: absolute; inset: 0; z-index: 1; padding: 0; }
-  html:root:not(#fs) .dt-highlights-title {
+    html:root:not(#fs) .dt-highlights-title {
     position: absolute;
     top: calc(117 * var(--u));
     left: calc(68 * var(--u));
     margin: 0;
-    color: #f7f7f4;
     font-size: calc(179 / 0.93705 * var(--u));
     line-height: calc(143.2 * var(--u));
     letter-spacing: 0.02em;
     white-space: nowrap;
   }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-highlights-title {
+    color: #f7f7f4;
+  }
   html:root:not(#fs) .dt-highlights-list { position: absolute; top: calc(310 * var(--u)); left: calc(70 * var(--u)); display: block; margin: 0; }
   html:root:not(#fs) .dt-highlights-list li { height: calc(114.2 * var(--u)); }
-  html:root:not(#fs) .dt-highlights-list h3 { color: #f7f7f4; font-size: calc(71 / 0.93705 * var(--u)); line-height: calc(56.8 * var(--u)); translate: none; white-space: nowrap; }
-  html:root:not(#fs) .dt-highlights-list p { margin: calc(0.6 * var(--u)) 0 0 calc(0.6 * var(--u)); color: #f7f7f4; font-size: calc(15 * var(--u)); line-height: calc(18.2 * var(--u)); }
+    html:root:not(#fs) .dt-highlights-list h3 {
+    font-size: calc(71 / 0.93705 * var(--u));
+    line-height: calc(56.8 * var(--u));
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-highlights-list h3 {
+    color: #f7f7f4;
+  }
+    html:root:not(#fs) .dt-highlights-list p {
+    margin: calc(0.6 * var(--u)) 0 0 calc(0.6 * var(--u));
+    font-size: calc(15 * var(--u));
+    line-height: calc(18.2 * var(--u));
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-highlights-list p {
+    color: #f7f7f4;
+  }
 
   /* Lifestyle: frame 1959–4082 on #dce7f0. Eyebrow box 2025, title box 2076 (179 on 134.2, second
      line blue), copy 2372 / 2408 (Inter Medium 20 on 24.2); rows at 2530 / 2911 / 3291 / 3669: photo
      818 × 333, title at x 935 (+6), list at x 934 from +81 with #bababa rules under each item. */
   html:root:not(#fs) .dt-lifestyle { position: relative; height: calc(2123 * var(--u)); }
   html:root:not(#fs) .dt-lifestyle .tr-wrap { position: absolute; inset: 0; padding: 0; }
-  html:root:not(#fs) .dt-lifestyle .tr-eyebrow { position: absolute; top: calc(66 * var(--u)); left: calc(70 * var(--u)); margin: 0; color: #2557d6; }
-  html:root:not(#fs) .dt-lifestyle-title {
+    html:root:not(#fs) .dt-lifestyle .tr-eyebrow {
+    position: absolute;
+    top: calc(66 * var(--u));
+    left: calc(70 * var(--u));
+    margin: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-lifestyle .tr-eyebrow {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .dt-lifestyle-title {
     position: absolute;
     top: calc(122 * var(--u));
     left: calc(70 * var(--u));
     width: calc(816 * var(--u));
     margin: 0;
-    color: #171a1d;
     font-size: calc(179 / 0.93705 * var(--u));
     line-height: calc(134.2 * var(--u));
     letter-spacing: 0.02em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-lifestyle-title {
+    color: #171a1d;
   }
   html:root:not(#fs) .dt-lifestyle-body { position: absolute; top: calc(413 * var(--u)); left: calc(71 * var(--u)); width: calc(799 * var(--u)); margin: 0; font-size: calc(20 * var(--u)); font-weight: 500; line-height: calc(24.2 * var(--u)); }
   html:root:not(#fs) .dt-lifestyle-body p { margin: 0; }
@@ -1200,7 +1430,20 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
   html:root:not(#fs) .dt-group:nth-child(2) .dt-group-photo { object-position: 50% 76%; }
   html:root:not(#fs) .dt-group:nth-child(3) .dt-group-photo { object-position: 50% 50%; }
   html:root:not(#fs) .dt-group:nth-child(4) .dt-group-photo { object-position: 50% 37%; }
-  html:root:not(#fs) .dt-group h3 { position: absolute; top: calc(6 * var(--u)); left: calc(865 * var(--u)); margin: 0; color: #171a1d; font-size: calc(72 / 0.93705 * var(--u)); line-height: calc(54 * var(--u)); letter-spacing: 0.02em; translate: none; white-space: nowrap; }
+    html:root:not(#fs) .dt-group h3 {
+    position: absolute;
+    top: calc(6 * var(--u));
+    left: calc(865 * var(--u));
+    margin: 0;
+    font-size: calc(72 / 0.93705 * var(--u));
+    line-height: calc(54 * var(--u));
+    letter-spacing: 0.02em;
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-group h3 {
+    color: #171a1d;
+  }
   html:root:not(#fs) .dt-group ul { position: absolute; top: calc(81 * var(--u)); left: calc(864 * var(--u)); width: calc(436 * var(--u)); }
   html:root:not(#fs) .dt-group li { position: relative; height: calc(var(--pitch) * var(--u)); padding: 0; border: 0; font-size: calc(20 * var(--u)); line-height: calc(24.2 * var(--u)); }
   html:root:not(#fs) .dt-group li:not(:last-child)::after { content: ""; position: absolute; top: calc(var(--rule) * var(--u)); left: 0; width: calc(435 * var(--u)); height: 1px; background: #bababa; }
@@ -1211,17 +1454,27 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
      the closing line at 5063. */
   html:root:not(#fs) .dt-location { position: relative; height: calc(1471 * var(--u)); }
   html:root:not(#fs) .dt-location .tr-wrap { position: absolute; inset: 0; padding: 0; }
-  html:root:not(#fs) .dt-location .tr-eyebrow { position: absolute; top: calc(79 * var(--u)); left: calc(70 * var(--u)); margin: 0; color: #2557d6; }
-  html:root:not(#fs) .dt-location-title {
+    html:root:not(#fs) .dt-location .tr-eyebrow {
+    position: absolute;
+    top: calc(79 * var(--u));
+    left: calc(70 * var(--u));
+    margin: 0;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-location .tr-eyebrow {
+    color: #2557d6;
+  }
+    html:root:not(#fs) .dt-location-title {
     position: absolute;
     top: calc(143 * var(--u));
     left: calc(70 * var(--u));
     width: calc(819 * var(--u));
     margin: 0;
-    color: #171a1d;
     font-size: calc(179 / 0.93705 * var(--u));
     line-height: calc(110 * var(--u));
     letter-spacing: 0.02em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-location-title {
+    color: #171a1d;
   }
   html:root:not(#fs) .dt-location-body { position: absolute; top: calc(376 * var(--u)); left: calc(71 * var(--u)); width: calc(831 * var(--u)); margin: 0; font-size: calc(20 * var(--u)); font-weight: 500; line-height: calc(24.2 * var(--u)); }
   html:root:not(#fs) .dt-location-body p { margin: 0; }
@@ -1230,11 +1483,35 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
   html:root:not(#fs) .dt-nearby-map { position: absolute; inset: 0 auto 0 0; width: calc(818 * var(--u)); }
   html:root:not(#fs) .dt-nearby-map img { position: absolute; top: calc(-33.4 * var(--u)); left: calc(-17.1 * var(--u)); width: calc(853.5 * var(--u)); max-width: none; height: calc(597.7 * var(--u)); object-fit: fill; }
   html:root:not(#fs) .dt-nearby-copy { position: absolute; top: 0; left: calc(853 * var(--u)); width: calc(432 * var(--u)); height: 100%; padding: 0; }
-  html:root:not(#fs) .dt-nearby-copy h3 { position: absolute; top: calc(52 * var(--u)); left: 0; color: #f7f7f4; font-size: calc(64 / 0.93705 * var(--u)); line-height: calc(48 * var(--u)); translate: none; white-space: nowrap; }
+    html:root:not(#fs) .dt-nearby-copy h3 {
+    position: absolute;
+    top: calc(52 * var(--u));
+    left: 0;
+    font-size: calc(64 / 0.93705 * var(--u));
+    line-height: calc(48 * var(--u));
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-nearby-copy h3 {
+    color: #f7f7f4;
+  }
   html:root:not(#fs) .dt-nearby-copy ul { position: absolute; top: calc(133 * var(--u)); left: 0; display: block; width: calc(407 * var(--u)); margin: 0; font-size: calc(17 * var(--u)); line-height: calc(20.6 * var(--u)); }
   html:root:not(#fs) .dt-nearby-copy li { height: calc(var(--h, 76) * var(--u)); }
   html:root:not(#fs) .dt-nearby-copy li:nth-child(2) { --h: 84; }
-  html:root:not(#fs) .dt-nearby-copy p { position: absolute; top: calc(406 * var(--u)); left: 0; width: calc(407 * var(--u)); margin: 0; padding: calc(40 * var(--u)) 0 0; border-top: 1px solid #f7f7f4; font-size: calc(19 * var(--u)); line-height: calc(23 * var(--u)); }
+    html:root:not(#fs) .dt-nearby-copy p {
+    position: absolute;
+    top: calc(406 * var(--u));
+    left: 0;
+    width: calc(407 * var(--u));
+    margin: 0;
+    padding: calc(40 * var(--u)) 0 0;
+    border-top: 1px solid;
+    font-size: calc(19 * var(--u));
+    line-height: calc(23 * var(--u));
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-nearby-copy p {
+    border-top-color: #f7f7f4;
+  }
 
   /* Gallery: frame 5553–7779. Rows at 5553 / 6103 / 6651 / 7201: 790 × 445 photo, two 486 × 212 at
      x 883 (+0 and +233), caption Inter Medium 24 at +457 and a 1300 #9e9e9e rule at +498. */
@@ -1259,23 +1536,42 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
   html:root:not(#fs) .dt-gallery .dt-gallery-4-1 { left: calc(-1 * var(--u)); width: calc(788 * var(--u)); height: calc(444 * var(--u)); object-position: 50% 79%; }
   html:root:not(#fs) .dt-gallery .dt-gallery-4-2 { left: calc(814 * var(--u)); width: calc(486 * var(--u)); object-position: 50% 90.2%; }
   html:root:not(#fs) .dt-gallery .dt-gallery-4-3 { left: calc(814 * var(--u)); top: calc(229 * var(--u)); width: calc(486 * var(--u)); height: calc(215 * var(--u)); object-position: 50% 73%; }
-  html:root:not(#fs) .dt-gallery figcaption { position: absolute; top: calc(457 * var(--u)); left: calc(-1 * var(--u)); width: calc(1300 * var(--u)); height: calc(42 * var(--u)); margin: 0; padding: 0; border-bottom: 1px solid #9e9e9e; color: #171a1d; font-size: calc(24 * var(--u)); font-weight: 500; line-height: calc(29 * var(--u)); letter-spacing: 0.02em; }
+    html:root:not(#fs) .dt-gallery figcaption {
+    position: absolute;
+    top: calc(457 * var(--u));
+    left: calc(-1 * var(--u));
+    width: calc(1300 * var(--u));
+    height: calc(42 * var(--u));
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid;
+    font-size: calc(24 * var(--u));
+    font-weight: 500;
+    line-height: calc(29 * var(--u));
+    letter-spacing: 0.02em;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-gallery figcaption {
+    border-bottom-color: #9e9e9e;
+    color: #171a1d;
+  }
 
   /* Closing band: frame 7779–8358. Eyebrow box 7832 (rule at x 515), title box 7883 (191 on 143.2),
      copy 8183. */
   html:root:not(#fs) .dt-more { position: relative; height: calc(579 * var(--u)); min-height: 0; padding: 0; }
   html:root:not(#fs) .dt-more .tr-wrap { position: absolute; inset: 0; padding: 0; }
   html:root:not(#fs) .dt-more .tr-eyebrow { position: absolute; top: calc(53 * var(--u)); left: calc(70 * var(--u)); margin: 0; }
-  html:root:not(#fs) .dt-more-title {
+    html:root:not(#fs) .dt-more-title {
     position: absolute;
     top: calc(104 * var(--u));
     left: calc(70 * var(--u));
     margin: 0;
-    color: #f7f7f4;
     font-size: calc(191 / 0.93705 * var(--u));
     line-height: calc(143.2 * var(--u));
     letter-spacing: 0.02em;
     white-space: nowrap;
+  }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .dt-more-title {
+    color: #f7f7f4;
   }
   html:root:not(#fs) .dt-more-title > span { display: block; }
   html:root:not(#fs) .dt-more .tr-more-body { position: absolute; top: calc(404 * var(--u)); left: calc(71 * var(--u)); width: calc(831 * var(--u)); margin: 0; font-size: calc(20 * var(--u)); font-weight: 500; line-height: calc(24.2 * var(--u)); }
@@ -1351,4 +1647,25 @@ html:root:not(#fs) .lasha-hero > .site-header :is(.login-button, .menu-toggle):h
 }
 @media (min-width: 1400px) {
   html:root:not(#fs) body { --site-header-h: 101px; }
+}
+
+/* Text shows in the same case as on the live site (Kemo, 19 November 2026: texts and numbers stay
+   exactly as they are); only the layout follows the frames. */
+html:root:not(#fs) .lasha-home .project-showcase-head .lasha-eyebrow { text-transform: none; }
+html:root:not(#fs) .lasha-home .dp-listing-eyebrow > .dp-listing-line { text-transform: none; }
+html:root:not(#fs) .lasha-home .dp-listing-eyebrow > .dp-listing-category { text-transform: uppercase; }
+html:root:not(#fs) .lasha-home .dp-listing-meta { text-transform: uppercase; }
+.dt-highlights-list h3,
+.dt-highlight-value,
+.dt-group h3,
+.dt-nearby-copy h3 { text-transform: uppercase; }
+
+@media (min-width: 900px) {
+  /* Downtown One's gallery: the frame's four rows and a fifth for the site's other three renders. */
+  html:root:not(#fs) .dt-gallery { height: calc(2776 * var(--u)); }
+  html:root:not(#fs) .dt-gallery .tr-gallery-group:nth-child(5) { --y: 2198; }
+  html:root:not(#fs) .dt-gallery figcaption:empty { color: transparent; }
+}
+@media (min-width: 900px) {
+  html:root:not(#fs) .lnp-steps h3 { width: calc(var(--cw) * var(--u)); }
 }

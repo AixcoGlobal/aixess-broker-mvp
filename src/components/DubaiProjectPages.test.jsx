@@ -193,8 +193,8 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect(copy.amenities.groups.flatMap(([, items]) => items)).toHaveLength(21);
     expect(page.textContent).not.toMatch(/DOWNTOWN DUBAI|SAMANA|AED(?=[\s\d])|PDC|Shallow Pool|Cigar Lounge|Outdoor Shower|Here add pictures|_{3,}/);
     expect(screen.getByText("Dubai Metro and Aster Cedars Hospital — approximately 5–10 minutes")).toBeInTheDocument();
-    // The frame's twelve gallery slots, every one a Downtown One render (never a TRESORA photo).
-    expect(page.querySelectorAll(".dt-gallery img")).toHaveLength(12);
+    // Every one of the site's Downtown One renders, in the frame's rows (never a TRESORA photo).
+    expect([...page.querySelectorAll(".dt-gallery img")].map((image) => image.getAttribute("alt")).sort()).toEqual(DUBAI_IMAGES_COPY.en.downtown.gallery.map(([, alt]) => alt).sort());
     [...page.querySelectorAll("img")].forEach((image) => expect(image.getAttribute("src")).toMatch(/^\/assets\/(dubai|figma)\/downtown-[a-z0-9-]+\.webp$/));
     expect([...page.querySelectorAll("a[href^='mailto:']")].map((link) => mailtoParts(link.href).subject)).toEqual(
       ["Request Availability"].map((request) => `AiXESS · DOWNTOWN ONE DUBAI: ${request}`),
