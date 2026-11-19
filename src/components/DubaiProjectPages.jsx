@@ -3,6 +3,7 @@ import { useLanguage } from "../i18n.jsx";
 import { DUBAI_PROJECTS_COPY } from "../dubai-projects-copy.js";
 import { DUBAI_IMAGES_COPY } from "../dubai-projects-images-copy.js";
 import { dubaiImage } from "../dubai-projects-data.js";
+import { figmaPhoto } from "../data/figmaPhotos.js";
 import { CONTACT } from "../contact-copy.js";
 import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
 import { useWordFit } from "./useWordFit.js";
@@ -548,7 +549,10 @@ export function DowntownOnePage({ header }) {
 // The homepage's Dubai cards, under the Batumi project: one per project, each opening its own page.
 export function DubaiProjectCards({ onNavigate }) {
   const { common, all } = useDubaiCopy();
-  const cards = [["tresora", all.tresora, "tresora-tower"], ["downtown-one", all.downtown, "downtown-street"]];
+  // Photos, order and type as Lasha's HOME frame draws the two cards (Figma sync, 19 November 2026):
+  // photo, a blue eyebrow row (the market, then the project's line), the name, a rule and the place
+  // and status. The words are the site's own.
+  const cards = [["tresora", all.tresora, "home-tresora"], ["downtown-one", all.downtown, "home-downtown"]];
   return (
     <section className="dp-listing" id="dubai-projects" aria-labelledby="dubai-projects-title">
       <p className="lasha-eyebrow">{common.listEyebrow}</p>
@@ -557,10 +561,14 @@ export function DubaiProjectCards({ onNavigate }) {
         {cards.map(([route, project, image]) => (
           <li key={route}>
             <article aria-labelledby={`${route}-card-title`}>
-              <Picture slug={image} className="dp-listing-image" sizes="(max-width: 899px) calc(100vw - 2.5rem), 44vw" />
-              <p className="dp-listing-category">{common.category}</p>
+              <div className="dp-listing-media">
+                <img className="dp-listing-image" {...figmaPhoto(image, 800)} sizes="(max-width: 899px) calc(100vw - 2.5rem), 74vw" alt="" loading="lazy" decoding="async" />
+              </div>
+              <div className="dp-listing-eyebrow">
+                <p className="dp-listing-category">{common.category}</p>
+                <p className="dp-listing-line">{project.cardLine}</p>
+              </div>
               <h3 id={`${route}-card-title`}>{project.cardName}</h3>
-              <p className="dp-listing-line">{project.cardLine}</p>
               <p className="dp-listing-meta">{project.place}<br />{project.cardStatus}</p>
               <a className="lasha-button lasha-button-primary" href={`#${route}`} onClick={routeLinkClick(onNavigate, route)} aria-label={`${common.exploreProject}: ${project.cardName}`}>
                 {common.exploreProject}<LashaArrow length={26} />

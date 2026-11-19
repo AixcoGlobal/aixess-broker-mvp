@@ -1,0 +1,109 @@
+{
+  "home-hero": {
+    "width": 3174,
+    "height": 1982,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400,
+      3174
+    ]
+  },
+  "home-about": {
+    "width": 1254,
+    "height": 1254,
+    "widths": [
+      480,
+      800,
+      1200,
+      1254
+    ]
+  },
+  "home-tresora": {
+    "width": 1786,
+    "height": 880,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      1786
+    ]
+  },
+  "home-downtown": {
+    "width": 1490,
+    "height": 1056,
+    "widths": [
+      480,
+      800,
+      1200,
+      1490
+    ]
+  },
+  "advantage-hero": {
+    "width": 1254,
+    "height": 1254,
+    "widths": [
+      480,
+      800,
+      1200,
+      1254
+    ]
+  },
+  "advantage-more": {
+    "width": 1536,
+    "height": 864,
+    "widths": [
+      480,
+      800,
+      1200,
+      1536
+    ]
+  },
+  "broker-hero": {
+    "width": 1672,
+    "height": 941,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      1672
+    ]
+  },
+  "broker-join": {
+    "width": 1882,
+    "height": 3344,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      1882
+    ]
+  },
+  "broker-commercial": {
+    "width": 3344,
+    "height": 1882,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400,
+      3200
+    ]
+  },
+  "broker-workspace": {
+    "width": 1536,
+    "height": 1024,
+    "widths": [
+      480,
+      800,
+      1200,
+      1536
+    ]
+  }
+}

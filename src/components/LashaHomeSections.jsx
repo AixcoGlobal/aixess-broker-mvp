@@ -6,6 +6,7 @@ import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { HOME_HERO_LINES } from "../project-showcase-copy.js";
 import { useWordFit } from "./useWordFit.js";
 import { ThemedImage } from "./ThemedImage.jsx";
+import { figmaPhoto } from "../data/figmaPhotos.js";
 
 // Lasha's hairline arrows (traced from the Figma frame); sized by the parent's CSS.
 export function LashaArrow({ className = "lasha-arrow", length = 24 }) {
@@ -68,14 +69,15 @@ export function HomeHero({ children, onNavigate }) {
     <section ref={sectionRef} className="lasha-hero" id="project" data-media-ready={mediaReady ? "" : undefined}>
       {children}
       <div className="lasha-hero-frame">
-        <ThemedImage
+        <img
           ref={mediaRef}
           className="lasha-hero-media"
-          // Dubai skyline in the current theme's light (Benji and Giorgi, 13 October 2026); see themePhotos.js.
-          family="dubai-skyline"
+          // The Figma HOME frame's photo (Kemo, 19 November 2026: pixel for pixel), in every theme.
+          {...figmaPhoto("home-hero", 1600)}
+          alt=""
           // Portrait phones draw the photo 1.4 × the hero's height and portrait tablets 1.75 ×
-          // (lasha-home.css), so it is about 2–2.5 × the screen height wide; 100vw would pick a soft file.
-          sizes="(max-width: 899px) and (orientation: portrait) and (min-width: 600px) 255vh, (max-width: 899px) and (orientation: portrait) 205vh, 100vw"
+          // (lasha-home.css); from 900px it is 1593 of the frame's 1440 wide (figma-sync.css).
+          sizes="(max-width: 899px) and (orientation: portrait) and (min-width: 600px) 255vh, (max-width: 899px) and (orientation: portrait) 205vh, 111vw"
           fetchPriority="high"
           decoding="async"
           onLoad={() => setMediaReady(true)}
@@ -217,9 +219,9 @@ export function HomeAbout() {
     <section className="lasha-about" id="why-aixess" aria-labelledby="lasha-about-title">
       <img
         className="lasha-about-media"
-        src="/assets/projects/reverance-entrance-lasha-754.webp"
-        srcSet="/assets/projects/reverance-entrance-lasha-377.webp 377w, /assets/projects/reverance-entrance-lasha-754.webp 754w, /assets/projects/reverance-entrance-lasha-1508.webp 1508w"
-        sizes="53vw"
+        // The Figma HOME frame's "connection 1" (Kemo, 19 November 2026).
+        {...figmaPhoto("home-about", 800)}
+        sizes="(max-width: 899px) 100vw, 53vw"
         alt=""
         loading="lazy"
         decoding="async"
