@@ -3,6 +3,8 @@ import { useLanguage } from "../i18n.jsx";
 import { DUBAI_PROJECTS_COPY } from "../dubai-projects-copy.js";
 import { DUBAI_IMAGES_COPY } from "../dubai-projects-images-copy.js";
 import { dubaiImage } from "../dubai-projects-data.js";
+import { figmaPhoto } from "../data/figmaPhotos.js";
+import { ThemedImage } from "./ThemedImage.jsx";
 import { CONTACT } from "../contact-copy.js";
 import { siteFormClick } from "../enquiry.js";
 import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
@@ -36,6 +38,12 @@ export function projectMailto(common, project, request) {
   return `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+
+// TRESORA's scene renders have versions for the other times of day (src/data/figma-photo-sizes.json).
+// Pictures with day / afternoon / night versions (src/data/figma-photo-sizes.json, Kemo 19 November 2026).
+const THEMED = new Set(["tresora-fig-hero", "tresora-fig-discover", "tresora-fig-spaces", "tresora-fig-lifestyle", "tresora-fig-payment", "downtown-fig-hero", "downtown-fig-ent"]);
+// DOWNTOWN ONE's highlights band stays the dusk render in every theme: its six items run down over the
+// palms and the street, where no ink reads on a daylight version (checked 19 November 2026).
 // The same words in English, for the AiXESS team's copy of the request.
 function englishWords(locale, label) {
   const find = (node, path) => {
@@ -78,6 +86,9 @@ function RequestButton({ common, project, label, primary = false }) {
 }
 
 function Picture({ slug, alt = "", sizes, className, eager = false }) {
+  if (THEMED.has(slug)) {
+    return <ThemedImage figma={slug} className={className} sizes={sizes} alt={alt} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : undefined} decoding="async" />;
+  }
   const image = dubaiImage(slug);
   return <img className={className} src={image.src} srcSet={image.srcSet} sizes={sizes} width={image.width} height={image.height} alt={alt} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : undefined} decoding="async" />;
 }
@@ -123,62 +134,10 @@ function useSectionFromHash(route) {
   }, [route]);
 }
 
-// The page hero: copy on the theme's ground, the developer's rendering beside it (above it on phones),
-// so no text ever sits on the photograph. The hero grows with its copy.
-function ProjectHero({ header, route, hero, image, imageAlt, children }) {
-  return (
-    <section className="lasha-page-hero lasha-page-hero-type dp-hero dp-hero-media" aria-labelledby={`${route}-title`}>
-      {header}
-      <figure className="dp-hero-figure">
-        <Picture slug={image} alt={imageAlt} sizes="(max-width: 1099px) 100vw, 36vw" eager />
-      </figure>
-      <div className="lasha-page-hero-copy dp-hero-copy">
-        <div className="dp-hero-head">
-          <h1 className="lasha-page-hero-title" id={`${route}-title`}>{hero.title.map((line) => <span key={line}>{line}</span>)}</h1>
-          <p className="dp-hero-subtitle">{hero.subtitle}</p>
-          <p className="dp-hero-tagline">{hero.tagline}</p>
-        </div>
-        <div className="dp-hero-side">{children}</div>
-      </div>
-    </section>
-  );
-}
 
-function SectionHeading({ id, eyebrow, title, lead }) {
-  return (
-    <header className="rp-heading">
-      {eyebrow && <p className="section-eyebrow">{eyebrow}</p>}
-      <h2 id={id}>{title}</h2>
-      {lead && <p className="rp-lead">{lead}</p>}
-    </header>
-  );
-}
 
-function Paragraphs({ items, className = "dp-columns" }) {
-  return <div className={className}>{items.map((text) => <p key={text}>{text}</p>)}</div>;
-}
 
-// A rendering on its own, without a caption.
-function RenderFigure({ slug, alt, sizes, className = "" }) {
-  return (
-    <figure className={`dp-figure ${className}`}>
-      <div className="dp-figure-frame"><Picture slug={slug} alt={alt} sizes={sizes} /></div>
-    </figure>
-  );
-}
 
-// Renderings without captions. `still`: TRESORA's brochure renderings, small sources shown near their own size.
-function Gallery({ items, still = false }) {
-  return (
-    <ul className={`rp-gallery dp-gallery${still ? " dp-gallery-still" : ""}`}>
-      {items.map(([slug, alt]) => (
-        <li key={slug}>
-          <Picture slug={slug} alt={alt} sizes={still ? "(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 27rem" : "(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 31vw"} />
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 // TRESORA as Lasha drew it (Figma frame "TRESORA", node 485:3; Kemo, 2 November 2026: "pixel perfect of
 // whats on figma"). tresora-figma.css sets it in frame pixels from 900px and restacks it on phones.
@@ -599,7 +558,11 @@ function CropPicture({ slug, alt, box, crop, position, sizes, className = "" }) 
   const image = dubaiImage(slug);
   return (
     <div className={`dt-crop ${className}`} style={{ aspectRatio: `${width} / ${height}` }}>
-      <img src={image.src} srcSet={image.srcSet} sizes={sizes} width={image.width} height={image.height} alt={alt} loading="lazy" decoding="async" style={imageStyle} />
+      {THEMED.has(slug) ? (
+        <ThemedImage figma={slug} sizes={sizes} alt={alt} loading="lazy" decoding="async" style={imageStyle} />
+      ) : (
+        <img src={image.src} srcSet={image.srcSet} sizes={sizes} width={image.width} height={image.height} alt={alt} loading="lazy" decoding="async" style={imageStyle} />
+      )}
     </div>
   );
 }
@@ -729,10 +692,12 @@ export function DowntownOnePage({ header }) {
   );
 }
 
-// The homepage's Dubai cards, under the Batumi project: one per project, each opening its own page.
 export function DubaiProjectCards({ onNavigate }) {
   const { common, all } = useDubaiCopy();
-  const cards = [["tresora", all.tresora, "tresora-tower"], ["downtown-one", all.downtown, "downtown-street"]];
+  // Photos, order and type as Lasha's HOME frame draws the two cards (Figma sync, 19 November 2026):
+  // photo, a blue eyebrow row (the market, then the project's line), the name, a rule and the place
+  // and status. The words are the site's own.
+  const cards = [["tresora", all.tresora, "home-tresora"], ["downtown-one", all.downtown, "home-downtown"]];
   return (
     <section className="dp-listing" id="dubai-projects" aria-labelledby="dubai-projects-title">
       <p className="lasha-eyebrow">{common.listEyebrow}</p>
@@ -741,10 +706,14 @@ export function DubaiProjectCards({ onNavigate }) {
         {cards.map(([route, project, image]) => (
           <li key={route}>
             <article aria-labelledby={`${route}-card-title`}>
-              <Picture slug={image} className="dp-listing-image" sizes="(max-width: 899px) calc(100vw - 2.5rem), 44vw" />
-              <p className="dp-listing-category">{common.category}</p>
+              <div className="dp-listing-media">
+                <ThemedImage className="dp-listing-image" figma={image} defaultWidth={800} sizes="(max-width: 899px) calc(100vw - 2.5rem), 74vw" alt="" loading="lazy" decoding="async" />
+              </div>
+              <div className="dp-listing-eyebrow">
+                <p className="dp-listing-category">{common.category}</p>
+                <p className="dp-listing-line">{project.cardLine}</p>
+              </div>
               <h3 id={`${route}-card-title`}>{project.cardName}</h3>
-              <p className="dp-listing-line">{project.cardLine}</p>
               <p className="dp-listing-meta">{project.place}<br />{project.cardStatus}</p>
               <a className="lasha-button lasha-button-primary" href={`#${route}`} onClick={routeLinkClick(onNavigate, route)} aria-label={`${common.exploreProject}: ${project.cardName}`}>
                 {common.exploreProject}<LashaArrow length={26} />
