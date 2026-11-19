@@ -1669,3 +1669,16 @@ html:root:not(#fs) .lasha-home .dp-listing-meta { text-transform: uppercase; }
 @media (min-width: 900px) {
   html:root:not(#fs) .lnp-steps h3 { width: calc(var(--cw) * var(--u)); }
 }
+
+/* The HOME, BROKER ACCESS and REVERANCE heroes show the frames' daylight photos in every theme, so
+   their copy keeps the day ink over them at every time of day (and Broker Access's header too). */
+html:root:not(#fs) .lasha-home .lasha-hero :is(h1, .lasha-hero-copy p) { color: #000; }
+html:root:not(#fs) .lasha-home .lasha-hero-cta { border-color: #171a1d; background: transparent; color: #171a1d; }
+html:root:not(#fs) .lasha-home .lasha-hero-cta:hover { background: #171a1d; color: #f4f4f1; }
+html:root:not(#fs) .rv-page .rv-hero { --rv-hero-ink: #171a1d; }
+html:root:not(#fs) .lnp-broker .lasha-page-hero :is(.lasha-eyebrow, .lasha-page-hero-title, .lasha-page-hero-text, .it-hero-note) { color: #171a1d; }
+html:root:not(#fs) .lnp-broker .lasha-page-hero .lasha-eyebrow::after { background: #171a1d; }
+html:root:not(#fs) .lnp-broker .it-hero-actions .button-ghost { border-color: #000; background: transparent; color: #171a1d; }
+html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header { border-bottom-color: rgb(23 26 29 / 0.3); }
+html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header :is(.brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .menu-toggle) { color: #171a1d; }
+html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header .login-button { border-color: rgb(23 26 29 / 0.8); color: #171a1d; }

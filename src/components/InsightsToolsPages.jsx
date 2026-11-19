@@ -149,7 +149,7 @@ function CardMedia({ media, label }) {
 // and sends brokers to sign in or apply.
 // By day Lasha's photo (Figma sync, 19 November 2026) is pale sky and white stone under the whole
 // header, so every header label takes ink (see useHeaderOnLightSky).
-const BROKER_TOOLS_LIGHT_SKY = { themes: "day", ranges: [[0, 1]] };
+const BROKER_TOOLS_LIGHT_SKY = { themes: "day afternoon", ranges: [[0, 1]] };
 
 export function BrokerPlatformHero({ header, eyebrow, onOpenModal }) {
   const { tools: c } = useCopy();
