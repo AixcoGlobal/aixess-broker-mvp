@@ -75,7 +75,6 @@
     color: #171a1d;
   }
   html:root:not(#fs) .lasha-home .lasha-hero-cta .lasha-arrow { flex: 0 0 calc(32.2 * var(--u)); width: calc(32.2 * var(--u)); height: calc(10 * var(--u)); }
-  html:root:not(#fs) .lasha-home .lasha-hero-cta .lasha-arrow path { stroke-width: 1.2; }
     html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .lasha-hero-cta:hover {
     background: #171a1d;
     color: #f4f4f1;
@@ -1740,4 +1739,68 @@ html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site
     translate: none;
   }
   html:root:not(#fs):lang(ru) .lasha-home .project-facts dd .lasha-plus { font-family: inherit; font-size: 1em; vertical-align: baseline; margin-left: 0; translate: none; }
+}
+
+/* Buttons at Figma (Kemo, 19 November 2026: "buttons included ... why is arrow so close to edge?").
+   Every button with an arrow takes its frame's exact anatomy, measured from the Figma file: the label
+   --in from the left, the arrow --len long ending --gap from the right (pinned there, whatever the
+   label's width), Figma's stroke --sw (its head grows with the stroke, see LashaArrow) and the frame's
+   box --w × --h as a minimum, so a longer translation widens its button instead of crowding the arrow.
+   All values are frame px. */
+@media (min-width: 900px) {
+  html:root:not(#fs) :is(
+    .lasha-home .lasha-hero-cta, .lasha-home .project-card-actions .lasha-button, .lasha-home .dp-listing .lasha-button,
+    .lasha-home .lasha-access-actions .lasha-button, .lnp-advantage :is(.lnp-hero-copy, .lnp-advantage-panel) .lasha-button,
+    .lnp-broker .it-hero-actions .button, .lnp-broker .it-steps > .button, .rv-page .rv-button, .tresora-page .tr-hero-actions .tr-button,
+    .tresora-page .tr-spaces-actions .tr-button
+  ) {
+    display: inline-flex;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--between, 8) * var(--u));
+    width: max-content;
+    min-width: calc(var(--w) * var(--u));
+    max-width: 100%;
+    height: auto;
+    min-height: calc(var(--h) * var(--u));
+    /* Figma measures from the box's outer edge; the padding starts inside the border (--bw: Chrome and
+       Safari draw a 1.19 border as 1px, and a filled button without one sets 0). */
+    padding: 0 calc(var(--gap) * var(--u) - var(--bw, 1px)) 0 calc(var(--in) * var(--u) - var(--bw, 1px));
+  }
+  html:root:not(#fs) :is(
+    .lasha-home .lasha-hero-cta, .lasha-home .project-card-actions .lasha-button, .lasha-home .dp-listing .lasha-button,
+    .lasha-home .lasha-access-actions .lasha-button, .lnp-advantage :is(.lnp-hero-copy, .lnp-advantage-panel) .lasha-button,
+    .lnp-broker .it-hero-actions .button, .lnp-broker .it-steps > .button, .rv-page .rv-button, .tresora-page .tr-hero-actions .tr-button,
+    .tresora-page .tr-spaces-actions .tr-button
+  ) .lasha-arrow {
+    flex: 0 0 calc(var(--len) * var(--u));
+    width: calc(var(--len) * var(--u));
+    min-width: 0;
+    height: calc(8 * var(--u));
+    min-height: 0;
+    margin: 0;
+    /* Figma's stroke at 1440 (0.873 to 1.339), never fainter than 0.85px on smaller screens. */
+    stroke-width: max(calc(var(--sw) * var(--u)), 0.85px);
+  }
+  /* HOME: Explore investments 303 × 61; Explore project (card 217 × 69, Dubai cards 217 × 57);
+     Register as a broker 417 × 69 (Download project materials, the site's own, takes the same). */
+  html:root:not(#fs) .lasha-home .lasha-hero-cta { --w: 303; --h: 61; --in: 21.1; --gap: 14.9; --len: 32.23; --sw: 1.194; }
+  html:root:not(#fs) .lasha-home .project-card-actions .lasha-button { --w: 217; --h: 69; --in: 13; --gap: 16; --len: 25; --sw: 1; }
+  html:root:not(#fs) .lasha-home .dp-listing .lasha-button { --w: 217; --h: 57; --in: 13; --gap: 16; --len: 25; --sw: 1; }
+  html:root:not(#fs) .lasha-home .lasha-access-actions .lasha-button { --w: 417; --h: 69; --in: 30; --gap: 21.5; --len: 46.5; --sw: 1; }
+  /* AiXESS ADVANTAGE: Request access and Partner sign in, 267 × 69. */
+  html:root:not(#fs) .lnp-advantage :is(.lnp-hero-copy, .lnp-advantage-panel) .lasha-button { --w: 267; --h: 69; --in: 32; --gap: 32.5; --len: 46.5; --sw: 1; }
+  /* BROKER ACCESS: Become a partner 293.7 × 82.4, Broker login 303.1 × 82.9, Request broker access 333 × 66. */
+  html:root:not(#fs) .lnp-broker .it-hero-actions .button-primary { --w: 293.7; --h: 82.4; --in: 21.5; --gap: 15.5; --len: 32.23; --sw: 1.194; --bw: 0px; }
+  html:root:not(#fs) .lnp-broker .it-hero-actions .button-ghost { --w: 303.1; --h: 82.9; --in: 21.1; --gap: 15.1; --len: 32.23; --sw: 1.194; }
+  html:root:not(#fs) .lnp-broker .it-steps > .button { --w: 333; --h: 66; --in: 21; --gap: 20.8; --len: 32.23; --sw: 1.194; }
+  /* REVERANCE: 266.2 × 60.2, the label's box ending where the arrow starts. */
+  html:root:not(#fs) .rv-page .rv-button { --w: 266.2; --h: 60.2; --in: 27.9; --gap: 24.9; --len: 40.58; --sw: 0.873; --between: 0; }
+  /* TRESORA and DOWNTOWN ONE heroes: 279 × 69, 63 apart (the row no longer stretches them to its
+     halves); TRESORA spaces: Explore residences 329.4 × 92.4, Request availability 340 × 93. */
+  html:root:not(#fs) .tresora-page .tr-hero-actions { grid-template-columns: repeat(2, max-content); column-gap: calc(63 * var(--u)); }
+  html:root:not(#fs) .tresora-page .tr-hero-actions .tr-button { --w: 279; --h: 69; --in: 18; --gap: 26; --len: 31; --sw: 1; }
+  html:root:not(#fs) .tresora-page .tr-spaces-actions .tr-button-primary { --w: 329.4; --h: 92.4; --in: 24.1; --gap: 17.4; --len: 36.16; --sw: 1.339; }
+  html:root:not(#fs) .tresora-page .tr-spaces-actions .tr-button:not(.tr-button-primary) { --w: 340; --h: 93; --in: 23.7; --gap: 16.8; --len: 36.16; --sw: 1.339; }
 }

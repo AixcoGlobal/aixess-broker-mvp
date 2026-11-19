@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { FittedHeading } from "./FittedHeading.jsx";
 import { NETWORK_COPY } from "../network-copy.js";
@@ -8,12 +8,20 @@ import { useWordFit } from "./useWordFit.js";
 import { ThemedImage } from "./ThemedImage.jsx";
 import { figmaPhoto } from "../data/figmaPhotos.js";
 
-// Lasha's hairline arrows (traced from the Figma frame); sized by the parent's CSS.
+// Lasha's hairline arrows, drawn the way Figma draws them (19 November 2026): a shaft exactly as long as
+// the width the parent's CSS gives the arrow, ending in a 45° head whose arms are 3.2 stroke widths long,
+// so a thicker stroke (`stroke-width` on the arrow) draws a proportionally larger head, as in Figma, and
+// the head never stretches with the shaft. `length` is only the width without CSS.
 export function LashaArrow({ className = "lasha-arrow", length = 24 }) {
+  const head = `lasha-arrow-head-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   return (
-    <svg className={className} viewBox={`0 0 ${length} 8`} fill="none" stroke="currentColor" aria-hidden="true" focusable="false">
-      <path d={`M0 4H${length - 0.6}`} />
-      <path d={`M${length - 3.8} 0.8L${length - 0.6} 4L${length - 3.8} 7.2`} strokeLinecap="round" strokeLinejoin="round" />
+    <svg className={className} width={length} height="8" fill="none" stroke="currentColor" aria-hidden="true" focusable="false">
+      <defs>
+        <marker id={head} markerUnits="strokeWidth" viewBox="-4 -4 5 8" markerWidth="5" markerHeight="8" refX="0" refY="0" orient="auto" overflow="visible">
+          <path d="M-3.2 -3.2L0 0L-3.2 3.2" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+        </marker>
+      </defs>
+      <line x1="0" y1="50%" x2="100%" y2="50%" markerEnd={`url(#${head})`} />
     </svg>
   );
 }

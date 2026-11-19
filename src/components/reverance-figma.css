@@ -406,7 +406,7 @@ html:root[data-time-theme='afternoon'] .rv-page .rv-band .rv-eyebrow { color: va
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 .rv-page .rv-button .lasha-arrow { flex: 0 0 calc(41 * var(--u)); width: calc(41 * var(--u)); height: calc(8 * var(--u)); min-height: 7px; overflow: visible; }
-.rv-page .rv-button .lasha-arrow path { vector-effect: non-scaling-stroke; stroke-width: 1px; }
+.rv-page .rv-button .lasha-arrow { stroke-width: 1px; }
 .rv-page .rv-button:hover { border-color: var(--rv-button-hover); background: var(--rv-button-hover); }
 .rv-page .rv-button:focus-visible { outline: 2px solid var(--rv-accent); outline-offset: 3px; }
 .rv-page .rv-opp-terms {

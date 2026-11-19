@@ -142,8 +142,7 @@ html:root[data-time-theme='night'] .tresora-page {
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .tresora-page .tr-button > span { white-space: nowrap; }
-.tresora-page .tr-button .lasha-arrow { flex: 0 0 calc(37 * var(--u)); width: calc(37 * var(--u)); height: calc(8 * var(--u)); min-height: 7px; overflow: visible; stroke-width: 1px; vector-effect: non-scaling-stroke; }
-.tresora-page .tr-button .lasha-arrow path { vector-effect: non-scaling-stroke; }
+.tresora-page .tr-button .lasha-arrow { flex: 0 0 calc(37 * var(--u)); width: calc(37 * var(--u)); height: calc(8 * var(--u)); min-height: 7px; overflow: visible; stroke-width: 1px; }
 .tresora-page .tr-button:hover { background: var(--tr-ink); border-color: var(--tr-ink); color: var(--tr-paper); }
 .tresora-page :is(.tr-hero, .tr-ink-band) .tr-button:hover { background: var(--tr-light); border-color: var(--tr-light); color: #171a1d; }
 .tresora-page .tr-button-primary { border-color: var(--tr-button); background: var(--tr-button); color: #fff; }
