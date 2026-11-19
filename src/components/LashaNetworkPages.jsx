@@ -234,7 +234,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
           <p className="lnp-hero-body">{page.brokerIntro}</p>
         </div>
         <div className="lnp-join-media">
-          <ThemedImage family="glass-architecture" defaultWidth={800} sizes="(max-width: 899px) 100vw, 27vw" style={{ "--lnp-position": "50% 30%" }} loading="lazy" decoding="async" />
+          <img {...figmaPhoto("broker-join", 800)} sizes="(max-width: 899px) 100vw, 27vw" alt="" loading="lazy" decoding="async" />
         </div>
         <ol className="lnp-people">
           {people.map(([title, line], index) => (
@@ -257,7 +257,9 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
           <p className="lnp-figure">100%</p>
           <h2>{page.commissionUnlocked.map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
-        <img className="lnp-commercial-media" src={image("reverance-tower-1990")} srcSet={srcSet("reverance-tower", 995)} sizes="(max-width: 899px) 100vw, 70vw" width="995" height="589" alt="" loading="lazy" decoding="async" />
+        <div className="lnp-commercial-frame">
+          <img className="lnp-commercial-media" {...figmaPhoto("broker-commercial", 1200)} sizes="(max-width: 899px) 100vw, 54vw" alt="" loading="lazy" decoding="async" />
+        </div>
       </section>
 
       <section className="lnp-process" aria-labelledby="lnp-process-title">
@@ -282,7 +284,6 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
   );
 }
 
-// The 360° ring: one icon per service, in the order of Kemo's image.
 // The frame's line icons, exported from the file (public/assets/figma/icons), in service order.
 const JOURNEY_ICONS = ["care-1-selection", "care-2-financing", "care-3-legal", "care-4-handover", "care-5-management", "care-6-rental", "care-7-accounting", "care-8-resale"];
 // The frame's eight 2.5px connectors, in frame pixels from the top of the diagram (y 2114).

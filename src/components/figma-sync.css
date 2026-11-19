@@ -590,3 +590,467 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-journey-item-7 { --x: 88; --y: 569; --rx: 49; --tx: 76; --ix: -21; --iy: 68; --iw: 50; --tw: 224; --dw: 197; }
   html:root:not(#fs) .lnp-journey-item-8 { --x: 88; --y: 282; --rx: 49; --tx: 76; --ix: -11; --iy: 70; --iw: 37; --tw: 132; --dw: 216; }
 }
+
+/* ==== BROKER ACCESS ======================================================================== */
+@media (min-width: 900px) {
+  /* Hero: frame 0–900. Photo "3:4 1" 1672 × 941 from x −67, y −41. Eyebrow box 138, title box
+     180.6–472.6 (EVERYTHING YOU NEED at 147, its 632px width shared by every line), body 470,
+     buttons 554 (293.7 × 82.4 and 303.1 × 82.9, 36.2 apart), note 661. */
+  html:root:not(#fs) .lnp-broker .lasha-page-hero { height: calc(900 * var(--u)); min-height: 0; padding: 0; display: block; overflow: hidden; }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-media { inset: calc(-41 * var(--u)) auto auto calc(-67 * var(--u)); width: calc(1672 * var(--u)); max-width: none; height: calc(941 * var(--u)); object-fit: cover; object-position: 50% 50%; }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero::after { display: none; }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-copy { position: absolute; top: calc(139 * var(--u)); left: calc(69 * var(--u)); width: calc(760 * var(--u)); max-width: none; margin: 0; padding: 0; }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-copy .lasha-eyebrow {
+    margin: 0;
+    color: #171a1d;
+    font-size: calc(18.9 * var(--u));
+    font-weight: 700;
+    line-height: calc(22.9 * var(--u));
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-copy .lasha-eyebrow::after { flex: 0 0 calc(113.5 * var(--u)); width: calc(113.5 * var(--u)); height: 1px; margin-left: calc(24 * var(--u)); background: #171a1d; }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-title {
+    width: calc(643 * var(--u));
+    height: calc(292 * var(--u));
+    margin: calc(13.7 * var(--u)) 0 0;
+    color: #171a1d;
+    font-family: var(--l-fig);
+    font-size: calc(147 / 0.93705 * var(--u));
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-title > span { display: block; width: max-content; line-height: 0.75; }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-text {
+    max-width: calc(699 * var(--u));
+    margin: calc(3.4 * var(--u)) 0 0;
+    /* Two even lines, as the frame breaks it ("…gives you the / tools, …"). */
+    text-wrap: balance;
+    color: #171a1d;
+    font-size: calc(17 * var(--u));
+    font-weight: 500;
+    line-height: calc(20.6 * var(--u));
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .lnp-broker .it-hero-actions { gap: calc(36.2 * var(--u)); margin: calc(41.8 * var(--u)) 0 0; }
+  html:root:not(#fs) .lnp-broker .it-hero-actions .button {
+    box-sizing: border-box;
+    width: calc(293.7 * var(--u));
+    min-width: 0;
+    height: calc(82.4 * var(--u));
+    min-height: 0;
+    padding: 0 calc(15.5 * var(--u)) 0 calc(21.5 * var(--u));
+    justify-content: space-between;
+    font-size: calc(17.9 * var(--u));
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  html:root:not(#fs) .lnp-broker .it-hero-actions .button-primary { background: #2557d6; color: #f4f4f1; border: 0; }
+  html:root:not(#fs) .lnp-broker .it-hero-actions .button-ghost { width: calc(303.1 * var(--u)); height: calc(82.9 * var(--u)); border: max(1px, calc(1.19 * var(--u))) solid #000; background: transparent; color: #171a1d; }
+  html:root:not(#fs) .lnp-broker .it-hero-actions .button .lasha-arrow { flex: 0 0 calc(32.2 * var(--u)); width: calc(32.2 * var(--u)); }
+  html:root:not(#fs) .lnp-broker .it-hero-note {
+    max-width: none;
+    margin: calc(25.1 * var(--u)) 0 0;
+    color: #171a1d;
+    font-size: calc(14 * var(--u));
+    font-weight: 500;
+    line-height: calc(16.9 * var(--u));
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (min-width: 900px) {
+  /* Who can join: frame 900–1577. Blue panel 0–656, photo "777 1" 656–1041 (its 683 layer from
+     y 894), the list from x 1062: rows at 948 / 1081 / 1214 / 1347 / 1480, 301 rules at 1045 / 1186 /
+     1317 / 1452 from x 1067. */
+  html:root:not(#fs) .lnp-join { height: calc(677 * var(--u)); min-height: 0; grid-template-columns: calc(656 * var(--u)) calc(385 * var(--u)) minmax(0, 1fr); }
+  html:root:not(#fs) .lnp-join-panel { display: block; padding: calc(74 * var(--u)) 0 0 calc(71 * var(--u)); background: #2557d6; }
+  html:root:not(#fs) .lnp-join-panel .lnp-eyebrow {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: #fff;
+    font-size: calc(16 * var(--u));
+    font-weight: 500;
+    line-height: calc(17.3 * var(--u));
+    letter-spacing: 0.02em;
+  }
+  html:root:not(#fs) .lnp-join-panel .lnp-eyebrow::after { flex: 0 0 calc(113.5 * var(--u)); width: calc(113.5 * var(--u)); height: 1px; margin-left: calc(21 * var(--u)); background: #f4f4f1; }
+  html:root:not(#fs) .lnp-join-title {
+    margin: calc(33.7 * var(--u)) 0 0 calc(-1 * var(--u));
+    color: #f7f7f4;
+    font-family: var(--l-fig);
+    font-size: calc(190 / 0.93705 * var(--u));
+    font-weight: 700;
+    line-height: calc(152 * var(--u));
+    letter-spacing: 0.02em;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-join-title > span { line-height: calc(152 * var(--u)); }
+  html:root:not(#fs) .lnp-join-panel .lnp-hero-body {
+    max-width: calc(452 * var(--u));
+    margin: calc(6 * var(--u)) 0 0;
+    color: #f7f7f4;
+    font-size: calc(16 * var(--u));
+    font-weight: 400;
+    line-height: calc(19.4 * var(--u));
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .lnp-join-media { height: calc(677 * var(--u)); }
+  html:root:not(#fs) .lnp-join-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+  html:root:not(#fs) .lnp-people { position: relative; display: block; height: calc(677 * var(--u)); margin: 0; padding: 0; }
+  html:root:not(#fs) .lnp-people > li {
+    position: absolute;
+    top: calc(var(--top) * var(--u));
+    left: calc(16 * var(--u));
+    display: block;
+    width: calc(340 * var(--u));
+    padding: 0;
+    border: 0;
+  }
+  html:root:not(#fs) .lnp-people > li::before { content: none; }
+  html:root:not(#fs) .lnp-people > li::after { content: ""; position: absolute; top: calc(var(--rule) * var(--u)); left: calc(5 * var(--u)); width: calc(301 * var(--u)); height: 0.5px; background: #5f5f5f; }
+  html:root:not(#fs) .lnp-people > li:last-child::after { content: none; }
+  html:root:not(#fs) .lnp-people > li:nth-child(1) { --top: 48; --rule: 97; --dw: 305; }
+  html:root:not(#fs) .lnp-people > li:nth-child(2) { --top: 181; --rule: 105; --dw: 219; }
+  html:root:not(#fs) .lnp-people > li:nth-child(3) { --top: 314; --rule: 103; --dw: 230; }
+  html:root:not(#fs) .lnp-people > li:nth-child(4) { --top: 447; --rule: 105; --dw: 247; --dy: -2; }
+  html:root:not(#fs) .lnp-people > li:nth-child(5) { --top: 580; --dw: 257; --tx: 37; }
+  html:root:not(#fs) .lnp-people .lasha-index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    color: #2557d6;
+    font-family: var(--l-fig);
+    font-size: calc(40 / 0.93705 * var(--u));
+    font-weight: 700;
+    line-height: calc(40 * var(--u));
+    letter-spacing: 0.05em;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-people li > div { position: absolute; top: 0; left: calc(var(--tx, 35) * var(--u)); }
+  html:root:not(#fs) .lnp-people h3 {
+    margin: 0;
+    color: #000;
+    font-family: var(--l-fig);
+    font-size: calc(40 / 0.93705 * var(--u));
+    font-weight: 600;
+    line-height: calc(40 * var(--u));
+    letter-spacing: 0.03em;
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs) .lnp-people > li:first-child h3 { letter-spacing: 0; }
+  html:root:not(#fs) .lnp-people p {
+    width: calc(var(--dw) * var(--u));
+    margin: calc((var(--dy, 0) - 3) * var(--u)) 0 0;
+    color: #171a1d;
+    font-size: calc(14 * var(--u));
+    font-weight: 300;
+    line-height: calc(16.9 * var(--u));
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (min-width: 900px) {
+  /* The commercial advantage: frame 1577–2173. A full-width 0.5 rule at 1653, eyebrow box 1726,
+     then from 1751: 10% / DOWN PAYMENT / body at x 70, the 409 × 422 blue box at x 398 (100% /
+     COMMISSION UNLOCKED from x 425) and the photo 602 × 422 at x 837 (its 765.7 × 431 layer from
+     x −7.9). Capitals: figures 1779, titles 2021 (and 2083), body from 2108. */
+  html:root:not(#fs) .lnp-commercial { position: relative; display: block; height: calc(596 * var(--u)); min-height: 0; padding: 0; }
+  html:root:not(#fs) .lnp-commercial::before { content: ""; position: absolute; top: calc(76 * var(--u)); left: 0; width: 100%; height: 0.5px; background: #5f5f5f; }
+  html:root:not(#fs) .lnp-commercial-eyebrow {
+    position: absolute;
+    top: calc(149 * var(--u));
+    left: calc(70 * var(--u));
+    margin: 0;
+    color: #2557d6;
+    font-size: calc(16 * var(--u));
+    font-weight: 500;
+    line-height: calc(17.3 * var(--u));
+    letter-spacing: 0;
+  }
+  html:root:not(#fs) :is(.lnp-commercial-down, .lnp-commercial-commission) { position: absolute; top: calc(174 * var(--u)); display: block; height: calc(422 * var(--u)); margin: 0; padding: 0; }
+  html:root:not(#fs) :is(.lnp-commercial-down, .lnp-commercial-commission) { --fig-y: 47; --h2-y: -6; --body-y: 17; }
+  html:root:not(#fs) .lnp-commercial-down { left: calc(70 * var(--u)); width: calc(328 * var(--u)); }
+  html:root:not(#fs) .lnp-commercial-down .lnp-figure { position: relative; left: calc(-3 * var(--u)); }
+  html:root:not(#fs) .lnp-commercial-commission { left: calc(398 * var(--u)); width: calc(409 * var(--u)); padding-left: calc(27 * var(--u)); background: #2557d6; }
+  html:root:not(#fs) .lnp-commercial .lnp-figure {
+    margin: calc(var(--fig-y, 0) * var(--u)) 0 0;
+    font-family: var(--l-fig);
+    font-size: calc(300 / 0.93705 * var(--u));
+    font-weight: 700;
+    line-height: calc(234 * var(--u));
+    letter-spacing: 0.02em;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-commercial-down .lnp-figure { color: #171a1d; }
+  html:root:not(#fs) .lnp-commercial-commission .lnp-figure { color: #f7f7f4; }
+  html:root:not(#fs) .lnp-commercial h2 {
+    margin: calc(var(--h2-y, 0) * var(--u)) 0 0;
+    font-family: var(--l-fig);
+    font-size: calc(80 / 0.93705 * var(--u));
+    font-weight: 600;
+    line-height: calc(62.4 * var(--u));
+    letter-spacing: 0.02em;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-commercial h2 > span { display: block; line-height: calc(62.4 * var(--u)); }
+  html:root:not(#fs) .lnp-commercial-down h2 { color: #000; }
+  html:root:not(#fs) .lnp-commercial-commission h2 { color: #f7f7f4; }
+  html:root:not(#fs) .lnp-commercial-body {
+    max-width: calc(281 * var(--u));
+    margin: calc(var(--body-y, 0) * var(--u)) 0 0;
+    color: #171a1d;
+    font-size: calc(16 * var(--u));
+    font-weight: 500;
+    line-height: calc(17.3 * var(--u));
+    letter-spacing: 0;
+  }
+  html:root:not(#fs) .lnp-commercial-frame { position: absolute; top: calc(174 * var(--u)); left: calc(837 * var(--u)); width: calc(602 * var(--u)); height: calc(422 * var(--u)); overflow: hidden; }
+  html:root:not(#fs) .lnp-commercial-frame img { position: absolute; top: 0; left: calc(-7.9 * var(--u)); width: calc(765.7 * var(--u)); max-width: none; height: calc(431 * var(--u)); min-height: 0; margin: 0; object-fit: cover; object-position: 50% 50%; transform: none; clip-path: none; }
+}
+
+@media (min-width: 900px) {
+  /* How it works: frame 2173–2546 (a full-width 0.5 rule ends it). Eyebrow box 2246, title box 2287
+     (Morganite SemiBold 128 on 99.8); steps from x 512 / 648 / 861 / 1063 / 1269: numbers 2277, 54px
+     rules 2322, titles 2337 (Morganite SemiBold 95), lines 2419 (Inter 13 on 15.7, 4% tracked);
+     column rules at x 626 / 838 / 1037 / 1243 from 2250, 219 long. */
+  html:root:not(#fs) .lnp-process { position: relative; display: block; height: calc(373 * var(--u)); min-height: 0; padding: 0; border-bottom: 0.5px solid #5f5f5f; }
+  html:root:not(#fs) .lnp-process-heading { position: absolute; top: calc(74 * var(--u)); left: calc(69 * var(--u)); margin: 0; }
+  html:root:not(#fs) .lnp-process-eyebrow { margin: 0; color: #2557d6; font-size: calc(20 * var(--u)); font-weight: 500; line-height: calc(21.6 * var(--u)); letter-spacing: 0; }
+  html:root:not(#fs) .lnp-process h2 {
+    margin: calc(19.4 * var(--u)) 0 0 calc(-1 * var(--u));
+    color: #000;
+    font-family: var(--l-fig);
+    font-size: calc(128 / 0.93705 * var(--u));
+    font-weight: 600;
+    line-height: calc(99.8 * var(--u));
+    letter-spacing: 0;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-process h2 > span { display: block; line-height: calc(99.8 * var(--u)); }
+  html:root:not(#fs) .lnp-steps { position: absolute; inset: 0; display: block; min-height: 0; margin: 0; padding: 0; }
+  html:root:not(#fs) .lnp-steps > li { position: absolute; top: calc(104 * var(--u)); left: calc(var(--x) * var(--u)); display: block; width: calc(240 * var(--u)); padding: 0; border: 0; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(1) { --x: 512; --dw: 103; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(2) { --x: 648; --dw: 146; --rx: -22; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(3) { --x: 861; --dw: 157; --rx: -23; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(4) { --x: 1063; --dw: 143; --rx: -26; }
+  html:root:not(#fs) .lnp-steps > li:nth-child(5) { --x: 1269; --dw: 106; --rx: -26; --dy: 1; }
+  html:root:not(#fs) .lnp-steps > li::before { content: ""; position: absolute; top: calc(-27 * var(--u)); left: calc(var(--rx) * var(--u)); width: 0.5px; height: calc(219 * var(--u)); background: #5f5f5f; }
+  html:root:not(#fs) .lnp-steps > li:first-child::before { content: none; }
+  html:root:not(#fs) .lnp-steps > li::after { content: ""; position: absolute; top: calc(45 * var(--u)); left: 0; width: calc(54 * var(--u)); height: 0.5px; background: #5f5f5f; }
+  html:root:not(#fs) .lnp-steps .lasha-index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    color: #2557d6;
+    font-family: var(--l-fig);
+    font-size: calc(48 / 0.93705 * var(--u));
+    font-weight: 700;
+    line-height: calc(48 * var(--u));
+    letter-spacing: 0.02em;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-steps h3 {
+    position: absolute;
+    top: calc(60 * var(--u));
+    left: calc(-1 * var(--u));
+    margin: 0;
+    color: #000;
+    font-family: var(--l-fig);
+    font-size: calc(95 / 0.93705 * var(--u));
+    font-weight: 600;
+    line-height: calc(95 * var(--u));
+    letter-spacing: 0.02em;
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs) .lnp-steps p {
+    position: absolute;
+    top: calc((142 + var(--dy, 0)) * var(--u));
+    left: calc(-1 * var(--u));
+    width: calc(var(--dw) * var(--u));
+    max-width: none;
+    margin: 0;
+    color: #171a1d;
+    font-size: calc(13 * var(--u));
+    font-weight: 400;
+    line-height: calc(15.7 * var(--u));
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (min-width: 900px) {
+  /* The broker workspace: frame 2546–3691. Eyebrow box 2618 (rule at x 429), title box 2656
+     (Morganite SemiBold 150 on 117, second line blue), body 2895 (Inter Medium 21 on 25.6, 557 wide),
+     photo "kk 1" 632 × 421 at x 808, y 2621. A 1300 rule at 3081; services in two columns
+     (01–03 at x 70, 04–06 at x 787) at rows 3136 / 3320 / 3503: number, a 64 rule 45 in, title
+     60.5 in (Morganite SemiBold 69), line 64 down; row rules at 3275 and 3465. */
+  html:root:not(#fs) .lnp-broker .it-section:not(.it-steps) { position: relative; height: calc(1145 * var(--u)); min-height: 0; padding: 0; background: #f7f7f4; }
+  html:root:not(#fs) .lnp-broker .it-workspace-intro { position: static; display: block; }
+  html:root:not(#fs) .lnp-broker .it-workspace-intro .it-heading { position: absolute; top: calc(72 * var(--u)); left: calc(70 * var(--u)); display: block; width: calc(620 * var(--u)); }
+  html:root:not(#fs) .lnp-broker .it-heading .it-eyebrow {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: #2557d6;
+    font-size: calc(18.9 * var(--u));
+    font-weight: 700;
+    line-height: calc(22.9 * var(--u));
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .lnp-broker .it-heading .it-eyebrow::after { content: ""; flex: 0 0 calc(113.5 * var(--u)); width: calc(113.5 * var(--u)); height: 1px; margin-left: calc(var(--rule-gap, 20) * var(--u)); background: #2557d6; }
+  html:root:not(#fs) .lnp-broker .it-heading h2 {
+    margin: calc(14.1 * var(--u)) 0 0 calc(-2 * var(--u));
+    color: #000;
+    font-family: var(--l-fig);
+    font-size: calc(150 / 0.93705 * var(--u));
+    font-weight: 600;
+    line-height: calc(117 * var(--u));
+    letter-spacing: 0;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-broker .it-heading h2 > span { display: block; font-size: inherit; line-height: calc(117 * var(--u)); }
+  html:root:not(#fs) .lnp-broker .it-workspace-intro h2 > span + span { color: #2557d6; }
+  html:root:not(#fs) .lnp-broker .it-heading .it-lead {
+    max-width: calc(557 * var(--u));
+    margin: calc(5 * var(--u)) 0 0;
+    color: #171a1d;
+    font-size: calc(21 * var(--u));
+    font-weight: 500;
+    line-height: calc(25.6 * var(--u));
+    letter-spacing: 0;
+  }
+  html:root:not(#fs) .lnp-broker .it-workspace-photo { position: absolute; top: calc(74 * var(--u)); left: calc(808 * var(--u)); width: calc(632 * var(--u)); height: calc(421 * var(--u)); max-width: none; margin: 0; object-fit: cover; }
+  html:root:not(#fs) .lnp-broker .it-features { position: absolute; inset: 0; display: block; margin: 0; padding: 0; }
+  html:root:not(#fs) .lnp-broker .it-features::before { content: ""; position: absolute; top: calc(535 * var(--u)); left: calc(70 * var(--u)); width: calc(1300 * var(--u)); height: 0.5px; background: #5f5f5f; }
+  html:root:not(#fs) .lnp-broker .it-feature {
+    position: absolute;
+    top: calc(var(--y) * var(--u));
+    left: calc(var(--x) * var(--u));
+    display: block;
+    width: calc(590 * var(--u));
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  html:root:not(#fs) .lnp-broker .it-feature:nth-child(1) { --x: 70; --y: 590; --dw: 409; --rule: 139; --rw: 588; }
+  html:root:not(#fs) .lnp-broker .it-feature:nth-child(2) { --x: 70; --y: 774; --dw: 463; --rule: 145; --rw: 588; }
+  html:root:not(#fs) .lnp-broker .it-feature:nth-child(3) { --x: 70; --y: 957; --dw: 518; }
+  html:root:not(#fs) .lnp-broker .it-feature:nth-child(4) { --x: 787; --y: 590; --dw: 477; --rule: 139; --rw: 583; }
+  html:root:not(#fs) .lnp-broker .it-feature:nth-child(5) { --x: 787; --y: 774; --dw: 424; --rule: 145; --rw: 583; }
+  html:root:not(#fs) .lnp-broker .it-feature:nth-child(6) { --x: 787; --y: 957; --dw: 490; }
+  html:root:not(#fs) .lnp-broker .it-feature::before { content: ""; position: absolute; top: 0; left: calc(45 * var(--u)); width: 0.5px; height: calc(64 * var(--u)); background: #5f5f5f; }
+  html:root:not(#fs) .lnp-broker .it-feature::after { content: ""; position: absolute; top: calc(var(--rule, 0) * var(--u)); left: 0; width: calc(var(--rw, 0) * var(--u)); height: 0.5px; background: #5f5f5f; }
+  html:root:not(#fs) .lnp-broker .it-feature h3 {
+    position: static;
+    margin: 0;
+    padding-left: calc(60.5 * var(--u));
+    color: #000;
+    font-family: var(--l-fig);
+    font-size: calc(69 / 0.93705 * var(--u));
+    font-weight: 600;
+    line-height: calc(69 * var(--u));
+    letter-spacing: 0;
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs) .lnp-broker .it-feature-index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #2557d6;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  html:root:not(#fs) .lnp-broker .it-feature p {
+    width: calc(var(--dw) * var(--u));
+    max-width: none;
+    margin: calc(-5 * var(--u)) 0 0 calc(60.5 * var(--u));
+    color: #171a1d;
+    font-size: calc(16 * var(--u));
+    font-weight: 500;
+    line-height: calc(19.4 * var(--u));
+    letter-spacing: 0.04em;
+  }
+
+  /* Three steps: frame 3691–4466 on #dce7f0. Eyebrow box 3747 (rule at x 348), title box 3785;
+     steps at x 70 / 562 / 1054: numbers 4073 (Morganite ExtraBold 96, 5% tracked), joined by 365 blue
+     lines at 4112 that end in 11px squares; titles 4168, lines 4237; button 333 × 66 at 4351. */
+  html:root:not(#fs) .lnp-broker .it-steps { position: relative; height: calc(775 * var(--u)); min-height: 0; padding: 0; background: #dce7f0; }
+  html:root:not(#fs) .lnp-broker .it-steps .it-heading { --rule-gap: 21; position: absolute; top: calc(56 * var(--u)); left: calc(70 * var(--u)); display: block; width: calc(610 * var(--u)); }
+  html:root:not(#fs) .lnp-broker .it-steps .it-heading h2 { margin-left: 0; }
+  html:root:not(#fs) .lnp-broker .it-step-list { position: absolute; top: calc(382 * var(--u)); left: 0; width: 100%; display: block; margin: 0; padding: 0; }
+  html:root:not(#fs) .lnp-broker .it-step-list > li { position: absolute; top: 0; left: calc(var(--x) * var(--u)); display: block; width: calc(400 * var(--u)); padding: 0; border: 0; }
+  html:root:not(#fs) .lnp-broker .it-step-list > li:nth-child(1) { --x: 70; --dw: 251; }
+  html:root:not(#fs) .lnp-broker .it-step-list > li:nth-child(2) { --x: 562; --dw: 299; }
+  html:root:not(#fs) .lnp-broker .it-step-list > li:nth-child(3) { --x: 1054; --dw: 317; }
+  html:root:not(#fs) .lnp-broker .it-step-list > li:not(:last-child)::before { content: ""; position: absolute; top: calc(39 * var(--u)); left: calc(74 * var(--u)); width: calc(365 * var(--u)); height: 1px; background: #2557d6; }
+  html:root:not(#fs) .lnp-broker .it-step-list > li:not(:last-child)::after { content: ""; position: absolute; top: calc(33 * var(--u)); left: calc(439 * var(--u)); width: calc(11 * var(--u)); height: calc(11 * var(--u)); background: #2557d6; }
+  html:root:not(#fs) .lnp-broker .it-step-list .lasha-index {
+    display: block;
+    margin: 0;
+    color: #2557d6;
+    font-family: var(--l-fig);
+    font-size: calc(96 / 0.93705 * var(--u));
+    font-weight: 800;
+    line-height: calc(96 * var(--u));
+    letter-spacing: 0.05em;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-broker .it-step-list h3 {
+    position: absolute;
+    top: calc(95 * var(--u));
+    left: 0;
+    margin: 0;
+    color: #000;
+    font-family: var(--l-fig);
+    font-size: calc(69 / 0.93705 * var(--u));
+    font-weight: 600;
+    line-height: calc(69 * var(--u));
+    letter-spacing: 0;
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs) .lnp-broker .it-step-list p {
+    position: absolute;
+    top: calc(164 * var(--u));
+    left: 0;
+    width: calc(var(--dw) * var(--u));
+    max-width: none;
+    margin: 0;
+    color: #171a1d;
+    font-size: calc(16 * var(--u));
+    font-weight: 500;
+    line-height: calc(19.4 * var(--u));
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .lnp-broker .it-steps > .button {
+    position: absolute;
+    top: calc(660 * var(--u));
+    left: calc(70 * var(--u));
+    box-sizing: border-box;
+    width: calc(333 * var(--u));
+    min-width: 0;
+    height: calc(66 * var(--u));
+    min-height: 0;
+    margin: 0;
+    padding: 0 calc(18 * var(--u)) 0 calc(21 * var(--u));
+    justify-content: space-between;
+    white-space: nowrap;
+    background: #2557d6;
+    color: #f4f4f1;
+    font-size: calc(17.9 * var(--u));
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  html:root:not(#fs) .lnp-broker .it-steps > .button .lasha-arrow { flex: 0 0 calc(32.2 * var(--u)); width: calc(32.2 * var(--u)); }
+}

@@ -118,6 +118,9 @@ const PAGE_HERO_IMAGES = {
   front: { src: "reverance-front-1400", srcSet: "reverance-front-700 700w, reverance-front-1400 1400w", position: "70% 18%" },
   facade: { src: "reverance-facade-1200", srcSet: "reverance-facade-600 600w, reverance-facade-1200 1200w", position: "60% 40%" },
   aerial: { src: "reverance-aerial-1200", srcSet: "reverance-aerial-600 600w, reverance-aerial-1200 1200w", position: "70% 30%" },
+  // Broker Access: the photo of Lasha's BROKER ACCESS frame (Figma sync, 19 November 2026), its
+  // 1672 × 941 layer from x −67, y −41 of the 1440 × 900 hero; every theme.
+  "broker-hero": { figma: "broker-hero", position: "50% 50%", sizes: "(max-aspect-ratio: 1/1) 180vh, 116vw" },
   tower: { src: "reverance-tower-1990", srcSet: "reverance-tower-995 995w, reverance-tower-1990 1990w, reverance-tower-2985 2985w", position: "68% 40%" },
 };
 const projectImage = (name) => `/assets/projects/${name}.webp`;
@@ -164,7 +167,7 @@ function useHeaderOnLightSky(ref, ranges, locale) {
 
 // Inner pages open with the homepage's language: the site header floating over a
 // Reverance render, a blue eyebrow and an oversized headline.
-export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", copy, image = "skyline", imageAlt = "", variant, lightSky, children }) {
+export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", fillTitle = false, copy, image = "skyline", imageAlt = "", variant, lightSky, children }) {
   const lines = Array.isArray(title) ? title : [title];
   const media = PAGE_HERO_IMAGES[image] ?? PAGE_HERO_IMAGES.skyline;
   const style = { "--hero-position": media.position, "--hero-position-phone": media.phonePosition ?? media.position };
@@ -174,14 +177,19 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", c
   return (
     <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes}>
       {header}
-      {media.family ? (
+      {media.figma ? (
+        <img className="lasha-page-hero-media" {...figmaPhoto(media.figma, 1600)} sizes={media.sizes} style={style} alt={imageAlt} fetchPriority="high" decoding="async" />
+      ) : media.family ? (
         <ThemedImage className="lasha-page-hero-media" family={media.family} sizes={media.sizes ?? pageHeroSizes(media.aspect)} style={style} alt={imageAlt} fetchPriority="high" decoding="async" />
       ) : (
         <img className="lasha-page-hero-media" {...pageHeroSources(media)} sizes="100vw" style={style} alt={imageAlt} decoding="async" />
       )}
       <div className="lasha-page-hero-copy">
         {eyebrow && <p className="lasha-eyebrow">{eyebrow}</p>}
-        <Title className="lasha-page-hero-title">{lines.map((line) => <span key={line}>{line}</span>)}</Title>
+        {/* fillTitle sets every line to the title's width, as Lasha's posters do (Broker Access). */}
+        {fillTitle
+          ? <FittedHeading as={Title} className="lasha-page-hero-title" fillLines>{lines.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
+          : <Title className="lasha-page-hero-title">{lines.map((line) => <span key={line}>{line}</span>)}</Title>}
         {copy && <p className="lasha-page-hero-text">{copy}</p>}
         {children}
       </div>
