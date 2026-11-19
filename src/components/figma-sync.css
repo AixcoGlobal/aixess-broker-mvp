@@ -317,3 +317,276 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
   html:root:not(#fs) .lasha-home .lasha-access-count strong { margin-top: 0; translate: 0 calc(-2 * var(--u)); font-size: calc(175 / 0.93705 * var(--u)); letter-spacing: calc(1.13 * var(--u)); }
   html:root:not(#fs) .lasha-home .lasha-access-count span { margin-top: calc(-8.96 * var(--u)); font-size: calc(67 / 0.93705 * var(--u)); letter-spacing: calc(1.13 * var(--u)); }
 }
+
+/* ==== AIXESS ADVANTAGE ===================================================================== */
+
+/* The 360° services as a list below 900px (the octagon is drawn from 900px). */
+.lnp-journey-octagon,
+.lnp-journey-lines { display: none; }
+.lnp-journey-list { display: grid; gap: 1.75rem; margin: 2.5rem 0 0; padding: 0; list-style: none; }
+.lnp-journey-item {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  column-gap: 1rem;
+  padding-left: 0;
+}
+.lnp-journey-index { grid-row: 1; color: #2557d6; font-family: var(--l-fig); font-size: 2.6rem; font-weight: 700; line-height: 0.85; }
+.lnp-journey-icon { grid-row: 2; width: 2.25rem; height: auto; margin-top: 0.6rem; }
+.lnp-journey-item > :is(h3, p) { grid-column: 2; margin: 0; padding-left: 1rem; border-left: 1.5px solid #9b9a9a; }
+.lnp-journey-item h3 { grid-row: 1; font-family: var(--l-fig); font-size: 2.1rem; font-weight: 700; line-height: 0.85; color: var(--l-ink, #171a1d); }
+.lnp-journey-item p { grid-row: 2 / span 2; padding-top: 0.5rem; font-size: 1rem; font-weight: 500; line-height: 1.1; color: #1e1e1e; }
+html:root[data-time-theme='night'] .lnp-journey-icon { filter: invert(1); }
+html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
+
+@media (min-width: 900px) {
+  /* Hero: frame 0–686. Blue panel 773 wide, the photo "999 1" 686 × 686 from x 773. */
+  html:root:not(#fs) .lnp-hero-advantage { height: calc(686 * var(--u)); min-height: 0; grid-template-columns: calc(773 * var(--u)) calc(686 * var(--u)); overflow: hidden; }
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-panel { display: block; height: calc(686 * var(--u)); min-height: 0; padding: calc(74 * var(--u)) 0 0 calc(71 * var(--u)); background: #2557d6; }
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-copy { display: block; width: auto; max-width: none; margin: 0; padding: 0; }
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media { width: calc(686 * var(--u)); height: calc(686 * var(--u)); }
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+  /* ABOUT AIXESS: Inter Bold 20, 2% tracked, then the 113.5 rule at x 254. */
+  html:root:not(#fs) .lnp-hero-advantage .lnp-eyebrow {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: #fff;
+    font-family: Inter, sans-serif;
+    font-size: calc(20 * var(--u));
+    font-weight: 700;
+    line-height: calc(21.6 * var(--u));
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  /* TURN YOUR / NETWORK INTO / OPPORTUNITY.: Morganite Bold 140 on 112, 2% tracked, box at 118. */
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-title {
+    margin: calc(22.4 * var(--u)) 0 0;
+    color: #f7f7f4;
+    font-family: var(--l-fig);
+    font-size: calc(140 / 0.93705 * var(--u));
+    font-weight: 700;
+    line-height: calc(112 * var(--u));
+    letter-spacing: 0.02em;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-title > span { display: block; line-height: calc(112 * var(--u)); }
+  /* Body: Inter Medium 16 on 19.4, 4% tracked, 488 wide at 457. */
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-body {
+    max-width: calc(488 * var(--u));
+    margin: calc(3 * var(--u)) 0 0;
+    color: #fff;
+    font-size: calc(16 * var(--u));
+    font-weight: 500;
+    line-height: calc(19.4 * var(--u));
+    letter-spacing: 0.04em;
+  }
+  /* The site's outline buttons in the frame's 267 × 69 size, Inter SemiBold 15, text 32 in. */
+  html:root:not(#fs) .lnp-advantage :is(.lnp-hero-copy, .lnp-advantage-panel) .lasha-button {
+    box-sizing: border-box;
+    width: calc(267 * var(--u));
+    min-width: 0;
+    height: calc(69 * var(--u));
+    min-height: 0;
+    padding: 0 0 0 calc(32 * var(--u));
+    justify-content: flex-start;
+    gap: calc(6 * var(--u));
+    border: 1px solid #f7f7f4;
+    background: transparent;
+    color: #f7f7f4;
+    font-size: calc(15 * var(--u));
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  html:root:not(#fs) .lnp-advantage :is(.lnp-hero-copy, .lnp-advantage-panel) .lasha-button .lasha-arrow { flex: 0 0 calc(46.5 * var(--u)); width: calc(46.5 * var(--u)); }
+  html:root:not(#fs) .lnp-hero-advantage .lasha-button { margin: calc(31 * var(--u)) 0 0 calc(-1 * var(--u)); }
+
+  /* Starting points: frame 686–900 on #dce7f0; titles Morganite Bold 65 at x 71 / 547 / 992 (box 737),
+     lines Inter 15 on 18.2, 4% tracked (box 804); rules at x 424 and 891 from 725. */
+  html:root:not(#fs) .lnp-advantage .lnp-starting {
+    height: calc(214 * var(--u));
+    min-height: 0;
+    padding: calc(51 * var(--u)) 0 0 calc(71 * var(--u));
+    grid-template-columns: calc(476 * var(--u)) calc(445 * var(--u)) minmax(0, 1fr);
+    column-gap: 0;
+    background: #dce7f0;
+  }
+  html:root:not(#fs) .lnp-advantage .lnp-starting article { position: relative; padding: 0; border: 0; }
+  html:root:not(#fs) .lnp-advantage .lnp-starting article::after { content: none; }
+  html:root:not(#fs) .lnp-advantage .lnp-starting article::before { content: none; }
+  html:root:not(#fs) .lnp-advantage .lnp-starting article + article::before {
+    content: "";
+    position: absolute;
+    top: calc(-12 * var(--u));
+    left: calc(-123 * var(--u));
+    width: 1px;
+    height: calc(159 * var(--u));
+    background: #babfc4;
+  }
+  html:root:not(#fs) .lnp-advantage .lnp-starting article:nth-child(3)::before { left: calc(-101 * var(--u)); height: calc(157 * var(--u)); }
+  html:root:not(#fs) .lnp-advantage .lnp-starting h2 {
+    margin: 0;
+    color: #000;
+    font-family: var(--l-fig);
+    font-size: calc(65 / 0.93705 * var(--u));
+    font-weight: 700;
+    line-height: calc(65 * var(--u));
+    letter-spacing: 0.02em;
+    translate: none;
+    white-space: nowrap;
+  }
+  html:root:not(#fs) .lnp-advantage .lnp-starting p {
+    max-width: calc(210 * var(--u));
+    margin: calc(2 * var(--u)) 0 0;
+    color: #000;
+    font-size: calc(15 * var(--u));
+    font-weight: 400;
+    line-height: calc(18.2 * var(--u));
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .lnp-advantage .lnp-starting article:nth-child(3) p { max-width: calc(309 * var(--u)); }
+
+  /* More than access: frame 900–1579. Photo 656 × 679 (its 1208 layer from x −404), sage panel. */
+  html:root:not(#fs) .lnp-advantage-split { height: calc(679 * var(--u)); min-height: 0; grid-template-columns: calc(656 * var(--u)) calc(784 * var(--u)); }
+  html:root:not(#fs) .lnp-advantage-media { width: 100%; height: calc(679 * var(--u)); object-fit: cover; object-position: 73.19% 50%; }
+  html:root:not(#fs) .lnp-advantage-panel { display: block; padding: calc(81 * var(--u)) 0 0 calc(69 * var(--u)); background: #9bb69e; }
+  html:root:not(#fs) .lnp-advantage-panel .lnp-kicker {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: #f7f7f4;
+    font-family: Inter, sans-serif;
+    font-size: calc(20 * var(--u));
+    font-weight: 600;
+    line-height: calc(21.6 * var(--u));
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+  html:root:not(#fs) .lnp-advantage-title {
+    margin: calc(31.4 * var(--u)) 0 0;
+    color: #f7f7f4;
+    font-family: var(--l-fig);
+    font-size: calc(220 / 0.93705 * var(--u));
+    font-weight: 700;
+    line-height: calc(169.4 * var(--u));
+    letter-spacing: 0;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-advantage-title > span { display: block; line-height: calc(169.4 * var(--u)); }
+  html:root:not(#fs) .lnp-advantage-subtitle {
+    max-width: calc(392 * var(--u));
+    margin: calc(-1.8 * var(--u)) 0 0;
+    color: #f7f7f4;
+    font-size: calc(16 * var(--u));
+    font-weight: 500;
+    line-height: calc(19.4 * var(--u));
+    letter-spacing: 0;
+  }
+  html:root:not(#fs) .lnp-advantage-panel .lasha-button { margin-top: calc(51 * var(--u)); }
+
+  /* AIXESS 360° SERVICES: frame 1579–2930. Eyebrow box 1674, title box 1714 (Morganite SemiBold
+     110 on 86.9, its second line blue), a 1.5 #5f5f5f rule at x 426 from 1676, subtitle Inter Bold
+     28 at 1718 and the intro Inter Medium 28 on 30.2 at 1764 from x 498. */
+  html:root:not(#fs) .lnp-care {
+    position: relative;
+    height: calc(1351 * var(--u));
+    min-height: 0;
+    padding: calc(95 * var(--u)) calc(70 * var(--u)) 0;
+  }
+  html:root:not(#fs) .lnp-care-head {
+    position: relative;
+    display: grid;
+    grid-template-columns: calc(428 * var(--u)) calc(860 * var(--u));
+    column-gap: 0;
+    align-items: start;
+    margin: 0;
+  }
+  html:root:not(#fs) .lnp-care-head::before {
+    content: "";
+    position: absolute;
+    top: calc(2 * var(--u));
+    left: calc(356 * var(--u));
+    width: 1.5px;
+    height: calc(277 * var(--u));
+    background: #5f5f5f;
+  }
+  html:root:not(#fs) .lnp-care-eyebrow {
+    margin: 0;
+    color: #2557d6;
+    font-size: calc(14 * var(--u));
+    font-weight: 700;
+    line-height: calc(15.1 * var(--u));
+    letter-spacing: 0.02em;
+  }
+  html:root:not(#fs) .lnp-care-head h2 {
+    margin: calc(35.9 * var(--u)) 0 0;
+    color: #171a1d;
+    font-family: var(--l-fig);
+    font-size: calc(110 / 0.93705 * var(--u));
+    font-weight: 600;
+    line-height: calc(86.9 * var(--u));
+    letter-spacing: 0;
+    text-transform: uppercase;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-care-head h2 > span { display: block; line-height: calc(86.9 * var(--u)); }
+  /* AIXESS is set at 235 (capitals 1701–1866), 360° SERVICES at 110 (1876–1952). */
+  html:root:not(#fs) .lnp-care-head h2 > span:first-child { font-size: calc(235 / 0.93705 * var(--u)); line-height: calc(166 * var(--u)); }
+  html:root:not(#fs) .lnp-care-head h2 > span + span { margin-top: calc(-8 * var(--u)); color: #2557d6; }
+  html:root:not(#fs) .lnp-care-copy { margin: 0; padding-top: calc(44 * var(--u)); }
+  html:root:not(#fs) .lnp-care-subtitle {
+    margin: 0;
+    color: #171a1d;
+    font-size: calc(28 * var(--u));
+    font-weight: 700;
+    line-height: calc(30.2 * var(--u));
+    letter-spacing: 0.02em;
+  }
+  html:root:not(#fs) .lnp-care-intro {
+    max-width: calc(860 * var(--u));
+    margin: calc(15.8 * var(--u)) 0 0;
+    color: #1e1e1e;
+    font-size: calc(28 * var(--u));
+    font-weight: 500;
+    line-height: calc(30.2 * var(--u));
+    letter-spacing: 0;
+  }
+  /* The octagon diagram: frame y 2114–2830, everything in frame pixels from its top. */
+  html:root:not(#fs) .lnp-journey { position: absolute; top: calc(535 * var(--u)); left: 0; width: calc(1440 * var(--u)); height: calc(716 * var(--u)); }
+  html:root:not(#fs) .lnp-journey-octagon { display: block; position: absolute; top: calc(199 * var(--u)); left: calc(433 * var(--u)); width: calc(549 * var(--u)); height: calc(296 * var(--u)); }
+  html:root:not(#fs) .lnp-journey-lines { display: block; position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #9b9a9a; stroke-width: 2.5; }
+  html:root:not(#fs) .lnp-journey-list { display: block; margin: 0; }
+  html:root:not(#fs) .lnp-journey-item { position: absolute; display: block; left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u)); width: 0; height: calc(127 * var(--u)); }
+  html:root:not(#fs) .lnp-journey-item::before { content: ""; position: absolute; top: 0; left: calc(var(--rx) * var(--u)); width: 1.5px; height: calc(127 * var(--u)); background: #9b9a9a; }
+  html:root:not(#fs) .lnp-journey-index { position: absolute; top: calc(3 * var(--u)); left: 0; font-size: calc(58.6 / 0.93705 * var(--u)); line-height: calc(46.3 * var(--u)); translate: none; }
+  html:root:not(#fs) .lnp-journey-icon { position: absolute; top: calc(var(--iy) * var(--u)); left: calc(var(--ix) * var(--u)); width: calc(var(--iw) * var(--u)); height: auto; margin: 0; }
+  html:root:not(#fs) .lnp-journey-item > :is(h3, p) { position: absolute; left: calc(var(--tx) * var(--u)); margin: 0; padding: 0; border: 0; }
+  html:root:not(#fs) .lnp-journey-item h3 {
+    top: calc(2 * var(--u));
+    width: calc(var(--tw) * var(--u));
+    color: #171a1d;
+    font-size: calc(54.02 / 0.93705 * var(--u));
+    line-height: calc(42.7 * var(--u));
+    letter-spacing: 0;
+    translate: none;
+  }
+  html:root:not(#fs) .lnp-journey-item p {
+    top: calc(96 * var(--u));
+    width: calc(var(--dw) * var(--u));
+    padding: 0;
+    color: #1e1e1e;
+    font-size: calc(16 * var(--u));
+    line-height: calc(17.3 * var(--u));
+    letter-spacing: 0;
+  }
+  /* Each service: number at (x, y) of the frame minus 2114, rule, title and icon offsets from it. */
+  html:root:not(#fs) .lnp-journey-item-1 { --x: 88; --y: 0; --rx: 49; --tx: 76; --ix: -18; --iy: 66; --iw: 48; --tw: 224; --dw: 197; }
+  html:root:not(#fs) .lnp-journey-item-2 { --x: 566; --y: 0; --rx: 53; --tx: 80; --ix: -25; --iy: 69.2; --iw: 53; --tw: 122; --dw: 219; }
+  html:root:not(#fs) .lnp-journey-item-3 { --x: 1056; --y: 0; --rx: 53; --tx: 80; --ix: -11; --iy: 69; --iw: 37; --tw: 185; --dw: 230; }
+  html:root:not(#fs) .lnp-journey-item-4 { --x: 1076; --y: 282; --rx: 49; --tx: 76; --ix: -16; --iy: 66; --iw: 42; --tw: 224; --dw: 150; }
+  html:root:not(#fs) .lnp-journey-item-5 { --x: 1056; --y: 569; --rx: 53; --tx: 80; --ix: -14; --iy: 66; --iw: 41; --tw: 252; --dw: 229; }
+  html:root:not(#fs) .lnp-journey-item-6 { --x: 566; --y: 569; --rx: 53; --tx: 80; --ix: -26; --iy: 69; --iw: 56; --tw: 221; --dw: 192; }
+  html:root:not(#fs) .lnp-journey-item-7 { --x: 88; --y: 569; --rx: 49; --tx: 76; --ix: -21; --iy: 68; --iw: 50; --tw: 224; --dw: 197; }
+  html:root:not(#fs) .lnp-journey-item-8 { --x: 88; --y: 282; --rx: 49; --tx: 76; --ix: -11; --iy: 70; --iw: 37; --tw: 132; --dw: 216; }
+}
