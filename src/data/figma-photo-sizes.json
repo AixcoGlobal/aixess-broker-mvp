@@ -512,7 +512,31 @@
       2880
     ],
     "light": "night",
-    "base": "/assets/dubai/tresora-fig-hero"
+    "base": "/assets/dubai/tresora-fig-hero",
+    "themes": {
+      "afternoon": {
+        "width": 2880,
+        "height": 1798,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      },
+      "day": {
+        "width": 2880,
+        "height": 1798,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      }
+    }
   },
   "tresora-fig-discover": {
     "width": 2880,
@@ -525,7 +549,31 @@
       2880
     ],
     "light": "night",
-    "base": "/assets/dubai/tresora-fig-discover"
+    "base": "/assets/dubai/tresora-fig-discover",
+    "themes": {
+      "afternoon": {
+        "width": 2880,
+        "height": 1858,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      },
+      "day": {
+        "width": 2880,
+        "height": 1858,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      }
+    }
   },
   "tresora-fig-spaces": {
     "width": 1640,
@@ -536,7 +584,27 @@
       1640
     ],
     "light": "day",
-    "base": "/assets/dubai/tresora-fig-spaces"
+    "base": "/assets/dubai/tresora-fig-spaces",
+    "themes": {
+      "afternoon": {
+        "width": 1640,
+        "height": 1019,
+        "widths": [
+          480,
+          960,
+          1640
+        ]
+      },
+      "night": {
+        "width": 1640,
+        "height": 1019,
+        "widths": [
+          480,
+          960,
+          1640
+        ]
+      }
+    }
   },
   "tresora-fig-lifestyle": {
     "width": 1676,
@@ -547,7 +615,27 @@
       1676
     ],
     "light": "afternoon",
-    "base": "/assets/dubai/tresora-fig-lifestyle"
+    "base": "/assets/dubai/tresora-fig-lifestyle",
+    "themes": {
+      "day": {
+        "width": 1676,
+        "height": 1122,
+        "widths": [
+          480,
+          960,
+          1676
+        ]
+      },
+      "night": {
+        "width": 1676,
+        "height": 1122,
+        "widths": [
+          480,
+          960,
+          1676
+        ]
+      }
+    }
   },
   "tresora-fig-payment": {
     "width": 2880,
@@ -560,6 +648,30 @@
       2880
     ],
     "light": "night",
-    "base": "/assets/dubai/tresora-fig-payment"
+    "base": "/assets/dubai/tresora-fig-payment",
+    "themes": {
+      "afternoon": {
+        "width": 2880,
+        "height": 1466,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      },
+      "day": {
+        "width": 2880,
+        "height": 1466,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      }
+    }
   }
 }
