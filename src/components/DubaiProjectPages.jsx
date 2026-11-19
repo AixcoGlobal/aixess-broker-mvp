@@ -4,6 +4,7 @@ import { DUBAI_PROJECTS_COPY } from "../dubai-projects-copy.js";
 import { DUBAI_IMAGES_COPY } from "../dubai-projects-images-copy.js";
 import { dubaiImage } from "../dubai-projects-data.js";
 import { figmaPhoto } from "../data/figmaPhotos.js";
+import { ThemedImage } from "./ThemedImage.jsx";
 import { CONTACT } from "../contact-copy.js";
 import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
 import { useLineFit, useWordFit } from "./useWordFit.js";
@@ -458,14 +459,14 @@ export function DowntownOnePage({ header }) {
     ["downtown-lobby", "downtown-living-dusk", "downtown-bathroom"],
   ].map((row) => ["", row.map(shot)]);
   const photo = (slug, alt, className, sizes) => (slug.startsWith("downtown-hero") || slug === "downtown-entertainment"
-    ? <img className={className} {...figmaPhoto(slug, 1200)} sizes={sizes} alt={alt} loading="lazy" decoding="async" />
+    ? <ThemedImage className={className} figma={slug} sizes={sizes} alt={alt} loading="lazy" decoding="async" />
     : <Picture slug={slug} alt={alt} className={className} sizes={sizes} />);
 
   return (
     <>
       <section className="lasha-page-hero tr-hero dt-hero" aria-labelledby={`${route}-title`}>
         {header}
-        <img className="tr-bg tr-hero-bg dt-hero-bg" {...figmaPhoto("downtown-hero", 2400)} sizes="(max-width: 899px) 200vw, 110vw" alt={images.hero} fetchPriority="high" decoding="async" />
+        <ThemedImage className="tr-bg tr-hero-bg dt-hero-bg" figma="downtown-hero" defaultWidth={2400} sizes="(max-width: 899px) 200vw, 110vw" alt={images.hero} fetchPriority="high" decoding="async" />
         <div className="tr-hero-copy">
           <Eyebrow>{hero.tagline}</Eyebrow>
           <FitLines as="h1" id={`${route}-title`} className="tr-hero-title dt-hero-title" lines={[hero.title.join(" "), hero.subtitle]} />
@@ -479,7 +480,7 @@ export function DowntownOnePage({ header }) {
 
       <main className="page-main tr-page dt-page">
         <section className="tr-photo-band dt-highlights" id="downtown-one-highlights" aria-labelledby="downtown-one-highlights-title">
-          <img className="tr-bg dt-highlights-bg" {...figmaPhoto("downtown-highlights", 2400)} sizes="(max-width: 899px) 200vw, 127vw" alt="" loading="lazy" decoding="async" />
+          <ThemedImage className="tr-bg dt-highlights-bg" figma="downtown-highlights" defaultWidth={2400} sizes="(max-width: 899px) 200vw, 127vw" alt="" loading="lazy" decoding="async" />
           <div className="tr-wrap">
             <h2 ref={highlightsTitleRef} className="tr-title dt-highlights-title" id="downtown-one-highlights-title">{highlights.title}</h2>
             <ul className="dt-highlights-list">
@@ -564,7 +565,7 @@ export function DubaiProjectCards({ onNavigate }) {
           <li key={route}>
             <article aria-labelledby={`${route}-card-title`}>
               <div className="dp-listing-media">
-                <img className="dp-listing-image" {...figmaPhoto(image, 800)} sizes="(max-width: 899px) calc(100vw - 2.5rem), 74vw" alt="" loading="lazy" decoding="async" />
+                <ThemedImage className="dp-listing-image" figma={image} defaultWidth={800} sizes="(max-width: 899px) calc(100vw - 2.5rem), 74vw" alt="" loading="lazy" decoding="async" />
               </div>
               <div className="dp-listing-eyebrow">
                 <p className="dp-listing-category">{common.category}</p>

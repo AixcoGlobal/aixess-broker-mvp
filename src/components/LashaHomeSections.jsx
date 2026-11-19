@@ -6,7 +6,6 @@ import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { HOME_HERO_LINES } from "../project-showcase-copy.js";
 import { useWordFit } from "./useWordFit.js";
 import { ThemedImage } from "./ThemedImage.jsx";
-import { figmaPhoto } from "../data/figmaPhotos.js";
 
 // Lasha's hairline arrows, drawn the way Figma draws them (19 November 2026): a shaft exactly as long as
 // the width the parent's CSS gives the arrow, ending in a 45° head whose arms are 3.2 stroke widths long,
@@ -77,11 +76,13 @@ export function HomeHero({ children, onNavigate }) {
     <section ref={sectionRef} className="lasha-hero" id="project" data-media-ready={mediaReady ? "" : undefined}>
       {children}
       <div className="lasha-hero-frame">
-        <img
+        <ThemedImage
           ref={mediaRef}
           className="lasha-hero-media"
-          // The Figma HOME frame's photo (Kemo, 19 November 2026: pixel for pixel), in every theme.
-          {...figmaPhoto("home-hero", 1600)}
+          // The Figma HOME frame's photo (Kemo, 19 November 2026: pixel for pixel), in its
+          // afternoon and night light where those versions exist.
+          figma="home-hero"
+          defaultWidth={1600}
           alt=""
           // Portrait phones draw the photo 1.4 × the hero's height and portrait tablets 1.75 ×
           // (lasha-home.css); from 900px it is 1593 of the frame's 1440 wide (figma-sync.css).
@@ -186,7 +187,7 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", f
     <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes}>
       {header}
       {media.figma ? (
-        <img className="lasha-page-hero-media" {...figmaPhoto(media.figma, 1600)} sizes={media.sizes} style={style} alt={imageAlt} fetchPriority="high" decoding="async" />
+        <ThemedImage className="lasha-page-hero-media" figma={media.figma} defaultWidth={1600} sizes={media.sizes} style={style} alt={imageAlt} fetchPriority="high" decoding="async" />
       ) : media.family ? (
         <ThemedImage className="lasha-page-hero-media" family={media.family} sizes={media.sizes ?? pageHeroSizes(media.aspect)} style={style} alt={imageAlt} fetchPriority="high" decoding="async" />
       ) : (
@@ -233,10 +234,11 @@ export function HomeAbout() {
 
   return (
     <section className="lasha-about" id="why-aixess" aria-labelledby="lasha-about-title">
-      <img
+      <ThemedImage
         className="lasha-about-media"
-        // The Figma HOME frame's "connection 1" (Kemo, 19 November 2026).
-        {...figmaPhoto("home-about", 800)}
+        // The Figma HOME frame's "connection 1" (Kemo, 19 November 2026), in the theme's light.
+        figma="home-about"
+        defaultWidth={800}
         sizes="(max-width: 899px) 100vw, 53vw"
         alt=""
         loading="lazy"

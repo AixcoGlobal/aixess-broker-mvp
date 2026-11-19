@@ -9,7 +9,6 @@ import { LASHA_PAGES_COPY } from "../lasha-pages-copy.js";
 import { ADVANTAGE_SERVICES_COPY } from "../advantage-services-copy.js";
 import "./lasha-network-pages.css";
 import { ThemedImage } from "./ThemedImage.jsx";
-import { figmaPhoto } from "../data/figmaPhotos.js";
 import { BrokerGetStarted, BrokerPlatformHero, BrokerWorkspace } from "./InsightsToolsPages.jsx";
 
 // AiXESS Advantage and Broker Access, built to Lasha Bakashvili's Figma frames (AIXESS
@@ -122,7 +121,7 @@ function SplitHero({ header, eyebrow, title, body, action, media, className }) {
       </div>
       <div className="lnp-hero-media">
         {media.figma
-          ? <img {...figmaPhoto(media.figma, 1200)} sizes={media.sizes} alt="" decoding="async" fetchPriority="high" />
+          ? <ThemedImage figma={media.figma} sizes={media.sizes} decoding="async" fetchPriority="high" />
           : media.family
           ? <ThemedImage family={media.family} defaultWidth={media.defaultWidth} sizes={media.sizes} style={{ "--lnp-position": media.position }} decoding="async" fetchPriority="high" />
           : <img src={image(`${media.src}-${media.width * 2}`)} srcSet={srcSet(media.src, media.width)} sizes={media.sizes} width={media.width} height={media.height} alt="" decoding="async" fetchPriority="high" />}
@@ -165,7 +164,7 @@ export function AdvantagePageContent({ header, onOpenModal }) {
       </section>
 
       <section className="lnp-advantage-split" aria-labelledby="lnp-advantage-title">
-        <img className="lnp-advantage-media" {...figmaPhoto("advantage-more", 1200)} sizes="(max-width: 899px) 100vw, 84vw" alt="" loading="lazy" decoding="async" />
+        <ThemedImage className="lnp-advantage-media" figma="advantage-more" sizes="(max-width: 899px) 100vw, 84vw" alt="" loading="lazy" decoding="async" />
         <div className="lnp-advantage-panel">
           <p className="lnp-kicker">{network.advantage[0]}</p>
           <h2 id="lnp-advantage-title" className="lnp-advantage-title" ref={advantageTitleRef}>{splitBeforeLast(network.advantage[1]).map((line) => <span key={line}>{line}</span>)}</h2>
@@ -245,7 +244,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
           <p className="lnp-hero-body">{page.brokerIntro}</p>
         </div>
         <div className="lnp-join-media">
-          <img {...figmaPhoto("broker-join", 800)} sizes="(max-width: 899px) 100vw, 27vw" alt="" loading="lazy" decoding="async" />
+          <ThemedImage figma="broker-join" defaultWidth={800} sizes="(max-width: 899px) 100vw, 27vw" alt="" loading="lazy" decoding="async" />
         </div>
         <ol className="lnp-people">
           {people.map(([title, line], index) => (
@@ -269,7 +268,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
           <h2>{page.commissionUnlocked.map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
         <div className="lnp-commercial-frame">
-          <img className="lnp-commercial-media" {...figmaPhoto("broker-commercial", 1200)} sizes="(max-width: 899px) 100vw, 54vw" alt="" loading="lazy" decoding="async" />
+          <ThemedImage className="lnp-commercial-media" figma="broker-commercial" sizes="(max-width: 899px) 100vw, 54vw" alt="" loading="lazy" decoding="async" />
         </div>
       </section>
 

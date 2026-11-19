@@ -2,7 +2,6 @@ import { Fragment, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { AIXCO_FAQ } from "../aixco-faq-copy.js";
 import { INSIGHTS_TOOLS_COPY } from "../insights-tools-copy.js";
-import { figmaPhoto } from "../data/figmaPhotos.js";
 import { LashaArrow, LashaPageHero } from "./LashaHomeSections.jsx";
 import { useLineFit, useWordFit } from "./useWordFit.js";
 import "./insights-tools.css";
@@ -175,7 +174,7 @@ export function BrokerWorkspace() {
       <div className="it-workspace-intro">
         <SectionHeading id="it-workspace-title" eyebrow={c.workspaceEyebrow} title={c.workspaceTitle} copy={c.workspaceCopy} lines={2} />
         {/* Giorgi, 13 October 2026: a simple modern building in place of the old Reverance render. */}
-        <img className="it-workspace-photo" {...figmaPhoto("broker-workspace", 800)} sizes="(max-width: 899px) 100vw, 44vw" alt="" loading="lazy" decoding="async" />
+        <ThemedImage className="it-workspace-photo" figma="broker-workspace" defaultWidth={800} sizes="(max-width: 899px) 100vw, 44vw" alt="" loading="lazy" decoding="async" />
       </div>
       <ol className="it-features">
         {/* Text only (Kemo, 14 October 2026): number, heading and description, no artwork. */}

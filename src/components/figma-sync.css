@@ -1695,18 +1695,20 @@ html:root:not(#fs) .lasha-home .dp-listing-meta { text-transform: uppercase; }
   html:root:not(#fs) .lnp-steps h3 { width: calc(var(--cw) * var(--u)); }
 }
 
-/* The HOME, BROKER ACCESS and REVERANCE heroes show the frames' daylight photos in every theme, so
-   their copy keeps the day ink over them at every time of day (and Broker Access's header too). */
-html:root:not(#fs) .lasha-home .lasha-hero :is(h1, .lasha-hero-copy p) { color: #000; }
-html:root:not(#fs) .lasha-home .lasha-hero-cta { border-color: #171a1d; background: transparent; color: #171a1d; }
-html:root:not(#fs) .lasha-home .lasha-hero-cta:hover { background: #171a1d; color: #f4f4f1; }
-html:root:not(#fs) .rv-page .rv-hero { --rv-hero-ink: #171a1d; }
-html:root:not(#fs) .lnp-broker .lasha-page-hero :is(.lasha-eyebrow, .lasha-page-hero-title, .lasha-page-hero-text, .it-hero-note) { color: #171a1d; }
-html:root:not(#fs) .lnp-broker .lasha-page-hero .lasha-eyebrow::after { background: #171a1d; }
-html:root:not(#fs) .lnp-broker .it-hero-actions .button-ghost { border-color: #000; background: transparent; color: #171a1d; }
-html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header { border-bottom-color: rgb(23 26 29 / 0.3); }
-html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header :is(.brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .menu-toggle) { color: #171a1d; }
-html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header .login-button { border-color: rgb(23 26 29 / 0.8); color: #171a1d; }
+/* The HOME, BROKER ACCESS and REVERANCE heroes keep the day ink over their photo while the photo on
+   screen is a daylight one (a theme whose afternoon or night version has not been made yet). Once
+   the photo shows that theme's own light (ThemedImage sets data-photo-light), the theme's own hero
+   colours apply, as on the live site: light copy over the night photos. */
+html:root:not(#fs) .lasha-home .lasha-hero:has(.lasha-hero-media[data-photo-light='day']) :is(h1, .lasha-hero-copy p) { color: #000; }
+html:root:not(#fs) .lasha-home .lasha-hero:has(.lasha-hero-media[data-photo-light='day']) .lasha-hero-cta { border-color: #171a1d; background: transparent; color: #171a1d; }
+html:root:not(#fs) .lasha-home .lasha-hero:has(.lasha-hero-media[data-photo-light='day']) .lasha-hero-cta:hover { background: #171a1d; color: #f4f4f1; }
+html:root:not(#fs) .rv-page .rv-hero:has(.rv-hero-media[data-photo-light='day']) { --rv-hero-ink: #171a1d; }
+html:root:not(#fs) .lnp-broker .lasha-page-hero:has(> .lasha-page-hero-media[data-photo-light='day']) :is(.lasha-eyebrow, .lasha-page-hero-title, .lasha-page-hero-text, .it-hero-note) { color: #171a1d; }
+html:root:not(#fs) .lnp-broker .lasha-page-hero:has(> .lasha-page-hero-media[data-photo-light='day']) .lasha-eyebrow::after { background: #171a1d; }
+html:root:not(#fs) .lnp-broker .lasha-page-hero:has(> .lasha-page-hero-media[data-photo-light='day']) .it-hero-actions .button-ghost { border-color: #000; background: transparent; color: #171a1d; }
+html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero:has(> .lasha-page-hero-media[data-photo-light='day']) > .site-header { border-bottom-color: rgb(23 26 29 / 0.3); }
+html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero:has(> .lasha-page-hero-media[data-photo-light='day']) > .site-header :is(.brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .menu-toggle) { color: #171a1d; }
+html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero:has(> .lasha-page-hero-media[data-photo-light='day']) > .site-header .login-button { border-color: rgb(23 26 29 / 0.8); color: #171a1d; }
 
 /* Russian on the Figma desktop layouts (19 November 2026). Every heading this layer sizes in Morganite
    units (Figma size / 0.93705) is set in "AiXESS Figma RU" (src/lasha-fonts.css): AiXESS Head's Mid cut,

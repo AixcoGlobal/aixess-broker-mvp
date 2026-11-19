@@ -14,7 +14,7 @@ import { LashaArrow } from "./LashaHomeSections.jsx";
 import { Lightbox, useProjectInfoCopy } from "./ReveranceProjectInfo.jsx";
 import { useWordFit } from "./useWordFit.js";
 import "./reverance-figma.css";
-import { figmaPhoto } from "../data/figmaPhotos.js";
+import { ThemedImage } from "./ThemedImage.jsx";
 
 // The Project Reverance page as Lasha drew it: Figma frame "REVERANCE" (file mdoKe84QEOkpDthDFO8pyy,
 // node 405:327, 1440 × 10586; Kemo, 2 November 2026: "make reverance page to be exactly as on figma").
@@ -98,8 +98,9 @@ export function ReveranceFigmaHero({ header }) {
   return (
     <section className="lasha-page-hero rv-hero" aria-labelledby="residences-title">
       {header}
-      {/* The REVERANCE frame's render (Figma sync, 19 November 2026), in every theme. */}
-      <img className="rv-hero-media" {...figmaPhoto("reverance-hero", 2400)} sizes="(max-width: 899px) 200vw, 117vw" alt={heroAlt} fetchPriority="high" decoding="async" />
+      {/* The REVERANCE frame's render (Figma sync, 19 November 2026); afternoon and night show the
+          same render's graded versions with the lit windows (reverance-towers), aligned to it. */}
+      <ThemedImage className="rv-hero-media" figma="reverance-hero" defaultWidth={2400} sizes="(max-width: 899px) 200vw, 117vw" alt={heroAlt} fetchPriority="high" decoding="async" />
       <div className="rv-frame rv-hero-copy">
         <Eyebrow rule={328}>{t("projectReveranceBatumi")}</Eyebrow>
         <FitLines as="h1" id="residences-title" className="rv-hero-title" lines={[t("oneBuilding"), t("yourNextMove")]} />

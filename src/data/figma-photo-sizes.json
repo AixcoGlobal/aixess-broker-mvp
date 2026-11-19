@@ -30,7 +30,8 @@
       1200,
       1600,
       1786
-    ]
+    ],
+    "light": "night"
   },
   "home-downtown": {
     "width": 1490,
@@ -40,7 +41,8 @@
       800,
       1200,
       1490
-    ]
+    ],
+    "light": "night"
   },
   "advantage-hero": {
     "width": 1254,
@@ -116,7 +118,33 @@
       1600,
       2400,
       3200
-    ]
+    ],
+    "themes": {
+      "afternoon": {
+        "width": 3344,
+        "height": 1882,
+        "widths": [
+          480,
+          800,
+          1200,
+          1600,
+          2400,
+          3200
+        ]
+      },
+      "night": {
+        "width": 3344,
+        "height": 1882,
+        "widths": [
+          480,
+          800,
+          1200,
+          1600,
+          2400,
+          3200
+        ]
+      }
+    }
   },
   "downtown-hero": {
     "width": 2980,
@@ -128,7 +156,8 @@
       1600,
       2400,
       2980
-    ]
+    ],
+    "light": "night"
   },
   "downtown-highlights": {
     "width": 3344,
@@ -140,7 +169,8 @@
       1600,
       2400,
       3200
-    ]
+    ],
+    "light": "night"
   },
   "downtown-entertainment": {
     "width": 1491,
@@ -150,7 +180,8 @@
       800,
       1200,
       1491
-    ]
+    ],
+    "light": "night"
   },
   "downtown-map": {
     "width": 1498,
