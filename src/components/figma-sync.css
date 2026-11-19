@@ -1054,3 +1054,36 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   }
   html:root:not(#fs) .lnp-broker .it-steps > .button .lasha-arrow { flex: 0 0 calc(32.2 * var(--u)); width: calc(32.2 * var(--u)); }
 }
+
+/* ==== REVERANCE ============================================================================ */
+@media (min-width: 900px) {
+  /* Hero: the frame's 900, not the window's height. Market band: the frame's 539, the site's
+     sources line inside it. */
+  html:root:not(#fs) .rv-page .rv-market { min-height: 0; height: calc(539 * var(--u)); }
+  html:root:not(#fs) .rv-page .rv-market .rv-frame { height: calc(539 * var(--u)); }
+  html:root:not(#fs) .rv-page .rv-hero { height: calc(900 * var(--u)); min-height: 0; }
+}
+@media (min-width: 900px) {
+  /* Project facts: the frame's 1870–2768 band. The site's two notes (not in the frame) sit in the
+     free space under the facts so the band keeps the frame's height. */
+  html:root:not(#fs) .rv-page .rv-facts { position: relative; height: calc(898 * var(--u)); min-height: 0; }
+  html:root:not(#fs) .rv-page .rv-facts-notes {
+    position: absolute;
+    bottom: calc(14 * var(--u));
+    left: calc(73 * var(--u));
+    max-width: calc(860 * var(--u));
+    margin: 0;
+    font-size: max(calc(12 * var(--u)), 11px);
+    line-height: calc(15 * var(--u));
+  }
+  html:root:not(#fs) .rv-page .rv-facts-notes p + p { margin-top: calc(5 * var(--u)); }
+}
+@media (min-width: 900px) {
+  /* The hero render's layer: 1673 × 942 from x −107, y −42. */
+  html:root:not(#fs) .rv-page .rv-hero-media { top: calc(-42 * var(--u)); left: calc(-107 * var(--u)); width: calc(1673 * var(--u)); height: calc(942 * var(--u)); object-position: 50% 50%; }
+}
+@media (min-width: 900px) {
+  /* The residence and benefit bands run 1px over the frame's; the next band starts where Figma has it. */
+  html:root:not(#fs) .rv-page .rv-sections > :nth-child(5),
+  html:root:not(#fs) .rv-page .rv-sections > :nth-child(9) { margin-top: calc(-1 * var(--u)); }
+}

@@ -36,6 +36,8 @@ PHOTOS = {
     "broker-join": "e19f832f",  # 777 1
     "broker-commercial": "747b1ba6",  # rand-gigapixel-standard v2-2
     "broker-workspace": "714bbd44",  # kk 1
+    # REVERANCE (405:327)
+    "reverance-hero": "0c4aec5a",  # 128-gigapixel-standard v2-2x 3
 }
 
 
