@@ -183,6 +183,9 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", f
   const ref = useRef(null);
   const { locale } = useLanguage();
   useHeaderOnLightSky(ref, lightSky?.ranges, locale);
+  // ВОЗМОЖНОСТЬЮ and ПЛАТФОРМА broke mid-word on 320px phones: the title shrinks only then.
+  const titleRef = useRef(null);
+  useWordFit(titleRef, undefined, { words: true });
   return (
     <section ref={ref} className={`lasha-page-hero${variant ? ` lasha-page-hero-${variant}` : ""}`} data-light-sky={lightSky?.themes}>
       {header}
@@ -195,10 +198,11 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", f
       )}
       <div className="lasha-page-hero-copy">
         {eyebrow && <p className="lasha-eyebrow">{eyebrow}</p>}
-        {/* fillTitle sets every line to the title's width, as Lasha's posters do (Broker Access). */}
+        {/* fillTitle sets every line to the title's width, as Lasha's posters do (Broker Access); the
+            other heroes keep their words whole with titleRef (useWordFit). */}
         {fillTitle
           ? <FittedHeading as={Title} className="lasha-page-hero-title" fillLines>{lines.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
-          : <Title className="lasha-page-hero-title">{lines.map((line) => <span key={line}>{line}</span>)}</Title>}
+          : <Title className="lasha-page-hero-title" ref={titleRef}>{lines.map((line) => <span key={line}>{line}</span>)}</Title>}
         {copy && <p className="lasha-page-hero-text">{copy}</p>}
         {children}
       </div>

@@ -25,7 +25,9 @@ import "./components/figma-sync.css";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { AixessLogo } from "./components/AixessLogo.jsx";
-import { CONTACT } from "./contact-copy.js";
+import { CONTACT, CONTACT_COPY } from "./contact-copy.js";
+import { ENQUIRY_COPY } from "./enquiry-copy.js";
+import { OPEN_FORM_EVENT } from "./enquiry.js";
 import { PORTAL_URL } from "./portal.js";
 import { getBrochureDetails, hasDownloadAccess, grantDownloadAccess, triggerBrochureDownload } from "./utils/downloadAccess.js";
 
@@ -409,9 +411,13 @@ function LanguageSwitcher({ languageOpen, setLanguageOpen }) {
   );
 }
 
-function Modal({ type, onClose, onSwitch }) {
+function Modal({ type, context = {}, onClose, onSwitch }) {
   const { t, locale } = useLanguage();
   const privacy = PRIVACY_COPY[locale];
+  const enquiry = ENQUIRY_COPY[locale] || ENQUIRY_COPY.en;
+  const contactCopy = CONTACT_COPY[locale] || CONTACT_COPY.en;
+  const asksMessage = type === "enquiry" || type === "contact";
+  const [confirmationTo, setConfirmationTo] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
@@ -476,6 +482,19 @@ function Modal({ type, onClose, onSwitch }) {
       copy: t("projectMaterialsCopy"),
       submit: t("downloadMaterials"),
     },
+    // A project request names its project and the button's own words (Request availability ...).
+    enquiry: {
+      eyebrow: context.project,
+      title: context.request,
+      copy: enquiry.copy,
+      submit: enquiry.send,
+    },
+    contact: {
+      eyebrow: contactCopy.eyebrow,
+      title: contactCopy.title,
+      copy: enquiry.copy,
+      submit: enquiry.sendMessage,
+    },
   }[type];
 
   return (
@@ -509,7 +528,7 @@ function Modal({ type, onClose, onSwitch }) {
                 setSubmitError(false);
                 const firstName = (form.get("firstName") || "").toString().trim();
                 const surname = (form.get("surname") || "").toString().trim();
-                const fullName = (type === "register" || type === "materials")
+                const fullName = (type !== "login")
                   ? `${firstName} ${surname}`.trim()
                   : (form.get("name") || "").toString().trim();
                 const phone = (form.get("phone") || "").toString().trim();
@@ -517,6 +536,7 @@ function Modal({ type, onClose, onSwitch }) {
                 const email = (form.get("email") || "").toString().trim();
                 const website = (form.get("website") || "").toString().trim();
                 const privacyAccepted = form.get("privacy") === "on";
+                const message = (form.get("message") || "").toString().trim();
 
                 try {
                   const response = await fetch("/api/leads", {
@@ -533,13 +553,21 @@ function Modal({ type, onClose, onSwitch }) {
                       email,
                       website,
                       locale,
-                      kind: type === "materials" ? "materials" : "broker",
+                      kind: type === "materials" || asksMessage ? type : "broker",
+                      message,
+                      project: context.project,
+                      place: context.place,
+                      request: context.request,
+                      requestEn: context.requestEn,
+                      route: context.route,
+                      page: window.location.href,
                       privacyAccepted,
                     }),
                   });
                   if (response.ok) {
                     const data = await response.json().catch(() => ({}));
                     if (data && data.saved === false) throw new Error("Not saved");
+                    if (data?.confirmation) setConfirmationTo(email);
                   } else if (response.status !== 404 && response.status !== 405) {
                     if (type !== "materials") {
                       throw new Error("Submission failed");
@@ -555,7 +583,7 @@ function Modal({ type, onClose, onSwitch }) {
                     grantDownloadAccess();
                     setSubmitted(true);
                     track("lead_submitted");
-                  } else if (err.message === "Submission failed") {
+                  } else if (err.message === "Submission failed" || asksMessage) {
                     setSubmitError(true);
                   } else {
                     setSubmitted(true);
@@ -566,7 +594,7 @@ function Modal({ type, onClose, onSwitch }) {
                 }
               }}
             >
-              {type === "register" || type === "materials" ? (
+              {type !== "login" ? (
                 <>
                   <div className="access-form-row">
                     <label>
@@ -579,8 +607,8 @@ function Modal({ type, onClose, onSwitch }) {
                     </label>
                   </div>
                   <label>
-                    <span>{t("phoneNumber")}</span>
-                    <input name="phone" type="tel" autoComplete="tel" required placeholder={t("phonePlaceholder")} />
+                    <span>{type === "contact" ? enquiry.phoneOptional : t("phoneNumber")}</span>
+                    <input name="phone" type="tel" autoComplete="tel" required={type !== "contact"} placeholder={t("phonePlaceholder")} />
                   </label>
                   <label>
                     <span>{t("emailAddress")}</span>
@@ -590,6 +618,12 @@ function Modal({ type, onClose, onSwitch }) {
                     <span>{t("companyOptional")}</span>
                     <input name="company" autoComplete="organization" placeholder={t("companyPlaceholder")} />
                   </label>
+                  {asksMessage && (
+                    <label>
+                      <span>{type === "contact" ? enquiry.message : enquiry.messageOptional}</span>
+                      <textarea name="message" rows={4} maxLength={5000} required={type === "contact"} placeholder={enquiry.messagePlaceholder} />
+                    </label>
+                  )}
                 </>
               ) : (
                 <>
@@ -652,7 +686,7 @@ function Modal({ type, onClose, onSwitch }) {
             <p className="modal-eyebrow">{t("requestReceived")}</p>
             <h2>{t("wellBeInTouch")}</h2>
             <p className="modal-copy">
-              {t("requestRecordedCopy")}
+              {confirmationTo ? enquiry.confirmationSent.replace("{{email}}", confirmationTo) : t("requestRecordedCopy")}
             </p>
             <button className="button button-primary" type="button" onClick={onClose}>{t("returnToAixess")}</button>
           </div>
@@ -719,8 +753,8 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
 function DubaiProjectPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
   const header = <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />;
   return (
-    // Downtown One is built from the TRESORA page's parts (Figma sync, 19 November 2026), so it takes its styles too.
-    <div className={`route-page lasha-page dubai-project-page ${currentPage === "downtown-one" ? "tresora-page " : ""}${currentPage}-page`}>
+    // Downtown One is built from the TRESORA page's parts, so it takes its styles too.
+    <div className={`route-page lasha-page dubai-project-page ${currentPage}-page${currentPage === "downtown-one" ? " tresora-page" : ""}`}>
       {currentPage === "tresora" ? <TresoraPage header={header} /> : <DowntownOnePage header={header} />}
     </div>
   );
@@ -748,6 +782,7 @@ function HomePage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal
 function AppContent() {
   const { locale, t } = useLanguage();
   const [activeModal, setActiveModal] = useState(null);
+  const [modalContext, setModalContext] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(routeFromLocation);
 
@@ -778,6 +813,19 @@ function AppContent() {
       if (toggle?.offsetParent && (!active || active === document.body || active.closest(".lasha-menu"))) toggle.focus({ preventScroll: true });
     };
   }, [menuOpen]);
+
+  // Project request buttons and the footer's Write to us open the enquiry / contact form.
+  useEffect(() => {
+    const onOpenForm = (event) => {
+      const detail = event.detail || {};
+      setMenuOpen(false);
+      setModalContext(detail);
+      setActiveModal(detail.type === "contact" ? "contact" : "enquiry");
+      track("modal_open", { modal: detail.type === "contact" ? "contact" : "enquiry", page: currentPage });
+    };
+    window.addEventListener(OPEN_FORM_EVENT, onOpenForm);
+    return () => window.removeEventListener(OPEN_FORM_EVENT, onOpenForm);
+  }, [currentPage]);
 
   const openModal = (type) => {
     setMenuOpen(false);
@@ -924,7 +972,7 @@ function AppContent() {
       <PrivacyControls page={currentPage} />
 
       {activeModal && (
-        <Modal key={activeModal} type={activeModal} onClose={() => setActiveModal(null)} onSwitch={setActiveModal} />
+        <Modal key={`${activeModal}-${modalContext.request || ""}`} type={activeModal} context={modalContext} onClose={() => setActiveModal(null)} onSwitch={setActiveModal} />
       )}
     </main>
   );

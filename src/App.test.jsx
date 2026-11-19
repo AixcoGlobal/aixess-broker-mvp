@@ -378,6 +378,48 @@ describe("AIXESS navigation pages", () => {
     }
   });
 
+  it("opens a TRESORA request as a form and sends it with the project and request", async () => {
+    let capturedBody = null;
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
+      if (String(input).endsWith("/api/leads") && init?.method === "POST") {
+        capturedBody = JSON.parse(init.body);
+        return new Response(JSON.stringify({ saved: true, team: true, confirmation: true }), { status: 200, headers: { "content-type": "application/json" } });
+      }
+      return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+    });
+    try {
+      if (!Range.prototype.getBoundingClientRect) Range.prototype.getBoundingClientRect = () => ({ width: 0, height: 0, top: 0, left: 0, right: 0, bottom: 0 });
+      window.history.replaceState({}, "", "/#tresora");
+      render(<App />);
+      const button = document.querySelector("a.tr-button[href^='mailto:']");
+      const label = button.textContent;
+      fireEvent.click(button);
+      const modal = screen.getByRole("dialog");
+      expect(within(modal).getByRole("heading", { name: label })).toBeInTheDocument();
+      fireEvent.change(within(modal).getByLabelText("FIRST NAME"), { target: { value: "Anna" } });
+      fireEvent.change(within(modal).getByLabelText("SURNAME"), { target: { value: "Smith" } });
+      fireEvent.change(within(modal).getByLabelText("PHONE NUMBER"), { target: { value: "+44 7700 900123" } });
+      fireEvent.change(within(modal).getByLabelText("EMAIL ADDRESS"), { target: { value: "anna@example.com" } });
+      fireEvent.change(within(modal).getByLabelText("MESSAGE (OPTIONAL)"), { target: { value: "Two bedrooms, please." } });
+      fireEvent.click(within(modal).getByRole("checkbox"));
+      fireEvent.click(within(modal).getByRole("button", { name: "SEND REQUEST" }));
+      await waitFor(() => expect(screen.getByText(/A confirmation is on its way to anna@example.com/)).toBeInTheDocument());
+      expect(capturedBody).toMatchObject({ kind: "enquiry", project: "TRESORA", request: label, requestEn: label, route: "tresora", name: "Anna Smith", message: "Two bedrooms, please.", locale: "en" });
+    } finally {
+      fetchMock.mockRestore();
+    }
+  });
+
+  it("opens the footer's Write to us as a contact form with a required message", () => {
+    window.history.replaceState({}, "", "/#why-aixess");
+    render(<App />);
+    fireEvent.click(screen.getByRole("link", { name: /WRITE TO US/ }));
+    const modal = screen.getByRole("dialog");
+    expect(within(modal).getByLabelText("MESSAGE")).toBeRequired();
+    expect(within(modal).getByLabelText("PHONE NUMBER (OPTIONAL)")).not.toBeRequired();
+    expect(within(modal).getByRole("button", { name: "SEND MESSAGE" })).toBeInTheDocument();
+  });
+
   it("renders the selected page from its shareable hash route", () => {
     render(<App />);
 
