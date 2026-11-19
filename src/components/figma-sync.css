@@ -394,6 +394,8 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-copy { display: block; width: auto; max-width: none; margin: 0; padding: 0; }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media { width: calc(686 * var(--u)); height: auto; min-height: calc(686 * var(--u)); }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+  /* The frame draws no shade under the header: the labels over the photo take the ink that reads on it (useHeaderInk). */
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media::after { content: none; }
   /* ABOUT AIXESS: Inter Bold 20, 2% tracked, then the 113.5 rule at x 254. */
     html:root:not(#fs) .lnp-hero-advantage .lnp-eyebrow {
     display: flex;
@@ -1536,8 +1538,11 @@ html:root:not(#fs) .lasha-home .dp-listing-meta { text-transform: uppercase; }
    the photo shows that theme's own light (ThemedImage sets data-photo-light), the theme's own hero
    colours apply, as on the live site: light copy over the night photos. */
 html:root:not(#fs) .lasha-home .lasha-hero:has(.lasha-hero-media[data-photo-light='day']) :is(h1, .lasha-hero-copy p) { color: #000; }
+/* The frame's outline EXPLORE INVESTMENTS from 900px; phones keep the solid button (Kemo, 7 October). */
+@media (min-width: 900px) {
 html:root:not(#fs) .lasha-home .lasha-hero:has(.lasha-hero-media[data-photo-light='day']) .lasha-hero-cta { border-color: #171a1d; background: transparent; color: #171a1d; }
 html:root:not(#fs) .lasha-home .lasha-hero:has(.lasha-hero-media[data-photo-light='day']) .lasha-hero-cta:hover { background: #171a1d; color: #f4f4f1; }
+}
 html:root:not(#fs) .rv-page .rv-hero:has(.rv-hero-media[data-photo-light='day']) { --rv-hero-ink: #171a1d; }
 html:root:not(#fs) .lnp-broker .lasha-page-hero:has(> .lasha-page-hero-media[data-photo-light='day']) :is(.lasha-eyebrow, .lasha-page-hero-title, .lasha-page-hero-text, .it-hero-note) { color: #171a1d; }
 html:root:not(#fs) .lnp-broker .lasha-page-hero:has(> .lasha-page-hero-media[data-photo-light='day']) .lasha-eyebrow::after { background: #171a1d; }
@@ -1647,6 +1652,7 @@ html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero:has(> .
 /* TRESORA and DOWNTOWN ONE: the developers' renders are dusk scenes, so their copy is light. While the
    relit day or afternoon version is on screen (data-photo-light), the copy over it takes ink, so it
    stays readable on the bright sky (Kemo, 19 November 2026: theme photos on every page). */
+@media (min-width: 900px) {
 html:root:not(#fs) .tresora-page :is(.tr-hero, .tr-photo-band):has(> .tr-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) {
   --tr-light: #171a1d;
   color: #171a1d;
@@ -1662,3 +1668,51 @@ html:root:not(#fs) .tresora-page :is(.tr-hero, .tr-photo-band):has(> .tr-bg:is([
   background: #2557d6;
   color: #fff;
 }
+}
+
+/* Header labels over a photo take the ink that reads on the photo actually behind them, measured by
+   useHeaderInk (Kemo, 19 November 2026: "make sure that all the texts are visible everywhere despite
+   the time of the day"). Two ids so these win over every page- and theme-specific header rule. */
+html.is-measuring-header-ink * { pointer-events: auto !important; }
+html:root:not(#fs):not(#ink) .site-header [data-ink='dark'],
+html:root:not(#fs):not(#ink) .site-header [data-ink='dark'] svg { color: #171a1d; }
+html:root:not(#fs):not(#ink) .site-header [data-ink='light'],
+html:root:not(#fs):not(#ink) .site-header [data-ink='light'] svg { color: #fff; }
+html:root:not(#fs):not(#ink) .site-header :is(.login-button, .menu-toggle)[data-ink='dark'] { border-color: rgb(23 26 29 / 0.8); background: transparent; }
+html:root:not(#fs):not(#ink) .site-header :is(.login-button, .menu-toggle)[data-ink='light'] { border-color: rgb(255 255 255 / 0.85); background: transparent; }
+html:root:not(#fs):not(#ink) .site-header .login-button[data-ink='dark']:hover { border-color: #171a1d; background: #171a1d; color: #fff; }
+html:root:not(#fs):not(#ink) .site-header .login-button[data-ink='light']:hover { border-color: #fff; background: #fff; color: #171a1d; }
+html:root:not(#fs):not(#ink) .site-header .language-switcher-trigger[data-ink='dark'] { border-color: rgb(23 26 29 / 0.35); background: transparent; }
+html:root:not(#fs):not(#ink) .site-header .language-switcher-trigger[data-ink='light'] { border-color: rgb(255 255 255 / 0.45); background: transparent; }
+html:root:not(#fs):not(#ink) .site-header .time-theme-menu__button[data-ink='dark']:is(:hover, [aria-expanded='true']) { border-color: rgb(23 26 29 / 0.8); }
+html:root:not(#fs):not(#ink) .site-header .time-theme-menu__button[data-ink='light']:is(:hover, [aria-expanded='true']) { border-color: rgb(255 255 255 / 0.8); }
+html:root:not(#fs):not(#ink) .site-header .desktop-nav button[data-ink='dark']::after { background: #171a1d; }
+html:root:not(#fs):not(#ink) .site-header .desktop-nav button[data-ink='light']::after { background: #fff; }
+/* A label that crosses from a pale part of the photo to a dark one: each stretch of its letters takes
+   the ink that reads there (useHeaderInk's --ink-split), the icons and rules the label's main ink. */
+html:root:not(#fs):not(#ink) .site-header [data-ink='split'],
+html:root:not(#fs):not(#ink) .site-header [data-ink='split'] svg { color: var(--ink-major); }
+html:root:not(#fs):not(#ink) .site-header [data-ink='split']:not(.brand) {
+  background-color: transparent;
+  background-image: var(--ink-split);
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+html:root:not(#fs):not(#ink) .site-header :is(.login-button, .menu-toggle, .language-switcher-trigger)[data-ink='split'] { border-color: color-mix(in srgb, var(--ink-major) 80%, transparent); }
+html:root:not(#fs):not(#ink) .site-header .login-button[data-ink='split']:hover { background: var(--ink-major); color: var(--ink-minor); -webkit-text-fill-color: var(--ink-minor); }
+html:root:not(#fs):not(#ink) .site-header .desktop-nav button[data-ink='split']::after { background: var(--ink-major); }
+
+/* REVERANCE on phones sets its copy on a band of the photo's own sky above the towers: the band takes
+   the sky of the version on screen (sampled from the top of each), so the night copy is not on a day
+   sky (Kemo, 19 November 2026: every text visible at every time of day). */
+html:root:not(#fs) .rv-page .rv-hero:has(.rv-hero-media[data-photo-light='afternoon']) { background: linear-gradient(90deg, #c9c4ba 0%, #a9b4b8 55%, #93a7b4 100%); }
+html:root:not(#fs) .rv-page .rv-hero:has(.rv-hero-media[data-photo-light='night']) { background: linear-gradient(90deg, #344779 0%, #1c2d5c 45%, #101e45 100%); }
+
+/* The explorer's LIVE 3D tag: white on the deep sage in the afternoon, ink on the light cobalt at
+   night (the theme accent behind it was too pale for white). */
+html:root:not(#fs)[data-time-theme='afternoon'] .model-instruction-index { background: #3c5a41; color: #fff; }
+html:root:not(#fs)[data-time-theme='night'] .model-instruction-index { color: #0c0c0c; }
+/* AiXESS Advantage in the afternoon: the panel's copy is ink, so its buttons are too. */
+html:root:not(#fs)[data-time-theme='afternoon'] .lnp-advantage :is(.lnp-hero-panel, .lnp-advantage-panel) .lasha-button:not(:hover) { border-color: #171a1d; color: #171a1d; }

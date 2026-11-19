@@ -25,6 +25,7 @@ import "./components/figma-sync.css";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { AixessLogo } from "./components/AixessLogo.jsx";
+import { useHeaderInk } from "./components/useHeaderInk.js";
 import { CONTACT, CONTACT_COPY } from "./contact-copy.js";
 import { ENQUIRY_COPY } from "./enquiry-copy.js";
 import { OPEN_FORM_EVENT } from "./enquiry.js";
@@ -102,6 +103,9 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [openMarket, setOpenMarket] = useState(null);
   useEffect(() => { setProjectsOpen(false); setOpenMarket(null); }, [menuOpen, currentPage]);
+  const headerRef = useRef(null);
+  // Each label takes the ink that reads on the photo behind it, in every theme (19 November 2026).
+  useHeaderInk(headerRef, [locale, currentPage]);
   const navigate = (page) => {
     setProjectsOpen(false);
     setOpenMarket(null);
@@ -110,7 +114,7 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   };
 
   return (
-    <header className={`site-header ${pageHeader ? "page-site-header" : ""}`}>
+    <header ref={headerRef} className={`site-header ${pageHeader ? "page-site-header" : ""}`}>
       <button className="brand" type="button" aria-label={t("homeAria")} onClick={() => navigate("home")}>
         <AixessLogo />
       </button>
