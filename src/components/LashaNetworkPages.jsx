@@ -2,7 +2,7 @@ import { PORTAL_URL } from "../portal.js";
 import { useLayoutEffect, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { LashaArrow } from "./LashaHomeSections.jsx";
-import { useWordFit } from "./useWordFit.js";
+import { useLineFit, useWordFit } from "./useWordFit.js";
 import { NETWORK_COPY } from "../network-copy.js";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { LASHA_PAGES_COPY } from "../lasha-pages-copy.js";
@@ -134,6 +134,13 @@ function SplitHero({ header, eyebrow, title, body, action, media, className }) {
 export function AdvantagePageContent({ header, onOpenModal }) {
   const { locale, network, home, page } = useCopy();
   const care = ADVANTAGE_SERVICES_COPY[locale] || ADVANTAGE_SERVICES_COPY.en;
+  // The panel holds the title in the frame's two lines above its line and button.
+  const advantageTitleRef = useRef(null);
+  useLineFit(advantageTitleRef, { lines: 2 });
+  // The eight service titles share one size, small enough for the longest word to stay on screen
+  // (Russian С\u00a0ФИНАНСИРОВАНИЕМ at 320px).
+  const journeyRef = useRef(null);
+  useWordFit(journeyRef, ".lnp-journey-item h3");
   return (
     <div className="lnp lnp-advantage">
       <SplitHero
@@ -161,7 +168,7 @@ export function AdvantagePageContent({ header, onOpenModal }) {
         <img className="lnp-advantage-media" {...figmaPhoto("advantage-more", 1200)} sizes="(max-width: 899px) 100vw, 84vw" alt="" loading="lazy" decoding="async" />
         <div className="lnp-advantage-panel">
           <p className="lnp-kicker">{network.advantage[0]}</p>
-          <h2 id="lnp-advantage-title" className="lnp-advantage-title">{splitBeforeLast(network.advantage[1]).map((line) => <span key={line}>{line}</span>)}</h2>
+          <h2 id="lnp-advantage-title" className="lnp-advantage-title" ref={advantageTitleRef}>{splitBeforeLast(network.advantage[1]).map((line) => <span key={line}>{line}</span>)}</h2>
           <p className="lnp-advantage-subtitle">{page.advantageSubtitle}</p>
           <PageButton variant="dark" flow="login">{network.signIn}</PageButton>
         </div>
@@ -188,7 +195,7 @@ export function AdvantagePageContent({ header, onOpenModal }) {
           <svg className="lnp-journey-lines" viewBox="0 0 1440 716" preserveAspectRatio="none" aria-hidden="true" focusable="false">
             {JOURNEY_LINES.map((points) => <polyline key={points} points={points} />)}
           </svg>
-          <ol className="lnp-journey-list">
+          <ol className="lnp-journey-list" ref={journeyRef}>
             {care.items.map(([title, line], index) => (
               <li key={title} className={`lnp-journey-item lnp-journey-item-${index + 1}`}>
                 <span className="lnp-journey-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
@@ -217,6 +224,10 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
   // (ПРИСОЕДИНЯЙТЕСЬ, PRÄSENTIEREN, PREDSTAVITE broke mid-word from 900px, 31 October 2026).
   const stepsRef = useRef(null);
   useWordFit(stepsRef, "h3");
+  // The blue panel holds the title in the frame's lines (НЕОБЯЗАТЕЛЬНО was wider than the panel).
+  const joinTitle = splitBrokerTitle(network.eligibility[1]);
+  const joinTitleRef = useRef(null);
+  useLineFit(joinTitleRef, { lines: joinTitle.length });
   // Lasha's list drops the full stop on the first three. CONNECTORS keeps its own line, not the
   // frame's repeat of the sales line (Kemo, 16 October 2026: no repeated text on a page).
   const people = network.people.map(([title, line], index) => [title, index < 3 ? noStop(line) : line]);
@@ -230,7 +241,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
       <section className="lnp-join" aria-labelledby="lnp-join-title">
         <div className="lnp-join-panel">
           <p className="lasha-eyebrow lnp-eyebrow">{network.eligibility[0]}</p>
-          <h2 id="lnp-join-title" className="lnp-join-title">{splitBrokerTitle(network.eligibility[1]).map((line) => <span key={line}>{line}</span>)}</h2>
+          <h2 id="lnp-join-title" className="lnp-join-title" ref={joinTitleRef}>{joinTitle.map((line) => <span key={line}>{line}</span>)}</h2>
           <p className="lnp-hero-body">{page.brokerIntro}</p>
         </div>
         <div className="lnp-join-media">

@@ -4,7 +4,7 @@ import { AIXCO_FAQ } from "../aixco-faq-copy.js";
 import { INSIGHTS_TOOLS_COPY } from "../insights-tools-copy.js";
 import { figmaPhoto } from "../data/figmaPhotos.js";
 import { LashaArrow, LashaPageHero } from "./LashaHomeSections.jsx";
-import { useWordFit } from "./useWordFit.js";
+import { useLineFit, useWordFit } from "./useWordFit.js";
 import "./insights-tools.css";
 import { ThemedImage } from "./ThemedImage.jsx";
 
@@ -15,9 +15,13 @@ function useCopy() {
   return INSIGHTS_TOOLS_COPY[locale] || INSIGHTS_TOOLS_COPY.en;
 }
 
-function SectionHeading({ id, eyebrow, title, copy, children }) {
+// `lines`: the desktop frame draws the title in that many lines above fixed blocks, so a translation
+// is set smaller until it fits them (useLineFit); without it the title only keeps its words inside.
+function SectionHeading({ id, eyebrow, title, copy, lines, children }) {
   const titleRef = useRef(null);
-  useWordFit(titleRef);
+  const unusedRef = useRef(null);
+  useWordFit(lines ? unusedRef : titleRef);
+  useLineFit(lines ? titleRef : unusedRef, { lines: lines || Infinity });
   return (
     <div className="it-heading">
       <div>
@@ -169,7 +173,7 @@ export function BrokerWorkspace() {
   return (
     <section className="it-section it-paper" aria-labelledby="it-workspace-title">
       <div className="it-workspace-intro">
-        <SectionHeading id="it-workspace-title" eyebrow={c.workspaceEyebrow} title={c.workspaceTitle} copy={c.workspaceCopy} />
+        <SectionHeading id="it-workspace-title" eyebrow={c.workspaceEyebrow} title={c.workspaceTitle} copy={c.workspaceCopy} lines={2} />
         {/* Giorgi, 13 October 2026: a simple modern building in place of the old Reverance render. */}
         <img className="it-workspace-photo" {...figmaPhoto("broker-workspace", 800)} sizes="(max-width: 899px) 100vw, 44vw" alt="" loading="lazy" decoding="async" />
       </div>

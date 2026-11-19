@@ -33,12 +33,14 @@ export function FittedHeading({ as: Tag = "h2", children, fillLines = false, max
           if (index === 0) first = fitted;
           let size = index === 0 ? fitted : Math.min(fitted, first * maxLineRatio);
           line.style.fontSize = `${Math.floor(size * 100) / 100}px`;
-          // Glyph widths are not quite linear in the size (kerning, rounding): one correction pass
-          // keeps a line that still runs past the width inside it.
-          const after = line.getBoundingClientRect().width;
-          if (after > available) {
+          // A line's width is not proportional to its size: the heading's letter-spacing stays a
+          // fixed number of pixels on every line, and kerning and rounding add a little. Correct
+          // until the line sits inside the width (each pass removes most of what is left over).
+          for (let pass = 0; pass < 4; pass += 1) {
+            const after = line.getBoundingClientRect().width;
+            if (after <= available) break;
             size *= available / after;
-            line.style.fontSize = `${Math.floor(size * 100) / 100}px`;
+            line.style.fontSize = `${Math.floor(size * 100) / 100 - (pass ? 0.01 : 0)}px`;
           }
         });
         heading.dataset.fitReady = "true";

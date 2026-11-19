@@ -88,6 +88,9 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(.las
 html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body, .site-shell, .site-footer) { background-color: #f7f7f4; }
 
 @media (min-width: 900px) {
+  /* The numbers band keeps the frame's 278 as a minimum: from 900 to about 1100px the notes' size floor
+     makes the Polish notes run a line longer than the band (live before 19 November 2026 too). */
+  html:root:not(#fs) .lasha-home .lasha-metrics { height: auto; min-height: calc(278 * var(--u)); }
   /* About: frame 1270–2016. Photo "connection 1": 754 × 754 at y 1266, clipped to the 746 band. */
   html:root:not(#fs) .lasha-home .lasha-about { height: calc(746 * var(--u)); min-height: 0; overflow: hidden; }
   html:root:not(#fs) .lasha-home .lasha-about-media {
@@ -368,18 +371,21 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
 
 @media (min-width: 900px) {
   /* Hero: frame 0–686. Blue panel 773 wide, the photo "999 1" 686 × 686 from x 773. */
-  html:root:not(#fs) .lnp-hero-advantage { height: calc(686 * var(--u)); min-height: 0; grid-template-columns: calc(773 * var(--u)) calc(686 * var(--u)); overflow: hidden; }
+  /* The frame's 686 as a minimum: below the header, and with the copy's 16px floor from 900px, the
+     copy can run longer than the panel (English from 900 to 1100px, every translation at 1440), and the
+     button must stay inside it. The 12 under the button is English's own room at 1440. */
+  html:root:not(#fs) .lnp-hero-advantage { height: auto; min-height: calc(686 * var(--u)); grid-template-columns: calc(773 * var(--u)) calc(686 * var(--u)); overflow: hidden; }
     html:root:not(#fs) .lnp-hero-advantage .lnp-hero-panel {
     display: block;
-    height: calc(686 * var(--u));
-    min-height: 0;
-    padding: calc(74 * var(--u)) 0 0 calc(71 * var(--u));
+    height: auto;
+    min-height: calc(686 * var(--u));
+    padding: calc(74 * var(--u)) 0 calc(12 * var(--u)) calc(71 * var(--u));
   }
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-hero-advantage .lnp-hero-panel {
     background: #2557d6;
   }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-copy { display: block; width: auto; max-width: none; margin: 0; padding: 0; }
-  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media { width: calc(686 * var(--u)); height: calc(686 * var(--u)); }
+  html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media { width: calc(686 * var(--u)); height: auto; min-height: calc(686 * var(--u)); }
   html:root:not(#fs) .lnp-hero-advantage .lnp-hero-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
   /* ABOUT AIXESS: Inter Bold 20, 2% tracked, then the 113.5 rule at x 254. */
     html:root:not(#fs) .lnp-hero-advantage .lnp-eyebrow {
@@ -519,7 +525,9 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     color: #f7f7f4;
   }
     html:root:not(#fs) .lnp-advantage-title {
-    margin: calc(31.4 * var(--u)) 0 0;
+    /* Right margin = the panel's left inset, so a fitted translation never runs to the screen's edge. */
+    width: auto;
+    margin: calc(31.4 * var(--u)) calc(69 * var(--u)) 0 0;
     font-family: var(--l-fig);
     font-size: calc(220 / 0.93705 * var(--u));
     font-weight: 700;
@@ -629,13 +637,16 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-journey-octagon { display: block; position: absolute; top: calc(199 * var(--u)); left: calc(433 * var(--u)); width: calc(549 * var(--u)); height: calc(296 * var(--u)); }
   html:root:not(#fs) .lnp-journey-lines { display: block; position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #9b9a9a; stroke-width: 2.5; }
   html:root:not(#fs) .lnp-journey-list { display: block; margin: 0; }
-  html:root:not(#fs) .lnp-journey-item { position: absolute; display: block; left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u)); width: 0; height: calc(127 * var(--u)); }
-  html:root:not(#fs) .lnp-journey-item::before { content: ""; position: absolute; top: 0; left: calc(var(--rx) * var(--u)); width: 1.5px; height: calc(127 * var(--u)); background: #9b9a9a; }
+  /* The title and its line follow each other in flow: the title keeps the frame's two lines, so English
+     sits exactly as drawn, and a translation that needs a third line moves its line down with it. */
+  html:root:not(#fs) .lnp-journey-item { position: absolute; display: block; left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u)); width: 0; height: auto; min-height: calc(127 * var(--u)); }
+  html:root:not(#fs) .lnp-journey-item::before { content: ""; position: absolute; top: 0; bottom: 0; left: calc(var(--rx) * var(--u)); width: 1.5px; background: #9b9a9a; }
   html:root:not(#fs) .lnp-journey-index { position: absolute; top: calc(3 * var(--u)); left: 0; font-size: calc(58.6 / 0.93705 * var(--u)); line-height: calc(46.3 * var(--u)); translate: none; }
   html:root:not(#fs) .lnp-journey-icon { position: absolute; top: calc(var(--iy) * var(--u)); left: calc(var(--ix) * var(--u)); width: calc(var(--iw) * var(--u)); height: auto; margin: 0; }
-  html:root:not(#fs) .lnp-journey-item > :is(h3, p) { position: absolute; left: calc(var(--tx) * var(--u)); margin: 0; padding: 0; border: 0; }
+  html:root:not(#fs) .lnp-journey-item > :is(h3, p) { position: relative; margin: 0 0 0 calc(var(--tx) * var(--u)); padding: 0; border: 0; }
     html:root:not(#fs) .lnp-journey-item h3 {
-    top: calc(2 * var(--u));
+    margin-top: calc(2 * var(--u));
+    min-height: calc(2 * 42.7 * var(--u));
     width: calc(var(--tw) * var(--u));
     font-size: calc(54.02 / 0.93705 * var(--u));
     line-height: calc(42.7 * var(--u));
@@ -646,7 +657,7 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     color: #171a1d;
   }
     html:root:not(#fs) .lnp-journey-item p {
-    top: calc(96 * var(--u));
+    margin-top: calc((96 - 2 - 2 * 42.7) * var(--u));
     width: calc(var(--dw) * var(--u));
     padding: 0;
     font-size: calc(16 * var(--u));
@@ -764,7 +775,7 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   /* Who can join: frame 900–1577. Blue panel 0–656, photo "777 1" 656–1041 (its 683 layer from
      y 894), the list from x 1062: rows at 948 / 1081 / 1214 / 1347 / 1480, 301 rules at 1045 / 1186 /
      1317 / 1452 from x 1067. */
-  html:root:not(#fs) .lnp-join { height: calc(677 * var(--u)); min-height: 0; grid-template-columns: calc(656 * var(--u)) calc(385 * var(--u)) minmax(0, 1fr); }
+  html:root:not(#fs) .lnp-join { height: auto; min-height: calc(677 * var(--u)); grid-template-columns: calc(656 * var(--u)) calc(385 * var(--u)) minmax(0, 1fr); }
     html:root:not(#fs) .lnp-join-panel {
     display: block;
     padding: calc(74 * var(--u)) 0 0 calc(71 * var(--u));
@@ -809,9 +820,11 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-join-panel .lnp-hero-body {
     color: #f7f7f4;
   }
-  html:root:not(#fs) .lnp-join-media { height: calc(677 * var(--u)); }
+  html:root:not(#fs) .lnp-join-media { height: auto; min-height: calc(677 * var(--u)); }
   html:root:not(#fs) .lnp-join-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
-  html:root:not(#fs) .lnp-people { position: relative; display: block; height: calc(677 * var(--u)); margin: 0; padding: 0; }
+  /* The last row follows in flow, so a translation whose line runs longer (German) lengthens the
+     section, and the panel and render beside it, instead of running out of it. */
+  html:root:not(#fs) .lnp-people { position: relative; display: block; height: auto; min-height: calc(677 * var(--u)); margin: 0; padding: 0 0 calc(9 * var(--u)); }
   html:root:not(#fs) .lnp-people > li {
     position: absolute;
     top: calc(var(--top) * var(--u));
@@ -828,7 +841,8 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs) .lnp-people > li:nth-child(2) { --top: 181; --rule: 105; --dw: 219; }
   html:root:not(#fs) .lnp-people > li:nth-child(3) { --top: 314; --rule: 103; --dw: 230; }
   html:root:not(#fs) .lnp-people > li:nth-child(4) { --top: 447; --rule: 105; --dw: 247; --dy: -2; }
-  html:root:not(#fs) .lnp-people > li:nth-child(5) { --top: 580; --dw: 257; --tx: 37; }
+  html:root:not(#fs) .lnp-people > li:nth-child(5) { --top: 580; --dw: 257; --tx: 37; position: relative; top: auto; margin-top: calc(580 * var(--u)); }
+  html:root:not(#fs) .lnp-people > li:nth-child(5) > div { position: relative; }
     html:root:not(#fs) .lnp-people .lasha-index {
     position: absolute;
     top: 0;
@@ -877,7 +891,7 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
      then from 1751: 10% / DOWN PAYMENT / body at x 70, the 409 × 422 blue box at x 398 (100% /
      COMMISSION UNLOCKED from x 425) and the photo 602 × 422 at x 837 (its 765.7 × 431 layer from
      x −7.9). Capitals: figures 1779, titles 2021 (and 2083), body from 2108. */
-  html:root:not(#fs) .lnp-commercial { position: relative; display: block; height: calc(596 * var(--u)); min-height: 0; padding: 0; }
+  html:root:not(#fs) .lnp-commercial { position: relative; display: flow-root; height: auto; min-height: calc(596 * var(--u)); padding: 0; }
   html:root:not(#fs) .lnp-commercial::before { content: ""; position: absolute; top: calc(76 * var(--u)); left: 0; width: 100%; height: 0.5px; background: #5f5f5f; }
     html:root:not(#fs) .lnp-commercial-eyebrow {
     position: absolute;
@@ -894,7 +908,10 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   }
   html:root:not(#fs) :is(.lnp-commercial-down, .lnp-commercial-commission) { position: absolute; top: calc(174 * var(--u)); display: block; height: calc(422 * var(--u)); margin: 0; padding: 0; }
   html:root:not(#fs) :is(.lnp-commercial-down, .lnp-commercial-commission) { --fig-y: 47; --h2-y: -6; --body-y: 17; }
-  html:root:not(#fs) .lnp-commercial-down { left: calc(70 * var(--u)); width: calc(328 * var(--u)); }
+  /* The 10% column is in flow with the frame's 422 as its height: a translation that needs more lines
+     (Russian ПЕРВОНАЧАЛЬНОГО ВЗНОСА) lengthens the section instead of leaving it. English copy ends 2
+     past the frame's 422; that overhang does not lengthen the section. */
+  html:root:not(#fs) .lnp-commercial-down { position: relative; top: auto; left: calc(70 * var(--u)); width: calc(328 * var(--u)); height: auto; min-height: calc(422 * var(--u)); margin: calc(174 * var(--u)) 0 calc(-2 * var(--u)); }
   html:root:not(#fs) .lnp-commercial-down .lnp-figure { position: relative; left: calc(-3 * var(--u)); }
     html:root:not(#fs) .lnp-commercial-commission {
     left: calc(398 * var(--u));
@@ -1264,20 +1281,22 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
 @media (min-width: 900px) {
   /* Hero: the frame's 900, not the window's height. Market band: the frame's 539, the site's
      sources line inside it. */
-  html:root:not(#fs) .rv-page .rv-market { min-height: 0; height: calc(539 * var(--u)); }
-  html:root:not(#fs) .rv-page .rv-market .rv-frame { height: calc(539 * var(--u)); }
+  html:root:not(#fs) .rv-page .rv-market { height: auto; min-height: calc(539 * var(--u)); }
+  html:root:not(#fs) .rv-page .rv-market .rv-frame { height: auto; min-height: calc(539 * var(--u)); }
+  /* Russian labels sit lower (reverance-figma.css) and the last takes three lines: the band keeps the
+     frame's 39 under them. */
+  html:root:not(#fs):lang(ru) .rv-page :is(.rv-market, .rv-market .rv-frame) { min-height: calc(602 * var(--u)); }
   html:root:not(#fs) .rv-page .rv-hero { height: calc(900 * var(--u)); min-height: 0; }
 }
 @media (min-width: 900px) {
-  /* Project facts: the frame's 1870–2768 band. The site's two notes (not in the frame) sit in the
-     free space under the facts so the band keeps the frame's height. */
-  html:root:not(#fs) .rv-page .rv-facts { position: relative; height: calc(898 * var(--u)); min-height: 0; }
+  /* Project facts: the frame's 1870–2768 band. The site's facts run longer than the frame's (100% FOREIGN
+     OWNERSHIP takes two lines), so the band keeps the frame's height as a minimum and the site's two
+     notes (not in the frame) follow the facts instead of sitting on them. */
+  html:root:not(#fs) .rv-page .rv-facts { position: relative; height: auto; min-height: calc(898 * var(--u)); }
   html:root:not(#fs) .rv-page .rv-facts-notes {
-    position: absolute;
-    bottom: calc(14 * var(--u));
-    left: calc(73 * var(--u));
+    position: static;
     max-width: calc(860 * var(--u));
-    margin: 0;
+    margin: calc(24 * var(--u)) 0 0 calc(3 * var(--u));
     font-size: max(calc(12 * var(--u)), 11px);
     line-height: calc(15 * var(--u));
   }
@@ -1304,7 +1323,8 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
 }
 @media (min-width: 900px) {
   /* Discover band 899–1828 and the paper block to 7925, as in the frame. */
-  html:root:not(#fs) .tresora-page:not(.downtown-one-page) .tr-discover { height: calc(929 * var(--u)); min-height: 0; }
+  /* The frame's 929 as a minimum: German and Russian copy runs longer than the frame's. */
+  html:root:not(#fs) .tresora-page:not(.downtown-one-page) .tr-discover { height: auto; min-height: calc(929 * var(--u)); }
   html:root:not(#fs) .tresora-page:not(.downtown-one-page) .tr-paper { padding-bottom: calc(2 * var(--u)); }
 }
 
@@ -1360,6 +1380,7 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
     position: absolute;
     top: calc(117 * var(--u));
     left: calc(68 * var(--u));
+    right: calc(68 * var(--u));
     margin: 0;
     font-size: calc(179 / 0.93705 * var(--u));
     line-height: calc(143.2 * var(--u));
@@ -1434,6 +1455,8 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
     position: absolute;
     top: calc(6 * var(--u));
     left: calc(865 * var(--u));
+    /* FAMILY & OUTDOOR LIVING runs 2 past the list's 435, as drawn; longer translations shrink to fit. */
+    right: calc(-10 * var(--u));
     margin: 0;
     font-size: calc(72 / 0.93705 * var(--u));
     line-height: calc(54 * var(--u));
@@ -1445,8 +1468,10 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
     color: #171a1d;
   }
   html:root:not(#fs) .dt-group ul { position: absolute; top: calc(81 * var(--u)); left: calc(864 * var(--u)); width: calc(436 * var(--u)); }
-  html:root:not(#fs) .dt-group li { position: relative; height: calc(var(--pitch) * var(--u)); padding: 0; border: 0; font-size: calc(20 * var(--u)); line-height: calc(24.2 * var(--u)); }
-  html:root:not(#fs) .dt-group li:not(:last-child)::after { content: ""; position: absolute; top: calc(var(--rule) * var(--u)); left: 0; width: calc(435 * var(--u)); height: 1px; background: #bababa; }
+  /* A row that wraps (Russian) grows, and its hairline moves down with it, the same distance under the
+     letters as on every other row. */
+  html:root:not(#fs) .dt-group li { position: relative; height: auto; min-height: calc(var(--pitch) * var(--u)); padding: 0 0 calc((var(--pitch) - 24.2) * var(--u)); border: 0; font-size: calc(20 * var(--u)); line-height: calc(24.2 * var(--u)); }
+  html:root:not(#fs) .dt-group li:not(:last-child)::after { content: ""; position: absolute; bottom: calc((var(--pitch) - var(--rule)) * var(--u)); left: 0; width: calc(435 * var(--u)); height: 1px; background: #bababa; }
 
   /* Location: frame 4082–5553. Eyebrow box 4161, title box 4212, copy 4458 (831 wide); the #071126
      card 1300 × 573 at 4617: map 818 wide ("last map 1" 853.5 × 597.7 from −17.1, −33.4), then from
@@ -1564,6 +1589,7 @@ html:root[data-time-theme='night'] .dt-lifestyle { background: var(--l-mist, #0c
     position: absolute;
     top: calc(104 * var(--u));
     left: calc(70 * var(--u));
+    right: calc(70 * var(--u));
     margin: 0;
     font-size: calc(191 / 0.93705 * var(--u));
     line-height: calc(143.2 * var(--u));
@@ -1682,3 +1708,36 @@ html:root:not(#fs) .lnp-broker .it-hero-actions .button-ghost { border-color: #0
 html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header { border-bottom-color: rgb(23 26 29 / 0.3); }
 html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header :is(.brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .menu-toggle) { color: #171a1d; }
 html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero > .site-header .login-button { border-color: rgb(23 26 29 / 0.8); color: #171a1d; }
+
+/* Russian on the Figma desktop layouts (19 November 2026). Every heading this layer sizes in Morganite
+   units (Figma size / 0.93705) is set in "AiXESS Figma RU" (src/lasha-fonts.css): AiXESS Head's Mid cut,
+   as wide as Morganite at the same size, so Russian keeps the frame's sizes, boxes and line pitches
+   instead of running 1.81x wider. The homepage headings keep their accepted Russian sizes (3 November;
+   only its project figures change, below), and the Broker Access hero title stays AiXESS Head because
+   FittedHeading already fits its lines to the column. */
+@media (min-width: 900px) {
+  html:root:not(#fs):lang(ru) :is(
+    .lnp-hero-advantage .lnp-hero-title, .lnp-advantage .lnp-starting h2, .lnp-advantage-title,
+    .lnp-care-head h2, .lnp-care-head h2 > span, .lnp-journey-index, .lnp-journey-item h3,
+    .lnp-join-title, .lnp-people .lasha-index, .lnp-people h3, .lnp-commercial .lnp-figure, .lnp-commercial h2,
+    .lnp-process h2, .lnp-steps .lasha-index, .lnp-steps h3,
+    .lnp-broker .it-heading h2, .lnp-broker .it-feature h3, .lnp-broker .it-feature h3 > span,
+    .lnp-broker .it-step-list .lasha-index, .lnp-broker .it-step-list h3,
+    .dt-highlights-title, .dt-highlights-list h3, .dt-lifestyle-title, .dt-group h3, .dt-location-title,
+    .dt-nearby-copy h3, .dt-more-title, .downtown-one-page .tr-hero-title .tr-fit-line, .dt-lifestyle-title .tr-fit-line,
+    .dt-location-title .tr-fit-line
+  ) {
+    font-family: "AiXESS Figma RU", "AiXESS Head", "Arial Narrow", sans-serif;
+  }
+  /* The homepage project figures ($5,9K, 60%+): Russian kept AiXESS Head on a 0.71 pitch under labels
+     placed for the frame's 97.2, so the labels ran into the figures (live before 19 November 2026 too).
+     They take the frame's size, pitch and plus sign like every other language. */
+  html:root:not(#fs):lang(ru) .lasha-home .project-facts dd {
+    font-family: "AiXESS Figma RU", "AiXESS Head", "Arial Narrow", sans-serif;
+    font-size: calc(90 / 0.93705 * var(--u));
+    line-height: calc(97.2 * var(--u));
+    letter-spacing: 0.01em;
+    translate: none;
+  }
+  html:root:not(#fs):lang(ru) .lasha-home .project-facts dd .lasha-plus { font-family: inherit; font-size: 1em; vertical-align: baseline; margin-left: 0; translate: none; }
+}

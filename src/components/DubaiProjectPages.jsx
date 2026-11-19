@@ -6,7 +6,7 @@ import { dubaiImage } from "../dubai-projects-data.js";
 import { figmaPhoto } from "../data/figmaPhotos.js";
 import { CONTACT } from "../contact-copy.js";
 import { LashaArrow, routeLinkClick } from "./LashaHomeSections.jsx";
-import { useWordFit } from "./useWordFit.js";
+import { useLineFit, useWordFit } from "./useWordFit.js";
 import "./reverance-project.css";
 import "./dubai-projects.css";
 import "./tresora-figma.css";
@@ -285,6 +285,9 @@ export function TresoraPage({ header }) {
   // ВАША НЕДВИЖИМОСТЬ broke mid-word in Russian at every width: the title shrinks just enough to keep it whole.
   const paymentTitleRef = useRef(null);
   useWordFit(paymentTitleRef);
+  // ВСТРЕЧАЮТСЯ and СОВРЕМЕННЫЙ broke mid-word the same way in Discover TRESORA (Russian, 19 November 2026).
+  const discoverTitleRef = useRef(null);
+  useWordFit(discoverTitleRef);
   const paymentLines = payment.title.split(/\.\s+/).map((line) => line.replace(/\.$/, ""));
   const gallery = [
     [lifestyle.amenities[0], [["tresora-fig-g1a", images.pool], ["tresora-fig-g1b", images.gallery[0][1]], ["tresora-fig-g1c", images.sunsetPool]]],
@@ -314,7 +317,7 @@ export function TresoraPage({ header }) {
           <Picture slug="tresora-fig-discover" className="tr-bg" sizes="100vw" />
           <div className="tr-wrap">
             <Eyebrow>{discover.eyebrow}</Eyebrow>
-            <h2 className="tr-title tr-discover-title" id="tresora-discover-title">{discover.title}</h2>
+            <h2 ref={discoverTitleRef} className="tr-title tr-discover-title" id="tresora-discover-title">{discover.title}</h2>
             <div className="tr-body tr-discover-body">{discover.body.map((text) => <p key={text}>{withFigmaBreaks(text)}</p>)}</div>
           </div>
         </section>
@@ -431,6 +434,16 @@ export function DowntownOnePage({ header }) {
   const { common, project, images } = useDubaiCopy("downtown");
   useSectionFromHash(route);
   const { hero, highlights, amenities, location, more } = project;
+  // The frame sets "Premium project highlights" on one line; a longer translation (Polish) is set
+  // smaller until it fits the column instead of running off the page.
+  const highlightsTitleRef = useRef(null);
+  useWordFit(highlightsTitleRef);
+  // The amenity group titles share one size, small enough for the longest to stay on its line; the
+  // closing title keeps its two lines inside the column.
+  const groupsRef = useRef(null);
+  useWordFit(groupsRef, ".dt-group h3");
+  const moreTitleRef = useRef(null);
+  useLineFit(moreTitleRef, { lines: 2 });
   // The title keeps its dash; the frame's line break falls after it.
   const [locationFirst, locationSecond] = location.title.split(/(?<=—)\s*/);
   const groups = Object.fromEntries(amenities.groups);
@@ -468,7 +481,7 @@ export function DowntownOnePage({ header }) {
         <section className="tr-photo-band dt-highlights" id="downtown-one-highlights" aria-labelledby="downtown-one-highlights-title">
           <img className="tr-bg dt-highlights-bg" {...figmaPhoto("downtown-highlights", 2400)} sizes="(max-width: 899px) 200vw, 127vw" alt="" loading="lazy" decoding="async" />
           <div className="tr-wrap">
-            <h2 className="tr-title dt-highlights-title" id="downtown-one-highlights-title">{highlights.title}</h2>
+            <h2 ref={highlightsTitleRef} className="tr-title dt-highlights-title" id="downtown-one-highlights-title">{highlights.title}</h2>
             <ul className="dt-highlights-list">
               {DOWNTOWN_HIGHLIGHT_ORDER.map((index) => {
                 const [value, title, line] = highlights.items[index];
@@ -483,7 +496,7 @@ export function DowntownOnePage({ header }) {
             <Eyebrow>{amenities.eyebrow}</Eyebrow>
             <FitLines id="downtown-one-amenities-title" className="dt-lifestyle-title" lines={twoLines(amenities.title)} />
             <div className="tr-body dt-lifestyle-body">{amenities.body.map((text) => <p key={text}>{text}</p>)}</div>
-            <div className="dt-groups">
+            <div className="dt-groups" ref={groupsRef}>
               {amenities.groups.map(([group], index) => (
                 <section className="dt-group" key={group} aria-label={group}>
                   {photo(DOWNTOWN_ROW_IMAGES[index], "", "dt-group-photo dt-crop", "(max-width: 899px) 100vw, 57vw")}
@@ -527,7 +540,7 @@ export function DowntownOnePage({ header }) {
         <section className="tr-ink-band tr-more dt-more" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
           <div className="tr-wrap">
             <Eyebrow>{more.eyebrow}</Eyebrow>
-            <h2 className="tr-title dt-more-title" id="downtown-one-more-title">{twoLines(more.title).map((line, index) => <Fragment key={line}>{index ? " " : null}<span>{line}</span></Fragment>)}</h2>
+            <h2 ref={moreTitleRef} className="tr-title dt-more-title" id="downtown-one-more-title">{twoLines(more.title).map((line, index) => <Fragment key={line}>{index ? " " : null}<span>{line}</span></Fragment>)}</h2>
             <div className="tr-body tr-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
           </div>
         </section>
