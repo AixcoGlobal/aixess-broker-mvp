@@ -18,12 +18,15 @@
     display: block;
   }
   /* The photo layer: x −89, 1593.4 × 995, cover. It follows the frame's width (cqi), so a window
-     shorter than 1440:992, where the copy scales by height, still has the photo edge to edge. */
+     shorter than 1440:992, where the copy scales by height, still has the photo edge to edge. It is
+     anchored where the frame ends it, 3 below the hero's foot, so the Dubai skyline along its bottom
+     always shows as in Figma; a shorter window trims empty sky at the top, under the header
+     (Kemo, 19 November 2026: on his MacBook the skyline was cut off). */
   html:root:not(#fs) .lasha-home .lasha-hero-media {
-    inset: 0 auto auto calc(-89 * 100cqi / 1440);
+    inset: auto auto calc(-3 * 100cqi / 1440) calc(-89 * 100cqi / 1440);
     width: calc(1593.4 * 100cqi / 1440);
     height: max(calc(995 * 100cqi / 1440), 100%);
-    object-position: 50% 0%;
+    object-position: 50% 100%;
   }
   /* The frame draws no wash behind the copy. */
   html:root:not(#fs) .lasha-home .lasha-hero-frame::after { display: none; }
