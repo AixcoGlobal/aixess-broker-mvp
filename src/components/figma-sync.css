@@ -1806,3 +1806,11 @@ html:root:not(#fs)[data-time-theme='night'] .lnp-broker .lasha-page-hero:has(> .
   html:root:not(#fs) .tresora-page .tr-spaces-actions .tr-button-primary { --w: 329.4; --h: 92.4; --in: 24.1; --gap: 17.4; --len: 36.16; --sw: 1.339; }
   html:root:not(#fs) .tresora-page .tr-spaces-actions .tr-button:not(.tr-button-primary) { --w: 340; --h: 93; --in: 23.7; --gap: 16.8; --len: 36.16; --sw: 1.339; }
 }
+
+/* DOWNTOWN ONE hero: the frame's dusk render has light copy; its day and golden-hour versions have bright
+   skies, so while one of them is on screen the copy takes the deep ink of the project's own navy
+   (colour only, 19 November 2026). The night version keeps the light copy. */
+html:root:not(#fs) .dt-hero:has(.dt-hero-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) :is(.tr-eyebrow, .tr-hero-title, .tr-hero-title .tr-fit-line, .tr-hero-intro, .tr-hero-copy p) { color: #0b1b3a; }
+html:root:not(#fs) .dt-hero:has(.dt-hero-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) .tr-hero-copy::after { background: rgb(11 27 58 / 0.35); }
+html:root:not(#fs) .dt-hero:has(.dt-hero-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) .tr-hero-actions .tr-button { border-color: var(--tr-button); background: var(--tr-button); color: #fff; }
+html:root:not(#fs) .dt-hero:has(.dt-hero-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) .tr-hero-actions .tr-button:hover { border-color: var(--tr-button-hover); background: var(--tr-button-hover); color: #fff; }
