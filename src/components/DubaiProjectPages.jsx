@@ -35,14 +35,6 @@ export function projectMailto(common, project, request) {
   return `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-// The button's own words are the request named in the email.
-function RequestButton({ common, project, label, primary = false }) {
-  return (
-    <a className={`button ${primary ? "button-primary" : "button-ghost"}`} href={projectMailto(common, project, label)} aria-label={`${label} (${common.opensEmail})`}>
-      {label}<LashaArrow length={24} />
-    </a>
-  );
-}
 
 function Picture({ slug, alt = "", sizes, className, eager = false }) {
   const image = dubaiImage(slug);
@@ -90,62 +82,10 @@ function useSectionFromHash(route) {
   }, [route]);
 }
 
-// The page hero: copy on the theme's ground, the developer's rendering beside it (above it on phones),
-// so no text ever sits on the photograph. The hero grows with its copy.
-function ProjectHero({ header, route, hero, image, imageAlt, children }) {
-  return (
-    <section className="lasha-page-hero lasha-page-hero-type dp-hero dp-hero-media" aria-labelledby={`${route}-title`}>
-      {header}
-      <figure className="dp-hero-figure">
-        <Picture slug={image} alt={imageAlt} sizes="(max-width: 1099px) 100vw, 36vw" eager />
-      </figure>
-      <div className="lasha-page-hero-copy dp-hero-copy">
-        <div className="dp-hero-head">
-          <h1 className="lasha-page-hero-title" id={`${route}-title`}>{hero.title.map((line) => <span key={line}>{line}</span>)}</h1>
-          <p className="dp-hero-subtitle">{hero.subtitle}</p>
-          <p className="dp-hero-tagline">{hero.tagline}</p>
-        </div>
-        <div className="dp-hero-side">{children}</div>
-      </div>
-    </section>
-  );
-}
 
-function SectionHeading({ id, eyebrow, title, lead }) {
-  return (
-    <header className="rp-heading">
-      {eyebrow && <p className="section-eyebrow">{eyebrow}</p>}
-      <h2 id={id}>{title}</h2>
-      {lead && <p className="rp-lead">{lead}</p>}
-    </header>
-  );
-}
 
-function Paragraphs({ items, className = "dp-columns" }) {
-  return <div className={className}>{items.map((text) => <p key={text}>{text}</p>)}</div>;
-}
 
-// A rendering on its own, without a caption.
-function RenderFigure({ slug, alt, sizes, className = "" }) {
-  return (
-    <figure className={`dp-figure ${className}`}>
-      <div className="dp-figure-frame"><Picture slug={slug} alt={alt} sizes={sizes} /></div>
-    </figure>
-  );
-}
 
-// Renderings without captions. `still`: TRESORA's brochure renderings, small sources shown near their own size.
-function Gallery({ items, still = false }) {
-  return (
-    <ul className={`rp-gallery dp-gallery${still ? " dp-gallery-still" : ""}`}>
-      {items.map(([slug, alt]) => (
-        <li key={slug}>
-          <Picture slug={slug} alt={alt} sizes={still ? "(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 27rem" : "(max-width: 599px) calc(100vw - 2.5rem), (max-width: 1099px) 46vw, 31vw"} />
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 // TRESORA as Lasha drew it (Figma frame "TRESORA", node 485:3; Kemo, 2 November 2026: "pixel perfect of
 // whats on figma"). tresora-figma.css sets it in frame pixels from 900px and restacks it on phones.
@@ -477,76 +417,121 @@ export function TresoraPage({ header }) {
   );
 }
 
+// Lasha's DOWNTOWN ONE frame (Figma sync, 19 November 2026), built from the TRESORA page's parts:
+// the hero over the tower at night, the highlights over a blurred street render, the amenity rows on
+// mist, the location with its dark map card, the gallery rows and the dark closing band. Every word
+// is the site's own; gallery slots the frame filled with TRESORA photos show Downtown One's.
+const DOWNTOWN_HIGHLIGHT_ORDER = [0, 4, 5, 3, 1, 2];
+const DOWNTOWN_ROW_IMAGES = ["downtown-gym", "downtown-pool", "downtown-entertainment", "downtown-kids"];
+// Gallery photos the frame crops from a larger layer (figma-sync.css); the rest fill their boxes.
+const CROPPED = new Set(["1-1", "2-1", "2-2", "2-3", "3-1", "4-1", "4-2", "4-3"]);
+
 export function DowntownOnePage({ header }) {
   const route = "downtown-one";
-  const { common, project, images } = useDubaiCopy("downtown");
+  const { common, project, all, images } = useDubaiCopy("downtown");
   useSectionFromHash(route);
   const { hero, highlights, amenities, location, more } = project;
+  const [locationFirst, locationSecond] = location.title.split(/\s* ?—\s*/);
+  const groups = Object.fromEntries(amenities.groups);
+  const [wellness, pools] = amenities.groups.map(([name]) => name);
+  const gallery = [
+    [pools, [["downtown-pool", images.gallery[0][1]], ["downtown-kids", images.gallery[1][1]], ["downtown-aerial", images.gallery[7][1]]]],
+    [wellness, [["downtown-gym", images.gallery[2][1]], ["downtown-golf", images.gallery[3][1]], ["downtown-cycling", images.gallery[4][1]]]],
+    ["", [["downtown-hero", images.hero], ["downtown-podium", images.gallery[8][1]], ["downtown-street", images.gallery[6][1]]]],
+    [all.tresora.lifestyle.interior, [["downtown-living", images.gallery[10][1]], ["downtown-kitchen", images.gallery[12][1]], ["downtown-bedroom", images.gallery[13][1]]]],
+  ];
+  const photo = (slug, alt, className, sizes) => (slug.startsWith("downtown-hero") || slug === "downtown-entertainment"
+    ? <img className={className} {...figmaPhoto(slug, 1200)} sizes={sizes} alt={alt} loading="lazy" decoding="async" />
+    : <Picture slug={slug} alt={alt} className={className} sizes={sizes} />);
 
   return (
     <>
-      <ProjectHero header={header} route={route} hero={hero} image="downtown-tower" imageAlt={images.hero}>
-        {hero.body.map((text) => <p className="lasha-page-hero-text" key={text}>{text}</p>)}
-        <div className="it-hero-actions">
-          <a className="button button-primary" href={`#${route}/highlights`} onClick={sectionLinkClick(route, "highlights")}>{hero.explore}<LashaArrow length={24} /></a>
-          <RequestButton common={common} project={project} label={hero.availability} />
+      <section className="lasha-page-hero tr-hero dt-hero" aria-labelledby={`${route}-title`}>
+        {header}
+        <img className="tr-bg tr-hero-bg dt-hero-bg" {...figmaPhoto("downtown-hero", 2400)} sizes="(max-width: 899px) 200vw, 110vw" alt={images.hero} fetchPriority="high" decoding="async" />
+        <div className="tr-hero-copy">
+          <Eyebrow>{hero.tagline}</Eyebrow>
+          <FitLines as="h1" id={`${route}-title`} className="tr-hero-title dt-hero-title" lines={[hero.title.join(" "), hero.subtitle]} />
+          {hero.body.map((text) => <p className="tr-hero-intro" key={text}>{text}</p>)}
+          <div className="tr-actions tr-hero-actions">
+            <TrRequest common={common} project={project} label={hero.availability} />
+            <TrButton href={`#${route}/highlights`} onClick={sectionLinkClick(route, "highlights")} label={hero.explore} />
+          </div>
         </div>
-      </ProjectHero>
+      </section>
 
-      <main className="page-main dp-page">
-        <section className="rp-section" id="downtown-one-highlights" aria-labelledby="downtown-one-highlights-title">
-          <SectionHeading id="downtown-one-highlights-title" title={highlights.title} />
-          <ul className="dp-cards dp-cards-3">
-            {highlights.items.map(([value, title, line]) => (
-              <li key={title}>
-                <strong>{value}</strong>
-                <h3>{title}</h3>
-                <p>{line}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="rp-section rp-mist" id="downtown-one-amenities" aria-labelledby="downtown-one-amenities-title">
-          <SectionHeading id="downtown-one-amenities-title" eyebrow={amenities.eyebrow} title={amenities.title} />
-          <Paragraphs items={amenities.body} />
-          <div className="dp-groups">
-            {amenities.groups.map(([group, items]) => (
-              <section key={group} aria-label={group}>
-                <h3>{group}</h3>
-                <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>
-              </section>
-            ))}
+      <main className="page-main tr-page dt-page">
+        <section className="tr-photo-band dt-highlights" id="downtown-one-highlights" aria-labelledby="downtown-one-highlights-title">
+          <img className="tr-bg dt-highlights-bg" {...figmaPhoto("downtown-highlights", 2400)} sizes="(max-width: 899px) 200vw, 127vw" alt="" loading="lazy" decoding="async" />
+          <div className="tr-wrap">
+            <h2 className="tr-title dt-highlights-title" id="downtown-one-highlights-title">{highlights.title}</h2>
+            <ul className="dt-highlights-list">
+              {DOWNTOWN_HIGHLIGHT_ORDER.map((index) => {
+                const [value, title, line] = highlights.items[index];
+                return <li key={title}><h3>{title}</h3><p><span className="dt-highlight-value">{value}</span> {line}</p></li>;
+              })}
+            </ul>
           </div>
         </section>
 
-        <section className="rp-section" id="downtown-one-gallery" aria-label={project.name}>
-          <Gallery items={images.gallery} />
-        </section>
-
-        <section className="rp-section rp-mist" id="downtown-one-location" aria-labelledby="downtown-one-location-title">
-          <SectionHeading id="downtown-one-location-title" eyebrow={location.eyebrow} title={location.title} />
-          <div className="rp-split dp-split">
-            <div>
-              {location.body.map((text) => <p className="dp-text" key={text}>{text}</p>)}
-              <h3 className="dp-list-title">{location.nearbyTitle}</h3>
-              <ul className="dp-list dp-list-1">{location.nearby.map((item) => <li key={item}>{item}</li>)}</ul>
-              <p className="dp-text dp-text-after">{location.closing}</p>
+        <section className="dt-lifestyle" id="downtown-one-amenities" aria-labelledby="downtown-one-amenities-title">
+          <div className="tr-wrap">
+            <Eyebrow>{amenities.eyebrow}</Eyebrow>
+            <FitLines id="downtown-one-amenities-title" className="dt-lifestyle-title" lines={twoLines(amenities.title)} />
+            <div className="tr-body dt-lifestyle-body">{amenities.body.map((text) => <p key={text}>{text}</p>)}</div>
+            <div className="dt-groups">
+              {amenities.groups.map(([group], index) => (
+                <section className="dt-group" key={group} aria-label={group}>
+                  {photo(DOWNTOWN_ROW_IMAGES[index], "", "dt-group-photo dt-crop", "(max-width: 899px) 100vw, 57vw")}
+                  <h3>{group}</h3>
+                  <ul>{groups[group].map((item) => <li key={item}>{item}</li>)}</ul>
+                </section>
+              ))}
             </div>
-            <RenderFigure slug="downtown-map" alt={images.map} className="dp-map" sizes="(max-width: 899px) calc(100vw - 2.5rem), 40vw" />
           </div>
         </section>
 
-        <section className="rp-section dp-closing" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
-          <SectionHeading id="downtown-one-more-title" eyebrow={more.eyebrow} title={more.title} />
-          <Paragraphs items={more.body} />
+        <section className="dt-location" id="downtown-one-location" aria-labelledby="downtown-one-location-title">
+          <div className="tr-wrap">
+            <Eyebrow>{location.eyebrow}</Eyebrow>
+            <FitLines id="downtown-one-location-title" className="dt-location-title" lines={locationSecond ? [locationFirst, locationSecond] : twoLines(location.title)} />
+            <div className="tr-body dt-location-body">{location.body.map((text) => <p key={text}>{text}</p>)}</div>
+            <div className="dt-nearby">
+              <div className="dt-nearby-map"><img {...figmaPhoto("downtown-map", 1200)} sizes="(max-width: 899px) 100vw, 60vw" alt={images.map} loading="lazy" decoding="async" /></div>
+              <div className="dt-nearby-copy">
+                <h3>{location.nearbyTitle}</h3>
+                <ul>{location.nearby.map((item) => <li key={item}>{item}</li>)}</ul>
+                <p>{location.closing}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="tr-gallery dt-gallery" id="downtown-one-gallery" aria-label={project.name}>
+          <div className="tr-wrap">
+            {gallery.map(([caption, pictures], row) => (
+              <figure className="tr-gallery-group" key={pictures[0][0]}>
+                <div className="tr-gallery-grid">
+                  {pictures.map(([slug, alt], index) => photo(slug, alt, `${index ? "tr-gallery-small" : "tr-gallery-large"} dt-gallery-${row + 1}-${index + 1}${CROPPED.has(`${row + 1}-${index + 1}`) ? " dt-crop" : ""}`, index ? "(max-width: 899px) 50vw, 34vw" : "(max-width: 899px) 100vw, 55vw"))}
+                </div>
+                <figcaption>{caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <section className="tr-ink-band tr-more dt-more" id="downtown-one-more" aria-labelledby="downtown-one-more-title">
+          <div className="tr-wrap">
+            <Eyebrow>{more.eyebrow}</Eyebrow>
+            <h2 className="tr-title dt-more-title" id="downtown-one-more-title">{twoLines(more.title).map((line) => <span key={line}>{line}</span>)}</h2>
+            <div className="tr-body tr-more-body">{more.body.map((text) => <p key={text}>{text}</p>)}</div>
+          </div>
         </section>
       </main>
     </>
   );
 }
 
-// The homepage's Dubai cards, under the Batumi project: one per project, each opening its own page.
 export function DubaiProjectCards({ onNavigate }) {
   const { common, all } = useDubaiCopy();
   // Photos, order and type as Lasha's HOME frame draws the two cards (Figma sync, 19 November 2026):

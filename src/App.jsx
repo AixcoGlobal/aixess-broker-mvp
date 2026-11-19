@@ -719,7 +719,8 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
 function DubaiProjectPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
   const header = <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />;
   return (
-    <div className={`route-page lasha-page dubai-project-page ${currentPage}-page`}>
+    // Downtown One is built from the TRESORA page's parts (Figma sync, 19 November 2026), so it takes its styles too.
+    <div className={`route-page lasha-page dubai-project-page ${currentPage === "downtown-one" ? "tresora-page " : ""}${currentPage}-page`}>
       {currentPage === "tresora" ? <TresoraPage header={header} /> : <DowntownOnePage header={header} />}
     </div>
   );

@@ -117,5 +117,49 @@
       2400,
       3200
     ]
+  },
+  "downtown-hero": {
+    "width": 2980,
+    "height": 2110,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400,
+      2980
+    ]
+  },
+  "downtown-highlights": {
+    "width": 3344,
+    "height": 1882,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400,
+      3200
+    ]
+  },
+  "downtown-entertainment": {
+    "width": 1491,
+    "height": 1055,
+    "widths": [
+      480,
+      800,
+      1200,
+      1491
+    ]
+  },
+  "downtown-map": {
+    "width": 1498,
+    "height": 1050,
+    "widths": [
+      480,
+      800,
+      1200,
+      1498
+    ]
   }
 }

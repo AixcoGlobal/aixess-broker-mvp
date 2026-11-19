@@ -38,6 +38,11 @@ PHOTOS = {
     "broker-workspace": "714bbd44",  # kk 1
     # REVERANCE (405:327)
     "reverance-hero": "0c4aec5a",  # 128-gigapixel-standard v2-2x 3
+    # DOWNTOWN ONE (553:232)
+    "downtown-hero": "d53ff9af",  # bluish-gigapixel-standard v2-2x 1
+    "downtown-highlights": "101414dc",  # oplaa-gigapixel-high fidelity v2-2x 1
+    "downtown-entertainment": "3b024b70",  # ent 1
+    "downtown-map": "0518c9bf",  # last map 1
 }
 
 
