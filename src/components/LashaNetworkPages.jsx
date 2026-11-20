@@ -7,6 +7,7 @@ import { NETWORK_COPY } from "../network-copy.js";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { LASHA_PAGES_COPY } from "../lasha-pages-copy.js";
 import { ADVANTAGE_SERVICES_COPY } from "../advantage-services-copy.js";
+import { AixessLogo } from "./AixessLogo.jsx";
 import "./lasha-network-pages.css";
 import { ThemedImage } from "./ThemedImage.jsx";
 import { BrokerGetStarted, BrokerPlatformHero, BrokerWorkspace } from "./InsightsToolsPages.jsx";
@@ -191,6 +192,11 @@ export function AdvantagePageContent({ header, onOpenModal }) {
             the frame's line icon, a rule, its title and line. Below 900px they follow as a list. */}
         <div className="lnp-journey">
           <img className="lnp-journey-octagon" src="/assets/figma/icons/care-journey.svg" width="549" height="296" alt="" aria-hidden="true" />
+          {/* The frame's centre (Kemo, 20 November 2026: "where is the aixess logo?? and text?"). */}
+          <div className="lnp-journey-centre">
+            <AixessLogo className="lnp-journey-logo" />
+            <p className="lnp-journey-tagline">{care.journey}</p>
+          </div>
           <svg className="lnp-journey-lines" viewBox="0 0 1440 716" preserveAspectRatio="none" aria-hidden="true" focusable="false">
             {JOURNEY_LINES.map((points) => <polyline key={points} points={points} />)}
           </svg>

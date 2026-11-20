@@ -1,7 +1,9 @@
 // AiXESS 360° Services on the AiXESS Advantage page (Kemo, 28 October 2026, from his image):
 // English word for word; the other languages are translations of the same lines.
+// journey: the line under the AIXESS wordmark inside the octagon (AIXESS ADVANTAGE frame, Kemo 20 November 2026).
 export const ADVANTAGE_SERVICES_COPY = {
   en: {
+    journey: "THE COMPLETE PROPERTY JOURNEY",
     eyebrow: "A\u00a0COMPLETE OWNERSHIP EXPERIENCE",
     title: ["AiXESS", "360° SERVICES"],
     subtitle: "Beyond the Purchase. A\u00a0Partner for Every Step.",
@@ -18,6 +20,7 @@ export const ADVANTAGE_SERVICES_COPY = {
     ],
   },
   de: {
+    journey: "DIE GESAMTE IMMOBILIENREISE",
     eyebrow: "EIN UMFASSENDES EIGENTÜMERERLEBNIS",
     title: ["AiXESS", "360°-SERVICES"],
     subtitle: "Über den Kauf hinaus. Ein Partner für jeden Schritt.",
@@ -34,6 +37,7 @@ export const ADVANTAGE_SERVICES_COPY = {
     ],
   },
   pl: {
+    journey: "PEŁNA ŚCIEŻKA NIERUCHOMOŚCI",
     eyebrow: "KOMPLEKSOWE DOŚWIADCZENIE WŁAŚCICIELA",
     title: ["USŁUGI", "AiXESS 360°"],
     subtitle: "Więcej niż zakup. Partner na każdym etapie.",
@@ -50,6 +54,7 @@ export const ADVANTAGE_SERVICES_COPY = {
     ],
   },
   sl: {
+    journey: "CELOTNA NEPREMIČNINSKA POT",
     eyebrow: "CELOVITA IZKUŠNJA LASTNIŠTVA",
     title: ["STORITVE", "AiXESS 360°"],
     subtitle: "Več kot nakup. Partner na vsakem koraku.",
@@ -66,6 +71,7 @@ export const ADVANTAGE_SERVICES_COPY = {
     ],
   },
   ru: {
+    journey: "ВЕСЬ ПУТЬ ВЛАДЕНИЯ НЕДВИЖИМОСТЬЮ",
     eyebrow: "ПОЛНЫЙ ЦИКЛ ВЛАДЕНИЯ",
     title: ["СЕРВИС", "AiXESS 360°"],
     subtitle: "Больше, чем покупка. Партнёр на каждом этапе.",
