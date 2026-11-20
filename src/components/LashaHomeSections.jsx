@@ -6,6 +6,7 @@ import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { HOME_HERO_LINES } from "../project-showcase-copy.js";
 import { useWordFit } from "./useWordFit.js";
 import { ThemedImage } from "./ThemedImage.jsx";
+import { assetUrl } from "../assetUrl.js";
 
 // Lasha's hairline arrows, drawn the way Figma draws them (19 November 2026): a shaft exactly as long as
 // the width the parent's CSS gives the arrow, ending in a 45° head whose arms are 3.2 stroke widths long,
@@ -132,8 +133,8 @@ const PAGE_HERO_IMAGES = {
   "broker-hero": { figma: "broker-hero", position: "50% 50%", sizes: "(max-aspect-ratio: 1/1) 180vh, 116vw" },
   tower: { src: "reverance-tower-1990", srcSet: "reverance-tower-995 995w, reverance-tower-1990 1990w, reverance-tower-2985 2985w", position: "68% 40%" },
 };
-const projectImage = (name) => `/assets/projects/${name}.webp`;
-const pageHeroSources = (media) => ({ src: projectImage(media.src), srcSet: media.srcSet.split(", ").map((entry) => `/assets/projects/${entry.replace(" ", ".webp ")}`).join(", ") });
+const projectImage = (name) => assetUrl(`/assets/projects/${name}.webp`);
+const pageHeroSources = (media) => ({ src: projectImage(media.src), srcSet: media.srcSet.split(", ").map((entry) => { const [name, width] = entry.split(" "); return `${projectImage(name)} ${width}`; }).join(", ") });
 // The hero is about 65% of the screen height on portrait screens, so a cover crop draws the
 // photo that tall and aspect × as wide; 100vw there would pick a soft, upscaled file.
 const pageHeroSizes = (aspect) => `(max-aspect-ratio: 1/1) ${Math.ceil(70 * aspect)}vh, 100vw`;

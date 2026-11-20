@@ -4,6 +4,7 @@ import { REVERANCE_INFO_COPY } from "../reverance-project-info-copy.js";
 import GALLERY_SIZES from "../data/project-gallery-sizes.json";
 import "./reverance-project.css";
 import { useWordFit } from "./useWordFit.js";
+import { assetUrl } from "../assetUrl.js";
 
 // Project Reverance information beneath the approved hero (Klem, 16 October 2026: "compare" the
 // AIXCO.Global v4 project page). Copy and its qualifications are in reverance-project-info-copy.js.
@@ -21,9 +22,9 @@ function gallerySource(slug) {
   const meta = GALLERY_SIZES[slug];
   const widths = meta.widths;
   return {
-    src: `/assets/projects/gallery/${slug}-${widths[Math.min(1, widths.length - 1)]}.webp`,
-    srcSet: widths.map((w) => `/assets/projects/gallery/${slug}-${w}.webp ${w}w`).join(", "),
-    full: `/assets/projects/gallery/${slug}-${widths[widths.length - 1]}.webp`,
+    src: assetUrl(`/assets/projects/gallery/${slug}-${widths[Math.min(1, widths.length - 1)]}.webp`),
+    srcSet: widths.map((w) => `${assetUrl(`/assets/projects/gallery/${slug}-${w}.webp`)} ${w}w`).join(", "),
+    full: assetUrl(`/assets/projects/gallery/${slug}-${widths[widths.length - 1]}.webp`),
     width: meta.width,
     height: meta.height,
   };

@@ -11,13 +11,14 @@ import { AixessLogo } from "./AixessLogo.jsx";
 import "./lasha-network-pages.css";
 import { ThemedImage } from "./ThemedImage.jsx";
 import { BrokerGetStarted, BrokerPlatformHero, BrokerWorkspace } from "./InsightsToolsPages.jsx";
+import { assetUrl } from "../assetUrl.js";
 
 // AiXESS Advantage and Broker Access, built to Lasha Bakashvili's Figma frames (AIXESS
 // ADVANTAGE 1440 × 1865 and BROKER ACCESS 1440 × 1800, shared by Kemo on 9 October 2026).
 // Copy follows the frames word for word; frame typos (ACCES, RECUEST, COMERCIAL, selectet)
 // are not copied. Headlines keep the site's AIXCO v4 faces.
 
-const image = (name) => `/assets/projects/${name}.webp`;
+const image = (name) => assetUrl(`/assets/projects/${name}.webp`);
 // Lasha's renders come out of Figma at 1x; each is upscaled 4x (EDSR super-resolution, no
 // retouching) and served at 1x, 2x and 3x so they stay sharp on Retina screens.
 const srcSet = (name, width) => [1, 2, 3].map((scale) => `${image(`${name}-${width * scale}`)} ${width * scale}w`).join(", ");
@@ -202,7 +203,7 @@ export function AdvantagePageContent({ header, onOpenModal }) {
             {care.items.map(([title, line], index) => (
               <li key={title} className={`lnp-journey-item lnp-journey-item-${index + 1}`}>
                 <span className="lnp-journey-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                <img className="lnp-journey-icon" src={`/assets/figma/icons/${JOURNEY_ICONS[index]}.svg`} alt="" aria-hidden="true" />
+                <img className="lnp-journey-icon" src={assetUrl(`/assets/figma/icons/${JOURNEY_ICONS[index]}.svg`)} alt="" aria-hidden="true" />
                 <h3>{title}</h3>
                 <p>{line}</p>
               </li>

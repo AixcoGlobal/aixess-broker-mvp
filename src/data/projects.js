@@ -1,20 +1,21 @@
 import { getWorkbookAvailableCount } from "./reveranceInventory.js";
+import { assetUrl } from "../assetUrl.js";
 
 // Homepage project showcase, following Lasha Bakashvili's "Current project in Batumi"
 // frame: one large render with a thumbnail strip, four metric tiles and a dark
 // project card. Only projects with a confirmed name and approved imagery belong
 // here; future projects are added to UPCOMING_PROJECTS once their name, renders,
 // pricing and handover date are supplied, and nothing renders until then.
-const image = (slug, sizes, thumb = `/assets/projects/${slug}-600.webp`) => ({
-  src: `/assets/projects/${slug}-${sizes[sizes.length - 1]}.webp`,
-  srcSet: sizes.map((width) => `/assets/projects/${slug}-${width}.webp ${width}w`).join(", "),
+const image = (slug, sizes, thumb = assetUrl(`/assets/projects/${slug}-600.webp`)) => ({
+  src: assetUrl(`/assets/projects/${slug}-${sizes[sizes.length - 1]}.webp`),
+  srcSet: sizes.map((width) => `${assetUrl(`/assets/projects/${slug}-${width}.webp`)} ${width}w`).join(", "),
   thumb,
 });
 
 const galleryImage = (slug, sizes = [960, 1600, 2400]) => ({
-  src: `/assets/projects/gallery/${slug}-${sizes[sizes.length - 1]}.webp`,
-  srcSet: sizes.map((width) => `/assets/projects/gallery/${slug}-${width}.webp ${width}w`).join(", "),
-  thumb: `/assets/projects/gallery/${slug}-480.webp`,
+  src: assetUrl(`/assets/projects/gallery/${slug}-${sizes[sizes.length - 1]}.webp`),
+  srcSet: sizes.map((width) => `${assetUrl(`/assets/projects/gallery/${slug}-${width}.webp`)} ${width}w`).join(", "),
+  thumb: assetUrl(`/assets/projects/gallery/${slug}-480.webp`),
 });
 
 export const FEATURED_PROJECT = {
