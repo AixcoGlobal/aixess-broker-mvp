@@ -161,6 +161,10 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
 
 @media (max-width: 899px) {
   .tresora-page.downtown-one-page .tr-hero { min-height: 0; padding-bottom: 0; }
+  /* The whole photo, tower crown included (Kemo, 20 November 2026: "this image is cut on top"): below
+     900px it keeps its own 2880 × 1890 shape instead of filling a strip the copy leaves, so nothing is
+     cropped at any width. */
+  .tresora-page.downtown-one-page .tr-hero-bg { flex: none; height: auto; min-height: 0; aspect-ratio: 2880 / 1890; object-position: 50% 50%; }
   .tresora-page.downtown-one-page .tr-hero-copy > *,
   .tresora-page.downtown-one-page .tr-hero-copy > .tr-hero-title,
   .tresora-page.downtown-one-page .tr-hero-intro,
