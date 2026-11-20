@@ -1003,9 +1003,9 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     html:root:not(#fs) .lnp-commercial-body {
     max-width: calc(281 * var(--u));
     margin: calc(var(--body-y, 0) * var(--u)) 0 0;
-    font-size: calc(16 * var(--u));
+    font-size: calc(17 * var(--u));
     font-weight: 500;
-    line-height: calc(17.3 * var(--u));
+    line-height: calc(18.36 * var(--u));
     letter-spacing: 0;
   }
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-body {
