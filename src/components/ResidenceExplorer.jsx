@@ -509,7 +509,8 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
 
       <dl className="unit-facts">
         <div><dt>{t("floor")}</dt><dd>{unit.floor || "—"}</dd></div>
-        <div><dt>{t("rooms")}</dt><dd>{unit.rooms || "—"}</dd></div>
+        {/* German listings count Zimmer as bedrooms plus the living room, never bathrooms or balconies. */}
+        <div><dt>{t("rooms")}</dt><dd>{(locale === "de" && Number.isFinite(unit.bedrooms) ? unit.bedrooms + 1 : unit.rooms) || "—"}</dd></div>
         <div><dt>{t("bedrooms")}</dt><dd>{unit.bedrooms || "—"}</dd></div>
         <div><dt>{t("price")}</dt><dd>{typeof unit.price === "number" && unit.price > 0 ? formatPrice(unit.price, locale) : t("onRequest")}</dd></div>
       </dl>
@@ -1007,7 +1008,7 @@ function ResidenceFilter({
           <button className="residence-filter-reset" type="button" onClick={onReset}>{t("resetFilters")}</button>
         </div>
       </div>
-      <FittedHeading><span>{t("filterOpportunity")}</span><span>{t("opportunity")}</span></FittedHeading>
+      <FittedHeading><span>{t("filterOpportunity")}</span><span>{t("filterOpportunityEnd")}</span></FittedHeading>
       <p className="residence-filter-intro">{t("filterIntro")}</p>
 
       <div className="residence-filter-controls" aria-label={t("filterResidences")}>
@@ -1117,7 +1118,7 @@ function ResidenceFilter({
                   onClick={() => onOpenResidence(unit)}
                 >
                   <span><i className={`status-swatch is-${status}`} />{unit.block ? `${unit.block} · ` : ""}#{unit.name}</span>
-                  <span>F{String(unit.floor).padStart(2, "0")}</span>
+                  <span>{t("floorShort")}{String(unit.floor).padStart(2, "0")}</span>
                   <strong>{unitAreaLabel(unit, locale)}</strong>
                   <ArrowRight aria-hidden="true" />
                 </button>

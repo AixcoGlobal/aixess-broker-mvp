@@ -26,7 +26,7 @@ export const REVERANCE_FIGMA_COPY = {
     detailsTitle: "WICHTIGE PROJEKTINFORMATIONEN",
     total: "100 % DES KAUFPREISES",
     batumiLead: "Batumi vereint",
-    batumiPoints: ["Schwarzmeertourismus", "internationale Nachfrage", "neue Infrastruktur", "vergleichsweise zugängliche", "Wohnpreise"],
+    batumiPoints: ["Schwarzmeertourismus", "internationale Nachfrage", "neue Infrastruktur", "vergleichsweise", "erschwingliche Wohnpreise"],
   },
   pl: {
     exploreProject: "ODKRYJ PROJEKT",

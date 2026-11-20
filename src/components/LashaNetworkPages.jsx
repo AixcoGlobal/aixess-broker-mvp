@@ -22,6 +22,8 @@ const image = (name) => `/assets/projects/${name}.webp`;
 // retouching) and served at 1x, 2x and 3x so they stay sharp on Retina screens.
 const srcSet = (name, width) => [1, 2, 3].map((scale) => `${image(`${name}-${width * scale}`)} ${width * scale}w`).join(", ");
 const noStop = (text) => text.replace(/[.。]$/, "");
+// German sets a space before the per cent sign (10 %), the other languages none.
+const percent = (value, locale) => (locale === "de" ? `${value}\u00a0%` : `${value}%`);
 const useCopy = () => {
   const { locale } = useLanguage();
   return {
@@ -261,12 +263,12 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
       <section className="lnp-commercial" aria-labelledby="lnp-commercial-title" ref={commercialRef}>
         <p className="lnp-commercial-eyebrow" id="lnp-commercial-title">{network.commercial[0]}</p>
         <div className="lnp-commercial-down">
-          <p className="lnp-figure">10%</p>
+          <p className="lnp-figure">{percent(10, locale)}</p>
           <h2><span>{page.downPayment}</span></h2>
           <p className="lnp-commercial-body">{page.commercialBody}</p>
         </div>
         <div className="lnp-commercial-commission">
-          <p className="lnp-figure">100%</p>
+          <p className="lnp-figure">{percent(100, locale)}</p>
           <h2>{page.commissionUnlocked.map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
         <div className="lnp-commercial-frame">
