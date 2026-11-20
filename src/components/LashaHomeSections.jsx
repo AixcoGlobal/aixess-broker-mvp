@@ -176,7 +176,7 @@ function useHeaderOnLightSky(ref, ranges, locale) {
 
 // Inner pages open with the homepage's language: the site header floating over a
 // Reverance render, a blue eyebrow and an oversized headline.
-export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", fillTitle = false, copy, image = "skyline", imageAlt = "", variant, lightSky, children }) {
+export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", fillTitle = false, firstLineRatio, copy, image = "skyline", imageAlt = "", variant, lightSky, children }) {
   const lines = Array.isArray(title) ? title : [title];
   const media = PAGE_HERO_IMAGES[image] ?? PAGE_HERO_IMAGES.skyline;
   const style = { "--hero-position": media.position, "--hero-position-phone": media.phonePosition ?? media.position };
@@ -201,7 +201,7 @@ export function LashaPageHero({ header, eyebrow, title, titleAs: Title = "h1", f
         {/* fillTitle sets every line to the title's width, as Lasha's posters do (Broker Access); the
             other heroes keep their words whole with titleRef (useWordFit). */}
         {fillTitle
-          ? <FittedHeading as={Title} className="lasha-page-hero-title" fillLines>{lines.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
+          ? <FittedHeading as={Title} className="lasha-page-hero-title" fillLines firstLineRatio={firstLineRatio}>{lines.map((line) => <span key={line}>{line}</span>)}</FittedHeading>
           : <Title className="lasha-page-hero-title" ref={titleRef}>{lines.map((line) => <span key={line}>{line}</span>)}</Title>}
         {copy && <p className="lasha-page-hero-text">{copy}</p>}
         {children}

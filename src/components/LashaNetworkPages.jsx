@@ -7,6 +7,7 @@ import { NETWORK_COPY } from "../network-copy.js";
 import { LASHA_HOME_COPY } from "../lasha-home-copy.js";
 import { LASHA_PAGES_COPY } from "../lasha-pages-copy.js";
 import { ADVANTAGE_SERVICES_COPY } from "../advantage-services-copy.js";
+import { AixessLogo } from "./AixessLogo.jsx";
 import "./lasha-network-pages.css";
 import { ThemedImage } from "./ThemedImage.jsx";
 import { BrokerGetStarted, BrokerPlatformHero, BrokerWorkspace } from "./InsightsToolsPages.jsx";
@@ -21,10 +22,6 @@ const image = (name) => `/assets/projects/${name}.webp`;
 // retouching) and served at 1x, 2x and 3x so they stay sharp on Retina screens.
 const srcSet = (name, width) => [1, 2, 3].map((scale) => `${image(`${name}-${width * scale}`)} ${width * scale}w`).join(", ");
 const noStop = (text) => text.replace(/[.。]$/, "");
-const sentenceCase = (text, locale) => {
-  const lower = text.toLocaleLowerCase(locale);
-  return lower.charAt(0).toLocaleUpperCase(locale) + lower.slice(1);
-};
 const useCopy = () => {
   const { locale } = useLanguage();
   return {
@@ -191,6 +188,11 @@ export function AdvantagePageContent({ header, onOpenModal }) {
             the frame's line icon, a rule, its title and line. Below 900px they follow as a list. */}
         <div className="lnp-journey">
           <img className="lnp-journey-octagon" src="/assets/figma/icons/care-journey.svg" width="549" height="296" alt="" aria-hidden="true" />
+          {/* The frame's centre (Kemo, 20 November 2026: "where is the aixess logo?? and text?"). */}
+          <div className="lnp-journey-centre">
+            <AixessLogo className="lnp-journey-logo" />
+            <p className="lnp-journey-tagline">{care.journey}</p>
+          </div>
           <svg className="lnp-journey-lines" viewBox="0 0 1440 716" preserveAspectRatio="none" aria-hidden="true" focusable="false">
             {JOURNEY_LINES.map((points) => <polyline key={points} points={points} />)}
           </svg>
@@ -274,7 +276,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
 
       <section className="lnp-process" aria-labelledby="lnp-process-title">
         <div className="lnp-process-heading">
-          <p className="lnp-process-eyebrow">{sentenceCase(network.process[0], locale)}</p>
+          <p className="lnp-process-eyebrow">{network.process[0]}</p>
           <h2 id="lnp-process-title">{splitAfter(noStop(network.process[1]), 2).map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
         <ol className="lnp-steps" ref={stepsRef}>

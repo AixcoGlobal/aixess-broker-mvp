@@ -35,7 +35,7 @@ export const INSIGHTS_TOOLS_COPY = {
       faqTitle: ["THE ANSWERS", "CLIENTS ASK FIRST."],
     },
     tools: {
-      title: ["EVERYTHING YOU NEED", "TO SELL. ONE PLATFORM."],
+      title: ["EVERYTHING YOU NEED", "ONE PLATFORM"],
       copy: "From your first client enquiry to the final sale, AiXESS gives you the tools, information and support to manage opportunities with confidence.",
       partner: "BECOME A PARTNER",
       login: "BROKER LOGIN",
@@ -92,7 +92,7 @@ export const INSIGHTS_TOOLS_COPY = {
       faqTitle: ["DIE ANTWORTEN, DIE", "KUNDEN ZUERST WOLLEN."],
     },
     tools: {
-      title: ["ALLES, WAS SIE ZUM VERKAUFEN", "BRAUCHEN. EINE PLATTFORM."],
+      title: ["ALLES, WAS SIE BRAUCHEN", "EINE PLATTFORM"],
       copy: "Von der ersten Kundenanfrage bis zum Abschluss gibt Ihnen AiXESS die Tools, Informationen und Unterstützung, um Chancen sicher zu steuern.",
       partner: "PARTNER WERDEN",
       login: "MAKLER-LOGIN",
@@ -149,7 +149,7 @@ export const INSIGHTS_TOOLS_COPY = {
       faqTitle: ["ODPOWIEDZI, O KTÓRE", "KLIENCI PYTAJĄ NAJPIERW."],
     },
     tools: {
-      title: ["WSZYSTKO, CZEGO POTRZEBUJESZ", "DO SPRZEDAŻY. JEDNA PLATFORMA."],
+      title: ["WSZYSTKO, CZEGO POTRZEBUJESZ", "JEDNA PLATFORMA"],
       copy: "Od pierwszego zapytania klienta do finalnej sprzedaży AiXESS daje Ci narzędzia, informacje i wsparcie, by pewnie prowadzić każdą okazję.",
       partner: "ZOSTAŃ PARTNEREM",
       login: "LOGOWANIE BROKERA",
@@ -206,7 +206,7 @@ export const INSIGHTS_TOOLS_COPY = {
       faqTitle: ["ODGOVORI, KI JIH", "STRANKE ŽELIJO NAJPREJ."],
     },
     tools: {
-      title: ["VSE, KAR POTREBUJETE", "ZA PRODAJO. ENA PLATFORMA."],
+      title: ["VSE, KAR POTREBUJETE", "ENA PLATFORMA"],
       copy: "Od prvega povpraševanja stranke do končne prodaje vam AiXESS daje orodja, informacije in podporo za samozavestno vodenje priložnosti.",
       partner: "POSTANITE PARTNER",
       login: "PRIJAVA POSREDNIKA",
@@ -263,7 +263,7 @@ export const INSIGHTS_TOOLS_COPY = {
       faqTitle: ["ОТВЕТЫ НА ПЕРВЫЕ", "ВОПРОСЫ КЛИЕНТОВ."],
     },
     tools: {
-      title: ["ВСЁ ДЛЯ ПРОДАЖ.", "ОДНА ПЛАТФОРМА."],
+      title: ["ВСЁ, ЧТО ВАМ НУЖНО", "ОДНА ПЛАТФОРМА"],
       copy: "От первого запроса клиента до завершения сделки AiXESS даёт вам инструменты, информацию и поддержку, чтобы уверенно вести каждую возможность.",
       partner: "СТАТЬ ПАРТНЁРОМ",
       login: "ВХОД ДЛЯ БРОКЕРОВ",

@@ -304,7 +304,7 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("link", { name: "PARTNER SIGN IN" })).toHaveAttribute("href", "https://portal.aixess.global/");
 
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
-    expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDONE\u00a0PLATFORM" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "YOU DON’TNEED TO BEA BROKER." })).toBeInTheDocument();
     expect(screen.getByText("If you have the network and ambition, AiXESS gives you the opportunities, tools and support.")).toBeInTheDocument();
     expect(screen.getByText("ASPIRING PROFESSIONALS")).toBeInTheDocument();
@@ -313,14 +313,14 @@ describe("AIXESS navigation pages", () => {
     expect(screen.queryByRole("heading", { name: "HAVE THE NETWORK?" })).not.toBeInTheDocument();
     expect(screen.getByText("THE COMMERCIAL ADVANTAGE")).toBeInTheDocument();
     expect(screen.getByText("Your client secures the property with this down payment, unlocking your full commission within 72 hours.")).toBeInTheDocument();
-    expect(screen.getByText("How it works")).toBeInTheDocument();
+    expect(screen.getByText("HOW IT WORKS")).toBeInTheDocument();
     expect(screen.getByText("Request AiXESS access")).toBeInTheDocument();
     expect(screen.getByText("Client pays the required down payment")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "LESS ADMINISTRATION. MORE OPPORTUNITY." })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "THREE STEPS TO GET STARTED." })).toBeInTheDocument();
     // Klem's order (22 October 2026).
     const order = Array.from(document.querySelectorAll(".lnp-broker h1, .lnp-broker h2, .lnp-commercial-eyebrow")).map((heading) => heading.textContent);
-    expect(order).toEqual(["EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM.", "YOU DON’TNEED TO BEA BROKER.", "THE COMMERCIAL ADVANTAGE", expect.any(String), expect.any(String), "FROM ACCESSTO COMMISSION", "LESS ADMINISTRATION. MORE OPPORTUNITY.", "THREE STEPS TO GET STARTED."]);
+    expect(order).toEqual(["EVERYTHING YOU NEEDONE\u00a0PLATFORM", "YOU DON’TNEED TO BEA BROKER.", "THE COMMERCIAL ADVANTAGE", expect.any(String), expect.any(String), "FROM ACCESSTO COMMISSION", "LESS ADMINISTRATION. MORE OPPORTUNITY.", "THREE STEPS TO GET STARTED."]);
   });
 
   it("submits broker registration request with broker details", async () => {
@@ -436,7 +436,7 @@ describe("AIXESS navigation pages", () => {
     expect(screen.queryByRole("button", { name: "BROKER TOOLS" })).not.toBeInTheDocument();
     expect(window.location.hash).toBe("#broker-access");
     expect(screen.getAllByRole("button", { name: "BROKER ACCESS" }).filter((button) => button.getAttribute("aria-current") === "page")).toHaveLength(2);
-    expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDONE\u00a0PLATFORM" })).toBeInTheDocument();
   });
 
   it("opens materials request modal, submits contact details, and unlocks downloads", async () => {

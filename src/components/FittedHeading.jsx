@@ -5,9 +5,12 @@ import { useLanguage } from "../i18n.jsx";
 // With fillLines, every line is sized on its own to the heading's full width (Kemo's AIXESS /
 // TO MARKET poster, 7 October 2026), and later lines stay at most maxLineRatio of the first
 // line's size so a short translation cannot outgrow it.
+// firstLineRatio caps the first line at that share of the last line's size, so a lead-in line set
+// smaller (Broker Access: EVERYTHING YOU NEED over ONE PLATFORM, 147 to 225 in Figma) stays smaller
+// when a translation of it is short.
 // Headings that share a fitGroup (a Map) all take the smallest fitted size, so a row of step
 // titles stays one size when one translation is long (ПРИСОЕДИНЯЙТЕСЬ, 18 October 2026).
-export function FittedHeading({ as: Tag = "h2", children, fillLines = false, maxLineRatio = Infinity, fitGroup, ...props }) {
+export function FittedHeading({ as: Tag = "h2", children, fillLines = false, maxLineRatio = Infinity, firstLineRatio = Infinity, fitGroup, ...props }) {
   const ref = useRef(null);
   const { locale } = useLanguage();
 
@@ -43,6 +46,10 @@ export function FittedHeading({ as: Tag = "h2", children, fillLines = false, max
             line.style.fontSize = `${Math.floor(size * 100) / 100 - (pass ? 0.01 : 0)}px`;
           }
         });
+        if (Number.isFinite(firstLineRatio) && lines.length > 1) {
+          const cap = parseFloat(lines[lines.length - 1].style.fontSize) * firstLineRatio;
+          if (parseFloat(lines[0].style.fontSize) > cap) lines[0].style.fontSize = `${Math.floor(cap * 100) / 100}px`;
+        }
         heading.dataset.fitReady = "true";
         return;
       }
@@ -110,7 +117,7 @@ export function FittedHeading({ as: Tag = "h2", children, fillLines = false, max
       lineObserver?.disconnect();
       window.removeEventListener("load", scheduleFit);
     };
-  }, [locale, fillLines, maxLineRatio, fitGroup]);
+  }, [locale, fillLines, maxLineRatio, firstLineRatio, fitGroup]);
 
   return <Tag {...props} ref={ref} data-fitted-heading data-fit-ready="false">{children}</Tag>;
 }

@@ -195,7 +195,7 @@ function groundAt(header, x, y) {
 function textBox(item) {
   const range = document.createRange();
   range.selectNodeContents(item);
-  const box = item.textContent.trim() ? range.getBoundingClientRect() : null;
+  const box = item.textContent.trim() && typeof range.getBoundingClientRect === "function" ? range.getBoundingClientRect() : null;
   return box && box.width ? box : item.getBoundingClientRect();
 }
 
