@@ -137,10 +137,10 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
   /* Numbers band: the figures 1 higher and 1 left. */
   html:root:not(#fs) .lasha-home .lasha-metrics-value { translate: calc(-1 * var(--u)) calc(-1 * var(--u)); }
 
-  /* Current project in Batumi: frame 2016–2972. Eyebrow box at y 2118, title capitals from 2146,
-     photo 746 × 607 and the facts' top rule at 2279, thumbnails 100 × 68 (9 apart) at 2902,
-     the ink card 515 × 374 at 2598. */
-  html:root:not(#fs) .lasha-home .project-showcase { padding-top: calc(102 * var(--u)); }
+  /* Current project in Batumi: frame 2016–2944 (Figma, 21 November 2026). Eyebrow box at y 2090,
+     title capitals from 2118, photo 746 × 607 and the facts' top rule at 2251, thumbnails 100 × 68
+     (9 apart) at 2874, the ink card 515 × 374 at 2570. */
+  html:root:not(#fs) .lasha-home .project-showcase { padding-top: calc(74 * var(--u)); }
   html:root:not(#fs) .lasha-home .project-showcase-head .lasha-eyebrow {
     font-weight: 700;
     line-height: calc(17.3 * var(--u));
@@ -192,14 +192,15 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
 }
 
 @media (min-width: 900px) {
-  /* New projects in Dubai: frame 2972–4082. Eyebrow box 3074, title capitals 3102, two 642 × 837
-     #dce7f0 cards at y 3245 (x 70 and 728). Inside each card, from its top-left: the photo
-     (23.3, 25.7) 592.6 × 521.7 / (24, 26) 594 × 521, the eyebrow box at 567, the name's box at
-     584 / 591, a 2px #babfc4 rule at 677, place and status at 690 and the 217 × 57 button at 744;
-     text starts 24 / 31 in. */
-  html:root:not(#fs) .lasha-home .dp-listing { padding: 0 calc(70 * var(--u)); }
+  /* New projects in Dubai (Figma, 21 November 2026): a #dce7f0 band 3019–4193, 75 under the Batumi
+     card; eyebrow box 3093, two #f7f7f4 cards 623 × 853 and 624 × 853 at y 3265.9 (x 70 and 746.3).
+     Inside each card, from its top-left: the photo 623 × 548.3, the eyebrow box at 579.1, the name's
+     box at 596.1 / 603.1, a 2px #babfc4 rule 553 long at 685.1 (x 35), place and status at 702.1 and
+     the 217 × 57 button at 756.1 (x 35); text starts 34 in. */
+  html:root:not(#fs) .lasha-home .dp-listing { margin-top: calc(75 * var(--u)); padding: calc(74 * var(--u)) calc(70 * var(--u)) calc(74.1 * var(--u)); }
+  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .dp-listing { background: #dce7f0; }
   html:root:not(#fs) .lasha-home .dp-listing > .lasha-eyebrow {
-    margin-top: calc(102 * var(--u));
+    margin-top: 0;
     font-size: calc(16 * var(--u));
     font-weight: 700;
     line-height: calc(17.3 * var(--u));
@@ -209,23 +210,22 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
   html:root:not(#fs) .lasha-home .dp-listing > .lasha-eyebrow::after { flex-basis: calc(125 * var(--u)); margin-left: calc(21 * var(--u)); }
   html:root:not(#fs) .lasha-home .dp-listing h2 { margin: calc(-0.6 * var(--u)) 0 0 calc(-1 * var(--u)); }
   html:root:not(#fs) .lasha-home .dp-listing-cards {
-    grid-template-columns: calc(642 * var(--u)) calc(642 * var(--u));
-    column-gap: calc(16 * var(--u));
-    margin-top: calc(16 * var(--u));
+    grid-template-columns: calc(623 * var(--u)) calc(624 * var(--u));
+    column-gap: calc(53.3 * var(--u));
+    margin-top: calc(17.9 * var(--u));
   }
     html:root:not(#fs) .lasha-home .dp-listing-cards article {
-    --text-x: calc(24 * var(--u));
+    --text-x: calc(34 * var(--u));
     position: relative;
     display: block;
     width: 100%;
-    height: calc(837 * var(--u));
+    height: calc(853 * var(--u));
     padding: 0;
     border: 0;
   }
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .dp-listing-cards article {
-    background: #dce7f0;
+    background: #f7f7f4;
   }
-  html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) article { --text-x: calc(31 * var(--u)); }
   /* The photo fills the card from its top edge to the eyebrow's gap (Kemo, 20 November 2026: "on figma
      it has full background on live website it has weird background on each image"): 642 × 547, the
      frame's mask grown to the card's top, left and right edges, each picture centred where the frame
@@ -235,26 +235,25 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     top: 0;
     left: 0;
     width: 100%;
-    height: calc(547 * var(--u));
+    height: calc(548.3 * var(--u));
     margin: 0;
     overflow: hidden;
   }
-  /* "5556 1" (1058.9 × 521.8, 340.1 left of a mask 23.3 in) scaled to the taller box: 1110.1 × 547,
-     its frame centre (60.1% across) at the box's centre. */
+  /* "5556 1": 1112.8 × 548.3, 489.8 left of the card, as the frame places it. */
   html:root:not(#fs) .lasha-home .dp-listing-image {
-    width: calc(1110.1 * var(--u));
+    width: calc(1112.8 * var(--u));
     max-width: none;
-    height: calc(547 * var(--u));
-    margin: 0 0 0 calc(-346.2 * var(--u));
+    height: calc(548.3 * var(--u));
+    margin: 0 0 0 calc(-489.8 * var(--u));
     aspect-ratio: auto;
     object-fit: fill;
   }
-  /* "center 1": its 893 × 633 layer at the frame's scale, the frame's centre (446, 352.5) at the box's. */
+  /* "center 1": 938.6 × 665.2, 156.9 left of and 96.5 above the card, as the frame places it. */
   html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) .dp-listing-image {
-    width: calc(893 * var(--u));
+    width: calc(938.6 * var(--u));
     max-width: none;
-    height: calc(633 * var(--u));
-    margin: calc(-79 * var(--u)) 0 0 calc(-125 * var(--u));
+    height: calc(665.2 * var(--u));
+    margin: calc(-96.5 * var(--u)) 0 0 calc(-156.9 * var(--u));
   }
   html:root:not(#fs) .lasha-home .dp-listing-cards article > :is(.dp-listing-eyebrow, h3, .dp-listing-meta, .lasha-button) {
     position: absolute;
@@ -262,7 +261,7 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     margin: 0;
   }
   html:root:not(#fs) .lasha-home .dp-listing-eyebrow {
-    top: calc(567 * var(--u));
+    top: calc(579.1 * var(--u));
     display: flex;
     gap: calc(16 * var(--u));
   }
@@ -278,7 +277,7 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     color: #2557d6;
   }
     html:root:not(#fs) .lasha-home .dp-listing-cards h3 {
-    top: calc(584 * var(--u));
+    top: calc(596.1 * var(--u));
     font-family: var(--l-fig);
     font-size: calc(80 / 0.93705 * var(--u));
     font-weight: 700;
@@ -290,11 +289,14 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lasha-home .dp-listing-cards h3 {
     color: #000;
   }
-  html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) h3 { top: calc(591 * var(--u)); }
+  html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) h3 { top: calc(603.1 * var(--u)); }
+  /* Russian sets the names in AiXESS Head, wider than Morganite: DOWNTOWN ONE DUBAI (616 at the frame's
+     size) fits the card's 556 between its 34 margins at 90%. */
+  html:root:not(#fs):lang(ru) .lasha-home .dp-listing-cards h3 { font-size: calc(80 / 0.93705 * 0.9 * var(--u)); }
     html:root:not(#fs) .lasha-home .dp-listing-meta {
-    top: calc(677 * var(--u));
-    width: calc(592 * var(--u));
-    padding-top: calc(13 * var(--u) - 2px);
+    top: calc(685.1 * var(--u));
+    width: calc(553 * var(--u));
+    padding-top: calc(17 * var(--u) - 2px);
     border-top: 2px solid;
     font-size: calc(16 * var(--u));
     font-weight: 500;
@@ -306,9 +308,9 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     border-top-color: #babfc4;
     color: #171a1d;
   }
-  html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(1) :is(.dp-listing-meta, .lasha-button) { left: calc(25 * var(--u)); }
+  html:root:not(#fs) .lasha-home .dp-listing-cards article > :is(.dp-listing-meta, .lasha-button) { left: calc(35 * var(--u)); }
   html:root:not(#fs) .lasha-home .dp-listing .lasha-button {
-    top: calc(744 * var(--u));
+    top: calc(756.1 * var(--u));
     box-sizing: border-box;
     width: calc(217 * var(--u));
     min-width: 0;
@@ -325,9 +327,9 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
 }
 
 @media (min-width: 900px) {
-  /* Different starting points: frame 4082–4669. The eyebrow is Inter Bold 20 now (capitals from
-     4184), the title's box at 4228 (capitals from 4220), the access band's rule at 4669. */
-  html:root:not(#fs) .lasha-home .lasha-starting { padding-top: calc(96.2 * var(--u)); padding-bottom: calc(57 * var(--u)); }
+  /* Different starting points (Figma, 21 November 2026): from the Dubai band's foot at 4193, the
+     eyebrow (Inter Bold 20) capitals from 4269, the title's box at 4312, the access band's rule at 4753. */
+  html:root:not(#fs) .lasha-home .lasha-starting { padding-top: calc(70.2 * var(--u)); padding-bottom: calc(57 * var(--u)); }
     html:root:not(#fs) .lasha-home .lasha-starting > .lasha-eyebrow {
     font-family: Inter, sans-serif;
     font-size: calc(20 * var(--u));
