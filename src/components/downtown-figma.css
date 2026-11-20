@@ -96,6 +96,9 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
   line-height: calc(57 * var(--u));
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  /* The tracking after the last letter is not ink: ENTERTAINMENT & RECREATION stays on one line in
+     its 436 column, as in the frame's 435 box. */
+  margin-inline-end: -0.02em;
 }
 .downtown-one-page .dt-amenity-list ul { margin: calc(18 * var(--u)) 0 0; padding: 0; list-style: none; }
 .downtown-one-page .dt-amenity-list li {
