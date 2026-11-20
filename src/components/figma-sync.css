@@ -355,8 +355,8 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
   html:root:not(#fs) .lasha-home .lasha-access-count { padding-left: calc(41 * var(--u)); }
   /* REGISTER AS A BROKER at 4758 and DOWNLOAD PROJECT MATERIALS at 4865: 38 apart. */
   html:root:not(#fs) .lasha-home .lasha-access-actions { padding-top: calc(89 * var(--u)); row-gap: calc(38 * var(--u)); gap: calc(38 * var(--u)); }
-  html:root:not(#fs) .lasha-home .lasha-access-count strong { margin-top: 0; translate: 0 calc(-2 * var(--u)); font-size: calc(175 / 0.93705 * var(--u)); letter-spacing: calc(1.13 * var(--u)); }
-  html:root:not(#fs) .lasha-home .lasha-access-count span { margin-top: calc(-8.96 * var(--u)); font-size: calc(67 / 0.93705 * var(--u)); letter-spacing: calc(1.13 * var(--u)); }
+  html:root:not(#fs) .lasha-home .lasha-access-count strong { margin-top: 0; translate: 0 calc(-2 * var(--u)); font-size: calc(175 / 0.93705 * var(--u)); letter-spacing: calc(1.75 * var(--u)); }
+  html:root:not(#fs) .lasha-home .lasha-access-count span { margin-top: calc(-8.96 * var(--u)); font-size: calc(67 / 0.93705 * var(--u)); font-weight: 700; letter-spacing: calc(0.67 * var(--u)); }
 }
 
 /* ==== AIXESS ADVANTAGE ===================================================================== */
@@ -664,11 +664,12 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     position: absolute;
     left: 0;
     right: 0;
-    top: calc((223.9 - 0.8633 * 14.7) * var(--u));
-    font-size: calc(14.7 * var(--u));
+    top: calc((223.9 - 0.8633 * 16.39) * var(--u));
+    font-size: calc(16.39 * var(--u));
+    font-weight: 500;
     line-height: 1;
-    letter-spacing: 0.222em;
-    text-indent: 0.222em;
+    letter-spacing: 0.14em;
+    text-indent: 0.14em;
     white-space: nowrap;
   }
   html:root:not(#fs) .lnp-journey-lines { display: block; position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #9b9a9a; stroke-width: 2.5; }
@@ -1002,9 +1003,9 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     html:root:not(#fs) .lnp-commercial-body {
     max-width: calc(281 * var(--u));
     margin: calc(var(--body-y, 0) * var(--u)) 0 0;
-    font-size: calc(16 * var(--u));
+    font-size: calc(17 * var(--u));
     font-weight: 500;
-    line-height: calc(17.3 * var(--u));
+    line-height: calc(18.36 * var(--u));
     letter-spacing: 0;
   }
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-commercial-body {

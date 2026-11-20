@@ -408,7 +408,7 @@ html:root[data-time-theme='day'] #market-insights { background: #dce7f0; }
     margin-top: calc(-10.4 * var(--fu));
     font-size: max(calc(14 * var(--fu)), 14px);
     font-weight: 500;
-    line-height: max(calc(15.12 * var(--fu)), 1.25em);
+    line-height: max(calc(15.12 * var(--fu)), 1.08em);
   }
   #market-insights .it-card:first-child h3 + p { margin-top: calc(-7.4 * var(--fu)); }
   #market-insights .it-card .it-card-status {
@@ -444,4 +444,57 @@ html:root[data-time-theme='night'] #market-insights .it-card { background: trans
 @media (min-width: 900px) {
   .it-main .it-library-eyebrow { display: flex; align-items: center; gap: calc(22 * min(100vw, 1920px) / 1440); }
   .it-main .it-library-eyebrow::after { content: ""; flex: 0 0 calc(114 * min(100vw, 1920px) / 1440); height: 1px; background: currentColor; }
+}
+
+/* The hero and RESOURCE LIBRARY heading in the INSIGHT frame's type (818:3; Kemo, 20 November 2026:
+   "match fonts and other stuff exactly as its on figma ... images and text keep it as it is"): hero
+   eyebrow Inter Bold 18.9 at 4%, title Morganite Bold 180 at 74% pitch and 2%, copy Inter Medium 17 at
+   4%; library eyebrow as MARKET INTELLIGENCE, title Morganite SemiBold 150 on one line, copy Inter
+   Medium 21 at 122%. Words, photos and the hero's layout stay the site's. */
+@media (min-width: 900px) {
+  html:root:not(#fs) .insights-page { --fu: calc(min(100vw, 1920px) / 1440); }
+  html:root:not(#fs) .insights-page :is(.lasha-page-hero .lasha-eyebrow, .it-library-eyebrow) {
+    font-size: max(calc(18.9 * var(--fu)), 12px);
+    font-weight: 700;
+    line-height: calc(22.88 * var(--fu));
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .insights-page .lasha-page-hero-title {
+    font-family: var(--l-fig);
+    font-size: calc(180 / 0.93705 * var(--fu));
+    font-weight: 700;
+    line-height: calc(133.2 * var(--fu));
+    letter-spacing: 0.0187em;
+    translate: none;
+    --fig-k: 1;
+  }
+  html:root:not(#fs) .insights-page .lasha-page-hero-text {
+    max-width: calc(524 * var(--fu));
+    font-size: max(calc(17 * var(--fu)), 16px);
+    font-weight: 500;
+    line-height: 1.21;
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .insights-page [aria-labelledby='it-library-title'] .it-heading > div { max-width: none; }
+  html:root:not(#fs) .insights-page #it-library-title {
+    font-family: var(--l-fig);
+    font-size: calc(150 / 0.93705 * var(--fu));
+    font-weight: 600;
+    line-height: calc(117 * var(--fu));
+    letter-spacing: 0;
+    translate: none;
+    --fig-k: 1;
+  }
+  html:root:not(#fs) .insights-page #it-library-title > span { display: inline; }
+  html:root:not(#fs) .insights-page [aria-labelledby='it-library-title'] .it-lead {
+    max-width: calc(781 * var(--fu));
+    font-size: max(calc(21 * var(--fu)), 16px);
+    font-weight: 500;
+    line-height: 1.22;
+  }
+  /* Accented capitals rise above Figma's 74% and 78% pitches: German, Polish, Slovenian and Russian
+     take the 0.86 pitch the other Figma pages use. Morganite has no Cyrillic. */
+  html:root:not(#fs):is(:lang(de), :lang(pl), :lang(sl), :lang(ru)) .insights-page .lasha-page-hero-title { line-height: calc(180 * 0.86 * var(--fu)); }
+  html:root:not(#fs):is(:lang(de), :lang(pl), :lang(sl), :lang(ru)) .insights-page #it-library-title { line-height: calc(129 * var(--fu)); }
+  html:root:not(#fs):lang(ru) .insights-page :is(.lasha-page-hero-title, #it-library-title) { font-family: "AiXESS Figma RU", "AiXESS Head", "Arial Narrow", sans-serif; }
 }
