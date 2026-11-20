@@ -226,31 +226,35 @@ html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) :is(body
     background: #dce7f0;
   }
   html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) article { --text-x: calc(31 * var(--u)); }
+  /* The photo fills the card from its top edge to the eyebrow's gap (Kemo, 20 November 2026: "on figma
+     it has full background on live website it has weird background on each image"): 642 × 547, the
+     frame's mask grown to the card's top, left and right edges, each picture centred where the frame
+     centres it. */
   html:root:not(#fs) .lasha-home .dp-listing-media {
     position: absolute;
-    top: calc(25.7 * var(--u));
-    left: calc(23.3 * var(--u));
-    width: calc(592.6 * var(--u));
-    height: calc(521.7 * var(--u));
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(547 * var(--u));
+    margin: 0;
     overflow: hidden;
   }
-  html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) .dp-listing-media { top: calc(26 * var(--u)); left: calc(24 * var(--u)); width: calc(594 * var(--u)); height: calc(521 * var(--u)); }
-  /* "5556 1" is drawn 1058.9 × 521.8 from 340.1 left of the mask (its image transform moves it
-     0.1192 of its width right inside a layer at x −373). */
+  /* "5556 1" (1058.9 × 521.8, 340.1 left of a mask 23.3 in) scaled to the taller box: 1110.1 × 547,
+     its frame centre (60.1% across) at the box's centre. */
   html:root:not(#fs) .lasha-home .dp-listing-image {
-    width: calc(1058.9 * var(--u));
+    width: calc(1110.1 * var(--u));
     max-width: none;
-    height: calc(521.8 * var(--u));
-    margin: 0 0 0 calc(-340.1 * var(--u));
+    height: calc(547 * var(--u));
+    margin: 0 0 0 calc(-346.2 * var(--u));
     aspect-ratio: auto;
     object-fit: fill;
   }
-  /* "center 1": an 893 × 633 layer, 149 left of and 92 above the mask. */
+  /* "center 1": its 893 × 633 layer at the frame's scale, the frame's centre (446, 352.5) at the box's. */
   html:root:not(#fs) .lasha-home .dp-listing-cards > li:nth-child(2) .dp-listing-image {
     width: calc(893 * var(--u));
     max-width: none;
     height: calc(633 * var(--u));
-    margin: calc(-92 * var(--u)) 0 0 calc(-149 * var(--u));
+    margin: calc(-79 * var(--u)) 0 0 calc(-125 * var(--u));
   }
   html:root:not(#fs) .lasha-home .dp-listing-cards article > :is(.dp-listing-eyebrow, h3, .dp-listing-meta, .lasha-button) {
     position: absolute;
@@ -538,6 +542,9 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-advantage-panel .lnp-kicker {
     color: #f7f7f4;
   }
+  /* MORE THAN ACCESS takes Figma's eyebrow rule (Kemo, 20 November 2026, marking it on the frame):
+     1px in the kicker's colour, 114 long, 21 after the words. */
+  html:root:not(#fs) .lnp-advantage-panel .lnp-kicker::after { content: ""; flex: 0 0 calc(114 * var(--u)); height: 1px; margin-left: calc(21 * var(--u)); background: currentColor; }
     html:root:not(#fs) .lnp-advantage-title {
     /* Right margin = the panel's left inset, so a fitted translation never runs to the screen's edge. */
     width: auto;
@@ -713,7 +720,7 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
 /* ==== BROKER ACCESS ======================================================================== */
 @media (min-width: 900px) {
   /* Hero: frame 0–900. Photo "3:4 1" 1672 × 941 from x −67, y −41. Eyebrow box 138, title box
-     180.6–472.6 (EVERYTHING YOU NEED at 147, its 632px width shared by every line), body 470,
+     180.6–472.6 (EVERYTHING YOU NEED at 147 over ONE PLATFORM at 225, both 632 wide), body 470,
      buttons 554 (293.7 × 82.4 and 303.1 × 82.9, 36.2 apart), note 661. */
   html:root:not(#fs) .lnp-broker .lasha-page-hero { height: calc(900 * var(--u)); min-height: 0; padding: 0; display: block; overflow: hidden; }
   html:root:not(#fs) .lnp-broker .lasha-page-hero-media { inset: calc(-41 * var(--u)) auto auto calc(-67 * var(--u)); width: calc(1672 * var(--u)); max-width: none; height: calc(941 * var(--u)); object-fit: cover; object-position: 50% 50%; }
@@ -733,7 +740,8 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     html:root:not(#fs) .lnp-broker .lasha-page-hero-title {
     width: calc(643 * var(--u));
     height: calc(292 * var(--u));
-    margin: calc(13.7 * var(--u)) 0 0;
+    /* 4.4 more than with the old 0.75 pitch, so EVERYTHING YOU NEED's capitals stay where they were. */
+    margin: calc(18.1 * var(--u)) 0 0;
     font-family: var(--l-fig);
     font-size: calc(147 / 0.93705 * var(--u));
     font-weight: 700;
@@ -744,7 +752,14 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .lasha-page-hero-title {
     color: #171a1d;
   }
-  html:root:not(#fs) .lnp-broker .lasha-page-hero-title > span { display: block; width: max-content; line-height: 0.75; }
+  /* Figma's pitches, in em so a fitted size keeps them: EVERYTHING YOU NEED 108.78 on 147, ONE PLATFORM
+     170.97 on 224.97 (sizes here are Figma's / 0.93705). */
+  /* English keeps the frame's 292 box; a translation set smaller takes its lines' height and the frame's
+     12.25 under them, so no gap opens above the copy. */
+  html:root:not(#fs):not(:lang(en)) .lnp-broker .lasha-page-hero-title { height: auto; padding-bottom: calc(12.25 * var(--u)); }
+  /* Figma tracks each line 2% of its own size; per line in em, so the fitted sizes keep it. */
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-title > span { display: block; width: max-content; line-height: 0.69341em; letter-spacing: 0.01874em; }
+  html:root:not(#fs) .lnp-broker .lasha-page-hero-title > span:last-child { line-height: 0.71215em; }
     html:root:not(#fs) .lnp-broker .lasha-page-hero-text {
     max-width: calc(699 * var(--u));
     margin: calc(3.4 * var(--u)) 0 0;
@@ -1542,11 +1557,10 @@ html:root:not(#fs) .lasha-hero > .site-header :is(.login-button, .menu-toggle):h
   html:root:not(#fs) body { --site-header-h: 101px; }
 }
 
-/* Text shows in the same case as on the live site (Kemo, 19 November 2026: texts and numbers stay
-   exactly as they are); only the layout follows the frames. */
-html:root:not(#fs) .lasha-home .project-showcase-head .lasha-eyebrow { text-transform: none; }
-html:root:not(#fs) .lasha-home .dp-listing-eyebrow > .dp-listing-line { text-transform: none; }
-html:root:not(#fs) .lasha-home .dp-listing-eyebrow > .dp-listing-category { text-transform: uppercase; }
+/* Eyebrows are always capitals (Kemo, 20 November 2026, on "Emerging market opportunity": "make sure
+   all the such mistakes are corrected everywhere it should be all capitals"). */
+html:root:not(#fs) .lasha-home .project-showcase-head .lasha-eyebrow { text-transform: uppercase; }
+html:root:not(#fs) .lasha-home .dp-listing-eyebrow > :is(.dp-listing-line, .dp-listing-category) { text-transform: uppercase; }
 html:root:not(#fs) .lasha-home .dp-listing-meta { text-transform: uppercase; }
 
 @media (min-width: 900px) {

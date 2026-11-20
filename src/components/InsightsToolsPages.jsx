@@ -16,7 +16,7 @@ function useCopy() {
 
 // `lines`: the desktop frame draws the title in that many lines above fixed blocks, so a translation
 // is set smaller until it fits them (useLineFit); without it the title only keeps its words inside.
-function SectionHeading({ id, eyebrow, title, copy, lines, children }) {
+function SectionHeading({ id, eyebrow, eyebrowClass, title, copy, lines, children }) {
   const titleRef = useRef(null);
   const unusedRef = useRef(null);
   useWordFit(lines ? unusedRef : titleRef);
@@ -24,7 +24,7 @@ function SectionHeading({ id, eyebrow, title, copy, lines, children }) {
   return (
     <div className="it-heading">
       <div>
-        <p className="it-eyebrow">{eyebrow}</p>
+        <p className={`it-eyebrow${eyebrowClass ? ` ${eyebrowClass}` : ""}`}>{eyebrow}</p>
         {/* A space between the lines keeps the heading's accessible name in words. */}
         <h2 id={id} ref={titleRef}>{(Array.isArray(title) ? title : [title]).map((line, index) => <Fragment key={line}>{index ? " " : null}<span>{line}</span></Fragment>)}</h2>
         {copy && <p className="it-lead">{copy}</p>}
@@ -89,7 +89,7 @@ export function InsightsPageContent({ header, onOpenModal }) {
         </section>
 
         <section className="it-section it-paper" aria-labelledby="it-library-title">
-          <SectionHeading id="it-library-title" eyebrow={c.libraryEyebrow} title={c.libraryTitle} copy={c.libraryCopy} />
+          <SectionHeading id="it-library-title" eyebrow={c.libraryEyebrow} eyebrowClass="it-library-eyebrow" title={c.libraryTitle} copy={c.libraryCopy} />
           <div className="it-cards it-cards-4">
             {c.resources.map(([title, body], index) => (
               <article className="it-card it-card-light" key={title}>
@@ -158,10 +158,12 @@ function CardMedia({ media, label }) {
 // header, so every header label takes ink (see useHeaderOnLightSky).
 const BROKER_TOOLS_LIGHT_SKY = { themes: "day afternoon", ranges: [[0, 1]] };
 
+// The title follows Figma frame 216:153 (Kemo, 20 November 2026): EVERYTHING YOU NEED in Morganite 147
+// over ONE PLATFORM in 225, both the title's width.
 export function BrokerPlatformHero({ header, eyebrow, onOpenModal }) {
   const { tools: c } = useCopy();
   return (
-    <LashaPageHero header={header} eyebrow={eyebrow} title={c.title.map((line, index) => (index === c.title.length - 1 ? line.replace(/ (?=\S+$)/, "\u00a0") : line))} image="broker-hero" fillTitle copy={c.copy} variant="coastal" lightSky={BROKER_TOOLS_LIGHT_SKY}>
+    <LashaPageHero header={header} eyebrow={eyebrow} title={c.title.map((line, index) => (index === c.title.length - 1 ? line.replace(/ (?=\S+$)/, "\u00a0") : line))} image="broker-hero" fillTitle firstLineRatio={147 / 224.97} copy={c.copy} variant="coastal" lightSky={BROKER_TOOLS_LIGHT_SKY}>
       <div className="page-cta-row it-hero-actions">
         <button className="button button-primary" type="button" onClick={() => onOpenModal("register")}>{c.partner}<LashaArrow length={24} /></button>
         <button className="button button-ghost" type="button" onClick={() => onOpenModal("login")}>{c.login}<LashaArrow length={24} /></button>

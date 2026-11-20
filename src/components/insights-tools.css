@@ -438,3 +438,10 @@ html:root[data-time-theme='day'] #market-insights { background: #dce7f0; }
    behind this texts please remove it i hate it"): the market cards' text stands on the band itself,
    under each photo. */
 html:root[data-time-theme='night'] #market-insights .it-card { background: transparent; }
+
+/* RESOURCE LIBRARY keeps the frame's eyebrow rule (818:3: 114 long, 22 after the words), as MARKET
+   INTELLIGENCE does (Kemo, 20 November 2026: eyebrow rules "exactly as on figma"). */
+@media (min-width: 900px) {
+  .it-main .it-library-eyebrow { display: flex; align-items: center; gap: calc(22 * min(100vw, 1920px) / 1440); }
+  .it-main .it-library-eyebrow::after { content: ""; flex: 0 0 calc(114 * min(100vw, 1920px) / 1440); height: 1px; background: currentColor; }
+}

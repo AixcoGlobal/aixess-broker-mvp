@@ -22,10 +22,6 @@ const image = (name) => `/assets/projects/${name}.webp`;
 // retouching) and served at 1x, 2x and 3x so they stay sharp on Retina screens.
 const srcSet = (name, width) => [1, 2, 3].map((scale) => `${image(`${name}-${width * scale}`)} ${width * scale}w`).join(", ");
 const noStop = (text) => text.replace(/[.。]$/, "");
-const sentenceCase = (text, locale) => {
-  const lower = text.toLocaleLowerCase(locale);
-  return lower.charAt(0).toLocaleUpperCase(locale) + lower.slice(1);
-};
 const useCopy = () => {
   const { locale } = useLanguage();
   return {
@@ -280,7 +276,7 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
 
       <section className="lnp-process" aria-labelledby="lnp-process-title">
         <div className="lnp-process-heading">
-          <p className="lnp-process-eyebrow">{sentenceCase(network.process[0], locale)}</p>
+          <p className="lnp-process-eyebrow">{network.process[0]}</p>
           <h2 id="lnp-process-title">{splitAfter(noStop(network.process[1]), 2).map((line) => <span key={line}>{line}</span>)}</h2>
         </div>
         <ol className="lnp-steps" ref={stepsRef}>
