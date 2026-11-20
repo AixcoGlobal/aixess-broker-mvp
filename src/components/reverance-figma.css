@@ -947,6 +947,8 @@ html:root[data-time-theme='afternoon'] .rv-page .rv-band .rv-eyebrow { color: va
   /* current opportunity */
   .rv-page .rv-opportunity .rv-frame { padding-block: 56px 40px; }
   .rv-page .rv-opp-figure { height: auto; aspect-ratio: 622 / 830; max-height: 80svh; }
+  /* When the screen height caps the figure (tablets), the crop trims the ground, never the crown fins. */
+  .rv-page .rv-opp-figure img { object-position: 50% 12%; }
   .rv-page .rv-opp-title { margin-top: 12px; }
   .rv-page .rv-opp-subtitle { margin: 10px 0 0; font-size: calc(32 / 0.93705 * 1px); line-height: 28px; }
   .rv-page .rv-opp-lead { margin: 18px 0 0; font-size: 16px; line-height: 23px; letter-spacing: 0.02em; }
@@ -1021,6 +1023,10 @@ html:root[data-time-theme='afternoon'] .rv-page .rv-band .rv-eyebrow { color: va
   .rv-page .rv-amenity-1 { grid-column: 1 / -1; margin-bottom: 12px !important; }
   .rv-page .rv-sections .rv-amenity img { height: auto; aspect-ratio: 791 / 447; }
   .rv-page .rv-sections .rv-amenity:not(.rv-amenity-1) img { aspect-ratio: 487 / 300; }
+  /* Phones crop the square renders to wide tiles: PLANTED ENTRANCE shows its entrance, not the façade
+     above it, and ENTRANCE AREA AT NIGHT its towers and the street in front (20 November 2026). */
+  .rv-page .rv-sections .rv-amenity img[src*="/entrance-"] { object-position: 50% 88%; }
+  .rv-page .rv-sections .rv-amenity img[src*="/night-arrival-"] { object-position: 50% 62%; }
   .rv-page .rv-amenity figcaption,
   .rv-page .rv-amenity:not(.rv-amenity-1) figcaption { margin-top: 8px; padding-left: 0; font-size: 13px; line-height: 16px; white-space: normal; }
   .rv-page .rv-residence-note { margin: 20px 0 0; }
