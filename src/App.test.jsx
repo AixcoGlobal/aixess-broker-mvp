@@ -91,14 +91,14 @@ describe("AIXESS navigation pages", () => {
     window.history.replaceState({}, "", "/#insights");
     render(<App />);
     const cardPhotos = () => Array.from(document.querySelectorAll(".it-card-media img[data-theme-photo]")).map((img) => img.dataset.themePhoto);
-    expect(cardPhotos()).toEqual(["dubai-skyline-night", "switzerland-lakeside-night", "coastal-lifestyle-night"]);
+    expect(cardPhotos()).toEqual(["insights-georgia-night", "insights-dubai-night", "insights-switzerland-night", "coastal-lifestyle-night"]);
     const hero = document.querySelector(".lasha-page-hero-media");
     expect(hero.getAttribute("src")).toMatch(/^\/assets\/themed\/batumi-coast-night-\d+\.webp$/);
     expect(hero.getAttribute("alt")).toMatch(/^Illustration of Batumi’s Black Sea coast/);
     expect(hero.getAttribute("alt")).not.toMatch(/Reverance/);
 
     act(() => setTimeThemeMode("day"));
-    await waitFor(() => expect(cardPhotos()).toEqual(["dubai-skyline-day", "switzerland-lakeside-day", "coastal-lifestyle-day"]));
+    await waitFor(() => expect(cardPhotos()).toEqual(["insights-georgia-day", "insights-dubai-day", "insights-switzerland-day", "coastal-lifestyle-day"]));
     expect(document.querySelector(".lasha-page-hero-media").dataset.themePhoto).toBe("batumi-coast-day");
     expect(document.documentElement.dataset.timeTheme).toBe("day");
   });

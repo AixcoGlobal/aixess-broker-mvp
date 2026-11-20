@@ -349,7 +349,6 @@ html:root[data-time-theme='day'] #market-insights { background: #dce7f0; }
     display: flex;
     align-items: center;
     gap: calc(21 * var(--fu));
-    color: #2557d6;
     font-size: max(calc(18.9 * var(--fu)), 12px);
     font-weight: 700;
     line-height: calc(22.88 * var(--fu));
@@ -434,3 +433,8 @@ html:root[data-time-theme='day'] #market-insights { background: #dce7f0; }
   :root:lang(ru) #market-insights :is(h2, .it-card h3) { font-family: "AiXESS Figma RU", "AiXESS Head", "Arial Narrow", sans-serif; }
   :root:lang(ru) #market-insights .it-card h3 + p { margin-top: calc(2 * var(--fu)); }
 }
+
+/* No grey card surface behind text at night (Kemo, 20 November 2026: "some kind of grey background
+   behind this texts please remove it i hate it"): the market cards' text stands on the band itself,
+   under each photo. */
+html:root[data-time-theme='night'] #market-insights .it-card { background: transparent; }

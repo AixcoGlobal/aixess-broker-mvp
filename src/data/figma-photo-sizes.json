@@ -790,5 +790,113 @@
         ]
       }
     }
+  },
+  "insights-georgia": {
+    "width": 2840,
+    "height": 1904,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400,
+      2840
+    ],
+    "themes": {
+      "afternoon": {
+        "width": 2840,
+        "height": 1904,
+        "widths": [
+          480,
+          800,
+          1200,
+          1600,
+          2400,
+          2840
+        ]
+      },
+      "night": {
+        "width": 2840,
+        "height": 1904,
+        "widths": [
+          480,
+          800,
+          1200,
+          1600,
+          2400,
+          2840
+        ]
+      }
+    }
+  },
+  "insights-dubai": {
+    "width": 2256,
+    "height": 752,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2256
+    ],
+    "themes": {
+      "afternoon": {
+        "width": 2256,
+        "height": 752,
+        "widths": [
+          480,
+          800,
+          1200,
+          1600,
+          2256
+        ]
+      },
+      "night": {
+        "width": 2256,
+        "height": 752,
+        "widths": [
+          480,
+          800,
+          1200,
+          1600,
+          2256
+        ]
+      }
+    }
+  },
+  "insights-switzerland": {
+    "width": 2256,
+    "height": 752,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2256
+    ],
+    "themes": {
+      "afternoon": {
+        "width": 2256,
+        "height": 752,
+        "widths": [
+          480,
+          800,
+          1200,
+          1600,
+          2256
+        ]
+      },
+      "night": {
+        "width": 2256,
+        "height": 752,
+        "widths": [
+          480,
+          800,
+          1200,
+          1600,
+          2256
+        ]
+      }
+    }
   }
 }

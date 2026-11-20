@@ -41,13 +41,9 @@ export function InsightsPageContent({ header, onOpenModal }) {
   const { locale } = useLanguage();
   const { insights: c } = useCopy();
   const faqs = AIXCO_FAQ[locale] || AIXCO_FAQ.en;
-  // The site's own photos in the Figma layout (Kemo, 20 November 2026: "just use current images we have
-  // on website"): the Reverance aerial and the themed Dubai and Swiss photos.
-  const articleMedia = [
-    { src: asset("projects/reverance-aerial-600.webp"), srcSet: `${asset("projects/reverance-aerial-600.webp")} 600w, ${asset("projects/reverance-aerial-1200.webp")} 1200w` },
-    { family: "dubai-skyline", position: "72% 50%" },
-    { family: "switzerland-lakeside", position: "70% 50%" },
-  ];
+  // The INSIGHT frame's three panoramas (Batumi seafront, Dubai skyline, alpine lakeshore) with Kemo's
+  // afternoon and night versions (20 November 2026), switching with the theme like every Figma photo.
+  const articleMedia = [{ figma: "insights-georgia" }, { figma: "insights-dubai" }, { figma: "insights-switzerland" }];
   const resourceMedia = [
     { src: asset("projects/reverance-front-700.webp") },
     {
@@ -143,7 +139,9 @@ function CardMedia({ media, label }) {
   }
   return (
     <div className="it-card-media">
-      {media.family ? (
+      {media.figma ? (
+        <ThemedImage figma={media.figma} defaultWidth={800} sizes="(max-width: 899px) 100vw, 50vw" alt="" loading="lazy" decoding="async" />
+      ) : media.family ? (
         <ThemedImage family={media.family} defaultWidth={800} sizes="(max-width: 899px) 100vw, 30vw" style={{ objectPosition: media.position }} loading="lazy" decoding="async" />
       ) : (
         <img src={media.src} srcSet={media.srcSet} sizes="(max-width: 899px) 100vw, 30vw" alt="" loading="lazy" decoding="async" />
