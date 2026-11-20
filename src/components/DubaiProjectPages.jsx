@@ -41,9 +41,10 @@ export function projectMailto(common, project, request) {
 
 // TRESORA's scene renders have versions for the other times of day (src/data/figma-photo-sizes.json).
 // Pictures with day / afternoon / night versions (src/data/figma-photo-sizes.json, Kemo 19 November 2026).
-const THEMED = new Set(["tresora-fig-hero", "tresora-fig-discover", "tresora-fig-spaces", "tresora-fig-lifestyle", "tresora-fig-payment", "downtown-fig-hero", "downtown-fig-ent", "downtown-fig-highlights"]);
-// DOWNTOWN ONE's highlights band follows the theme too (Kemo, 20 November 2026: "theme switcher seems to
-// be having no effect on this"); its text colour per theme is set in downtown-figma.css.
+const THEMED = new Set(["tresora-fig-hero", "tresora-fig-discover", "tresora-fig-spaces", "tresora-fig-lifestyle", "tresora-fig-payment", "downtown-fig-hero", "downtown-fig-ent"]);
+// DOWNTOWN ONE's highlights band is the frame as drawn in every theme: light text over the dusk render
+// (Kemo, 20 November 2026, on the stacked daylight version: "nowhere like its on figma"). The six items
+// run down over palms and street, where no text reads on the daylight versions.
 // The same words in English, for the AiXESS team's copy of the request.
 function englishWords(locale, label) {
   const find = (node, path) => {

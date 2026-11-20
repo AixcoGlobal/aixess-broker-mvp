@@ -213,39 +213,3 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
   .downtown-one-page .dt-more-title { max-width: none; margin-top: 14px; line-height: 0.8; }
 }
 
-/* Project Highlights by day and in the afternoon (Kemo, 20 November 2026, chose "copy on sky, photo
-   below" after the daylight versions put the lower highlights on the palms and buildings): from 900px,
-   while a day or afternoon version is on screen, the title and the six highlights stand on the photo's
-   own sky colour (its top row, sampled left to right) and the whole photo follows underneath, so no
-   text crosses the buildings. The text is black: 4.8:1 or more on both skies. Night keeps the frame's
-   layout, light text over the dusk render. */
-@media (min-width: 900px) {
-  .downtown-one-page .dt-highlights:has(> .tr-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) {
-    --tr-light: #000;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    color: #000;
-    background: linear-gradient(90deg, #3c7ccd 0%, #407ecf 25%, #4383d5 50%, #4987d6 75%, #5693e0 100%);
-  }
-  .downtown-one-page .dt-highlights:has(> .tr-bg[data-photo-light='afternoon']) {
-    background: linear-gradient(90deg, #768cbb 0%, #6c8bbc 25%, #6686bc 50%, #6286be 75%, #6185be 100%);
-  }
-  .downtown-one-page .dt-highlights:has(> .tr-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) > .tr-bg {
-    position: relative;
-    z-index: auto;
-    inset: auto;
-    order: 2;
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 2880 / 2028;
-  }
-  .downtown-one-page .dt-highlights:has(> .tr-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) > .tr-wrap {
-    order: 1;
-    padding-bottom: calc(24 * var(--u));
-  }
-  .downtown-one-page .dt-highlights:has(> .tr-bg:is([data-photo-light='day'], [data-photo-light='afternoon'])) :is(.dt-highlights-title, .dt-facts dt, .dt-facts dd) {
-    color: #000;
-  }
-}
