@@ -138,7 +138,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect([...facts.querySelectorAll("dd")].at(-1).textContent).toBe("$176,000");
     expect([...facts.querySelectorAll("dt")].at(-1).textContent).toBe("Starting from");
     expect([...page.querySelectorAll(".tr-prices dt")].map((label) => label.textContent)).toEqual(["Starting price", "Price per m²"]);
-    expect([...page.querySelectorAll(".tr-prices dd")].map((value) => value.textContent)).toEqual(["US $176,635", "US $4,115"]);
+    expect([...page.querySelectorAll(".tr-prices dd")].map((value) => value.textContent)).toEqual(["US $176,000", "US $4,115"]);
     expect(page.textContent.match(/\$/g)).toHaveLength(3);
     expect(page.textContent).not.toMatch(/\brent\b|yearly|AED(?=[\s\d])|EUR/i);
     expect(page.textContent).not.toContain(copy.currency.text);
