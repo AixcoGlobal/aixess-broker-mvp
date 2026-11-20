@@ -371,10 +371,10 @@ html:root[data-time-theme='night'] .tresora-page {
 }
 .tresora-page .tr-prices dt {
   font-family: Inter, system-ui, sans-serif;
-  font-size: calc(18 * var(--u));
+  font-size: calc(18.68 * var(--u));
   font-weight: 500;
   line-height: calc(23 * var(--u));
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -382,11 +382,11 @@ html:root[data-time-theme='night'] .tresora-page {
   margin: calc(28.38 * var(--u)) 0 0;
   color: var(--tr-accent);
   font-family: var(--tr-face);
-  font-size: calc(133.33 / 0.93705 * var(--u) * var(--tr-price-k));
-  font-weight: 600;
+  font-size: calc(133.62 / 0.93705 * var(--u) * var(--tr-price-k));
+  font-weight: 700;
   font-synthesis: none;
   line-height: calc(106.67 * var(--u));
-  letter-spacing: 0.027em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
 }
