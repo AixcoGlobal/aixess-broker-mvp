@@ -265,7 +265,7 @@ export const REVERANCE_INFO_COPY = withPrices({
   "de": {
     "batumi": {
       "eyebrow": "WARUM BATUMI",
-      "title": "Batumi vereint Schwarzmeertourismus, internationale Nachfrage, neue Infrastruktur und vergleichsweise zugängliche Wohnpreise.",
+      "title": "Batumi vereint Schwarzmeertourismus, internationale Nachfrage, neue Infrastruktur und vergleichsweise erschwingliche Wohnpreise.",
       "stats": [
         [
           "17.478",
@@ -354,13 +354,13 @@ export const REVERANCE_INFO_COPY = withPrices({
             ],
             [
               "night-arrival",
-              "Nächtlicher Eingangs\u00adbereich",
+              "Eingangs\u00adbereich bei Nacht",
               "Visualisierung des begrünten Ankunftsbereichs von Reverance"
             ]
           ]
         ],
         [
-          "Bewohnereinrichtungen",
+          "BEWOHNEREINRICHTUNGEN",
           "Rezeption, Lounges und Einrichtungen für Bewohner.",
           [
             [
@@ -418,10 +418,10 @@ export const REVERANCE_INFO_COPY = withPrices({
         ],
         [
           "1 % STEUER AUF MIETEINKÜNFTE",
-          "Möglicherweise im geltenden georgischen Steuerregime verfügbar, abhängig von Eignung und individuellen Umständen."
+          "Je nach Voraussetzungen und persönlicher Situation kann ein Steuersatz von 1 % gelten."
         ],
         [
-          "0 % KAPITALERTRAGSTEUER NACH 2 JAHREN",
+          "0 % STEUER AUF VERÄUSSERUNGSGEWINNE NACH 2 JAHREN",
           "Vorbehaltlich der geltenden georgischen Steuervorschriften, Haltedauer, Objektklassifizierung und individueller Umstände."
         ]
       ],
@@ -492,13 +492,13 @@ export const REVERANCE_INFO_COPY = withPrices({
         ],
         [
           "25.000 m²",
-          "Komfort- und Gemeinschaftsinfrastruktur"
+          "Gemeinschafts- und Freizeitflächen"
         ]
       ],
       "highlights": [
         [
           "Aktuelle Verfügbarkeit",
-          "Verfügbare reguläre und Golden Premium Apartments in beiden Gebäuden."
+          "Verfügbare reguläre und Golden-Premium-Apartments in beiden Gebäuden."
         ],
         [
           "Lage",
@@ -506,7 +506,7 @@ export const REVERANCE_INFO_COPY = withPrices({
         ],
         [
           "Mietszenario",
-          "Laut Projektpräsentation: durchschnittlich {{usd:600}}/Monat Langzeitmiete, {{usd:80}}/Nacht Kurzzeitmiete und 90 % mögliche Auslastung."
+          "Laut Projektpräsentation: durchschnittlich {{usd:600}}/Monat Langzeitmiete, {{usd:80}}/Nacht Kurzzeitmiete und eine mögliche Auslastung von 90 %."
         ]
       ],
       "imageAlt": "Sonnenuntergang über der Fassade der Residenz",

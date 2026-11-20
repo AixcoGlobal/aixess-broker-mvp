@@ -67,12 +67,27 @@ export const PAGE_TITLES = {
   home: "AiXESS — Turn Your Network Into Opportunity",
   "why-aixess": "The AiXESS Advantage — Why AiXESS",
   residences: "Reverance Batumi Waterfront — Luxury Living | AiXESS",
-  tresora: "TRESORA, Dubai Islands — Waterfront Residences | AiXESS",
+  tresora: "TRESORA, Jumeirah Village Circle — Residences in Dubai | AiXESS",
   "downtown-one": "Downtown One, Dubai — Prime Investment | AiXESS",
   "broker-access": "Broker Access & Registration — AiXESS",
   insights: "Market Insights & Intelligence — AiXESS",
   privacy: "Privacy Policy — AiXESS",
   admin: "Admin Dashboard — AiXESS",
+};
+
+// German browser tabs (the German review, 20 November 2026); analytics keep the English titles.
+const PAGE_TITLES_LOCAL = {
+  de: {
+    home: "AiXESS – Machen Sie Ihr Netzwerk zur Chance",
+    "why-aixess": "Der AiXESS-Vorteil – Warum AiXESS",
+    residences: "Reverance Batumi – Wohnen am Meer | AiXESS",
+    tresora: "TRESORA, Jumeirah Village Circle – Residenzen in Dubai | AiXESS",
+    "downtown-one": "Downtown One, Dubai | AiXESS",
+    "broker-access": "Maklerzugang & Registrierung – AiXESS",
+    insights: "Markteinblicke – AiXESS",
+    privacy: "Datenschutz & Cookies – AiXESS",
+    admin: "Admin-Dashboard – AiXESS",
+  },
 };
 
 // Scrolls to the contact footer and moves focus there, so keyboard and screen-reader users land on it too.
@@ -912,7 +927,8 @@ function AppContent() {
   useEffect(() => {
     const pageTitle = PAGE_TITLES[currentPage] || PAGE_TITLES.home;
     if (typeof document !== "undefined") {
-      document.title = pageTitle;
+      const local = PAGE_TITLES_LOCAL[locale];
+      document.title = (local && (local[currentPage] || local.home)) || pageTitle;
     }
     const pageView = () => {
       track("page_view", { page: currentPage });

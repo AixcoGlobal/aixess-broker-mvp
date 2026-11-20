@@ -1,4 +1,4 @@
-import { formatPrice, formatUsdOnly } from "./currency.js";
+import { formatPrice, formatUsdOnly, priceCurrency } from "./currency.js";
 
 // TRESORA and DOWNTOWN ONE, the two Dubai projects. Kemo, 26 October 2026: the two Word briefs supply
 // the base text for these pages (AiXESS_TRESORA_Website_Developer_Instructions_Final.docx and
@@ -17,10 +17,11 @@ import { formatPrice, formatUsdOnly } from "./currency.js";
 // through src/currency.js like the site's other prices.
 const TRESORA_FROM_USD = 176000;
 
-const priceValues = (locale) => ({
-  starting: formatUsdOnly(176635, locale),
-  perSqm: formatUsdOnly(4115, locale),
-});
+// German and Slovenian show these in euros too, so the page never mixes euros and dollars (German
+// review, 20 November 2026).
+const priceValues = (locale) => (priceCurrency(locale) === "EUR"
+  ? { starting: formatPrice(176635, locale), perSqm: formatPrice(4115, locale) }
+  : { starting: formatUsdOnly(176635, locale), perSqm: formatUsdOnly(4115, locale) });
 
 export const DUBAI_PROJECTS_COPY = {
   en: {
@@ -321,18 +322,18 @@ export const DUBAI_PROJECTS_COPY = {
     },
     tresora: {
       name: "TRESORA",
-      cardName: "TRESORA Projekt",
+      cardName: "Projekt TRESORA",
       place: "Jumeirah Village Circle (JVC), Dubai",
-      cardLine: "Ein Schatz der Balance",
+      cardLine: "Ein Ort der Balance",
       cardStatus: "Voraussichtliche Fertigstellung Q1 2028",
       hero: {
         eyebrow: "Projekt TRESORA · Dubai",
         title: ["TRESORA", "DUBAI"],
-        subtitle: "Ein Schatz der Balance",
+        subtitle: "Ein Ort der Balance",
         tagline: "Zeitgemäßes Wohnen. Durchdachtes Design. Außergewöhnlicher Komfort.",
-        intro: "Entdecken Sie eine neue Form modernen urbanen Wohnens in Jumeirah Village Circle, Dubai, wo zeitgemäße Architektur, durchdacht gestaltete Residenzen und Lifestyle-Annehmlichkeiten zusammenkommen.",
+        intro: "Entdecken Sie eine neue Form modernen urbanen Wohnens in Jumeirah Village Circle, Dubai, wo klare Architektur, durchdacht gestaltete Residenzen und Lifestyle-Annehmlichkeiten zusammenkommen.",
         facts: [
-          ["Anfangszahlung", "20 %"],
+          ["Anzahlung", "20 %"],
           ["Voraussichtliche Fertigstellung", "Q1 2028"],
         ],
         explore: "Residenzen entdecken",
@@ -342,7 +343,7 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "TRESORA entdecken",
         title: "Wo Lifestyle, Komfort und modernes Design zusammenkommen",
         body: [
-          "TRESORA ist eine zeitgemäße Mixed-Use-Entwicklung im Herzen von Jumeirah Village Circle, einer der etablierten Wohngegenden Dubais.",
+          "TRESORA ist ein modernes Projekt mit Wohn-, Büro- und Einzelhandelsflächen im Herzen von Jumeirah Village Circle, einer der etablierten Wohngegenden Dubais.",
           "Mit eleganten Residenzen, Boutique-Büroflächen und ausgewählten Einzelhandelsflächen bietet TRESORA ein Umfeld, das auf die Balance von Arbeit, Wohlbefinden und Alltag ausgerichtet ist.",
           "Durchdacht geplante Interieurs, zeitgemäße Architektur und integrierte Smart-Technologie schaffen ein raffiniertes Wohnerlebnis, in dem Funktionalität auf moderne Eleganz trifft.",
           "Ob Sie ein neues Zuhause, einen professionellen Arbeitsplatz oder die Möglichkeit suchen, Immobilieneigentum in Dubai zu erwerben: TRESORA bietet eine überzeugende Verbindung von Lage, Design und Lifestyle.",
@@ -353,7 +354,7 @@ export const DUBAI_PROJECTS_COPY = {
         items: [
           ["JVC, Dubai", "Lage"],
           ["Q1 2028", "Voraussichtliche Fertigstellung"],
-          ["20 %", "Anfangszahlung"],
+          ["20 %", "Anzahlung"],
           [formatPrice(TRESORA_FROM_USD, "de"), "Preise ab"],
         ],
       },
@@ -361,8 +362,8 @@ export const DUBAI_PROJECTS_COPY = {
         eyebrow: "Finden Sie Ihren idealen Raum",
         title: "Gestaltet für unterschiedliche Lebensstile",
         body: [
-          "Von zeitgemäßen Studios bis zu großzügigen Zwei-Schlafzimmer-Residenzen bietet TRESORA durchdacht geplante Wohnräume, die Komfort, Funktionalität und elegantes Design verbinden.",
-          "Die Entwicklung umfasst außerdem Boutique-Büros und Einzelhandelsflächen und schafft so ein vernetztes Umfeld für modernes Wohnen und Arbeiten.",
+          "Von modernen Studios bis zu großzügigen Zwei-Schlafzimmer-Residenzen bietet TRESORA durchdacht geplante Wohnräume, die Komfort, Funktionalität und elegantes Design verbinden.",
+          "Neben den Residenzen umfasst das Projekt Boutique-Büros und Einzelhandelsflächen und schafft so ein vernetztes Umfeld für modernes Wohnen und Arbeiten.",
         ],
         listTitle: "Verfügbare Immobilienkategorien",
         categories: [
@@ -416,7 +417,7 @@ export const DUBAI_PROJECTS_COPY = {
         title: "Jumeirah Village Circle\u00a0— verbunden mit dem, was zählt",
         body: [
           "In Jumeirah Village Circle (JVC) gelegen, bietet TRESORA eine Balance zwischen ruhigem Wohnen und urbaner Anbindung.",
-          "Mit bequemem Zugang zur Al Khail Road und zur Sheikh Mohammed Bin Zayed Road ist die Entwicklung mit wichtigen Zielen in ganz Dubai verbunden.",
+          "Mit bequemem Zugang zur Al Khail Road und zur Sheikh Mohammed Bin Zayed Road ist das Projekt mit wichtigen Zielen in ganz Dubai verbunden.",
           "Zu den Einrichtungen in der Nähe gehören Circle Mall, Circle Community Park, JSS International School, Life Medical Center und Carewell Clinics.",
         ],
         explore: "Lage entdecken",
@@ -435,7 +436,7 @@ export const DUBAI_PROJECTS_COPY = {
       more: {
         title: "Mehr über TRESORA erfahren",
         body: [
-          "Entdecken Sie zeitgemäßes Wohnen und Möglichkeiten für Immobilieneigentum bei TRESORA.",
+          "Entdecken Sie modernes Wohnen und Möglichkeiten für Immobilieneigentum bei TRESORA.",
           "Unser AiXESS-Team stellt Ihnen detaillierte Projektinformationen, aktuelle Verfügbarkeiten, Grundrisse und persönliche Unterstützung während des gesamten Kaufprozesses zur Verfügung.",
         ],
         contact: "AiXESS kontaktieren",
@@ -451,14 +452,14 @@ export const DUBAI_PROJECTS_COPY = {
       cardName: "DOWNTOWN ONE DUBAI",
       place: "Downtown Jebel Ali, Dubai",
       cardLine: "Die nächste Generation urbanen Wohnens",
-      cardStatus: "Angestrebte Fertigstellung Dezember 2029",
+      cardStatus: "Voraussichtliche Fertigstellung Dezember 2029",
       hero: {
         title: ["DOWNTOWN ONE", "DUBAI"],
         subtitle: "Die nächste Generation urbanen Wohnens",
         tagline: "Smart Living – stärkere Verbindungen",
         body: [
-          "Entdecken Sie Downtown One, eine zeitgemäße Wohnentwicklung in Downtown Jebel Ali, Dubai, die intelligente Technologie, raffinierte Interieurs und außergewöhnliche Lifestyle-Erlebnisse vereint.",
-          "Mit Studios sowie Residenzen mit einem und zwei Schlafzimmern verbindet die Entwicklung moderne Architektur mit KI-gestütztem Smart-Home-Wohnen und einer sorgfältig kuratierten Auswahl an Freizeit- und Wellness-Angeboten.",
+          "Entdecken Sie Downtown One, eine neue Wohnanlage in Downtown Jebel Ali, Dubai, die intelligente Technologie, raffinierte Interieurs und außergewöhnliche Lifestyle-Erlebnisse vereint.",
+          "Mit Studios sowie Residenzen mit einem und zwei Schlafzimmern verbindet das Projekt moderne Architektur mit KI-gestütztem Smart-Home-Wohnen und einer sorgfältig kuratierten Auswahl an Freizeit- und Wellness-Angeboten.",
           "Mit Zugang zur Sheikh Zayed Road und Anbindung an die Dubai Metro bietet Downtown One eine gut vernetzte Adresse für alle, die modernes Wohnen und Immobilieneigentum in Dubai suchen.",
         ],
         explore: "Residenzen entdecken",
@@ -467,9 +468,9 @@ export const DUBAI_PROJECTS_COPY = {
       highlights: {
         title: "Premium-Highlights des Projekts",
         items: [
-          ["20 Etagen", "Zeitgemäßer Wohnturm", "Dazu drei Podiumsetagen, Erdgeschoss und Untergeschoss"],
-          ["10 %", "Anfängliche Anzahlung", "Flexible Ratenzahlungsoptionen"],
-          ["Dezember 2029", "Angestrebte Fertigstellung", "Vom Entwickler angegebenes Ziel"],
+          ["20 Etagen", "Moderner Wohnturm", "dazu drei Podiumsetagen, Erdgeschoss und Untergeschoss"],
+          ["10 %", "Anzahlung", "Flexible Ratenzahlungsoptionen"],
+          ["Dezember 2029", "Voraussichtliche Fertigstellung", "Vom Bauträger angegeben"],
           ["KI-gestützt", "Smart-Home-Wohnen", "Intelligenter Komfort im Alltag"],
           ["Metro & Straße", "Strategische Anbindung", "Dubai Metro Red Line und Sheikh Zayed Road"],
           ["20+ Angebote", "Lifestyle-Erlebnisse", "Wellness-, Freizeit-, Fitness- und Familienangebote"],
@@ -499,9 +500,9 @@ export const DUBAI_PROJECTS_COPY = {
               "Schwimmbecken für Erwachsene",
               "Kinderschwimmbecken",
               "Wasserspielbecken für Kinder",
-              "Leisure Water Lounge",
+              "Wasser-Lounge",
               "Pooldeck & Ruhebereiche",
-              "Lazy Lounge",
+              "Ruhe-Lounge",
             ],
           ],
           [
