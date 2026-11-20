@@ -480,8 +480,14 @@ html:root[data-time-theme='night'] #market-insights .it-card { background: trans
     line-height: 1.21;
     letter-spacing: 0.04em;
   }
+  /* Spacing from the frame: eyebrow box 70 under the market band (1980 → 2050), the title's box 38
+     under the eyebrow's, the copy at 2206 (right under the title's 117 line) and the cards 81 below
+     it (2287). */
+  html:root:not(#fs) .insights-page [aria-labelledby='it-library-title'] { padding-top: calc(70 * var(--fu)); }
   html:root:not(#fs) .insights-page [aria-labelledby='it-library-title'] .it-heading > div { max-width: none; }
+  html:root:not(#fs) .insights-page [aria-labelledby='it-library-title'] .it-heading + * { margin-top: calc(55 * var(--fu)); }
   html:root:not(#fs) .insights-page #it-library-title {
+    margin-top: calc(15 * var(--fu));
     font-family: var(--l-fig);
     font-size: calc(150 / 0.93705 * var(--fu));
     font-weight: 600;
@@ -493,6 +499,7 @@ html:root[data-time-theme='night'] #market-insights .it-card { background: trans
   html:root:not(#fs) .insights-page #it-library-title > span { display: inline; }
   html:root:not(#fs) .insights-page [aria-labelledby='it-library-title'] .it-lead {
     max-width: calc(781 * var(--fu));
+    margin-top: calc(1 * var(--fu));
     font-size: max(calc(21 * var(--fu)), 16px);
     font-weight: 500;
     line-height: 1.22;
