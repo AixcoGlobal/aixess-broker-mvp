@@ -664,11 +664,12 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     position: absolute;
     left: 0;
     right: 0;
-    top: calc((223.9 - 0.8633 * 14.7) * var(--u));
-    font-size: calc(14.7 * var(--u));
+    top: calc((223.9 - 0.8633 * 16.39) * var(--u));
+    font-size: calc(16.39 * var(--u));
+    font-weight: 500;
     line-height: 1;
-    letter-spacing: 0.222em;
-    text-indent: 0.222em;
+    letter-spacing: 0.14em;
+    text-indent: 0.14em;
     white-space: nowrap;
   }
   html:root:not(#fs) .lnp-journey-lines { display: block; position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #9b9a9a; stroke-width: 2.5; }
