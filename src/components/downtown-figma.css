@@ -91,10 +91,10 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
   margin: 0;
   font-family: var(--tr-face);
   font-size: calc(72 / 0.93705 * var(--u));
-  font-weight: 600;
+  font-weight: 700;
   font-synthesis: none;
   line-height: calc(57 * var(--u));
-  letter-spacing: 0.026em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 .downtown-one-page .dt-amenity-list ul { margin: calc(18 * var(--u)) 0 0; padding: 0; list-style: none; }
@@ -120,7 +120,9 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
 .downtown-one-page .dt-location .tr-eyebrow::after { margin-left: calc(26 * var(--u)); }
 .downtown-one-page .dt-location-title { margin-top: calc(28 * var(--u)); }
 .downtown-one-page .dt-location-title > span:first-child { display: block; font-size: calc(191 / 0.93705 * var(--u)); line-height: calc(143.25 * var(--u)); }
-.downtown-one-page .dt-location-title > .dt-accent { margin-top: calc(-5 * var(--u)); margin-bottom: calc(5 * var(--u)); font-size: calc(108.2 / 0.93705 * var(--u)); line-height: calc(76 * var(--u)); }
+.downtown-one-page .dt-location-title > .dt-accent { margin-top: calc(-5 * var(--u)); margin-bottom: calc(5 * var(--u)); font-size: calc(115 / 0.93705 * var(--u)); line-height: calc(76 * var(--u)); }
+/* The second line is tracked 2% of its own size (Figma 729:2), not of the 191 line above it. */
+.downtown-one-page .dt-location-title > .dt-accent { letter-spacing: 0.0187em; }
 .downtown-one-page .dt-location-body { max-width: calc(845 * var(--u)); margin-top: calc(26 * var(--u)); }
 .downtown-one-page .dt-nearby { display: flex; margin-top: calc(42.5 * var(--u)); background: var(--dt-panel); color: #f7f7f4; }
 .downtown-one-page .dt-map { flex: 0 0 calc(818 * var(--u)); }
@@ -129,10 +131,10 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
   margin: 0;
   font-family: var(--tr-face);
   font-size: calc(64 / 0.93705 * var(--u));
-  font-weight: 600;
+  font-weight: 700;
   font-synthesis: none;
   line-height: calc(41 * var(--u));
-  letter-spacing: 0.026em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 .downtown-one-page .dt-nearby-copy dl { margin: calc(40 * var(--u)) 0 0; padding-bottom: calc(40 * var(--u)); border-bottom: 1px solid rgb(247 247 244 / 0.55); max-width: calc(407 * var(--u)); }
