@@ -134,7 +134,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "payment": {
       "eyebrow": "PAYMENT STRUCTURE",
-      "title": "OWN YOUR APARTMENT. PAY IN STAGES.",
+      "title": "OWN YOUR APARTMENT, PAY IN STAGES.",
       "lead": "A structured route to ownership without paying the full property price upfront.",
       "stages": [
         [
@@ -158,7 +158,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "ownership": {
       "eyebrow": "OWNERSHIP IN GEORGIA",
-      "title": "A PROPERTY MARKET BUILT FOR INTERNATIONAL OWNERS.",
+      "title": "A PROPERTY MARKET BUILT FOR INTERNATIONAL OWNERS",
       "items": [
         [
           "NO RESIDENCY REQUIREMENT",
@@ -386,7 +386,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "payment": {
       "eyebrow": "ZAHLUNGSSTRUKTUR",
-      "title": "EIGENTUM AN IHRER WOHNUNG. ZAHLUNG IN ETAPPEN.",
+      "title": "EIGENTUM AN IHRER WOHNUNG, ZAHLUNG IN ETAPPEN.",
       "lead": "Ein strukturierter Weg zum Eigentum, ohne den vollen Kaufpreis sofort zu zahlen.",
       "stages": [
         [
@@ -410,7 +410,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "ownership": {
       "eyebrow": "EIGENTUM IN GEORGIEN",
-      "title": "EIN IMMOBILIENMARKT FÜR INTERNATIONALE EIGENTÜMER.",
+      "title": "EIN IMMOBILIENMARKT FÜR INTERNATIONALE EIGENTÜMER",
       "items": [
         [
           "KEINE AUFENTHALTSPFLICHT",
@@ -638,7 +638,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "payment": {
       "eyebrow": "STRUKTURA PŁATNOŚCI",
-      "title": "WŁASNOŚĆ MIESZKANIA. PŁATNOŚCI ETAPOWE.",
+      "title": "WŁASNOŚĆ MIESZKANIA, PŁATNOŚCI ETAPOWE.",
       "lead": "Ustrukturyzowana droga do własności bez konieczności płacenia pełnej ceny z góry.",
       "stages": [
         [
@@ -662,7 +662,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "ownership": {
       "eyebrow": "WŁASNOŚĆ W GRUZJI",
-      "title": "RYNEK NIERUCHOMOŚCI STWORZONY DLA MIĘDZYNARODOWYCH WŁAŚCICIELI.",
+      "title": "RYNEK NIERUCHOMOŚCI STWORZONY DLA MIĘDZYNARODOWYCH WŁAŚCICIELI",
       "items": [
         [
           "BEZ WYMOGU REZYDENCJI",
@@ -890,7 +890,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "payment": {
       "eyebrow": "STRUKTURA PLAČIL",
-      "title": "LASTNIŠTVO STANOVANJA. PLAČILO PO STOPNJAH.",
+      "title": "LASTNIŠTVO STANOVANJA, PLAČILO PO STOPNJAH.",
       "lead": "Strukturirana pot do lastništva brez plačila celotne cene nepremičnine vnaprej.",
       "stages": [
         [
@@ -914,7 +914,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "ownership": {
       "eyebrow": "LASTNIŠTVO V GRUZIJI",
-      "title": "NEPREMIČNINSKI TRG, ZASNOVAN ZA MEDNARODNE LASTNIKE.",
+      "title": "NEPREMIČNINSKI TRG, ZASNOVAN ZA MEDNARODNE LASTNIKE",
       "items": [
         [
           "BREZ ZAHTEVE PO PREBIVANJU",
@@ -1142,7 +1142,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "payment": {
       "eyebrow": "СТРУКТУРА ОПЛАТЫ",
-      "title": "СОБСТВЕННОСТЬ КВАРТИРЫ. ОПЛАТА ЭТАПАМИ.",
+      "title": "СОБСТВЕННОСТЬ КВАРТИРЫ, ОПЛАТА ЭТАПАМИ.",
       "lead": "Структурированный путь к собственности без полной предоплаты стоимости объекта.",
       "stages": [
         [
@@ -1166,7 +1166,7 @@ export const REVERANCE_INFO_COPY = withPrices({
     },
     "ownership": {
       "eyebrow": "СОБСТВЕННОСТЬ В ГРУЗИИ",
-      "title": "РЫНОК НЕДВИЖИМОСТИ ДЛЯ МЕЖДУНАРОДНЫХ СОБСТВЕННИКОВ.",
+      "title": "РЫНОК НЕДВИЖИМОСТИ ДЛЯ МЕЖДУНАРОДНЫХ СОБСТВЕННИКОВ",
       "items": [
         [
           "БЕЗ ТРЕБОВАНИЯ РЕЗИДЕНТСТВА",

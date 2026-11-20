@@ -23,7 +23,7 @@ export const REVERANCE_PROJECT_COPY = withPrices({
     benefitCopy: "Increase your initial down payment and unlock exclusive savings on your property purchase.",
     downPayment: "DOWN PAYMENT",
     discount: "DISCOUNT",
-    benefitClosing: "Secure More. Save More.",
+    benefitClosing: "Secure More. Save More",
   },
   de: {
     heroAlt: "Offizielles Rendering der beiden Türme von Project Reverance über der Küste von Batumi",
@@ -43,7 +43,7 @@ export const REVERANCE_PROJECT_COPY = withPrices({
     benefitCopy: "Erhöhen Sie Ihre Anzahlung und sichern Sie sich exklusive Ersparnisse beim Kauf Ihrer Immobilie.",
     downPayment: "ANZAHLUNG",
     discount: "RABATT",
-    benefitClosing: "Mehr sichern. Mehr sparen.",
+    benefitClosing: "Mehr sichern. Mehr sparen",
   },
   pl: {
     heroAlt: "Oficjalna wizualizacja dwóch wież Project Reverance nad wybrzeżem Batumi",
@@ -62,7 +62,7 @@ export const REVERANCE_PROJECT_COPY = withPrices({
     benefitCopy: "Zwiększ wpłatę początkową i zyskaj wyjątkowe oszczędności przy zakupie nieruchomości.",
     downPayment: "WPŁATY WŁASNEJ",
     discount: "RABATU",
-    benefitClosing: "Zabezpiecz więcej. Oszczędź więcej.",
+    benefitClosing: "Zabezpiecz więcej. Oszczędź więcej",
   },
   sl: {
     heroAlt: "Uradni prikaz obeh stolpov Project Reverance nad obalo Batumija",
@@ -82,7 +82,7 @@ export const REVERANCE_PROJECT_COPY = withPrices({
     benefitCopy: "Povečajte začetni polog in si zagotovite ekskluzivne prihranke pri nakupu nepremičnine.",
     downPayment: "POLOGA",
     discount: "POPUSTA",
-    benefitClosing: "Zagotovite več. Prihranite več.",
+    benefitClosing: "Zagotovite več. Prihranite več",
   },
   ru: {
     heroAlt: "Официальная визуализация двух башен Project Reverance над побережьем Батуми",
@@ -101,6 +101,6 @@ export const REVERANCE_PROJECT_COPY = withPrices({
     benefitCopy: "Увеличьте первоначальный взнос и получите эксклюзивную экономию при покупке недвижимости.",
     downPayment: "ПЕРВО\u00adНАЧАЛЬНЫЙ ВЗНОС", // soft hyphen: the word is wider than a tier on 320px phones
     discount: "СКИДКА",
-    benefitClosing: "Вложите больше. Сэкономьте больше.",
+    benefitClosing: "Вложите больше. Сэкономьте больше",
   },
 });

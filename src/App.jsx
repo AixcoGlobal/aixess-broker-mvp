@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidation, clearFieldValidation } from "./i18n.jsx";
 import { ProjectShowcase } from "./components/ProjectShowcase.jsx";
-import { ProjectGallery, useProjectSectionFromHash } from "./components/ReveranceProjectInfo.jsx";
+import { useProjectSectionFromHash } from "./components/ReveranceProjectInfo.jsx";
 import { ReveranceFigmaHero, ReveranceFigmaSections } from "./components/ReveranceFigmaPage.jsx";
 import { AdvantagePageContent, BrokerAccessPageContent } from "./components/LashaNetworkPages.jsx";
 import { HomeAbout, HomeAccess, HomeHero, HomeMetrics, HomeStartingPoints, LashaPageHero } from "./components/LashaHomeSections.jsx";
@@ -736,17 +736,17 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
   const { t } = useLanguage();
   useProjectSectionFromHash();
   // Lasha's Figma frame "REVERANCE" (Kemo, 2 November 2026: "make reverance page to be exactly as on
-  // figma"), then the gallery and the Residence Explorer, which the frame does not draw.
+  // figma"), then the Residence Explorer, which the frame introduces as RESIDENCE EXPLORER / SELECT THE
+  // OPPORTUNITY. The frame has no gallery (Kemo, 20 November 2026: "pixel perfect").
   return (
     <div className="route-page lasha-page residences-page rv-page">
       <ReveranceFigmaHero header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />} />
       <main className="page-main">
         <div className="rp-contents">
           <ReveranceFigmaSections onOpenModal={onOpenModal} />
-          <ProjectGallery />
         </div>
         <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
-          <ResidenceExplorer liveInventoryTitle onBrokerAccess={() => onOpenModal("register")} />
+          <ResidenceExplorer onBrokerAccess={() => onOpenModal("register")} />
         </Suspense>
       </main>
     </div>
