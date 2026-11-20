@@ -24,6 +24,16 @@ nearest pixels. --from-themed does the same for an existing brand family's after
 (src/data/dubai-media.json) the theme versions of that Figma photo, placed by matching the two in
 the same light. All three write public/assets/figma/<name>-<theme>-<width>.webp, at the Figma
 photo's own size and widths, and list them under "themes" in the manifest. Needs opencv-python.
+
+Larger sizes for Retina screens (Kemo, 19 November 2026, on the homepage hero: "Can you upscale it"):
+
+    python3 scripts/esrgan-onnx.py RealESRGAN_x2plus.pth <name>-<theme>.webp <name>-<theme>-esrgan-x2.png
+    python3 scripts/import-figma-photos.py --upscaled <folder of <name>-<theme>-esrgan-x2.png>
+
+--upscaled adds widths above the photo's own (UPSCALED_WIDTHS, up to the enlargement's width) from a
+2x Real-ESRGAN enlargement of each theme version (day included); the photo's own widths stay the
+Figma pixels. An enlargement sharpens edges and removes compression noise; it adds no detail that
+was not in the photo, so never call it new detail. Rerunning the plain import drops these widths.
 """
 import json
 import sys
@@ -38,6 +48,7 @@ THEMED = ROOT / "public/assets/themed"
 MANIFEST = ROOT / "src/data/figma-photo-sizes.json"
 WIDTHS = (480, 800, 1200, 1600, 2400, 3200)
 THEMES = ("day", "afternoon", "night")
+UPSCALED_WIDTHS = (4000, 4800)
 
 # name -> imageRef prefix (the Figma layer that draws it)
 PHOTOS = {
@@ -223,12 +234,37 @@ def onto(pair: str) -> None:
     MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
 
 
+def upscaled(folder: Path) -> None:
+    manifest = json.loads(MANIFEST.read_text())
+    for path in sorted(folder.glob("*-esrgan-x2.png")):
+        name, _, theme = path.name.removesuffix("-esrgan-x2.png").rpartition("-")
+        if theme not in THEMES or name not in manifest:
+            print("skipped", path.name)
+            continue
+        entry = manifest[name] if theme == "day" else manifest[name]["themes"][theme]
+        image = Image.open(path).convert("RGB")
+        if abs(image.width / image.height - entry["width"] / entry["height"]) > 0.002:
+            sys.exit(f"{path.name} is not the shape of {name}")
+        extra = sorted({w for w in UPSCALED_WIDTHS if entry["widths"][-1] < w < image.width} | {image.width})
+        stem = name if theme == "day" else f"{name}-{theme}"
+        for width in extra:
+            height = round(image.height * width / image.width)
+            resized = image if width == image.width else image.resize((width, height), Image.LANCZOS)
+            resized.save(OUT / f"{stem}-{width}.webp", "WEBP", quality=90, method=6)
+        entry["widths"] = sorted(set(entry["widths"]) | set(extra))
+        entry["width"], entry["height"] = image.width, image.height
+        print(name, theme, image.size, entry["widths"])
+    MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "--themes":
         themes(Path(sys.argv[2]))
     elif sys.argv[1] == "--from-themed":
         for pair in sys.argv[2:]:
             from_themed(pair)
+    elif sys.argv[1] == "--upscaled":
+        upscaled(Path(sys.argv[2]))
     elif sys.argv[1] == "--onto":
         for pair in sys.argv[2:]:
             onto(pair)

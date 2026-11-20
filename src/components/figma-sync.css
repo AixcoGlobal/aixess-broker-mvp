@@ -1147,7 +1147,10 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
     border: 0;
     box-shadow: none;
   }
-  html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-broker .it-feature {
+  /* No surface behind the six features in any theme: the frame draws only their hairlines (Kemo,
+     20 November 2026, on the night cards: "some kind of grey background behind this texts please
+     remove it"). */
+  html:root:not(#fs) .lnp-broker .it-feature {
     background: transparent;
   }
   html:root:not(#fs) .lnp-broker .it-feature:nth-child(1) { --x: 70; --y: 590; --dw: 409; --rule: 139; --rw: 588; }
@@ -1716,3 +1719,7 @@ html:root:not(#fs)[data-time-theme='afternoon'] .model-instruction-index { backg
 html:root:not(#fs)[data-time-theme='night'] .model-instruction-index { color: #0c0c0c; }
 /* AiXESS Advantage in the afternoon: the panel's copy is ink, so its buttons are too. */
 html:root:not(#fs)[data-time-theme='afternoon'] .lnp-advantage :is(.lnp-hero-panel, .lnp-advantage-panel) .lasha-button:not(:hover) { border-color: #171a1d; color: #171a1d; }
+
+/* Phones and tablets keep the six features as outlined cards, without the grey night surface
+   (Kemo, 20 November 2026). */
+html:root:not(#fs)[data-time-theme='night'] .lnp-broker .it-feature { background: transparent; }

@@ -203,8 +203,8 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect(page.querySelectorAll(".dt-gallery img")).toHaveLength(12);
     expect(page.textContent).not.toMatch(/DOWNTOWN DUBAI|SAMANA|TRESORA|WADAN|AED(?=[\s\d])|PDC|Here add pictures|_{3,}/);
     [...page.querySelectorAll("img")].forEach((image) => {
-      // The developer's renders, or the hero's and entertainment deck's relit versions for the theme.
-      expect(image.getAttribute("src")).toMatch(/^\/assets\/(dubai\/downtown-[a-z0-9-]+|figma\/downtown-fig-(hero|ent)-(day|afternoon|night)-\d+)\.webp$/);
+      // The developer's renders, or the hero's, highlights' and entertainment deck's relit versions for the theme.
+      expect(image.getAttribute("src")).toMatch(/^\/assets\/(dubai\/downtown-[a-z0-9-]+|figma\/downtown-fig-(hero|highlights|ent)-(day|afternoon|night)-\d+)\.webp$/);
     });
     [...page.querySelectorAll(".dt-crop img")].forEach((image) => expect(image.alt).not.toBe(""));
     expect(page.querySelector(".dt-hero img")).toHaveAttribute("loading", "eager");

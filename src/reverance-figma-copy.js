@@ -3,12 +3,15 @@
 // on figma"). Everything else on the page keeps the site's own text.
 // - overviewEyebrow: the eyebrow over PROJECT FACTS.
 // - detailsEyebrow / detailsTitle: the heading of the blue project-information band.
+// - exploreProject: the opportunity button ("EXPLORE THE PROJECT", Kemo, 20 November 2026: "wording
+//   should be same as in figma").
 // - total: the line over the three payment stages (the frame's "100% PROPERY PRICE", typo corrected).
 // - batumiLead / batumiPoints: the site's Why Batumi sentence, set as the frame's heading and list,
 //   one entry per drawn line so every line gets its dash (Figma splits "comparatively accessible / residential pricing")
 //   ("BATUMI COMBINES" over one line per point); the words are the sentence's own.
 export const REVERANCE_FIGMA_COPY = {
   en: {
+    exploreProject: "EXPLORE THE PROJECT",
     overviewEyebrow: "PROJECT OVERVIEW",
     detailsEyebrow: "PROJECT DETAILS",
     detailsTitle: "KEY PROJECT INFORMATION",
@@ -17,6 +20,7 @@ export const REVERANCE_FIGMA_COPY = {
     batumiPoints: ["Black Sea tourism", "international demand", "new infrastructure", "comparatively accessible", "residential pricing"],
   },
   de: {
+    exploreProject: "PROJEKT ENTDECKEN",
     overviewEyebrow: "PROJEKTÜBERBLICK",
     detailsEyebrow: "PROJEKTDETAILS",
     detailsTitle: "WICHTIGE PROJEKTINFORMATIONEN",
@@ -25,6 +29,7 @@ export const REVERANCE_FIGMA_COPY = {
     batumiPoints: ["Schwarzmeertourismus", "internationale Nachfrage", "neue Infrastruktur", "vergleichsweise zugängliche", "Wohnpreise"],
   },
   pl: {
+    exploreProject: "ODKRYJ PROJEKT",
     overviewEyebrow: "PRZEGLĄD PROJEKTU",
     detailsEyebrow: "SZCZEGÓŁY PROJEKTU",
     detailsTitle: "KLUCZOWE INFORMACJE O PROJEKCIE",
@@ -33,6 +38,7 @@ export const REVERANCE_FIGMA_COPY = {
     batumiPoints: ["turystykę nad Morzem", "Czarnym", "międzynarodowy popyt", "nową infrastrukturę", "stosunkowo przystępne ceny", "mieszkań"],
   },
   sl: {
+    exploreProject: "RAZIŠČI PROJEKT",
     overviewEyebrow: "PREGLED PROJEKTA",
     detailsEyebrow: "PODROBNOSTI PROJEKTA",
     detailsTitle: "KLJUČNI PODATKI O PROJEKTU",
@@ -41,6 +47,7 @@ export const REVERANCE_FIGMA_COPY = {
     batumiPoints: ["turizem ob Črnem morju", "mednarodno povpraševanje", "novo infrastrukturo", "razmeroma dostopne", "stanovanjske cene"],
   },
   ru: {
+    exploreProject: "ИЗУЧИТЬ ПРОЕКТ",
     overviewEyebrow: "ОБЗОР ПРОЕКТА",
     detailsEyebrow: "ДЕТАЛИ ПРОЕКТА",
     detailsTitle: "КЛЮЧЕВАЯ ИНФОРМАЦИЯ О ПРОЕКТЕ",

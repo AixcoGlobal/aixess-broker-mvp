@@ -584,7 +584,9 @@ html:root[data-time-theme='afternoon'] .rv-page .rv-band .rv-eyebrow { color: va
 
 /* ---- why Reverance: amenities ------------------------------------------------------------------- */
 
-.rv-page .rv-residence .rv-frame { padding-top: calc(67 * var(--u)); padding-bottom: 0; }
+/* 41 under the last amenity row: the frame's gap down to the payment band (it was the render note's
+   room before the note went, Kemo, 20 November 2026: wording as in Figma). */
+.rv-page .rv-residence .rv-frame { padding-top: calc(67 * var(--u)); padding-bottom: calc(41 * var(--u)); }
 .rv-page .rv-residence-title { margin-top: calc(19 * var(--u)); }
 .rv-page .rv-amenities-title {
   margin: calc(84.6 * var(--u)) 0 0 calc(8 * var(--u));
@@ -635,7 +637,6 @@ html:root[data-time-theme='afternoon'] .rv-page .rv-band .rv-eyebrow { color: va
   white-space: nowrap;
 }
 .rv-page .rv-amenity:not(.rv-amenity-1) figcaption { padding-left: calc(6 * var(--u)); }
-.rv-page .rv-residence-note { margin: calc(24 * var(--u)) 0 0 calc(2 * var(--u)); }
 
 /* ---- payment structure ------------------------------------------------------------------------- */
 
@@ -1092,3 +1093,8 @@ html:root[data-time-theme='afternoon'] .rv-page .rv-band .rv-eyebrow { color: va
   .rv-page .rv-ownership-note { margin: 8px 0 0; }
 }
 @media (max-width: 899px) { .rv-page .rv-break { display: none; } }
+
+/* The explorer's heading as the frame draws it under the page (Kemo, 20 November 2026): RESIDENCE
+   EXPLORER over SELECT THE / OPPORTUNITY, both lines in ink (the site's other explorer heading set
+   its second line in the accent). */
+.rv-page.rv-page .explorer-copy h2 span:last-child { color: var(--l-ink, #171a1d); }

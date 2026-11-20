@@ -1,38 +1,47 @@
 {
   "home-hero": {
-    "width": 3174,
-    "height": 1982,
+    "width": 6348,
+    "height": 3964,
     "widths": [
       480,
       800,
       1200,
       1600,
       2400,
-      3174
+      3174,
+      4000,
+      4800,
+      6348
     ],
     "themes": {
       "afternoon": {
-        "width": 3174,
-        "height": 1982,
+        "width": 6348,
+        "height": 3964,
         "widths": [
           480,
           800,
           1200,
           1600,
           2400,
-          3174
+          3174,
+          4000,
+          4800,
+          6348
         ]
       },
       "night": {
-        "width": 3174,
-        "height": 1982,
+        "width": 6348,
+        "height": 3964,
         "widths": [
           480,
           800,
           1200,
           1600,
           2400,
-          3174
+          3174,
+          4000,
+          4800,
+          6348
         ]
       }
     }
@@ -741,6 +750,43 @@
           960,
           1440,
           1636
+        ]
+      }
+    }
+  },
+  "downtown-fig-highlights": {
+    "width": 2880,
+    "height": 2028,
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "base": "/assets/dubai/downtown-fig-highlights",
+    "light": "night",
+    "themes": {
+      "afternoon": {
+        "width": 2880,
+        "height": 2028,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      },
+      "day": {
+        "width": 2880,
+        "height": 2028,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
         ]
       }
     }

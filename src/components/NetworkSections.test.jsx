@@ -36,6 +36,6 @@ describe("Purchase benefit", () => {
       "30%DOWN PAYMENT→2%DISCOUNT",
       "40%DOWN PAYMENT→3%DISCOUNT",
     ]);
-    expect(screen.getByText("Secure More. Save More.")).toBeInTheDocument();
+    expect(screen.getByText("Secure More. Save More")).toBeInTheDocument();
   });
 });

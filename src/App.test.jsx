@@ -238,16 +238,8 @@ describe("AIXESS navigation pages", () => {
     expect(within(ownership).queryByRole("heading", { name: "MINIMUM 60% FINANCING" })).not.toBeInTheDocument();
     expect(within(document.getElementById("residence")).queryByRole("heading", { name: "SELECTED HIGHER FLOORS" })).not.toBeInTheDocument();
     expect(within(document.getElementById("residence")).getAllByRole("button", { name: /^View amenity image/ })).toHaveLength(12);
-    const gallery = document.getElementById("gallery");
-    const tiles = within(gallery).getAllByRole("button", { name: /^Open image/ });
-    expect(tiles).toHaveLength(9);
-    expect(within(gallery).getByText("APARTMENT INTERIOR")).toBeInTheDocument();
-    fireEvent.click(tiles[0]);
-    const dialog = gallery.querySelector("dialog");
-    fireEvent.click(within(dialog).getByRole("button", { name: "Next image" }));
-    expect(within(dialog).getByText("2 of 9")).toBeInTheDocument();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
-    expect(gallery.querySelector("dialog")).toBeNull();
+    // Lasha's frame has no gallery (Kemo, 20 November 2026: "pixel perfect"); the amenity renders open in their lightbox.
+    expect(document.getElementById("gallery")).toBeNull();
     // AIXCO's own sections stay off AiXESS (Kemo and Klem, 16 October 2026).
     for (const id of ["faq", "why-aixco", "approach"]) expect(document.getElementById(id)).toBeNull();
     for (const name of ["WHAT BUYERS USUALLY ASK.", "ACQUIRE. PARTNER. CREATE VALUE.", "YOUR REVERANCE PROPERTY STARTS HERE."]) expect(screen.queryByRole("heading", { name })).not.toBeInTheDocument();
@@ -505,11 +497,11 @@ describe("AIXESS navigation pages", () => {
     }
   });
 
-  it("opens broker registration form from Explore Full Opportunity button on residences page", () => {
+  it("opens broker registration form from Explore the Project button on residences page", () => {
     window.history.replaceState({}, "", "/#residences");
     render(<App />);
 
-    const exploreOpportunityBtn = screen.getByRole("button", { name: /EXPLORE THE FULL OPPORTUNITY INSIDE AiXESS/i });
+    const exploreOpportunityBtn = screen.getByRole("button", { name: /^EXPLORE THE PROJECT$/i });
     expect(exploreOpportunityBtn).toBeInTheDocument();
     fireEvent.click(exploreOpportunityBtn);
 

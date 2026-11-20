@@ -84,9 +84,9 @@ export function HomeHero({ children, onNavigate }) {
           figma="home-hero"
           defaultWidth={1600}
           alt=""
-          // Portrait phones draw the photo 1.4 × the hero's height and portrait tablets 1.75 ×
+          // Portrait phones and tablets draw the photo at the hero's height, 1.6 × as wide
           // (lasha-home.css); from 900px it is 1593 of the frame's 1440 wide (figma-sync.css).
-          sizes="(max-width: 899px) and (orientation: portrait) and (min-width: 600px) 255vh, (max-width: 899px) and (orientation: portrait) 205vh, 111vw"
+          sizes="(max-width: 899px) and (orientation: portrait) 161vh, 111vw"
           fetchPriority="high"
           decoding="async"
           onLoad={() => setMediaReady(true)}
