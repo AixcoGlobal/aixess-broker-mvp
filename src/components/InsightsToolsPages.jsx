@@ -186,7 +186,7 @@ export function BrokerWorkspace() {
         {/* Text only (Kemo, 14 October 2026): number, heading and description, no artwork. */}
         {c.features.map(([title, body], index) => (
           <li className="it-feature" key={title}>
-            <h3><span className="it-feature-index">{String(index + 1).padStart(2, "0")}.</span> {title}</h3>
+            <h3><span className="it-feature-index">{String(index + 1).padStart(2, "0")}</span> {title}</h3>
             <p>{body}</p>
           </li>
         ))}
@@ -209,7 +209,7 @@ export function BrokerGetStarted({ onOpenModal }) {
       <ol className="it-step-list">
         {c.steps.map(([title, body], index) => (
           <li key={title}>
-            <span className="lasha-index">{String(index + 1).padStart(2, "0")}.</span>
+            <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
             <h3>{title}</h3>
             <p>{body}</p>
           </li>
