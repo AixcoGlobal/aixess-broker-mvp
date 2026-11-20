@@ -575,14 +575,15 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   }
   html:root:not(#fs) .lnp-advantage-panel .lasha-button { margin-top: calc(51 * var(--u)); }
 
-  /* AIXESS 360° SERVICES: frame 1579–2930. Eyebrow box 1674, title box 1714 (Morganite SemiBold
-     110 on 86.9, its second line blue), a 1.5 #5f5f5f rule at x 426 from 1676, subtitle Inter Bold
-     28 at 1718 and the intro Inter Medium 28 on 30.2 at 1764 from x 498. */
+  /* AIXESS 360° SERVICES (Figma, 21 November 2026): from the sage panel's foot at 1579, eyebrow box
+     1653, title box 1693 (Morganite SemiBold 110 on 86.9, its second line blue), a 1.5 #5f5f5f rule
+     at x 426 from 1655, subtitle Inter Bold 28 at 1697 and the intro Inter Medium 28 on 30.2 at 1743
+     from x 498; the octagon diagram from 2064 (octagon at 2263). */
   html:root:not(#fs) .lnp-care {
     position: relative;
-    height: calc(1351 * var(--u));
+    height: calc(1301 * var(--u));
     min-height: 0;
-    padding: calc(95 * var(--u)) calc(70 * var(--u)) 0;
+    padding: calc(74 * var(--u)) calc(70 * var(--u)) 0;
   }
   html:root:not(#fs) .lnp-care-head {
     position: relative;
@@ -655,8 +656,8 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   html:root:not(#fs):is([data-time-theme='day'], :not([data-time-theme])) .lnp-care-intro {
     color: #1e1e1e;
   }
-  /* The octagon diagram: frame y 2114–2830, everything in frame pixels from its top. */
-  html:root:not(#fs) .lnp-journey { position: absolute; top: calc(535 * var(--u)); left: 0; width: calc(1440 * var(--u)); height: calc(716 * var(--u)); }
+  /* The octagon diagram: frame y 2064–2780, everything in frame pixels from its top. */
+  html:root:not(#fs) .lnp-journey { position: absolute; top: calc(485 * var(--u)); left: 0; width: calc(1440 * var(--u)); height: calc(716 * var(--u)); }
   html:root:not(#fs) .lnp-journey-octagon { display: block; position: absolute; z-index: 1; top: calc(199 * var(--u)); left: calc(433 * var(--u)); width: calc(549 * var(--u)); height: calc(296 * var(--u)); }
   /* Measured on the frame against the octagon's corner squares: wordmark 331 wide from x 540.8 with its
      capitals from y 286.3, the line's baseline at y 422.9, both centred on the octagon. */
