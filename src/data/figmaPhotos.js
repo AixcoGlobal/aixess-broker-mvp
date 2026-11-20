@@ -1,4 +1,5 @@
 import SIZES from "./figma-photo-sizes.json";
+import { assetUrl } from "../assetUrl.js";
 
 // Photos drawn in Lasha's Figma file, imported unchanged by scripts/import-figma-photos.py
 // (Kemo, 19 November 2026: the pages match the Figma file pixel for pixel).
@@ -11,9 +12,9 @@ import SIZES from "./figma-photo-sizes.json";
 // ("day" unless the frame used a dusk render), so text over it can follow what is really on screen.
 export const FIGMA_PHOTOS = SIZES;
 
-const url = (file, width) => `/assets/figma/${file}-${width}.webp`;
+const url = (file, width) => assetUrl(`/assets/figma/${file}-${width}.webp`);
 // A photo whose own file lives elsewhere (TRESORA's renders in /assets/dubai) names it in `base`.
-const baseUrl = (entry, name, width) => (entry.base ? `${entry.base}-${width}.webp` : url(name, width));
+const baseUrl = (entry, name, width) => (entry.base ? assetUrl(`${entry.base}-${width}.webp`) : url(name, width));
 
 /** The look a Figma photo shows in a theme: its own version for that theme, or its Figma light. */
 export function figmaPhotoLight(name, theme = "day") {

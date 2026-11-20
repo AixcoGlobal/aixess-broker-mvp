@@ -203,7 +203,7 @@ export function AdvantagePageContent({ header, onOpenModal }) {
             {care.items.map(([title, line], index) => (
               <li key={title} className={`lnp-journey-item lnp-journey-item-${index + 1}`}>
                 <span className="lnp-journey-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                <img className="lnp-journey-icon" src={`/assets/figma/icons/${JOURNEY_ICONS[index]}.svg`} alt="" aria-hidden="true" />
+                <img className="lnp-journey-icon" src={assetUrl(`/assets/figma/icons/${JOURNEY_ICONS[index]}.svg`)} alt="" aria-hidden="true" />
                 <h3>{title}</h3>
                 <p>{line}</p>
               </li>
