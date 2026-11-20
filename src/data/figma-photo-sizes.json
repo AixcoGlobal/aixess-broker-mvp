@@ -753,5 +753,42 @@
         ]
       }
     }
+  },
+  "downtown-fig-highlights": {
+    "width": 2880,
+    "height": 2028,
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "base": "/assets/dubai/downtown-fig-highlights",
+    "light": "night",
+    "themes": {
+      "afternoon": {
+        "width": 2880,
+        "height": 2028,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      },
+      "day": {
+        "width": 2880,
+        "height": 2028,
+        "widths": [
+          480,
+          960,
+          1440,
+          1920,
+          2880
+        ]
+      }
+    }
   }
 }
