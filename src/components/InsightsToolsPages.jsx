@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { useLanguage } from "../i18n.jsx";
 import { AIXCO_FAQ } from "../aixco-faq-copy.js";
 import { INSIGHTS_TOOLS_COPY } from "../insights-tools-copy.js";
 import { LashaArrow, LashaPageHero } from "./LashaHomeSections.jsx";
-import { useWordFit } from "./useWordFit.js";
+import { useLineFit, useWordFit } from "./useWordFit.js";
 import "./insights-tools.css";
 import { ThemedImage } from "./ThemedImage.jsx";
 import { assetUrl } from "../assetUrl.js";
@@ -15,14 +15,19 @@ function useCopy() {
   return INSIGHTS_TOOLS_COPY[locale] || INSIGHTS_TOOLS_COPY.en;
 }
 
-function SectionHeading({ id, eyebrow, title, copy, children }) {
+// `lines`: the desktop frame draws the title in that many lines above fixed blocks, so a translation
+// is set smaller until it fits them (useLineFit); without it the title only keeps its words inside.
+function SectionHeading({ id, eyebrow, eyebrowClass, title, copy, lines, children }) {
   const titleRef = useRef(null);
-  useWordFit(titleRef);
+  const unusedRef = useRef(null);
+  useWordFit(lines ? unusedRef : titleRef);
+  useLineFit(lines ? titleRef : unusedRef, { lines: lines || Infinity });
   return (
     <div className="it-heading">
       <div>
-        <p className="it-eyebrow">{eyebrow}</p>
-        <h2 id={id} ref={titleRef}>{(Array.isArray(title) ? title : [title]).map((line) => <span key={line}>{line}</span>)}</h2>
+        <p className={`it-eyebrow${eyebrowClass ? ` ${eyebrowClass}` : ""}`}>{eyebrow}</p>
+        {/* A space between the lines keeps the heading's accessible name in words. */}
+        <h2 id={id} ref={titleRef}>{(Array.isArray(title) ? title : [title]).map((line, index) => <Fragment key={line}>{index ? " " : null}<span>{line}</span></Fragment>)}</h2>
         {copy && <p className="it-lead">{copy}</p>}
       </div>
       {children}
@@ -37,13 +42,12 @@ export function InsightsPageContent({ header, onOpenModal }) {
   const { locale } = useLanguage();
   const { insights: c } = useCopy();
   const faqs = AIXCO_FAQ[locale] || AIXCO_FAQ.en;
-  const articleMedia = [
-    { src: asset("projects/reverance-aerial-600.webp"), srcSet: `${asset("projects/reverance-aerial-600.webp")} 600w, ${asset("projects/reverance-aerial-1200.webp")} 1200w` },
-    { family: "dubai-skyline", position: "72% 50%" },
-    { family: "switzerland-lakeside", position: "70% 50%" },
-  ];
+  // The INSIGHT frame's three panoramas (Batumi seafront, Dubai skyline, alpine lakeshore) with Kemo's
+  // afternoon and night versions (20 November 2026), switching with the theme like every Figma photo.
+  const articleMedia = [{ figma: "insights-georgia" }, { figma: "insights-dubai" }, { figma: "insights-switzerland" }];
   const resourceMedia = [
-    { src: asset("projects/reverance-front-700.webp") },
+    // The tower's crown stays in the card: the crop trims the ground (20 November 2026).
+    { src: asset("projects/reverance-front-700.webp"), position: "50% 22%" },
     {
       src: asset("resources/buyer-guide-600.webp"),
       srcSet: `${asset("resources/buyer-guide-600.webp")} 600w, ${asset("resources/buyer-guide-1200.webp")} 1200w`,
@@ -64,9 +68,14 @@ export function InsightsPageContent({ header, onOpenModal }) {
       <main className="page-main it-main">
         <section className="it-section it-ink" id="market-insights" aria-labelledby="it-market-title">
           <SectionHeading id="it-market-title" eyebrow={c.marketEyebrow} title={c.marketTitle} copy={c.marketCopy}>
-            <button className="it-text-link" type="button" onClick={() => onOpenModal("login")}>{c.viewAll}<LashaArrow length={24} /></button>
+            {/* Figma's INSIGHT frame (818:3) draws no link here: VIEW ALL INSIGHTS and its note sit in the
+                frame's empty top right, over the Dubai and Switzerland cards (Kemo, 20 November 2026). */}
+            <div className="it-view-all">
+              <p className="it-note">{c.viewAllNote}</p>
+              <button className="it-text-link" type="button" onClick={() => onOpenModal("login")}>{c.viewAll}<LashaArrow length={24} /></button>
+            </div>
           </SectionHeading>
-          <div className="it-cards it-cards-3">
+          <div className="it-cards it-cards-3 it-market-cards">
             {c.articles.map(([place, title, body], index) => (
               <article className="it-card" key={title}>
                 <CardMedia media={articleMedia[index]} label={place} />
@@ -79,11 +88,10 @@ export function InsightsPageContent({ header, onOpenModal }) {
               </article>
             ))}
           </div>
-          <p className="it-note">{c.viewAllNote}</p>
         </section>
 
         <section className="it-section it-paper" aria-labelledby="it-library-title">
-          <SectionHeading id="it-library-title" eyebrow={c.libraryEyebrow} title={c.libraryTitle} copy={c.libraryCopy} />
+          <SectionHeading id="it-library-title" eyebrow={c.libraryEyebrow} eyebrowClass="it-library-eyebrow" title={c.libraryTitle} copy={c.libraryCopy} />
           <div className="it-cards it-cards-4">
             {c.resources.map(([title, body], index) => (
               <article className="it-card it-card-light" key={title}>
@@ -133,10 +141,12 @@ function CardMedia({ media, label }) {
   }
   return (
     <div className="it-card-media">
-      {media.family ? (
+      {media.figma ? (
+        <ThemedImage figma={media.figma} defaultWidth={800} sizes="(max-width: 899px) 100vw, 50vw" alt="" loading="lazy" decoding="async" />
+      ) : media.family ? (
         <ThemedImage family={media.family} defaultWidth={800} sizes="(max-width: 899px) 100vw, 30vw" style={{ objectPosition: media.position }} loading="lazy" decoding="async" />
       ) : (
-        <img src={media.src} srcSet={media.srcSet} sizes="(max-width: 899px) 100vw, 30vw" alt="" loading="lazy" decoding="async" />
+        <img src={media.src} srcSet={media.srcSet} sizes="(max-width: 899px) 100vw, 30vw" style={media.position ? { objectPosition: media.position } : undefined} alt="" loading="lazy" decoding="async" />
       )}
     </div>
   );
@@ -146,17 +156,19 @@ function CardMedia({ media, label }) {
 // 22 October 2026: one Broker Access page instead of two). The working calculators and the client
 // PDF offer are broker-only (Klem's voice note, 12 October 2026), so the page only describes them
 // and sends brokers to sign in or apply.
-// By day the photo's sky (left of the hanging plants) and its pale stone terrace (right of them)
-// carry ink header labels; labels over the plants stay white (see useHeaderOnLightSky).
-const BROKER_TOOLS_LIGHT_SKY = { themes: "day", ranges: [[0, 0.72], [0.84, 1]] };
+// By day Lasha's photo (Figma sync, 19 November 2026) is pale sky and white stone under the whole
+// header, so every header label takes ink (see useHeaderOnLightSky).
+const BROKER_TOOLS_LIGHT_SKY = { themes: "day afternoon", ranges: [[0, 1]] };
 
+// The title follows Figma frame 216:153 (Kemo, 20 November 2026): EVERYTHING YOU NEED in Morganite 147
+// over ONE PLATFORM in 225, both the title's width.
 export function BrokerPlatformHero({ header, eyebrow, onOpenModal }) {
   const { tools: c } = useCopy();
   return (
-    <LashaPageHero header={header} eyebrow={eyebrow} title={c.title.map((line, index) => (index === c.title.length - 1 ? line.replace(/ (?=\S+$)/, "\u00a0") : line))} image="broker-tools-refined" copy={c.copy} variant="coastal" lightSky={BROKER_TOOLS_LIGHT_SKY}>
+    <LashaPageHero header={header} eyebrow={eyebrow} title={c.title.map((line, index) => (index === c.title.length - 1 ? line.replace(/ (?=\S+$)/, "\u00a0") : line))} image="broker-hero" fillTitle firstLineRatio={147 / 224.97} copy={c.copy} variant="coastal" lightSky={BROKER_TOOLS_LIGHT_SKY}>
       <div className="page-cta-row it-hero-actions">
         <button className="button button-primary" type="button" onClick={() => onOpenModal("register")}>{c.partner}<LashaArrow length={24} /></button>
-        <button className="button button-ghost" type="button" onClick={() => onOpenModal("login")}>{c.login}</button>
+        <button className="button button-ghost" type="button" onClick={() => onOpenModal("login")}>{c.login}<LashaArrow length={24} /></button>
       </div>
       <p className="it-hero-note">{c.access}</p>
     </LashaPageHero>
@@ -168,15 +180,15 @@ export function BrokerWorkspace() {
   return (
     <section className="it-section it-paper" aria-labelledby="it-workspace-title">
       <div className="it-workspace-intro">
-        <SectionHeading id="it-workspace-title" eyebrow={c.workspaceEyebrow} title={c.workspaceTitle} copy={c.workspaceCopy} />
+        <SectionHeading id="it-workspace-title" eyebrow={c.workspaceEyebrow} title={c.workspaceTitle} copy={c.workspaceCopy} lines={2} />
         {/* Giorgi, 13 October 2026: a simple modern building in place of the old Reverance render. */}
-        <ThemedImage className="it-workspace-photo" family="workspace-building" defaultWidth={800} sizes="(max-width: 899px) 100vw, 40vw" loading="lazy" decoding="async" />
+        <ThemedImage className="it-workspace-photo" figma="broker-workspace" defaultWidth={800} sizes="(max-width: 899px) 100vw, 44vw" alt="" loading="lazy" decoding="async" />
       </div>
       <ol className="it-features">
         {/* Text only (Kemo, 14 October 2026): number, heading and description, no artwork. */}
         {c.features.map(([title, body], index) => (
           <li className="it-feature" key={title}>
-            <h3><span className="it-feature-index">{String(index + 1).padStart(2, "0")}.</span> {title}</h3>
+            <h3><span className="it-feature-index">{String(index + 1).padStart(2, "0")}</span> {title}</h3>
             <p>{body}</p>
           </li>
         ))}
@@ -185,15 +197,21 @@ export function BrokerWorkspace() {
   );
 }
 
+function splitAfterWords(text, count) {
+  const words = text.split(/\s+/);
+  return words.length > count ? [words.slice(0, count).join(" "), words.slice(count).join(" ")] : [text];
+}
+
 export function BrokerGetStarted({ onOpenModal }) {
   const { tools: c } = useCopy();
   return (
     <section className="it-section it-ink it-steps" aria-labelledby="it-steps-title">
-      <SectionHeading id="it-steps-title" eyebrow={c.stepsEyebrow} title={c.stepsTitle} />
+      {/* Two lines after the second word, as Lasha's frame sets THREE STEPS / TO GET STARTED. */}
+      <SectionHeading id="it-steps-title" eyebrow={c.stepsEyebrow} title={splitAfterWords(c.stepsTitle, 2)} />
       <ol className="it-step-list">
         {c.steps.map(([title, body], index) => (
           <li key={title}>
-            <span className="lasha-index">{String(index + 1).padStart(2, "0")}.</span>
+            <span className="lasha-index">{String(index + 1).padStart(2, "0")}</span>
             <h3>{title}</h3>
             <p>{body}</p>
           </li>

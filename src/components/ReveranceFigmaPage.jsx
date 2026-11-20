@@ -11,11 +11,11 @@ import MEDIA from "../data/reverance-figma-media.json";
 import GALLERY_SIZES from "../data/project-gallery-sizes.json";
 import { FitLines } from "./DubaiProjectPages.jsx";
 import { LashaArrow } from "./LashaHomeSections.jsx";
-import { ThemedImage } from "./ThemedImage.jsx";
 import { Lightbox, useProjectInfoCopy } from "./ReveranceProjectInfo.jsx";
 import { useWordFit } from "./useWordFit.js";
 import "./reverance-figma.css";
 import { assetUrl } from "../assetUrl.js";
+import { ThemedImage } from "./ThemedImage.jsx";
 
 // The Project Reverance page as Lasha drew it: Figma frame "REVERANCE" (file mdoKe84QEOkpDthDFO8pyy,
 // node 405:327, 1440 × 10586; Kemo, 2 November 2026: "make reverance page to be exactly as on figma").
@@ -48,10 +48,11 @@ function Eyebrow({ children, rule }) {
 
 // A title that wraps at Figma's line ends: each sentence on its own line ("BUILT FOR LIVING." /
 // "POSITIONED FOR OWNERSHIP."), or before the given phrases when the text contains them.
-function Title({ as: Tag = "h2", id, className, text, breaks = [], accentLast = false }) {
+// breakAfterComma also ends a line after a comma ("OWN YOUR APARTMENT," / "PAY IN STAGES.").
+function Title({ as: Tag = "h2", id, className, text, breaks = [], accentLast = false, breakAfterComma = false }) {
   const ref = useRef(null);
   useWordFit(ref);
-  let lines = text.split(/(?<=[.!?])\s+(?=\S)/u);
+  let lines = text.split(breakAfterComma ? /(?<=[.!?,])\s+(?=\S)/u : /(?<=[.!?])\s+(?=\S)/u);
   if (lines.length === 1 && breaks.length) {
     lines = [];
     let rest = text;
@@ -99,7 +100,9 @@ export function ReveranceFigmaHero({ header }) {
   return (
     <section className="lasha-page-hero rv-hero" aria-labelledby="residences-title">
       {header}
-      <ThemedImage className="rv-hero-media" family="reverance-towers" sizes="(max-width: 899px) 200vw, 110vw" alt={heroAlt} fetchPriority="high" decoding="async" />
+      {/* The REVERANCE frame's render (Figma sync, 19 November 2026); afternoon and night show the
+          same render's graded versions with the lit windows (reverance-towers), aligned to it. */}
+      <ThemedImage className="rv-hero-media" figma="reverance-hero" defaultWidth={2400} sizes="(max-width: 899px) 200vw, 117vw" alt={heroAlt} fetchPriority="high" decoding="async" />
       <div className="rv-frame rv-hero-copy">
         <Eyebrow rule={328}>{t("projectReveranceBatumi")}</Eyebrow>
         <FitLines as="h1" id="residences-title" className="rv-hero-title" lines={[t("oneBuilding"), t("yourNextMove")]} />
@@ -112,6 +115,7 @@ export function ReveranceFigmaHero({ header }) {
 function Opportunity({ onOpenModal }) {
   const { locale } = useLanguage();
   const c = NETWORK_COPY[locale] || NETWORK_COPY.en;
+  const fig = REVERANCE_FIGMA_COPY[locale] || REVERANCE_FIGMA_COPY.en;
   const number = (value) => new Intl.NumberFormat(locale).format(value);
   const [eyebrow, title, subtitle, lead] = c.opportunity;
   const counts = [
@@ -141,10 +145,10 @@ function Opportunity({ onOpenModal }) {
         <div className="rv-opp-actions">
           {onOpenModal ? (
             <button type="button" className="rv-button" onClick={() => onOpenModal("register")}>
-              <span>{c.inside}</span><LashaArrow length={41} />
+              <span>{fig.exploreProject}</span><LashaArrow length={41} />
             </button>
           ) : (
-            <a className="rv-button" href={PORTAL_URL} data-portal="login"><span>{c.inside}</span><LashaArrow length={41} /></a>
+            <a className="rv-button" href={PORTAL_URL} data-portal="login"><span>{fig.exploreProject}</span><LashaArrow length={41} /></a>
           )}
           <p className="rv-opp-terms">{c.terms}</p>
         </div>
@@ -179,10 +183,9 @@ function ProjectFacts() {
             );
           })}
         </dl>
-        <div className="rv-facts-notes">
-          <p>{copy.factsNote}</p>
-          <p>{copy.currencyNote}{copy.eurNote && <> {copy.eurNote}</>}</p>
-        </div>
+        {/* The frame draws no notes under the facts (Kemo, 20 November 2026: wording as in Figma);
+            German and Slovenian keep the line naming the euro rate their prices are converted at. */}
+        {copy.eurNote && <div className="rv-facts-notes"><p>{copy.eurNote}</p></div>}
       </div>
     </section>
   );
@@ -252,7 +255,6 @@ function WhyReverance() {
             </li>
           ))}
         </ul>
-        <p className="rv-note rv-residence-note">{residence.renderNote}</p>
       </div>
       {open && <Lightbox items={items} index={open.index} onStep={(delta) => setOpen((current) => ({ ...current, index: (current.index + delta + items.length) % items.length }))} onClose={close} labels={gallery} />}
     </section>
@@ -268,7 +270,7 @@ function Payment() {
     <section className="rv-paper rv-payment" id="payment" aria-labelledby="payment-title">
       <div className="rv-frame">
         <Eyebrow rule={240}>{payment.eyebrow}</Eyebrow>
-        <Title id="payment-title" className="rv-payment-title" text={payment.title} />
+        <Title id="payment-title" className="rv-payment-title" text={payment.title} breakAfterComma />
         <p className="rv-payment-lead">{payment.lead}</p>
         <p className="rv-payment-total">{fig.total}</p>
         <ol className="rv-stages">
@@ -316,7 +318,6 @@ function WhyBatumi() {
               <div key={label} className={`rv-market-cell rv-market-cell-${index + 1}`}><dd>{value}</dd><dt>{label}</dt></div>
             ))}
           </dl>
-          <p className="rv-note rv-market-note">{batumi.source} {batumi.note}</p>
         </div>
       </section>
     </>
@@ -365,7 +366,6 @@ function Ownership() {
         <ul className="rv-ownership-items">
           {ownership.items.map(([title, body]) => <li key={title}><h3>{title}</h3><p>{body}</p></li>)}
         </ul>
-        <p className="rv-note rv-ownership-note">{ownership.note}</p>
       </div>
     </section>
   );

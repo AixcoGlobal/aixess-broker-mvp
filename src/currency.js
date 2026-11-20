@@ -15,10 +15,12 @@ const toEur = (usd) => {
 
 const localAmount = (usd, locale) => (priceCurrency(locale) === "EUR" ? toEur(usd) : usd);
 
-// style: "full" ($59,000 / 52.600 €), "k" ($59K / €53K), "compact" ($4.2B / 3,7 Mrd. €).
+// style: "full" ($59,000 / 52.600 €), "k" ($59K; euros stay full), "compact" ($4.2B / 3,7 Mrd. €).
 export function formatPrice(usd, locale, style = "full") {
   const currency = priceCurrency(locale);
   const amount = localAmount(usd, locale);
+  // Euros are written out in German style (52.600 €): "€53K" reads as English (German review, 20 November 2026).
+  if (style === "k" && currency === "EUR") style = "full";
   if (style === "k") {
     const symbol = currency === "EUR" ? "€" : "$";
     // One decimal below 10K ($5.9K), whole thousands above, so the homepage tiles stay as narrow as €45K was.

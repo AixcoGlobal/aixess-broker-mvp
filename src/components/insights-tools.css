@@ -311,3 +311,195 @@
 }
 
 .it-faq-section { border-top: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 14%, transparent); }
+
+/* ---- Understand the markets at Figma (INSIGHT frame 818:3, band at frame y 899–1980) ------------
+   Kemo, 20 November 2026: "match this part to figma". From 900px the band is drawn in frame pixels
+   (--u, 1440 wide): eyebrow and rule, the one-line title, the copy, then Georgia as the tall card
+   (710 × 691) beside Dubai over Switzerland (564 × 333, 24 apart). Figma draws no link: VIEW ALL
+   INSIGHTS and its note sit in the empty top right, on the right cards' edge and level with the
+   copy's foot. Cards grow with longer translations (min-heights); COMING SOON keeps the card's foot. */
+html:root:not([data-time-theme]) #market-insights,
+html:root[data-time-theme='day'] #market-insights { background: #dce7f0; }
+#market-insights .it-market-cards { grid-template-columns: minmax(0, 1fr); }
+#market-insights .it-card-body { display: flex; flex-direction: column; }
+#market-insights .it-card-status { margin-top: auto; padding-top: 0.5rem; }
+#market-insights .it-view-all { display: grid; justify-items: start; gap: 0.6rem; }
+#market-insights .it-view-all .it-note { max-width: 30rem; margin: 0; }
+#market-insights .it-view-all .it-text-link { padding: 0; }
+
+@media (min-width: 900px) {
+  #market-insights {
+    --fu: calc(min(100vw, 1920px) / 1440);
+    padding: calc(70 * var(--fu)) calc(70 * var(--fu)) calc(70 * var(--fu));
+  }
+  #market-insights .it-heading {
+    display: grid;
+    grid-template-columns: calc(710 * var(--fu)) minmax(0, 1fr);
+    column-gap: calc(26 * var(--fu));
+    row-gap: 0;
+    align-items: end;
+  }
+  /* The eyebrow, title and copy are the grid's own rows: eyebrow and title across the band (Figma's
+     title, 737 wide, runs past the Georgia column), the copy in the Georgia column with VIEW ALL
+     INSIGHTS beside it, so the link and its note never reach the title. */
+  #market-insights .it-heading > div:first-child { display: contents; }
+  #market-insights .it-heading > div:first-child > :is(.it-eyebrow, h2) { grid-column: 1 / -1; }
+  #market-insights .it-heading .it-lead { grid-column: 1; align-self: start; }
+  #market-insights .it-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: calc(21 * var(--fu));
+    font-size: max(calc(18.9 * var(--fu)), 12px);
+    font-weight: 700;
+    line-height: calc(22.88 * var(--fu));
+    letter-spacing: 0.04em;
+  }
+  #market-insights .it-eyebrow::after { content: ""; flex: 0 0 calc(114 * var(--fu)); height: 1px; background: currentColor; }
+  #market-insights h2 {
+    margin: calc(15.12 * var(--fu)) 0 0;
+    font-family: var(--l-fig);
+    font-size: calc(150 / 0.93705 * var(--fu));
+    font-weight: 600;
+    line-height: calc(117 * var(--fu));
+    letter-spacing: 0;
+    translate: none;
+    --fig-k: 1;
+  }
+  #market-insights h2 > span { display: inline; }
+  #market-insights .it-lead {
+    max-width: calc(708 * var(--fu));
+    margin: calc(1 * var(--fu)) 0 0;
+    font-size: max(calc(21 * var(--fu)), 16px);
+    font-weight: 500;
+    line-height: 1.22;
+  }
+  #market-insights .it-view-all { grid-column: 2; grid-row: 3; align-self: start; gap: calc(8 * var(--fu)); padding-top: calc(3 * var(--fu)); }
+  #market-insights .it-view-all .it-text-link { line-height: 1; }
+  #market-insights .it-view-all .it-note { max-width: none; font-size: 14px; line-height: 1.3; }
+  #market-insights .it-market-cards {
+    grid-template-columns: calc(710 * var(--fu)) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: calc(24 * var(--fu)) calc(26 * var(--fu));
+    margin-top: calc(43 * var(--fu));
+  }
+  #market-insights .it-card { display: flex; flex-direction: column; min-height: calc(333 * var(--fu)); }
+  #market-insights .it-card:first-child { grid-row: 1 / span 2; min-height: calc(691 * var(--fu)); }
+  #market-insights .it-card-media { flex: 0 0 auto; height: calc(188 * var(--fu)); aspect-ratio: auto; }
+  #market-insights .it-card:first-child .it-card-media { height: calc(476 * var(--fu)); }
+  #market-insights .it-card-body { flex: 1 0 auto; gap: 0; padding: calc(11 * var(--fu)) calc(34 * var(--fu)) calc(14 * var(--fu)) calc(33 * var(--fu)); }
+  #market-insights .it-card:first-child .it-card-body { padding-left: calc(34 * var(--fu)); padding-bottom: calc(16 * var(--fu)); }
+  #market-insights .it-card .it-card-place {
+    font-size: max(calc(14 * var(--fu)), 12px);
+    font-weight: 700;
+    line-height: calc(15.12 * var(--fu));
+    letter-spacing: 0.1em;
+  }
+  #market-insights .it-card h3 {
+    margin-top: calc(4.88 * var(--fu));
+    font-family: var(--l-fig);
+    font-size: calc(55 / 0.93705 * var(--fu));
+    font-weight: 700;
+    line-height: calc(59.4 * var(--fu));
+    letter-spacing: 0.01em;
+    translate: none;
+    --fig-k: 1;
+  }
+  #market-insights .it-card h3 + p {
+    margin-top: calc(-10.4 * var(--fu));
+    font-size: max(calc(14 * var(--fu)), 14px);
+    font-weight: 500;
+    line-height: max(calc(15.12 * var(--fu)), 1.08em);
+  }
+  #market-insights .it-card:first-child h3 + p { margin-top: calc(-7.4 * var(--fu)); }
+  #market-insights .it-card .it-card-status {
+    padding-top: calc(12 * var(--fu));
+    font-size: max(calc(14 * var(--fu)), 12px);
+    font-weight: 500;
+    line-height: calc(15.12 * var(--fu));
+    letter-spacing: 0.14em;
+  }
+  html:root:not([data-time-theme='night']) #market-insights :is(h2, .it-card h3) { color: #000; }
+  html:root:not([data-time-theme='night']) #market-insights .it-lead { color: #171a1d; }
+  html:root:not([data-time-theme]) #market-insights .it-card,
+  html:root[data-time-theme='day'] #market-insights .it-card { background: #f7f7f4; }
+  html:root:not([data-time-theme]) #market-insights .it-card .it-card-status,
+  html:root[data-time-theme='day'] #market-insights .it-card .it-card-status { color: #171a1d; }
+}
+@media (min-width: 900px) {
+  /* Accented capitals (Ä, Ł, Č) rise above Figma's 78% pitch, so German, Polish and Slovenian take the
+     other Figma pages' 0.86 pitch and more room under the eyebrow. */
+  :root:is(:lang(de), :lang(pl), :lang(sl), :lang(ru)) #market-insights h2 { margin-top: calc(26 * var(--fu)); line-height: calc(129 * var(--fu)); }
+  /* Morganite has no Cyrillic: Russian headings sized in Morganite units use "AiXESS Figma RU". */
+  :root:lang(ru) #market-insights :is(h2, .it-card h3) { font-family: "AiXESS Figma RU", "AiXESS Head", "Arial Narrow", sans-serif; }
+  :root:lang(ru) #market-insights .it-card h3 + p { margin-top: calc(2 * var(--fu)); }
+}
+
+/* No grey card surface behind text at night (Kemo, 20 November 2026: "some kind of grey background
+   behind this texts please remove it i hate it"): the market cards' text stands on the band itself,
+   under each photo. */
+html:root[data-time-theme='night'] #market-insights .it-card { background: transparent; }
+
+/* RESOURCE LIBRARY keeps the frame's eyebrow rule (818:3: 114 long, 22 after the words), as MARKET
+   INTELLIGENCE does (Kemo, 20 November 2026: eyebrow rules "exactly as on figma"). */
+@media (min-width: 900px) {
+  .it-main .it-library-eyebrow { display: flex; align-items: center; gap: calc(22 * min(100vw, 1920px) / 1440); }
+  .it-main .it-library-eyebrow::after { content: ""; flex: 0 0 calc(114 * min(100vw, 1920px) / 1440); height: 1px; background: currentColor; }
+}
+
+/* The hero and RESOURCE LIBRARY heading in the INSIGHT frame's type (818:3; Kemo, 20 November 2026:
+   "match fonts and other stuff exactly as its on figma ... images and text keep it as it is"): hero
+   eyebrow Inter Bold 18.9 at 4%, title Morganite Bold 180 at 74% pitch and 2%, copy Inter Medium 17 at
+   4%; library eyebrow as MARKET INTELLIGENCE, title Morganite SemiBold 150 on one line, copy Inter
+   Medium 21 at 122%. Words, photos and the hero's layout stay the site's. */
+@media (min-width: 900px) {
+  html:root:not(#fs) .insights-page { --fu: calc(min(100vw, 1920px) / 1440); }
+  /* The hero fills the first screen (20 October) and its title, copy and eyebrow must all show on it
+     (18 October, MacBook Safari): on a window shorter than 1440:1000 the hero type scales by height,
+     as the homepage hero does, so a 13-inch MacBook or a long German or Russian title still fits. */
+  html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100vh / 1000)); }
+  html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100svh / 1000)); }
+  html:root:not(#fs) .insights-page :is(.lasha-page-hero .lasha-eyebrow, .it-library-eyebrow) {
+    font-size: max(calc(18.9 * var(--fu)), 12px);
+    font-weight: 700;
+    line-height: calc(22.88 * var(--fu));
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .insights-page .lasha-page-hero-title {
+    font-family: var(--l-fig);
+    font-size: calc(180 / 0.93705 * var(--fu));
+    font-weight: 700;
+    line-height: calc(133.2 * var(--fu));
+    letter-spacing: 0.0187em;
+    translate: none;
+    --fig-k: 1;
+  }
+  html:root:not(#fs) .insights-page .lasha-page-hero-text {
+    max-width: calc(524 * var(--fu));
+    font-size: max(calc(17 * var(--fu)), 16px);
+    font-weight: 500;
+    line-height: 1.21;
+    letter-spacing: 0.04em;
+  }
+  html:root:not(#fs) .insights-page [aria-labelledby='it-library-title'] .it-heading > div { max-width: none; }
+  html:root:not(#fs) .insights-page #it-library-title {
+    font-family: var(--l-fig);
+    font-size: calc(150 / 0.93705 * var(--fu));
+    font-weight: 600;
+    line-height: calc(117 * var(--fu));
+    letter-spacing: 0;
+    translate: none;
+    --fig-k: 1;
+  }
+  html:root:not(#fs) .insights-page #it-library-title > span { display: inline; }
+  html:root:not(#fs) .insights-page [aria-labelledby='it-library-title'] .it-lead {
+    max-width: calc(781 * var(--fu));
+    font-size: max(calc(21 * var(--fu)), 16px);
+    font-weight: 500;
+    line-height: 1.22;
+  }
+  /* Accented capitals rise above Figma's 74% and 78% pitches: German, Polish, Slovenian and Russian
+     take the 0.86 pitch the other Figma pages use. Morganite has no Cyrillic. */
+  html:root:not(#fs):is(:lang(de), :lang(pl), :lang(sl), :lang(ru)) .insights-page .lasha-page-hero-title { line-height: calc(180 * 0.86 * var(--fu)); }
+  html:root:not(#fs):is(:lang(de), :lang(pl), :lang(sl), :lang(ru)) .insights-page #it-library-title { line-height: calc(129 * var(--fu)); }
+  html:root:not(#fs):lang(ru) .insights-page :is(.lasha-page-hero-title, #it-library-title) { font-family: "AiXESS Figma RU", "AiXESS Head", "Arial Narrow", sans-serif; }
+}

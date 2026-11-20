@@ -97,7 +97,7 @@
 .lasha-accent { color: var(--l-blue); }
 
 .lasha-arrow { flex: none; height: calc(8 * var(--u)); overflow: visible; }
-.lasha-arrow path { vector-effect: non-scaling-stroke; }
+.lasha-arrow { stroke-width: 1px; }
 
 .lasha-plus { font-family: var(--l-head); font-weight: 700; font-size: 0.62em; vertical-align: 0.2em; margin-left: 0.02em; }
 
@@ -295,7 +295,7 @@ html[lang="ru"] .lasha-hero h1 > span { word-spacing: 0.14em; }
 }
 
 .lasha-hero-cta .lasha-arrow { flex: 0 0 24px; width: 24px; height: 12px; }
-.lasha-hero-cta .lasha-arrow path { stroke-width: 1.5; }
+.lasha-hero-cta .lasha-arrow { stroke-width: 1.5px; }
 .lasha-hero-cta:hover { background: var(--l-blue-deep); }
 .lasha-hero-cta:focus-visible { outline: 2px solid var(--l-ink); outline-offset: 3px; }
 
@@ -915,16 +915,18 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
     min-height: max(var(--screen-full, 100lvh), 30rem);
   }
   .lasha-hero-media { object-position: 66% 50%; }
-  /* Portrait: the photo is drawn 1.4× taller from its top edge, so the skyline sits below the
-     subtitle and the title and subtitle read on open sky (Kemo, 16 October 2026: "some texts are
-     hard to read"; black text over the towers read at 1.6:1). The Burj Khalifa still stands
-     beside the title. Keep the 205vh / 255vh `sizes` in HomeHero and index.html in step. */
+  /* Portrait: the Figma HOME photo (19 November 2026) is drawn at the hero's height, anchored at
+     its foot, so the Dubai skyline runs along the bottom, the Burj Khalifa's spire rises right of the
+     subtitle's last line instead of through it, and the title and subtitle read on open sky (Kemo, 19 November 2026: the 1.4×
+     top-anchored crop showed only empty sky and a stone beam behind the menu). Keep the 161vh
+     `sizes` in HomeHero in step: the photo is 1.6 times as wide as it is tall. */
   @media (orientation: portrait) {
-    .lasha-hero-media { height: 140%; object-position: 66% 0; }
+    .lasha-hero-media { height: 100%; object-position: 10% 100%; }
   }
-  /* Portrait tablets set a larger title, so the skyline is pushed further down (1.75×). */
-  @media (orientation: portrait) and (min-width: 600px) {
-    .lasha-hero-media { height: 175%; }
+  /* The narrowest phones wrap the subtitle onto four lines: the photo's left edge keeps the spire
+     right of them. */
+  @media (orientation: portrait) and (max-width: 359px) {
+    .lasha-hero-media { object-position: 0 100%; }
   }
   /* No white wash on phones (Kemo, 9 October 2026): the photo shows at full strength. */
   .lasha-hero-frame::after { content: none; }

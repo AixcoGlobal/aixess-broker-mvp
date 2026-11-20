@@ -91,26 +91,26 @@ describe("AIXESS navigation pages", () => {
     window.history.replaceState({}, "", "/#insights");
     render(<App />);
     const cardPhotos = () => Array.from(document.querySelectorAll(".it-card-media img[data-theme-photo]")).map((img) => img.dataset.themePhoto);
-    expect(cardPhotos()).toEqual(["dubai-skyline-night", "switzerland-lakeside-night", "coastal-lifestyle-night"]);
+    expect(cardPhotos()).toEqual(["insights-georgia-night", "insights-dubai-night", "insights-switzerland-night", "coastal-lifestyle-night"]);
     const hero = document.querySelector(".lasha-page-hero-media");
     expect(hero.getAttribute("src")).toMatch(/^\/assets\/themed\/batumi-coast-night-\d+\.webp$/);
     expect(hero.getAttribute("alt")).toMatch(/^Illustration of Batumi’s Black Sea coast/);
     expect(hero.getAttribute("alt")).not.toMatch(/Reverance/);
 
     act(() => setTimeThemeMode("day"));
-    await waitFor(() => expect(cardPhotos()).toEqual(["dubai-skyline-day", "switzerland-lakeside-day", "coastal-lifestyle-day"]));
+    await waitFor(() => expect(cardPhotos()).toEqual(["insights-georgia-day", "insights-dubai-day", "insights-switzerland-day", "coastal-lifestyle-day"]));
     expect(document.querySelector(".lasha-page-hero-media").dataset.themePhoto).toBe("batumi-coast-day");
     expect(document.documentElement.dataset.timeTheme).toBe("day");
   });
 
-  it("gives Broker Access the refined coastal hero and the modern workspace building, not the old marina or Reverance render", () => {
+  it("gives Broker Access the Figma frame's hero and workspace photos in every theme, not the old marina or Reverance render", () => {
     window.localStorage.setItem("aixess-time-theme", "afternoon");
     resetTimeThemeForTests();
     window.history.replaceState({}, "", "/#broker-access");
     render(<App />);
-    expect(document.querySelector(".lasha-page-hero-media").dataset.themePhoto).toBe("broker-tools-refined-afternoon");
+    expect(document.querySelector(".lasha-page-hero-media").getAttribute("src")).toMatch(/\/assets\/figma\/broker-hero-/);
     const workspace = document.querySelector(".it-workspace-photo");
-    expect(workspace.dataset.themePhoto).toBe("workspace-building-afternoon");
+    expect(workspace.getAttribute("src")).toMatch(/\/assets\/figma\/broker-workspace-/);
     expect(workspace).toHaveAttribute("loading", "lazy");
     expect(document.body.innerHTML).not.toMatch(/marina-towers|reverance-hero-/);
   });
@@ -121,7 +121,7 @@ describe("AIXESS navigation pages", () => {
     window.history.replaceState({}, "", "/#residences");
     render(<App />);
     const hero = document.querySelector(".rv-hero-media");
-    expect(hero.dataset.themePhoto).toBe("reverance-towers-night");
+    expect(hero.getAttribute("src")).toMatch(/\/assets\/figma\/reverance-hero-/);
     expect(hero.getAttribute("alt")).toMatch(/Official render of the two Project Reverance towers/);
     expect(screen.getByRole("heading", { name: "PROJECT FACTS" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "More Upfront. More Value." })).toBeInTheDocument();
@@ -238,16 +238,8 @@ describe("AIXESS navigation pages", () => {
     expect(within(ownership).queryByRole("heading", { name: "MINIMUM 60% FINANCING" })).not.toBeInTheDocument();
     expect(within(document.getElementById("residence")).queryByRole("heading", { name: "SELECTED HIGHER FLOORS" })).not.toBeInTheDocument();
     expect(within(document.getElementById("residence")).getAllByRole("button", { name: /^View amenity image/ })).toHaveLength(12);
-    const gallery = document.getElementById("gallery");
-    const tiles = within(gallery).getAllByRole("button", { name: /^Open image/ });
-    expect(tiles).toHaveLength(9);
-    expect(within(gallery).getByText("APARTMENT INTERIOR")).toBeInTheDocument();
-    fireEvent.click(tiles[0]);
-    const dialog = gallery.querySelector("dialog");
-    fireEvent.click(within(dialog).getByRole("button", { name: "Next image" }));
-    expect(within(dialog).getByText("2 of 9")).toBeInTheDocument();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
-    expect(gallery.querySelector("dialog")).toBeNull();
+    // Lasha's frame has no gallery (Kemo, 20 November 2026: "pixel perfect"); the amenity renders open in their lightbox.
+    expect(document.getElementById("gallery")).toBeNull();
     // AIXCO's own sections stay off AiXESS (Kemo and Klem, 16 October 2026).
     for (const id of ["faq", "why-aixco", "approach"]) expect(document.getElementById(id)).toBeNull();
     for (const name of ["WHAT BUYERS USUALLY ASK.", "ACQUIRE. PARTNER. CREATE VALUE.", "YOUR REVERANCE PROPERTY STARTS HERE."]) expect(screen.queryByRole("heading", { name })).not.toBeInTheDocument();
@@ -312,7 +304,7 @@ describe("AIXESS navigation pages", () => {
     expect(screen.getByRole("link", { name: "PARTNER SIGN IN" })).toHaveAttribute("href", "https://portal.aixess.global/");
 
     fireEvent.click(screen.getAllByRole("button", { name: "BROKER ACCESS" })[0]);
-    expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDONE\u00a0PLATFORM" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "YOU DON’TNEED TO BEA BROKER." })).toBeInTheDocument();
     expect(screen.getByText("If you have the network and ambition, AiXESS gives you the opportunities, tools and support.")).toBeInTheDocument();
     expect(screen.getByText("ASPIRING PROFESSIONALS")).toBeInTheDocument();
@@ -321,14 +313,14 @@ describe("AIXESS navigation pages", () => {
     expect(screen.queryByRole("heading", { name: "HAVE THE NETWORK?" })).not.toBeInTheDocument();
     expect(screen.getByText("THE COMMERCIAL ADVANTAGE")).toBeInTheDocument();
     expect(screen.getByText("Your client secures the property with this down payment, unlocking your full commission within 72 hours.")).toBeInTheDocument();
-    expect(screen.getByText("How it works")).toBeInTheDocument();
+    expect(screen.getByText("HOW IT WORKS")).toBeInTheDocument();
     expect(screen.getByText("Request AiXESS access")).toBeInTheDocument();
     expect(screen.getByText("Client pays the required down payment")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "LESS ADMINISTRATION.MORE OPPORTUNITY." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "LESS ADMINISTRATION. MORE OPPORTUNITY." })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "THREE STEPS TO GET STARTED." })).toBeInTheDocument();
     // Klem's order (22 October 2026).
     const order = Array.from(document.querySelectorAll(".lnp-broker h1, .lnp-broker h2, .lnp-commercial-eyebrow")).map((heading) => heading.textContent);
-    expect(order).toEqual(["EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM.", "YOU DON’TNEED TO BEA BROKER.", "THE COMMERCIAL ADVANTAGE", expect.any(String), expect.any(String), "FROM ACCESSTO COMMISSION", "LESS ADMINISTRATION.MORE OPPORTUNITY.", "THREE STEPS TO GET STARTED."]);
+    expect(order).toEqual(["EVERYTHING YOU NEEDONE\u00a0PLATFORM", "YOU DON’TNEED TO BEA BROKER.", "THE COMMERCIAL ADVANTAGE", expect.any(String), expect.any(String), "FROM ACCESSTO COMMISSION", "LESS ADMINISTRATION. MORE OPPORTUNITY.", "THREE STEPS TO GET STARTED."]);
   });
 
   it("submits broker registration request with broker details", async () => {
@@ -444,7 +436,7 @@ describe("AIXESS navigation pages", () => {
     expect(screen.queryByRole("button", { name: "BROKER TOOLS" })).not.toBeInTheDocument();
     expect(window.location.hash).toBe("#broker-access");
     expect(screen.getAllByRole("button", { name: "BROKER ACCESS" }).filter((button) => button.getAttribute("aria-current") === "page")).toHaveLength(2);
-    expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDTO SELL. ONE\u00a0PLATFORM." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "EVERYTHING YOU NEEDONE\u00a0PLATFORM" })).toBeInTheDocument();
   });
 
   it("opens materials request modal, submits contact details, and unlocks downloads", async () => {
@@ -505,11 +497,11 @@ describe("AIXESS navigation pages", () => {
     }
   });
 
-  it("opens broker registration form from Explore Full Opportunity button on residences page", () => {
+  it("opens broker registration form from Explore the Project button on residences page", () => {
     window.history.replaceState({}, "", "/#residences");
     render(<App />);
 
-    const exploreOpportunityBtn = screen.getByRole("button", { name: /EXPLORE THE FULL OPPORTUNITY INSIDE AiXESS/i });
+    const exploreOpportunityBtn = screen.getByRole("button", { name: /^EXPLORE THE PROJECT$/i });
     expect(exploreOpportunityBtn).toBeInTheDocument();
     fireEvent.click(exploreOpportunityBtn);
 
@@ -544,7 +536,7 @@ describe("AIXESS navigation pages", () => {
 
     const cards = container.querySelectorAll(".it-feature");
     expect(cards).toHaveLength(6);
-    expect(cards[2]).toHaveTextContent("03. BROKER NETWORK & TEAM MANAGEMENT");
+    expect(cards[2]).toHaveTextContent("03 BROKER NETWORK & TEAM MANAGEMENT");
     // Text-only trial (14 October 2026): no pictures, sketches, icons or ILLUSTRATION labels.
     cards.forEach((card) => expect(card.querySelector("img, svg, picture")).toBeNull());
     expect(screen.queryByText(/^Illustration$/i)).not.toBeInTheDocument();

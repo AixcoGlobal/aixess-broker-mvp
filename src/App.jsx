@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import { LanguageProvider, LANGUAGE_OPTIONS, useLanguage, localizeFieldValidation, clearFieldValidation } from "./i18n.jsx";
 import { ProjectShowcase } from "./components/ProjectShowcase.jsx";
-import { ProjectGallery, useProjectSectionFromHash } from "./components/ReveranceProjectInfo.jsx";
+import { useProjectSectionFromHash } from "./components/ReveranceProjectInfo.jsx";
 import { ReveranceFigmaHero, ReveranceFigmaSections } from "./components/ReveranceFigmaPage.jsx";
 import { AdvantagePageContent, BrokerAccessPageContent } from "./components/LashaNetworkPages.jsx";
 import { HomeAbout, HomeAccess, HomeHero, HomeMetrics, HomeStartingPoints, LashaPageHero } from "./components/LashaHomeSections.jsx";
@@ -21,9 +21,11 @@ import "./components/public-spacing.css";
 import "./components/figma-type.css";
 import "./components/figma-home.css";
 import "./components/figma-pages.css";
+import "./components/figma-sync.css";
 import { PRIVACY_COPY } from "./privacy-copy.js";
 import { track, trackOutboundLink, flushAnalytics } from "./analytics.js";
 import { AixessLogo } from "./components/AixessLogo.jsx";
+import { useHeaderInk } from "./components/useHeaderInk.js";
 import { CONTACT, CONTACT_COPY } from "./contact-copy.js";
 import { ENQUIRY_COPY } from "./enquiry-copy.js";
 import { OPEN_FORM_EVENT } from "./enquiry.js";
@@ -65,12 +67,27 @@ export const PAGE_TITLES = {
   home: "AiXESS — Turn Your Network Into Opportunity",
   "why-aixess": "The AiXESS Advantage — Why AiXESS",
   residences: "Reverance Batumi Waterfront — Luxury Living | AiXESS",
-  tresora: "TRESORA, Dubai Islands — Waterfront Residences | AiXESS",
+  tresora: "TRESORA, Jumeirah Village Circle — Residences in Dubai | AiXESS",
   "downtown-one": "Downtown One, Dubai — Prime Investment | AiXESS",
   "broker-access": "Broker Access & Registration — AiXESS",
   insights: "Market Insights & Intelligence — AiXESS",
   privacy: "Privacy Policy — AiXESS",
   admin: "Admin Dashboard — AiXESS",
+};
+
+// German browser tabs (the German review, 20 November 2026); analytics keep the English titles.
+const PAGE_TITLES_LOCAL = {
+  de: {
+    home: "AiXESS – Machen Sie Ihr Netzwerk zur Chance",
+    "why-aixess": "Der AiXESS-Vorteil – Warum AiXESS",
+    residences: "Reverance Batumi – Wohnen am Meer | AiXESS",
+    tresora: "TRESORA, Jumeirah Village Circle – Residenzen in Dubai | AiXESS",
+    "downtown-one": "Downtown One, Dubai | AiXESS",
+    "broker-access": "Maklerzugang & Registrierung – AiXESS",
+    insights: "Markteinblicke – AiXESS",
+    privacy: "Datenschutz & Cookies – AiXESS",
+    admin: "Admin-Dashboard – AiXESS",
+  },
 };
 
 // Scrolls to the contact footer and moves focus there, so keyboard and screen-reader users land on it too.
@@ -101,6 +118,9 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [openMarket, setOpenMarket] = useState(null);
   useEffect(() => { setProjectsOpen(false); setOpenMarket(null); }, [menuOpen, currentPage]);
+  const headerRef = useRef(null);
+  // Each label takes the ink that reads on the photo behind it, in every theme (19 November 2026).
+  useHeaderInk(headerRef, [locale, currentPage]);
   const navigate = (page) => {
     setProjectsOpen(false);
     setOpenMarket(null);
@@ -109,7 +129,7 @@ function SiteHeader({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenMod
   };
 
   return (
-    <header className={`site-header ${pageHeader ? "page-site-header" : ""}`}>
+    <header ref={headerRef} className={`site-header ${pageHeader ? "page-site-header" : ""}`}>
       <button className="brand" type="button" aria-label={t("homeAria")} onClick={() => navigate("home")}>
         <AixessLogo />
       </button>
@@ -731,17 +751,17 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
   const { t } = useLanguage();
   useProjectSectionFromHash();
   // Lasha's Figma frame "REVERANCE" (Kemo, 2 November 2026: "make reverance page to be exactly as on
-  // figma"), then the gallery and the Residence Explorer, which the frame does not draw.
+  // figma"), then the Residence Explorer, which the frame introduces as RESIDENCE EXPLORER / SELECT THE
+  // OPPORTUNITY. The frame has no gallery (Kemo, 20 November 2026: "pixel perfect").
   return (
     <div className="route-page lasha-page residences-page rv-page">
       <ReveranceFigmaHero header={<PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />} />
       <main className="page-main">
         <div className="rp-contents">
           <ReveranceFigmaSections onOpenModal={onOpenModal} />
-          <ProjectGallery />
         </div>
         <Suspense fallback={<div className="residence-explorer-loader" role="status">{t("preparingInteractive")}</div>}>
-          <ResidenceExplorer liveInventoryTitle onBrokerAccess={() => onOpenModal("register")} />
+          <ResidenceExplorer onBrokerAccess={() => onOpenModal("register")} />
         </Suspense>
       </main>
     </div>
@@ -752,6 +772,7 @@ function ResidencesPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpe
 function DubaiProjectPage({ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }) {
   const header = <PageHeader {...{ currentPage, menuOpen, onToggleMenu, onNavigate, onOpenModal }} />;
   return (
+    // Downtown One is built from the TRESORA page's parts, so it takes its styles too.
     <div className={`route-page lasha-page dubai-project-page ${currentPage}-page${currentPage === "downtown-one" ? " tresora-page" : ""}`}>
       {currentPage === "tresora" ? <TresoraPage header={header} /> : <DowntownOnePage header={header} />}
     </div>
@@ -906,7 +927,8 @@ function AppContent() {
   useEffect(() => {
     const pageTitle = PAGE_TITLES[currentPage] || PAGE_TITLES.home;
     if (typeof document !== "undefined") {
-      document.title = pageTitle;
+      const local = PAGE_TITLES_LOCAL[locale];
+      document.title = (local && (local[currentPage] || local.home)) || pageTitle;
     }
     const pageView = () => {
       track("page_view", { page: currentPage });

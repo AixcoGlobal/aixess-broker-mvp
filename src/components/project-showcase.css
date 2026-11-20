@@ -248,6 +248,9 @@
   .lasha-home .project-feature { grid-template-columns: minmax(0, 1fr); row-gap: 1.6rem; margin-top: 1.2rem; }
   .lasha-home .project-feature-gallery { row-gap: 0.5rem; padding-bottom: 0; }
   .lasha-home .project-feature-media { min-height: 0; aspect-ratio: 4 / 3; }
+  /* Tower renders keep their crowns (Kemo, 20 November 2026: "check other pages on mobile" after the
+     cut Downtown tower): the 4:3 frame trims the ground, not the top. */
+  .lasha-home .project-feature-media img { object-position: 50% 28%; }
   .lasha-home .project-feature-expand { right: 0.75rem; bottom: 0.75rem; width: 2.5rem; height: 2.5rem; }
   .lasha-home .project-feature-expand svg { width: 14px; }
   .lasha-home .project-thumbs { gap: 0.4rem; }
@@ -267,7 +270,8 @@
   .lasha-home .project-card > p:not(.project-card-meta) { min-height: 0; }
   .lasha-home .project-card .project-card-meta { margin-top: 1.1rem; padding-top: 0.9rem; }
   .lasha-home .project-card-actions { flex-wrap: wrap; gap: 0.6rem; margin-top: 1.4rem; padding-top: 0; align-self: stretch; }
-  .lasha-home .project-card-actions .lasha-button { flex: 1 1 100%; width: 100%; padding: 0.9rem 1.25rem; letter-spacing: 0.05em; }
+  /* Full-width phone button: label on the left, arrow on the right (24 October 2026). */
+  .lasha-home .project-card-actions .lasha-button { flex: 1 1 100%; width: 100%; justify-content: space-between; padding: 0.9rem 1.25rem; letter-spacing: 0.05em; }
   .lasha-home .project-card-actions .lasha-button { gap: 0.8rem; }
   .lasha-home .project-card-actions .lasha-arrow { width: 1.6rem; flex-shrink: 0; }
 }

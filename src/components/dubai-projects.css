@@ -370,10 +370,14 @@ html:root[data-time-theme='afternoon'] .lasha-page .dp-page .rp-mist .dp-list-ti
   align-items: flex-start;
   gap: 0.8rem;
   min-width: 0;
-  padding: clamp(1.4rem, 2.6vw, 2.4rem);
+  --card-pad: clamp(1.4rem, 2.6vw, 2.4rem);
+  padding: var(--card-pad);
   border: 1px solid color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent);
   background: var(--l-soft, #e3ebf6);
 }
+/* The photo runs to the card's edges, with no card ground framing it (Kemo, 20 November 2026: "on
+   figma it has full background on live website it has weird background on each image"). */
+.lasha-home .dp-listing-media { align-self: stretch; margin: calc(-1 * var(--card-pad) - 1px) calc(-1 * var(--card-pad) - 1px) 0; }
 .lasha-home .dp-listing-image { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; margin-bottom: 0.4rem; object-fit: cover; background: var(--l-mist); }
 .lasha-home .dp-listing-category { margin: 0; color: var(--l-blue); font-size: var(--v4-label); font-weight: 600; letter-spacing: 0.2em; line-height: 1.3; text-transform: uppercase; }
 .lasha-home .dp-listing-cards h3 { margin: 0; font-family: var(--l-head); font-size: var(--v4-h3-xl); font-weight: 700; line-height: 0.95; text-transform: uppercase; overflow-wrap: break-word; hyphens: manual; }

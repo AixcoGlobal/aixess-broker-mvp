@@ -138,7 +138,7 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect([...facts.querySelectorAll("dd")].at(-1).textContent).toBe("$176,000");
     expect([...facts.querySelectorAll("dt")].at(-1).textContent).toBe("Starting from");
     expect([...page.querySelectorAll(".tr-prices dt")].map((label) => label.textContent)).toEqual(["Starting price", "Price per m²"]);
-    expect([...page.querySelectorAll(".tr-prices dd")].map((value) => value.textContent)).toEqual(["US $176,635", "US $4,115"]);
+    expect([...page.querySelectorAll(".tr-prices dd")].map((value) => value.textContent)).toEqual(["US $176,000", "US $4,115"]);
     expect(page.textContent.match(/\$/g)).toHaveLength(3);
     expect(page.textContent).not.toMatch(/\brent\b|yearly|AED(?=[\s\d])|EUR/i);
     expect(page.textContent).not.toContain(copy.currency.text);
@@ -147,7 +147,8 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     const images = [...page.querySelectorAll("img")];
     expect(images.length).toBe(4 + 2 + 12);
     images.forEach((image) => {
-      expect(image.getAttribute("src")).toMatch(/^\/assets\/dubai\/tresora-fig-[a-z0-9-]+\.webp$/);
+      // TRESORA's renders, or their relit versions for the current theme (19 November 2026).
+      expect(image.getAttribute("src")).toMatch(/^\/assets\/(dubai\/tresora-fig-[a-z0-9-]+|figma\/tresora-fig-[a-z]+-(day|afternoon|night)-\d+)\.webp$/);
       expect(image.closest("button")).toBeNull();
     });
     [...page.querySelectorAll(".tr-slant img, .tr-gallery img, .tr-map img")].forEach((image) => expect(image.alt).not.toBe(""));
@@ -202,7 +203,8 @@ describe("Dubai projects: TRESORA and DOWNTOWN ONE", () => {
     expect(page.querySelectorAll(".dt-gallery img")).toHaveLength(12);
     expect(page.textContent).not.toMatch(/DOWNTOWN DUBAI|SAMANA|TRESORA|WADAN|AED(?=[\s\d])|PDC|Here add pictures|_{3,}/);
     [...page.querySelectorAll("img")].forEach((image) => {
-      expect(image.getAttribute("src")).toMatch(/^\/assets\/dubai\/downtown-[a-z0-9-]+\.webp$/);
+      // The developer's renders, or the hero's, highlights' and entertainment deck's relit versions for the theme.
+      expect(image.getAttribute("src")).toMatch(/^\/assets\/(dubai\/downtown-[a-z0-9-]+|figma\/downtown-fig-(hero|highlights|ent)-(day|afternoon|night)-\d+)\.webp$/);
     });
     [...page.querySelectorAll(".dt-crop img")].forEach((image) => expect(image.alt).not.toBe(""));
     expect(page.querySelector(".dt-hero img")).toHaveAttribute("loading", "eager");

@@ -163,12 +163,17 @@
 }
 
 .lnp-kicker {
+  display: flex;
+  align-items: center;
   font-size: var(--v4-lead);
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 1.2;
   text-transform: uppercase;
 }
+/* Figma draws a rule after MORE THAN ACCESS, as after the other page eyebrows. */
+.lnp-advantage-panel .lnp-kicker::after { content: ""; flex: 0 0 clamp(3.5rem, 8.7vw, 7.8rem); height: 1px; margin-left: 1.1rem; background: currentColor; }
+.lnp-process-eyebrow { text-transform: uppercase; }
 
 .lnp-advantage-title {
   width: 100%;
