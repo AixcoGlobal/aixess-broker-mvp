@@ -6,7 +6,6 @@ import { LashaArrow, LashaPageHero } from "./LashaHomeSections.jsx";
 import { useLineFit, useWordFit } from "./useWordFit.js";
 import "./insights-tools.css";
 import { ThemedImage } from "./ThemedImage.jsx";
-import { FIGMA_PHOTOS } from "../data/figmaPhotos.js";
 
 const asset = (path) => `/assets/${path}`;
 
@@ -42,13 +41,12 @@ export function InsightsPageContent({ header, onOpenModal }) {
   const { locale } = useLanguage();
   const { insights: c } = useCopy();
   const faqs = AIXCO_FAQ[locale] || AIXCO_FAQ.en;
-  // The INSIGHT frame's own photos (Batumi coast, Dubai skyline, Swiss lakeside), cropped as Figma
-  // draws them; ThemedImage shows a theme's version of each once one exists.
-  // Until a Figma photo is imported (src/data/figma-photo-sizes.json) its card keeps the earlier photo.
+  // The site's own photos in the Figma layout (Kemo, 20 November 2026: "just use current images we have
+  // on website"): the Reverance aerial and the themed Dubai and Swiss photos.
   const articleMedia = [
-    { figma: "insights-georgia", fallback: { src: asset("projects/reverance-aerial-600.webp"), srcSet: `${asset("projects/reverance-aerial-600.webp")} 600w, ${asset("projects/reverance-aerial-1200.webp")} 1200w` } },
-    { figma: "insights-dubai", fallback: { family: "dubai-skyline", position: "72% 50%" } },
-    { figma: "insights-switzerland", fallback: { family: "switzerland-lakeside", position: "70% 50%" } },
+    { src: asset("projects/reverance-aerial-600.webp"), srcSet: `${asset("projects/reverance-aerial-600.webp")} 600w, ${asset("projects/reverance-aerial-1200.webp")} 1200w` },
+    { family: "dubai-skyline", position: "72% 50%" },
+    { family: "switzerland-lakeside", position: "70% 50%" },
   ];
   const resourceMedia = [
     { src: asset("projects/reverance-front-700.webp") },
@@ -137,8 +135,7 @@ export function InsightsPageContent({ header, onOpenModal }) {
   );
 }
 
-function CardMedia({ media: given, label }) {
-  const media = given?.figma && !FIGMA_PHOTOS[given.figma] ? given.fallback : given;
+function CardMedia({ media, label }) {
   if (!media) return <div className="it-card-media it-card-media-type" aria-hidden="true"><span>{label}</span></div>;
   if (media.icon) {
     const Icon = media.icon;
@@ -146,9 +143,7 @@ function CardMedia({ media: given, label }) {
   }
   return (
     <div className="it-card-media">
-      {media.figma ? (
-        <ThemedImage figma={media.figma} defaultWidth={800} sizes="(max-width: 899px) 100vw, 50vw" alt="" loading="lazy" decoding="async" />
-      ) : media.family ? (
+      {media.family ? (
         <ThemedImage family={media.family} defaultWidth={800} sizes="(max-width: 899px) 100vw, 30vw" style={{ objectPosition: media.position }} loading="lazy" decoding="async" />
       ) : (
         <img src={media.src} srcSet={media.srcSet} sizes="(max-width: 899px) 100vw, 30vw" alt="" loading="lazy" decoding="async" />

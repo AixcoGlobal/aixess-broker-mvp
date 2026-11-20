@@ -16,6 +16,11 @@ import { FIGMA_PHOTOS } from "../data/figmaPhotos.js";
 export const HEADER_ITEMS = ".brand, .desktop-nav > button, .nav-group > button, .time-theme-menu__button, .language-switcher-trigger, .login-button, .menu-toggle";
 
 const INK = [23, 26, 29];
+// A label takes the header's shared ink when that ink reads at this contrast on its worst tenth
+// (the darkest-lit tenth of the pixels under its letters, a stricter measure than the average).
+const SHARED_MIN = 2.75;
+// The wordmark and the text links: the line that sets the header's shared ink.
+const MENU_LINE = ".brand, .desktop-nav > button, .nav-group > button";
 const lin = (c) => {
   const v = c / 255;
   return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
@@ -229,13 +234,28 @@ export function useHeaderInk(ref, deps = []) {
           return ground?.image ? inkOver(ground.image, rect, (x) => groundAt(header, x, middle)) : null;
         });
         document.documentElement.classList.remove("is-measuring-header-ink");
-        // One ink for the whole header when it reads (3:1) on every label over the photo: the
-        // labels then match, as in Figma, and only a header that cannot be read in one ink mixes.
-        const measured = results.filter((result) => result && result.ink !== "split");
-        if (measured.length && measured.length === results.filter(Boolean).length) {
-          const worst = (key) => Math.min(...measured.map((result) => result[key]));
-          const best = worst("onDark") >= worst("onLight") ? "dark" : "light";
-          if (worst(best === "dark" ? "onDark" : "onLight") >= 3) measured.forEach((result) => { result.ink = best; });
+        // One ink across the header wherever it reads (Kemo, 20 November 2026: "why are 2 items white
+        // rest black in navbar?"). On the homepage sky both inks score about 3:1 on the middle links,
+        // so each link on its own flipped with the window width. The wordmark and the text links
+        // (the menu line) choose the header's ink: the one that reads (SHARED_MIN on its worst tenth)
+        // on the most of them, then on the most labels overall. Every label it reads on takes it,
+        // split labels included; only a label over a different ground (the boxed controls over the
+        // dark glass at the right, a beam it cannot read on) keeps its own ink or split.
+        const measured = results.filter(Boolean);
+        if (measured.length) {
+          const line = [...items].map((item, index) => (item.matches(MENU_LINE) ? results[index] : null)).filter(Boolean);
+          const count = (list, key) => list.filter((result) => result[key] >= SHARED_MIN).length;
+          const worst = (list, key) => Math.min(...list.map((result) => result[key]));
+          const score = (key) => [count(line, key), count(measured, key), worst(line.length ? line : measured, key)];
+          const [d, l] = [score("onDark"), score("onLight")];
+          const darkFirst = d[0] !== l[0] ? d[0] > l[0] : d[1] !== l[1] ? d[1] > l[1] : d[2] >= l[2];
+          const best = darkFirst ? "dark" : "light";
+          const key = darkFirst ? "onDark" : "onLight";
+          measured.forEach((result) => {
+            if (result[key] < SHARED_MIN) return;
+            result.ink = best;
+            delete result.runs;
+          });
         }
         items.forEach((item, index) => {
           const result = results[index];
