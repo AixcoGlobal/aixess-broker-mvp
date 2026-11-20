@@ -161,6 +161,10 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
 
 @media (max-width: 899px) {
   .tresora-page.downtown-one-page .tr-hero { min-height: 0; padding-bottom: 0; }
+  /* The whole photo, tower crown included (Kemo, 20 November 2026: "this image is cut on top"): below
+     900px it keeps its own 2880 × 1890 shape instead of filling a strip the copy leaves, so nothing is
+     cropped at any width. */
+  .tresora-page.downtown-one-page .tr-hero-bg { flex: none; height: auto; min-height: 0; aspect-ratio: 2880 / 1890; object-position: 50% 50%; }
   .tresora-page.downtown-one-page .tr-hero-copy > *,
   .tresora-page.downtown-one-page .tr-hero-copy > .tr-hero-title,
   .tresora-page.downtown-one-page .tr-hero-intro,
@@ -208,6 +212,11 @@ html:root[data-time-theme='night'] .tresora-page.downtown-one-page { --dt-mist: 
   .downtown-one-page .dt-gallery-group + .dt-gallery-group { margin-top: 36px; }
   .downtown-one-page .dt-gallery-grid { grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 10px; }
   .downtown-one-page .dt-gallery-large { grid-column: 1 / -1; grid-row: auto; }
+  /* The frame's 486 × 212 slots become 170 × 74 strips on a phone, which showed a sliver of each render
+     (the aerial and street views are portrait). Phones give the two small renders square tiles,
+     cover-cropped around the frame's focal point (20 November 2026). */
+  .downtown-one-page .dt-gallery-small { aspect-ratio: 1 / 1 !important; }
+  .downtown-one-page .dt-gallery-small img { inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover; }
   .downtown-one-page .dt-gallery-group figcaption { margin-top: 12px; font-size: 18px; line-height: 22px; }
   .downtown-one-page .dt-more .tr-wrap { padding-block: 56px 64px; }
   .downtown-one-page .dt-more-title { max-width: none; margin-top: 14px; line-height: 0.8; }

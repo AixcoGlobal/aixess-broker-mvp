@@ -45,7 +45,8 @@ export function InsightsPageContent({ header, onOpenModal }) {
   // afternoon and night versions (20 November 2026), switching with the theme like every Figma photo.
   const articleMedia = [{ figma: "insights-georgia" }, { figma: "insights-dubai" }, { figma: "insights-switzerland" }];
   const resourceMedia = [
-    { src: asset("projects/reverance-front-700.webp") },
+    // The tower's crown stays in the card: the crop trims the ground (20 November 2026).
+    { src: asset("projects/reverance-front-700.webp"), position: "50% 22%" },
     {
       src: asset("resources/buyer-guide-600.webp"),
       srcSet: `${asset("resources/buyer-guide-600.webp")} 600w, ${asset("resources/buyer-guide-1200.webp")} 1200w`,
@@ -144,7 +145,7 @@ function CardMedia({ media, label }) {
       ) : media.family ? (
         <ThemedImage family={media.family} defaultWidth={800} sizes="(max-width: 899px) 100vw, 30vw" style={{ objectPosition: media.position }} loading="lazy" decoding="async" />
       ) : (
-        <img src={media.src} srcSet={media.srcSet} sizes="(max-width: 899px) 100vw, 30vw" alt="" loading="lazy" decoding="async" />
+        <img src={media.src} srcSet={media.srcSet} sizes="(max-width: 899px) 100vw, 30vw" style={media.position ? { objectPosition: media.position } : undefined} alt="" loading="lazy" decoding="async" />
       )}
     </div>
   );

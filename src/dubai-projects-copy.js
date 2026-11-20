@@ -17,11 +17,12 @@ import { formatPrice, formatUsdOnly, priceCurrency } from "./currency.js";
 // through src/currency.js like the site's other prices.
 const TRESORA_FROM_USD = 176000;
 
-// German and Slovenian show these in euros too, so the page never mixes euros and dollars (German
+// One starting price on the page: $176,000 (Kemo, 20 November 2026: "Starting price from 176,000"),
+// the same figure the highlights band shows. German and Slovenian show these in euros too, so the page never mixes euros and dollars (German
 // review, 20 November 2026).
 const priceValues = (locale) => (priceCurrency(locale) === "EUR"
-  ? { starting: formatPrice(176635, locale), perSqm: formatPrice(4115, locale) }
-  : { starting: formatUsdOnly(176635, locale), perSqm: formatUsdOnly(4115, locale) });
+  ? { starting: formatPrice(TRESORA_FROM_USD, locale), perSqm: formatPrice(4115, locale) }
+  : { starting: formatUsdOnly(TRESORA_FROM_USD, locale), perSqm: formatUsdOnly(4115, locale) });
 
 export const DUBAI_PROJECTS_COPY = {
   en: {

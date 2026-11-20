@@ -368,7 +368,7 @@ function PriceFigures({ items }) {
   return <dl className="tr-prices" ref={ref}>{items.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>;
 }
 
-// Figma writes the dollar figures "US $176,635"; the other languages keep "176.635 USD".
+// Figma writes the dollar figures "US $176,000"; the other languages keep "176.000 USD".
 const figmaUsd = (text) => text.replace(/^US\$/, "US $");
 
 // A section title whose longest word is wider than its column (Russian ВСТРЕЧАЮТСЯ, НЕДВИЖИМОСТЬ,
