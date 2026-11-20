@@ -655,7 +655,7 @@ html:root[data-time-theme='night'] .lnp-journey-item p { color: var(--l-ink); }
   }
   /* The octagon diagram: frame y 2114–2830, everything in frame pixels from its top. */
   html:root:not(#fs) .lnp-journey { position: absolute; top: calc(535 * var(--u)); left: 0; width: calc(1440 * var(--u)); height: calc(716 * var(--u)); }
-  html:root:not(#fs) .lnp-journey-octagon { display: block; position: absolute; top: calc(199 * var(--u)); left: calc(433 * var(--u)); width: calc(549 * var(--u)); height: calc(296 * var(--u)); }
+  html:root:not(#fs) .lnp-journey-octagon { display: block; position: absolute; z-index: 1; top: calc(199 * var(--u)); left: calc(433 * var(--u)); width: calc(549 * var(--u)); height: calc(296 * var(--u)); }
   /* Measured on the frame against the octagon's corner squares: wordmark 331 wide from x 540.8 with its
      capitals from y 286.3, the line's baseline at y 422.9, both centred on the octagon. */
   html:root:not(#fs) .lnp-journey-centre { position: absolute; top: calc(199 * var(--u)); left: calc(433 * var(--u)); width: calc(549 * var(--u)); height: calc(296 * var(--u)); display: block; margin: 0; }

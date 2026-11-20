@@ -453,6 +453,11 @@ html:root[data-time-theme='night'] #market-insights .it-card { background: trans
    Medium 21 at 122%. Words, photos and the hero's layout stay the site's. */
 @media (min-width: 900px) {
   html:root:not(#fs) .insights-page { --fu: calc(min(100vw, 1920px) / 1440); }
+  /* The hero fills the first screen (20 October) and its title, copy and eyebrow must all show on it
+     (18 October, MacBook Safari): on a window shorter than 1440:1000 the hero type scales by height,
+     as the homepage hero does, so a 13-inch MacBook or a long German or Russian title still fits. */
+  html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100vh / 1000)); }
+  html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100svh / 1000)); }
   html:root:not(#fs) .insights-page :is(.lasha-page-hero .lasha-eyebrow, .it-library-eyebrow) {
     font-size: max(calc(18.9 * var(--fu)), 12px);
     font-weight: 700;

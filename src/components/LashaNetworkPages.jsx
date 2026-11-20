@@ -300,8 +300,11 @@ export function BrokerAccessPageContent({ header, onOpenModal }) {
 
 // The frame's line icons, exported from the file (public/assets/figma/icons), in service order.
 const JOURNEY_ICONS = ["care-1-selection", "care-2-financing", "care-3-legal", "care-4-handover", "care-5-management", "care-6-rental", "care-7-accounting", "care-8-resale"];
-// The frame's eight 2.5px connectors, in frame pixels from the top of the diagram (y 2114).
-const JOURNEY_LINES = ["386,153 466,233", "1029,152 949,232", "466,460 386,540", "949,461 1029,541", "706,152 706,203", "706,489 706,540", "982,348 1033,348", "382,348 433,348"];
+// The frame's eight 2.5px connectors, in frame pixels from the top of the diagram (y 2114). Each runs to
+// the centre of its blue square in care-journey.svg (placed at 433, 199), and the octagon is drawn over
+// them (Kemo, 20 November 2026: no grey line through the blue squares; the straight lines meet the middle
+// of a square's side, the diagonals its corner exactly in the middle).
+const JOURNEY_LINES = ["385.9,153.16 465.9,233.16", "1029.15,153.16 949.15,233.16", "465.9,460.7 385.9,540.7", "949.15,460.7 1029.15,540.7", "707.5,152 707.5,205.31", "707.5,488.7 707.5,540", "975.67,347 1033,347", "382,347 439.33,347"];
 
 // Lasha breaks the Advantage title before its last word: YOUR AIXESS / ADVANTAGE.
 function splitBeforeLast(text) {
