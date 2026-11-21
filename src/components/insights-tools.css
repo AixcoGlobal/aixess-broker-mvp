@@ -454,10 +454,12 @@ html:root[data-time-theme='night'] #market-insights .it-card { background: trans
 @media (min-width: 900px) {
   html:root:not(#fs) .insights-page { --fu: calc(min(100vw, 1920px) / 1440); }
   /* The hero fills the first screen (20 October) and its title, copy and eyebrow must all show on it
-     (18 October, MacBook Safari): on a window shorter than 1440:1000 the hero type scales by height,
-     as the homepage hero does, so a 13-inch MacBook or a long German or Russian title still fits. */
-  html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100vh / 1000)); }
-  html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100svh / 1000)); }
+     (18 October, MacBook Safari): on a window shorter than the frame's own 1440:900 hero the hero type
+     scales by height, so a 13-inch MacBook or a long German or Russian title still fits. At 1440x900
+     and on 14- and 16-inch MacBooks the hero is Figma's size (Kemo, 21 November 2026: Insights font
+     sizes "dont seem to be matching to figma"; the old 1000 height made the hero 10% small). */
+  html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100vh / 900)); }
+  html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100svh / 900)); }
   html:root:not(#fs) .insights-page :is(.lasha-page-hero .lasha-eyebrow, .it-library-eyebrow) {
     font-size: max(calc(18.9 * var(--fu)), 12px);
     font-weight: 700;
