@@ -460,6 +460,11 @@ html:root[data-time-theme='night'] #market-insights .it-card { background: trans
      sizes "dont seem to be matching to figma"; the old 1000 height made the hero 10% small). */
   html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100vh / 900)); }
   html:root:not(#fs) .insights-page .lasha-page-hero { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100svh / 900)); }
+  /* The two big section titles keep Figma's 150 : 180 ratio to the hero title (Kemo, 21 November 2026:
+     "bottom title seems bigger than top one.. its not like this on figma"): on a window shorter than
+     1440:900 they shrink with the hero instead of staying at full width size. */
+  html:root:not(#fs) .insights-page :is(#market-insights h2, #it-library-title) { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100vh / 900)); }
+  html:root:not(#fs) .insights-page :is(#market-insights h2, #it-library-title) { --fu: min(calc(min(100vw, 1920px) / 1440), calc(100svh / 900)); }
   html:root:not(#fs) .insights-page :is(.lasha-page-hero .lasha-eyebrow, .it-library-eyebrow) {
     font-size: max(calc(18.9 * var(--fu)), 12px);
     font-weight: 700;
