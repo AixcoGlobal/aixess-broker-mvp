@@ -899,6 +899,17 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
             <div className="floor-plan-stage">
               <img src={floor.planImage} alt={t("floorPlanAlt", { floor: floorLabel(floor.number, t) })} />
               <svg className="unit-hotspots" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label={t("selectResidencePlan")}>
+                {/* Diagonal stripes mark reserved and sold apartments; the plan stays readable between them. */}
+                <defs>
+                  <pattern id="plan-hatch-reserved" patternUnits="userSpaceOnUse" width="1.8" height="1.8" patternTransform="rotate(45)">
+                    <rect width="1.8" height="1.8" fill="rgba(180, 187, 199, 0.5)" />
+                    <rect width="0.75" height="1.8" fill="rgba(95, 104, 120, 0.78)" />
+                  </pattern>
+                  <pattern id="plan-hatch-sold" patternUnits="userSpaceOnUse" width="1.8" height="1.8" patternTransform="rotate(45)">
+                    <rect width="1.8" height="1.8" fill="rgba(20, 48, 78, 0.42)" />
+                    <rect width="0.75" height="1.8" fill="rgba(20, 48, 78, 0.88)" />
+                  </pattern>
+                </defs>
                 {slots.filter(({ shape }) => shape).map(({ shape, unit }) => {
                   const status = normalizeStatus(unit.status);
                   const active = selectedUnit && String(selectedUnit.name) === String(unit.name);

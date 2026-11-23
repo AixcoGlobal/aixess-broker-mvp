@@ -596,6 +596,9 @@
 .status-swatch.is-golden { border-color: #9a7420; background: #d6a638; }
 .status-swatch.is-sold,
 .status-swatch.is-unavailable { border-color: var(--sold); background: var(--sold); }
+/* The legend squares carry the plan's stripes for reserved and sold. */
+.status-swatch.is-reserved { border-color: #5f6878; background: repeating-linear-gradient(45deg, #5f6878 0 1.5px, #b4bbc7 1.5px 3.5px); }
+.status-swatch.is-sold { border-color: #1d4268; background: repeating-linear-gradient(45deg, #1d4268 0 1.5px, #4f8fbd 1.5px 3.5px); }
 
 .explorer-footnote {
   margin: 1.5rem 0 0;
@@ -1338,11 +1341,13 @@
 }
 
 .unit-hotspot.is-available polygon { fill: rgba(63, 154, 88, 0.28); stroke: #2f7a44; }
-.unit-hotspot.is-reserved polygon { fill: rgba(180, 187, 199, 0.55); stroke: #6f7889; }
+/* Reserved and sold stand out from available: striped, with a heavier outline. */
+.unit-hotspot.is-reserved polygon { fill: url(#plan-hatch-reserved); stroke: #5f6878; stroke-width: 0.4; }
 .unit-hotspot.is-sold polygon,
 .unit-hotspot.is-unavailable polygon {
-  fill: rgba(20, 48, 78, 0.34);
-  stroke: rgba(48, 89, 126, 0.9);
+  fill: url(#plan-hatch-sold);
+  stroke: #1d4268;
+  stroke-width: 0.4;
 }
 
 .unit-hotspot.is-available:hover polygon,
@@ -1356,9 +1361,9 @@
 .unit-hotspot.is-reserved:hover polygon,
 .unit-hotspot.is-reserved:focus polygon,
 .unit-hotspot.is-reserved.is-active polygon {
-  fill: rgba(180, 187, 199, 0.8);
-  stroke: #5f6878;
-  stroke-width: 0.28;
+  fill: url(#plan-hatch-reserved);
+  stroke: #3f4756;
+  stroke-width: 0.6;
 }
 
 /* Golden Premium: a gold edge whatever the status, filled gold while it can be bought. */
@@ -1373,9 +1378,9 @@
 .unit-hotspot.is-unavailable:hover polygon,
 .unit-hotspot.is-unavailable:focus polygon,
 .unit-hotspot.is-unavailable.is-active polygon {
-  fill: rgba(20, 58, 96, 0.56);
-  stroke: #2f6c9e;
-  stroke-width: 0.28;
+  fill: url(#plan-hatch-sold);
+  stroke: #0f2a45;
+  stroke-width: 0.6;
 }
 
 .floor-plan-prompt {
