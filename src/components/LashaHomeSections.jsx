@@ -109,9 +109,6 @@ export function HomeHero({ children, onNavigate }) {
 // afternoon and night versions that follow the theme (13 October 2026). Positions are
 // desktop / phone focal points; `aspect` sizes the phone crop (see pageHeroSizes).
 const PAGE_HERO_IMAGES = {
-  // Insights until 23 November 2026: the Batumi Black Sea coast (Klem, 14 October 2026), open sea and sky behind the copy
-  // on the left, the city and shore on the right.
-  "batumi-coast": { family: "batumi-coast", aspect: 16 / 9, position: "100% 50%", phonePosition: "40% 50%", sizes: "(max-aspect-ratio: 1/1) 180vh, (max-aspect-ratio: 3/2) 154vh, 100vw" },
   // Insights since 23 November 2026: the INSIGHT frame's new photo (818:3, layer 899:4), the Dubai
   // coast with the Burj Al Arab and the Downtown skyline, exported at 3x as the 1440 × 899 hero
   // shows it. Its afternoon and night versions (Codex image edits for Kemo, aligned by import-figma-photos.py --themes) follow the theme. Phones keep the tower at the right edge, clear of most of the headline.
