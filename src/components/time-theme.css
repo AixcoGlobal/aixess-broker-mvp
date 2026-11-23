@@ -747,3 +747,6 @@ html:root:not([data-time-theme='night']) :is(.lasha-home, .lasha-page) .residenc
 html:root[data-time-theme='afternoon'] .lasha-page .rp-mist .section-eyebrow { color: #3c5a41; }
 /* By day the orange LIVE 3D / SCROLL chip takes dark text, as the orange A/B switch does (white read 3:1). */
 html:root[data-time-theme='day'] .model-instruction-index { color: #15110f; }
+
+/* The floor plan list's GOLDEN tick stays gold with dark text in every theme. */
+html:root .floor-modal .inventory-filters button.is-golden.is-active { border-color: #c9962c; background: #d6a638; color: #15110f; }

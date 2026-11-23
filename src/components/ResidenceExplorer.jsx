@@ -783,7 +783,8 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
   const floor = floors.find((item) => item.number === floorNumber);
   const [units, setUnits] = useState(floor?.units || []);
   const [selectedUnitName, setSelectedUnitName] = useState(null);
-  const [filter, setFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState(() => [...FILTER_STATUSES]);
+  const [goldenFilter, setGoldenFilter] = useState(false);
   const [imageMode, setImageMode] = useState("2d");
   const [lightbox, setLightbox] = useState(null);
   const lightboxCloseRef = useRef(null);
@@ -801,7 +802,8 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
     const initialUnit = getSnapshotSlots(snapshot, floor)
       .find(({ unit }) => String(unit.name) === String(initialUnitName))?.unit;
     setSelectedUnitName(initialUnit ? String(initialUnit.name) : null);
-    setFilter("all");
+    setStatusFilter([...FILTER_STATUSES]);
+    setGoldenFilter(false);
     setImageMode(initialUnit?.image2d ? "2d" : initialUnit?.image3d ? "3d" : "2d");
     setLightbox(null);
     setSyncState("refreshing");
@@ -847,9 +849,9 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
   const slots = useMemo(() => (floor ? getUnitSlots(floor, units, snapshot.inventoryComplete ? "unavailable" : "sold") : []), [floor, snapshot.inventoryComplete, units]);
   const selectedSlot = slots.find(({ unit }) => String(unit.name) === String(selectedUnitName));
   const selectedUnit = selectedSlot?.unit || null;
-  const visibleSlots = filter === "all"
-    ? slots
-    : slots.filter(({ unit }) => normalizeStatus(unit.status) === filter);
+  const allStatusesTicked = statusFilter.length === FILTER_STATUSES.length;
+  const visibleSlots = slots.filter(({ unit }) => (allStatusesTicked || statusFilter.includes(normalizeStatus(unit.status)))
+    && (!goldenFilter || isGoldenUnit(unit)));
   const currentIndex = floors.findIndex((item) => item.number === floorNumber);
   const previousFloor = floors[currentIndex - 1];
   const nextFloor = floors[currentIndex + 1];
@@ -938,14 +940,18 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
             <div className="inventory-heading">
               <div><p>{t("residences")}</p><strong>{slots.length}</strong></div>
               <div className="inventory-filters" aria-label={t("filterResidences")}>
+                <button className={allStatusesTicked ? "is-active" : ""} type="button" aria-pressed={allStatusesTicked} onClick={() => setStatusFilter(toggleStatusFilter(statusFilter, "all"))}>{t("allFilter")}</button>
                 {[
-                  ["all", t("allFilter")],
                   ["available", t("availableFilter")],
                   ["reserved", t("reservedFilter")],
                   ["sold", t("soldFilter")],
-                ].map(([value, label]) => (
-                  <button className={`${filter === value ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" onClick={() => setFilter(value)}>{label}</button>
-                ))}
+                ].map(([value, label]) => {
+                  const ticked = !allStatusesTicked && statusFilter.includes(value);
+                  return (
+                    <button className={`${ticked ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" aria-pressed={ticked} onClick={() => setStatusFilter(toggleStatusFilter(statusFilter, value))}>{label}</button>
+                  );
+                })}
+                <button className={`is-golden ${goldenFilter ? "is-active" : ""}`} type="button" aria-pressed={goldenFilter} onClick={() => setGoldenFilter((on) => !on)}>{t("golden")}</button>
               </div>
             </div>
 

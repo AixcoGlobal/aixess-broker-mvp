@@ -1482,6 +1482,14 @@
   color: #fff;
 }
 
+/* Ticks, as in the residence filter: a check mark on every ticked choice; GOLDEN ticks gold. */
+.inventory-filters button[aria-pressed="true"]::before { content: "✓"; margin-right: 0.4em; }
+.inventory-filters button.is-golden.is-active {
+  border-color: #c9962c;
+  background: #d6a638;
+  color: #15110f;
+}
+
 .inventory-intro {
   display: grid;
   min-height: 13rem;
