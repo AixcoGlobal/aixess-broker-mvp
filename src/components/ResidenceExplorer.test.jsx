@@ -120,24 +120,45 @@ describe("Residence explorer", () => {
     await waitFor(() => expect(within(dialog).getByText("Live availability")).toBeInTheDocument());
     const list = within(dialog).getByLabelText("Filter Project Reverance residences");
     const rows = () => [...dialog.querySelectorAll(".unit-row")].map((row) => row.textContent);
+    const count = () => dialog.querySelector(".inventory-heading strong").textContent;
+    const fadedOnPlan = () => [...dialog.querySelectorAll(".unit-hotspot.is-filtered-out")].map((spot) => spot.getAttribute("aria-label").match(/\d{3}/)[0]);
+    const pressed = (name) => within(list).getByRole("button", { name }).getAttribute("aria-pressed");
 
-    expect(within(list).getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
+    expect(pressed("All")).toBe("true");
     expect(rows()).toHaveLength(2);
+    expect(count()).toBe("2");
+    expect(fadedOnPlan()).toEqual([]);
+    // This floor has no sold residence, so SOLD cannot lead to an empty list.
+    expect(within(list).getByRole("button", { name: "Sold" })).toBeDisabled();
 
+    // GOLDEN narrows the list, the count and the plan; ALL is no longer ticked.
     await user.click(within(list).getByRole("button", { name: "GOLDEN" }));
     expect(rows()).toEqual([expect.stringContaining("#412")]);
     expect(dialog.querySelector(".unit-row")).toHaveClass("is-golden");
+    expect(count()).toBe("1/2");
+    expect(fadedOnPlan()).toEqual(["411"]);
+    expect(pressed("All")).toBe("false");
 
     await user.click(within(list).getByRole("button", { name: "Available" }));
-    expect(within(list).getByRole("button", { name: "Available" })).toHaveAttribute("aria-pressed", "true");
-    expect(within(list).getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "false");
+    expect(pressed("Available")).toBe("true");
+    expect(pressed("GOLDEN")).toBe("true");
     expect(rows()).toHaveLength(0);
+    expect(count()).toBe("0/2");
+    expect(fadedOnPlan()).toEqual(["411", "412"]);
 
-    // A second tap on the ticked status deselects it: back to ALL.
+    // A second tap on the ticked status deselects it; GOLDEN stays on, so ALL is still not ticked.
     await user.click(within(list).getByRole("button", { name: "Available" }));
-    expect(within(list).getByRole("button", { name: "Available" })).toHaveAttribute("aria-pressed", "false");
-    expect(within(list).getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
+    expect(pressed("Available")).toBe("false");
+    expect(pressed("All")).toBe("false");
     expect(rows()).toEqual([expect.stringContaining("#412")]);
+
+    // ALL clears every filter, GOLDEN included.
+    await user.click(within(list).getByRole("button", { name: "All" }));
+    expect(pressed("All")).toBe("true");
+    expect(pressed("GOLDEN")).toBe("false");
+    expect(rows()).toHaveLength(2);
+    expect(count()).toBe("2");
+    expect(fadedOnPlan()).toEqual([]);
   }, 30000);
 
   it("keeps the verified snapshot when the live service fails and supports filters and floor navigation", async () => {
@@ -163,8 +184,13 @@ describe("Residence explorer", () => {
     expect(soldRow).toHaveClass("is-sold");
     await user.click(soldRow);
     expect(await screen.findByRole("heading", { name: "Residence 501" })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /Open 2D PLAN of residence 501 full screen/i }));
-    expect(screen.getByRole("dialog", { name: /Expanded 2D PLAN · RESIDENCE 501/i })).toBeInTheDocument();
+    // A sold residence without a price says Sold, not "On request".
+    const facts = document.querySelector(".unit-facts");
+    expect(within(facts).getByText("Sold")).toBeInTheDocument();
+    expect(within(facts).queryByText("On request")).not.toBeInTheDocument();
+    // 501 has no plan of its own: the floor's plan opens, labelled as the floor plan.
+    await user.click(screen.getByRole("button", { name: /Open Architectural plan · Floor 05 of residence 501 full screen/i }));
+    expect(screen.getByRole("dialog", { name: /Expanded Architectural plan · Floor 05 · RESIDENCE 501/i })).toBeInTheDocument();
   });
 
   it("opens the floor menu in the modal and changes floors without a native select popup", async () => {
@@ -317,10 +343,17 @@ describe("Residence explorer", () => {
     expect(screen.getByRole("button", { name: /Residence 412, floor 4/i })).toBeInTheDocument();
 
     await user.click(within(availability).getByRole("button", { name: "AVAILABLE" }));
-    // Unticking the last ticked status deselects it and goes back to ALL.
+    // Unticking the last ticked status deselects it; GOLDEN is still on, so ALL is not ticked yet.
     await user.click(within(availability).getByRole("button", { name: "RESERVED" }));
     expect(within(availability).getByRole("button", { name: "RESERVED" })).toHaveAttribute("aria-pressed", "false");
+    expect(within(availability).getByRole("button", { name: "ALL" })).toHaveAttribute("aria-pressed", "false");
+    expect(within(availability).getByRole("button", { name: "GOLDEN" })).toHaveAttribute("aria-pressed", "true");
+
+    // ALL clears GOLDEN too.
+    await user.click(within(availability).getByRole("button", { name: "ALL" }));
     expect(within(availability).getByRole("button", { name: "ALL" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(availability).getByRole("button", { name: "GOLDEN" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: /Residence 411, floor 4/i })).toBeInTheDocument();
   });
 
   it("lists every snapshot floor in the filter, including floors with no live units", async () => {

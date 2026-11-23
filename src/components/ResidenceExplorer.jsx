@@ -199,6 +199,9 @@ function toggleStatusFilter(statuses, value) {
 function StatusFilterButtons({ filters, onChange }) {
   const { t } = useLanguage();
   const allTicked = filters.statuses.length === FILTER_STATUSES.length;
+  // ALL means no narrowing at all: it is ticked only when every status shows and GOLDEN is off,
+  // and choosing it clears GOLDEN too (Kemo, 23 November 2026).
+  const allClear = allTicked && !filters.golden;
   return (
     <>
       {FILTER_STATUSES.map((status) => {
@@ -208,7 +211,7 @@ function StatusFilterButtons({ filters, onChange }) {
           <button className={`${ticked ? "is-active" : ""} ${status === "sold" ? "is-sold" : ""}`} key={status} type="button" aria-pressed={ticked} onClick={() => onChange("statuses", toggleStatusFilter(filters.statuses, status))}>{t(status)}</button>
         );
       })}
-      <button className={allTicked ? "is-active" : ""} type="button" aria-pressed={allTicked} onClick={() => onChange("statuses", toggleStatusFilter(filters.statuses, "all"))}>{t("all")}</button>
+      <button className={allClear ? "is-active" : ""} type="button" aria-pressed={allClear} onClick={() => { onChange("statuses", toggleStatusFilter(filters.statuses, "all")); onChange("golden", false); }}>{t("all")}</button>
       <button className={`is-golden ${filters.golden ? "is-active" : ""}`} type="button" aria-pressed={filters.golden} onClick={() => onChange("golden", !filters.golden)}>{t("golden")}</button>
     </>
   );
@@ -526,7 +529,9 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
   const [imageFailed, setImageFailed] = useState(false);
   const planSource = unit.image2d || fallbackPlanImage;
   const previewSource = imageMode === "3d" ? unit.image3d : planSource;
-  const previewLabel = imageMode === "3d" ? t("threeDView") : t("twoDPlan");
+  // Without its own plan a residence shows the whole floor's plan, and says so.
+  const previewLabel = imageMode === "3d" ? t("threeDView") : unit.image2d ? t("twoDPlan") : t("floorPlanAlt", { floor: floorLabel(unit.floor, t) });
+  const status = normalizeStatus(unit.status);
   const previewAlt = `${previewLabel} · ${t("residence")} ${unit.name}`;
 
   useEffect(() => setImageFailed(false), [previewSource]);
@@ -549,7 +554,8 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
         {/* German listings count Zimmer as bedrooms plus the living room, never bathrooms or balconies. */}
         <div><dt>{t("rooms")}</dt><dd>{(locale === "de" && Number.isFinite(unit.bedrooms) ? unit.bedrooms + 1 : unit.rooms) || "—"}</dd></div>
         <div><dt>{t("bedrooms")}</dt><dd>{unit.bedrooms || "—"}</dd></div>
-        <div><dt>{t("price")}</dt><dd>{typeof unit.price === "number" && unit.price > 0 ? formatPrice(unit.price, locale) : t("onRequest")}</dd></div>
+        {/* "On request" only where a buyer can still ask: a sold or reserved residence without a price says so. */}
+        <div><dt>{t("price")}</dt><dd>{typeof unit.price === "number" && unit.price > 0 ? formatPrice(unit.price, locale) : { sold: t("soldFilter"), reserved: t("reservedFilter") }[status] || t("onRequest")}</dd></div>
       </dl>
 
       {(planSource || unit.image3d) && (
@@ -851,8 +857,18 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
   const selectedSlot = slots.find(({ unit }) => String(unit.name) === String(selectedUnitName));
   const selectedUnit = selectedSlot?.unit || null;
   const allStatusesTicked = statusFilter.length === FILTER_STATUSES.length;
-  const visibleSlots = slots.filter(({ unit }) => (allStatusesTicked || statusFilter.includes(normalizeStatus(unit.status)))
-    && (!goldenFilter || isGoldenUnit(unit)));
+  const allClear = allStatusesTicked && !goldenFilter;
+  const matchesFilter = (unit) => (allStatusesTicked || statusFilter.includes(normalizeStatus(unit.status)))
+    && (!goldenFilter || isGoldenUnit(unit));
+  const visibleSlots = slots.filter(({ unit }) => matchesFilter(unit));
+  // A choice with no residence on this floor is disabled instead of leading to an empty list.
+  const statusCounts = slots.reduce((counts, { unit }) => {
+    const status = normalizeStatus(unit.status);
+    counts[status] = (counts[status] || 0) + 1;
+    return counts;
+  }, {});
+  const goldenCount = slots.filter(({ unit }) => isGoldenUnit(unit)).length;
+  const resetFloorFilters = () => { setStatusFilter([...FILTER_STATUSES]); setGoldenFilter(false); };
   const currentIndex = floors.findIndex((item) => item.number === floorNumber);
   const previousFloor = floors[currentIndex - 1];
   const nextFloor = floors[currentIndex + 1];
@@ -914,9 +930,11 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
                 {slots.filter(({ shape }) => shape).map(({ shape, unit }) => {
                   const status = normalizeStatus(unit.status);
                   const active = selectedUnit && String(selectedUnit.name) === String(unit.name);
+                  // The filter shows on the plan too: residences it leaves out fade back.
+                  const filteredOut = !allClear && !matchesFilter(unit);
                   return (
                     <g
-                      className={`unit-hotspot is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${active ? "is-active" : ""}`}
+                      className={`unit-hotspot is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${active ? "is-active" : ""} ${filteredOut ? "is-filtered-out" : ""}`}
                       key={shape.id}
                       role="button"
                       tabIndex="0"
@@ -950,9 +968,10 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
 
           <aside className="inventory-pane" ref={inventoryRef} aria-label={t("floorResidences")}>
             <div className="inventory-heading">
-              <div><p>{t("residences")}</p><strong>{slots.length}</strong></div>
+              {/* The count follows the filter: matching residences out of the floor's total. */}
+              <div><p>{t("residences")}</p><strong>{visibleSlots.length}{!allClear && <small>/{slots.length}</small>}</strong></div>
               <div className="inventory-filters" aria-label={t("filterResidences")}>
-                <button className={allStatusesTicked ? "is-active" : ""} type="button" aria-pressed={allStatusesTicked} onClick={() => setStatusFilter(toggleStatusFilter(statusFilter, "all"))}>{t("allFilter")}</button>
+                <button className={allClear ? "is-active" : ""} type="button" aria-pressed={allClear} onClick={resetFloorFilters}>{t("allFilter")}</button>
                 {[
                   ["available", t("availableFilter")],
                   ["reserved", t("reservedFilter")],
@@ -960,10 +979,10 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
                 ].map(([value, label]) => {
                   const ticked = !allStatusesTicked && statusFilter.includes(value);
                   return (
-                    <button className={`${ticked ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" aria-pressed={ticked} onClick={() => setStatusFilter(toggleStatusFilter(statusFilter, value))}>{label}</button>
+                    <button className={`${ticked ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" aria-pressed={ticked} disabled={!statusCounts[value]} onClick={() => setStatusFilter(toggleStatusFilter(statusFilter, value))}>{label}</button>
                   );
                 })}
-                <button className={`is-golden ${goldenFilter ? "is-active" : ""}`} type="button" aria-pressed={goldenFilter} onClick={() => setGoldenFilter((on) => !on)}>{t("golden")}</button>
+                <button className={`is-golden ${goldenFilter ? "is-active" : ""}`} type="button" aria-pressed={goldenFilter} disabled={!goldenCount} onClick={() => setGoldenFilter((on) => !on)}>{t("golden")}</button>
               </div>
             </div>
 

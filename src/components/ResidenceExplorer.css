@@ -1378,6 +1378,8 @@
 
 /* Golden Premium: a gold edge whatever the status, filled gold while it can be bought. */
 .unit-hotspot.is-golden polygon { stroke: #c9962c; stroke-width: 0.45; }
+/* Residences the floor filter leaves out fade back on the plan; they stay tappable. */
+.unit-hotspot.is-filtered-out:not(.is-active) polygon { opacity: 0.18; }
 .unit-hotspot.is-golden.is-available polygon { fill: rgba(214, 166, 56, 0.55); }
 .unit-hotspot.is-golden.is-available:is(:hover, :focus, .is-active) polygon { fill: rgba(214, 166, 56, 0.78); stroke: #9a7420; stroke-width: 0.55; }
 .unit-hotspot.is-golden:not(.is-available):is(:hover, :focus, .is-active) polygon { stroke: #9a7420; stroke-width: 0.55; }
@@ -1496,6 +1498,11 @@
   background: #2f6f9f;
   color: #fff;
 }
+
+/* A choice with no residence on this floor is disabled. */
+.inventory-filters button:disabled { opacity: 0.35; cursor: not-allowed; }
+/* Filtered count: matching residences, then the floor's total, smaller. */
+.inventory-heading strong small { margin-left: 0.15em; font-size: 0.45em; opacity: 0.6; }
 
 /* Ticks, as in the residence filter: a check mark on every ticked choice; GOLDEN ticks gold. */
 .inventory-filters button[aria-pressed="true"]::before { content: "✓"; margin-right: 0.4em; }
@@ -3134,6 +3141,14 @@
   /* ALL, AVAILABLE, RESERVED, SOLD and GOLDEN share one full-width row (Kemo, 23 November 2026: GOLDEN
      alone on a second line). Longer translations still wrap, but each row fills the width evenly. */
   .inventory-filters { flex: 1 1 100%; }
+  /* The plan box hugs the plan (it kept 26–30rem, mostly empty silver), so the plan, the count and
+     the filters share one phone screen and a tap visibly fades the plan (Kemo, 23 November 2026). */
+  .floor-plan-pane { min-height: 0; }
+  /* Phones: the residence list sits right under the filters, so a filter's result is in view; the
+     chosen residence's details (or the intro) follow the list (Kemo, 23 November 2026). */
+  .inventory-pane { display: flex; flex-direction: column; }
+  .inventory-pane > .unit-list { order: 1; }
+  .inventory-pane > :is(.unit-detail, .inventory-intro) { order: 2; }
   .inventory-filters button { flex: 1 1 auto; padding-inline: 0.35rem; letter-spacing: 0.04em; }
   .unit-facts dt { font-size: 0.7rem; }
   .unit-area-list { font-size: 0.75rem; }
