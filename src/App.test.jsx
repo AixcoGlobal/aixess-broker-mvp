@@ -93,9 +93,9 @@ describe("AIXESS navigation pages", () => {
     const cardPhotos = () => Array.from(document.querySelectorAll(".it-card-media img[data-theme-photo]")).map((img) => img.dataset.themePhoto);
     expect(cardPhotos()).toEqual(["insights-georgia-night", "insights-dubai-night", "insights-switzerland-night", "coastal-lifestyle-night"]);
     const hero = document.querySelector(".lasha-page-hero-media");
-    // The INSIGHT frame's Dubai coast photo has only its Figma day light, so it shows in every theme.
-    expect(hero.getAttribute("src")).toMatch(/^\/assets\/figma\/insights-hero-\d+\.webp$/);
-    expect(hero.dataset.photoLight).toBe("day");
+    // The INSIGHT frame's Dubai coast photo, in its night version.
+    expect(hero.getAttribute("src")).toMatch(/^\/assets\/figma\/insights-hero-night-\d+\.webp$/);
+    expect(hero.dataset.photoLight).toBe("night");
     expect(hero.getAttribute("alt")).toMatch(/^Dubai’s coast: the Burj Al Arab/);
     expect(hero.getAttribute("alt")).not.toMatch(/Reverance/);
 

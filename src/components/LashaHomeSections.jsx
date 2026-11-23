@@ -114,7 +114,7 @@ const PAGE_HERO_IMAGES = {
   "batumi-coast": { family: "batumi-coast", aspect: 16 / 9, position: "100% 50%", phonePosition: "40% 50%", sizes: "(max-aspect-ratio: 1/1) 180vh, (max-aspect-ratio: 3/2) 154vh, 100vw" },
   // Insights since 23 November 2026: the INSIGHT frame's new photo (818:3, layer 899:4), the Dubai
   // coast with the Burj Al Arab and the Downtown skyline, exported at 3x as the 1440 × 899 hero
-  // shows it. Figma has only its day light, so it shows in every theme. Phones keep the tower at the right edge, clear of most of the headline.
+  // shows it. Its afternoon and night versions (Codex image edits for Kemo, aligned by import-figma-photos.py --themes) follow the theme. Phones keep the tower at the right edge, clear of most of the headline.
   "insights-hero": { figma: "insights-hero", position: "50% 50%", phonePosition: "44% 50%", sizes: "(max-aspect-ratio: 1/1) 162vh, (max-aspect-ratio: 3/2) 139vh, 100vw" },
   // Broker Tools: the calmer refinement of design 1A (14 October 2026), sky and sea under the
   // copy, the stone terrace at the right edge.
