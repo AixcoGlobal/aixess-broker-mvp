@@ -754,6 +754,8 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
   const [lightbox, setLightbox] = useState(null);
   const lightboxCloseRef = useRef(null);
   const [syncState, setSyncState] = useState("refreshing");
+  const inventoryRef = useRef(null);
+  const [revealRequest, setRevealRequest] = useState(0);
 
   useDialogA11y(true, onClose, dialogRef);
 
@@ -795,6 +797,19 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
     if (lightbox) lightboxCloseRef.current?.focus();
   }, [lightbox]);
 
+  // On phones the details sit far below the plan (or above the list), so a tap
+  // seemed to do nothing: bring the chosen residence's details into view when
+  // they are off-screen. Side-by-side layouts already show them and stay put.
+  useEffect(() => {
+    if (!revealRequest) return;
+    const detail = inventoryRef.current?.querySelector(".unit-detail");
+    if (!detail) return;
+    const { top } = detail.getBoundingClientRect();
+    if (top >= 0 && top <= window.innerHeight * 0.6) return;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    detail.scrollIntoView?.({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  }, [revealRequest]);
+
   const slots = useMemo(() => (floor ? getUnitSlots(floor, units, snapshot.inventoryComplete ? "unavailable" : "sold") : []), [floor, snapshot.inventoryComplete, units]);
   const selectedSlot = slots.find(({ unit }) => String(unit.name) === String(selectedUnitName));
   const selectedUnit = selectedSlot?.unit || null;
@@ -809,6 +824,7 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
     track("residence_open", { unit: String(unit.name) });
     setSelectedUnitName(String(unit.name));
     setImageMode(unit.image2d ? "2d" : unit.image3d ? "3d" : "2d");
+    setRevealRequest((count) => count + 1);
   }, []);
 
   if (!floor) return null;
@@ -884,7 +900,7 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
             </div>
           </section>
 
-          <aside className="inventory-pane" aria-label={t("floorResidences")}>
+          <aside className="inventory-pane" ref={inventoryRef} aria-label={t("floorResidences")}>
             <div className="inventory-heading">
               <div><p>{t("residences")}</p><strong>{slots.length}</strong></div>
               <div className="inventory-filters" aria-label={t("filterResidences")}>
