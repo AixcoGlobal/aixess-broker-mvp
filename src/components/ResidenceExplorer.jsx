@@ -186,9 +186,11 @@ function isGoldenUnit(unit) {
   return Boolean(unit?.goldenPremium || getGoldenPremiumUnit(`${unit?.block || ""}${unit?.name}`));
 }
 
-// Tick or untick one status; "all" ticks every status. The last ticked status stays ticked.
+// Tick or untick one status; "all" ticks every status. While all are ticked, choosing one status
+// shows just that status. The last ticked status stays ticked.
 function toggleStatusFilter(statuses, value) {
   if (value === "all") return [...FILTER_STATUSES];
+  if (statuses.length === FILTER_STATUSES.length) return [value];
   if (statuses.includes(value)) return statuses.length > 1 ? statuses.filter((status) => status !== value) : statuses;
   return FILTER_STATUSES.filter((status) => status === value || statuses.includes(status));
 }
@@ -199,7 +201,8 @@ function StatusFilterButtons({ filters, onChange }) {
   return (
     <>
       {FILTER_STATUSES.map((status) => {
-        const ticked = filters.statuses.includes(status);
+        // While ALL is on, only ALL shows as ticked; picking a status then shows just that one.
+        const ticked = !allTicked && filters.statuses.includes(status);
         return (
           <button className={`${ticked ? "is-active" : ""} ${status === "sold" ? "is-sold" : ""}`} key={status} type="button" aria-pressed={ticked} onClick={() => onChange("statuses", toggleStatusFilter(filters.statuses, status))}>{t(status)}</button>
         );
@@ -780,7 +783,8 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
   const floor = floors.find((item) => item.number === floorNumber);
   const [units, setUnits] = useState(floor?.units || []);
   const [selectedUnitName, setSelectedUnitName] = useState(null);
-  const [filter, setFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState(() => [...FILTER_STATUSES]);
+  const [goldenFilter, setGoldenFilter] = useState(false);
   const [imageMode, setImageMode] = useState("2d");
   const [lightbox, setLightbox] = useState(null);
   const lightboxCloseRef = useRef(null);
@@ -798,7 +802,8 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
     const initialUnit = getSnapshotSlots(snapshot, floor)
       .find(({ unit }) => String(unit.name) === String(initialUnitName))?.unit;
     setSelectedUnitName(initialUnit ? String(initialUnit.name) : null);
-    setFilter("all");
+    setStatusFilter([...FILTER_STATUSES]);
+    setGoldenFilter(false);
     setImageMode(initialUnit?.image2d ? "2d" : initialUnit?.image3d ? "3d" : "2d");
     setLightbox(null);
     setSyncState("refreshing");
@@ -844,9 +849,9 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
   const slots = useMemo(() => (floor ? getUnitSlots(floor, units, snapshot.inventoryComplete ? "unavailable" : "sold") : []), [floor, snapshot.inventoryComplete, units]);
   const selectedSlot = slots.find(({ unit }) => String(unit.name) === String(selectedUnitName));
   const selectedUnit = selectedSlot?.unit || null;
-  const visibleSlots = filter === "all"
-    ? slots
-    : slots.filter(({ unit }) => normalizeStatus(unit.status) === filter);
+  const allStatusesTicked = statusFilter.length === FILTER_STATUSES.length;
+  const visibleSlots = slots.filter(({ unit }) => (allStatusesTicked || statusFilter.includes(normalizeStatus(unit.status)))
+    && (!goldenFilter || isGoldenUnit(unit)));
   const currentIndex = floors.findIndex((item) => item.number === floorNumber);
   const previousFloor = floors[currentIndex - 1];
   const nextFloor = floors[currentIndex + 1];
@@ -894,6 +899,17 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
             <div className="floor-plan-stage">
               <img src={floor.planImage} alt={t("floorPlanAlt", { floor: floorLabel(floor.number, t) })} />
               <svg className="unit-hotspots" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label={t("selectResidencePlan")}>
+                {/* Diagonal stripes mark reserved and sold apartments; the plan stays readable between them. */}
+                <defs>
+                  <pattern id="plan-hatch-reserved" patternUnits="userSpaceOnUse" width="1.8" height="1.8" patternTransform="rotate(45)">
+                    <rect width="1.8" height="1.8" fill="rgba(180, 187, 199, 0.5)" />
+                    <rect width="0.75" height="1.8" fill="rgba(95, 104, 120, 0.78)" />
+                  </pattern>
+                  <pattern id="plan-hatch-sold" patternUnits="userSpaceOnUse" width="1.8" height="1.8" patternTransform="rotate(45)">
+                    <rect width="1.8" height="1.8" fill="rgba(20, 48, 78, 0.42)" />
+                    <rect width="0.75" height="1.8" fill="rgba(20, 48, 78, 0.88)" />
+                  </pattern>
+                </defs>
                 {slots.filter(({ shape }) => shape).map(({ shape, unit }) => {
                   const status = normalizeStatus(unit.status);
                   const active = selectedUnit && String(selectedUnit.name) === String(unit.name);
@@ -935,14 +951,18 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
             <div className="inventory-heading">
               <div><p>{t("residences")}</p><strong>{slots.length}</strong></div>
               <div className="inventory-filters" aria-label={t("filterResidences")}>
+                <button className={allStatusesTicked ? "is-active" : ""} type="button" aria-pressed={allStatusesTicked} onClick={() => setStatusFilter(toggleStatusFilter(statusFilter, "all"))}>{t("allFilter")}</button>
                 {[
-                  ["all", t("allFilter")],
                   ["available", t("availableFilter")],
                   ["reserved", t("reservedFilter")],
                   ["sold", t("soldFilter")],
-                ].map(([value, label]) => (
-                  <button className={`${filter === value ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" onClick={() => setFilter(value)}>{label}</button>
-                ))}
+                ].map(([value, label]) => {
+                  const ticked = !allStatusesTicked && statusFilter.includes(value);
+                  return (
+                    <button className={`${ticked ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" aria-pressed={ticked} onClick={() => setStatusFilter(toggleStatusFilter(statusFilter, value))}>{label}</button>
+                  );
+                })}
+                <button className={`is-golden ${goldenFilter ? "is-active" : ""}`} type="button" aria-pressed={goldenFilter} onClick={() => setGoldenFilter((on) => !on)}>{t("golden")}</button>
               </div>
             </div>
 

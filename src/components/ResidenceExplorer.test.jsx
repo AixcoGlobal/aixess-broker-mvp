@@ -107,6 +107,33 @@ describe("Residence explorer", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   }, 30000);
 
+  it("filters the floor plan list by ticked statuses and the GOLDEN tick", async () => {
+    const user = userEvent.setup();
+    const units = [
+      snapshot.floors[0].units[0],
+      { ...snapshot.floors[0].units[1], goldenPremium: { code: "412" } },
+    ];
+    render(<ResidenceExplorer onBrokerAccess={vi.fn()} snapshotLoader={() => Promise.resolve(snapshot)} floorLoader={() => Promise.resolve(units)} />);
+
+    await user.click(await screen.findByRole("button", { name: /Residence 411, floor 4/i }, { timeout: 15000 }));
+    const dialog = await screen.findByRole("dialog", { name: /Floor 04/i });
+    await waitFor(() => expect(within(dialog).getByText("Live availability")).toBeInTheDocument());
+    const list = within(dialog).getByLabelText("Filter Project Reverance residences");
+    const rows = () => [...dialog.querySelectorAll(".unit-row")].map((row) => row.textContent);
+
+    expect(within(list).getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
+    expect(rows()).toHaveLength(2);
+
+    await user.click(within(list).getByRole("button", { name: "GOLDEN" }));
+    expect(rows()).toEqual([expect.stringContaining("#412")]);
+    expect(dialog.querySelector(".unit-row")).toHaveClass("is-golden");
+
+    await user.click(within(list).getByRole("button", { name: "Available" }));
+    expect(within(list).getByRole("button", { name: "Available" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(list).getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "false");
+    expect(rows()).toHaveLength(0);
+  }, 30000);
+
   it("keeps the verified snapshot when the live service fails and supports filters and floor navigation", async () => {
     const user = userEvent.setup();
     render(<ResidenceExplorer onBrokerAccess={vi.fn()} snapshotLoader={() => Promise.resolve(snapshot)} floorLoader={() => Promise.reject(new Error("offline"))} />);
