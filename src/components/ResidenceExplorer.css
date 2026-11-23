@@ -1323,7 +1323,7 @@
 }
 
 .unit-hotspot.is-available polygon { fill: rgba(63, 154, 88, 0.28); stroke: #2f7a44; }
-.unit-hotspot.is-reserved polygon { fill: rgba(178, 139, 67, 0.3); stroke: #856526; }
+.unit-hotspot.is-reserved polygon { fill: rgba(214, 166, 56, 0.5); stroke: #b28b43; } /* gold that still reads gold over the green plan */
 .unit-hotspot.is-sold polygon,
 .unit-hotspot.is-unavailable polygon {
   fill: rgba(20, 48, 78, 0.34);
@@ -1341,8 +1341,8 @@
 .unit-hotspot.is-reserved:hover polygon,
 .unit-hotspot.is-reserved:focus polygon,
 .unit-hotspot.is-reserved.is-active polygon {
-  fill: rgba(178, 139, 67, 0.55);
-  stroke: #856526;
+  fill: rgba(214, 166, 56, 0.72);
+  stroke: #8a6526;
   stroke-width: 0.28;
 }
 
@@ -2496,7 +2496,7 @@
     transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
   }
 
-  .mobile-room-card.is-reserved { border-color: rgba(166, 109, 70, 0.72); }
+  .mobile-room-card.is-reserved { border-color: rgba(178, 139, 67, 0.72); }
   .mobile-room-card.is-sold,
   .mobile-room-card.is-unavailable { border-color: rgba(91, 111, 141, 0.72); color: #334961; }
   .mobile-room-card.is-active { box-shadow: 0 0 0 2px var(--orange); transform: translateY(-1px); }
@@ -2559,7 +2559,7 @@
     white-space: nowrap;
   }
 
-  .mobile-room-card.is-reserved .mobile-room-copy strong { color: #a66d46; }
+  .mobile-room-card.is-reserved .mobile-room-copy strong { color: #8a6526; }
   .mobile-room-card.is-sold .mobile-room-copy strong,
   .mobile-room-card.is-unavailable .mobile-room-copy strong { color: #3e5876; }
   .mobile-room-card.is-sold .mobile-room-copy strong,
@@ -2595,7 +2595,7 @@
     text-align: right;
   }
 
-  .mobile-room-card.is-reserved .mobile-room-meta small { color: #a66d46; }
+  .mobile-room-card.is-reserved .mobile-room-meta small { color: #8a6526; }
   .mobile-room-card.is-sold .mobile-room-meta small,
   .mobile-room-card.is-unavailable .mobile-room-meta small { color: #3e5876; }
   .mobile-room-card.is-sold .mobile-room-meta small { color: #fff; }
