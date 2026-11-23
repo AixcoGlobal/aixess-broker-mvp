@@ -116,6 +116,8 @@ html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(
 ) {
   color: #171a1d;
 }
+/* The GOLDEN tick keeps dark text on its gold in every theme. */
+html:root :is(.mobile-residence-sheet, .mobile-residence-drawer) :is(.mobile-filter-buttons button.is-golden.is-active) { color: #15110f; }
 
 /* Buttons on ink grounds keep the theme's ink colour in the afternoon (the light tint above is
    for text)... */
@@ -672,7 +674,7 @@ html:root:not([data-time-theme='night']) .unit-row.is-unavailable,
 html:root:not([data-time-theme='night']) .unit-row.is-unavailable > span:first-child { color: #77736f; }
 html:root:not([data-time-theme='night']) .unit-row.is-unavailable:is(:hover, .is-active) { color: #5f5b57; }
 html:root:not([data-time-theme='night']) .unit-status.is-available { color: #156745; }
-html:root:not([data-time-theme='night']) .unit-status.is-reserved { color: #8a6526; }
+html:root:not([data-time-theme='night']) .unit-status.is-reserved { color: #5f6878; }
 html:root:not([data-time-theme='night']) :is(.unit-status.is-sold, .unit-status.is-unavailable) { color: #2f6f9f; }
 html:root:not([data-time-theme='night']) :is(.golden-premium-unit-label, .golden-premium-unit-meta strong) { color: #8a6a12; }
 html:root:not([data-time-theme='night']) .golden-premium-unit-meta { border-color: rgb(138 106 18 / 0.35); }

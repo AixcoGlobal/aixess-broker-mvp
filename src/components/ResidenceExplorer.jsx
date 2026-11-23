@@ -175,8 +175,40 @@ const DEFAULT_FILTERS = {
   bedrooms: "all",
   minArea: 0,
   maxArea: 100,
-  status: "available",
+  // Ticked availability statuses (any mix); golden narrows the list to Golden Premium apartments.
+  statuses: ["available"],
+  golden: false,
 };
+
+const FILTER_STATUSES = ["available", "reserved", "sold"];
+
+function isGoldenUnit(unit) {
+  return Boolean(unit?.goldenPremium || getGoldenPremiumUnit(`${unit?.block || ""}${unit?.name}`));
+}
+
+// Tick or untick one status; "all" ticks every status. The last ticked status stays ticked.
+function toggleStatusFilter(statuses, value) {
+  if (value === "all") return [...FILTER_STATUSES];
+  if (statuses.includes(value)) return statuses.length > 1 ? statuses.filter((status) => status !== value) : statuses;
+  return FILTER_STATUSES.filter((status) => status === value || statuses.includes(status));
+}
+
+function StatusFilterButtons({ filters, onChange }) {
+  const { t } = useLanguage();
+  const allTicked = filters.statuses.length === FILTER_STATUSES.length;
+  return (
+    <>
+      {FILTER_STATUSES.map((status) => {
+        const ticked = filters.statuses.includes(status);
+        return (
+          <button className={`${ticked ? "is-active" : ""} ${status === "sold" ? "is-sold" : ""}`} key={status} type="button" aria-pressed={ticked} onClick={() => onChange("statuses", toggleStatusFilter(filters.statuses, status))}>{t(status)}</button>
+        );
+      })}
+      <button className={allTicked ? "is-active" : ""} type="button" aria-pressed={allTicked} onClick={() => onChange("statuses", toggleStatusFilter(filters.statuses, "all"))}>{t("all")}</button>
+      <button className={`is-golden ${filters.golden ? "is-active" : ""}`} type="button" aria-pressed={filters.golden} onClick={() => onChange("golden", !filters.golden)}>{t("golden")}</button>
+    </>
+  );
+}
 
 function useScrollStage(sectionRef) {
   const [settled, setSettled] = useState(false);
@@ -346,6 +378,7 @@ function AvailabilityLegend({ dark = false }) {
       <span><i className="status-swatch is-available" />{t("available")}</span>
       <span><i className="status-swatch is-reserved" />{t("reserved")}</span>
       <span><i className="status-swatch is-sold" />{t("sold")}</span>
+      <span><i className="status-swatch is-golden" />{t("golden")}</span>
     </div>
   );
 }
@@ -654,7 +687,7 @@ function MobileResidenceSheet({
               const previewImage = unit.image3d || unit.image2d;
               return (
                 <button
-                  className={`mobile-room-card is-${status} ${active ? "is-active" : ""}`}
+                  className={`mobile-room-card is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${active ? "is-active" : ""}`}
                   type="button"
                   key={`${unit.floor}-${unit.id}`}
                   aria-pressed={active}
@@ -718,9 +751,7 @@ function MobileResidenceSheet({
               <div>
                 <span>{t("availability")}</span>
                 <div className="mobile-filter-buttons">
-                  {["available", "reserved", "sold", "all"].map((status) => (
-                    <button className={`${filters.status === status ? "is-active" : ""} ${status === "sold" ? "is-sold" : ""}`} key={status} type="button" onClick={() => onChange("status", status)}>{t(status)}</button>
-                  ))}
+                  <StatusFilterButtons filters={filters} onChange={onChange} />
                 </div>
               </div>
               <div className="mobile-filter-range">
@@ -868,11 +899,11 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
                   const active = selectedUnit && String(selectedUnit.name) === String(unit.name);
                   return (
                     <g
-                      className={`unit-hotspot is-${status} ${active ? "is-active" : ""}`}
+                      className={`unit-hotspot is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${active ? "is-active" : ""}`}
                       key={shape.id}
                       role="button"
                       tabIndex="0"
-                      aria-label={`${t("residence")} ${unit.name}, ${t(status)}${unit.totalArea ? `, ${unit.totalArea} ${t("squareMetres")}` : ""}`}
+                      aria-label={`${t("residence")} ${unit.name}, ${t(status)}${isGoldenUnit(unit) ? `, ${t("golden")}` : ""}${unit.totalArea ? `, ${unit.totalArea} ${t("squareMetres")}` : ""}`}
                       onClick={() => selectUnit(unit)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -937,7 +968,7 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
                 const status = normalizeStatus(unit.status);
                 const active = selectedUnit && String(selectedUnit.name) === String(unit.name);
                 return (
-                  <button className={`unit-row is-${status} ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
+                  <button className={`unit-row is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
                     <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
                     <span>{unitAreaLabel(unit, locale)}</span>
                     <span>{t(status)}</span>
@@ -1098,14 +1129,7 @@ function ResidenceFilter({
         <fieldset className="residence-choice-field residence-status-field">
           <legend>{t("availability")}</legend>
           <div>
-            {[
-              ["available", t("available")],
-              ["reserved", t("reserved")],
-              ["sold", t("sold")],
-              ["all", t("all")],
-            ].map(([value, label]) => (
-              <button className={`${filters.status === value ? "is-active" : ""} ${value === "sold" ? "is-sold" : ""}`} key={value} type="button" onClick={() => onChange("status", value)}>{label}</button>
-            ))}
+            <StatusFilterButtons filters={filters} onChange={onChange} />
           </div>
         </fieldset>
       </div>
@@ -1125,10 +1149,10 @@ function ResidenceFilter({
               const isActive = String(previewResidence?.id) === String(unit.id);
               return (
                 <button
-                  className={`residence-filter-result is-${status} ${isActive ? "is-active" : ""}`}
+                  className={`residence-filter-result is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${isActive ? "is-active" : ""}`}
                   key={`${unit.floor}-${unit.id}`}
                   type="button"
-                  aria-label={`${t("residence")} ${unit.name}, ${t("floor")} ${unit.floor}, ${area === null ? t("areaUnavailable") : `${area.toFixed(1)} ${t("squareMetres")}`}, ${t(status)}`}
+                  aria-label={`${t("residence")} ${unit.name}, ${t("floor")} ${unit.floor}, ${area === null ? t("areaUnavailable") : `${area.toFixed(1)} ${t("squareMetres")}`}, ${t(status)}${isGoldenUnit(unit) ? `, ${t("golden")}` : ""}`}
                   onMouseEnter={() => onPreviewResidence(unit)}
                   onFocus={() => onPreviewResidence(unit)}
                   onClick={() => onOpenResidence(unit)}
@@ -1255,7 +1279,8 @@ export function ResidenceExplorer({ onBrokerAccess, liveInventoryTitle = false, 
       && (filters.floor === "all" || unit.floor === Number(filters.floor))
       && (filters.bedrooms === "all" || (hasBedrooms && bedrooms === Number(filters.bedrooms)))
       && (area === null || (area >= filters.minArea && area <= filters.maxArea))
-      && (filters.status === "all" || normalizeStatus(unit.status) === filters.status);
+      && (filters.statuses.length === FILTER_STATUSES.length || filters.statuses.includes(normalizeStatus(unit.status)))
+      && (!filters.golden || isGoldenUnit(unit));
   }), [filters, inventory]);
   const previewResidence = useMemo(
     () => matchingUnits.find((unit) => String(unit.id) === String(previewUnitId)) || matchingUnits[0] || null,

@@ -708,6 +708,7 @@ html[lang="pl"] .lasha-access-count span { margin-bottom: -0.24em; line-height: 
 :is(.lasha-home, .lasha-page) .residence-select-field:has(select:focus-visible) { outline: 2px solid var(--l-blue); outline-offset: -2px; }
 :is(.lasha-home, .lasha-page) .residence-choice-field button { border-color: color-mix(in srgb, var(--l-ink, #171a1d) 22%, transparent); color: color-mix(in srgb, var(--l-ink, #171a1d) 72%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-choice-field button.is-active { border-color: var(--l-blue); background: var(--l-blue); color: #fff; }
+:is(.lasha-home, .lasha-page) .residence-choice-field button.is-golden.is-active { border-color: #c9962c; background: #d6a638; color: #15110f; }
 :is(.lasha-home, .lasha-page) .residence-area-readout output { color: var(--l-ink); }
 :is(.lasha-home, .lasha-page) .residence-area-readout span { color: color-mix(in srgb, var(--l-ink, #171a1d) 74%, transparent); }
 :is(.lasha-home, .lasha-page) .residence-area-ranges input::-webkit-slider-runnable-track { border-color: color-mix(in srgb, var(--l-ink, #171a1d) 20%, transparent); }

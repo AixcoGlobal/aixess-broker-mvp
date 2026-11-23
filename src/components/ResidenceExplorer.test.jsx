@@ -252,6 +252,42 @@ describe("Residence explorer", () => {
     expect(await screen.findByRole("heading", { name: "Residence 412" })).toBeInTheDocument();
   });
 
+  it("lets status ticks combine and narrows to golden apartments with the GOLDEN tick", async () => {
+    const user = userEvent.setup();
+    const goldenSnapshot = {
+      ...snapshot,
+      floors: snapshot.floors.map((floor) => ({
+        ...floor,
+        units: floor.units.map((unit) => (unit.name === "412" ? { ...unit, goldenPremium: { code: "412" } } : unit)),
+      })),
+    };
+    render(
+      <ResidenceExplorer
+        onBrokerAccess={vi.fn()}
+        snapshotLoader={() => Promise.resolve(goldenSnapshot)}
+        floorLoader={() => Promise.resolve(goldenSnapshot.floors[0].units)}
+      />,
+    );
+
+    const controls = await screen.findByLabelText("Filter Project Reverance residences");
+    await waitFor(() => expect(controls.closest(".residence-filter-panel")).toHaveAttribute("aria-hidden", "false"));
+    const availability = within(controls).getByRole("group", { name: "AVAILABILITY" });
+    await user.click(within(availability).getByRole("button", { name: "RESERVED" }));
+    expect(within(availability).getByRole("button", { name: "AVAILABLE" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(availability).getByRole("button", { name: "RESERVED" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: /Residence 411, floor 4/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Residence 412, floor 4, 64.8 square metres, Reserved, Golden/i })).toHaveClass("is-golden");
+
+    await user.click(within(availability).getByRole("button", { name: "GOLDEN" }));
+    expect(within(availability).getByRole("button", { name: "GOLDEN" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.queryByRole("button", { name: /Residence 411, floor 4/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Residence 412, floor 4/i })).toBeInTheDocument();
+
+    await user.click(within(availability).getByRole("button", { name: "AVAILABLE" }));
+    await user.click(within(availability).getByRole("button", { name: "RESERVED" }));
+    expect(within(availability).getByRole("button", { name: "RESERVED" })).toHaveAttribute("aria-pressed", "true");
+  });
+
   it("lists every snapshot floor in the filter, including floors with no live units", async () => {
     render(
       <ResidenceExplorer
