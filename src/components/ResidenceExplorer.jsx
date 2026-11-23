@@ -178,6 +178,10 @@ const DEFAULT_FILTERS = {
   status: "available",
 };
 
+function isGoldenUnit(unit) {
+  return Boolean(unit?.goldenPremium || getGoldenPremiumUnit(`${unit?.block || ""}${unit?.name}`));
+}
+
 function useScrollStage(sectionRef) {
   const [settled, setSettled] = useState(false);
   const [interactive, setInteractive] = useState(false);
@@ -346,6 +350,7 @@ function AvailabilityLegend({ dark = false }) {
       <span><i className="status-swatch is-available" />{t("available")}</span>
       <span><i className="status-swatch is-reserved" />{t("reserved")}</span>
       <span><i className="status-swatch is-sold" />{t("sold")}</span>
+      <span><i className="status-swatch is-golden" />{t("golden")}</span>
     </div>
   );
 }
@@ -654,7 +659,7 @@ function MobileResidenceSheet({
               const previewImage = unit.image3d || unit.image2d;
               return (
                 <button
-                  className={`mobile-room-card is-${status} ${active ? "is-active" : ""}`}
+                  className={`mobile-room-card is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${active ? "is-active" : ""}`}
                   type="button"
                   key={`${unit.floor}-${unit.id}`}
                   aria-pressed={active}
@@ -868,11 +873,11 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
                   const active = selectedUnit && String(selectedUnit.name) === String(unit.name);
                   return (
                     <g
-                      className={`unit-hotspot is-${status} ${active ? "is-active" : ""}`}
+                      className={`unit-hotspot is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${active ? "is-active" : ""}`}
                       key={shape.id}
                       role="button"
                       tabIndex="0"
-                      aria-label={`${t("residence")} ${unit.name}, ${t(status)}${unit.totalArea ? `, ${unit.totalArea} ${t("squareMetres")}` : ""}`}
+                      aria-label={`${t("residence")} ${unit.name}, ${t(status)}${isGoldenUnit(unit) ? `, ${t("golden")}` : ""}${unit.totalArea ? `, ${unit.totalArea} ${t("squareMetres")}` : ""}`}
                       onClick={() => selectUnit(unit)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -937,7 +942,7 @@ function FloorModal({ snapshot, blockId, floorNumber, initialUnitName, onClose, 
                 const status = normalizeStatus(unit.status);
                 const active = selectedUnit && String(selectedUnit.name) === String(unit.name);
                 return (
-                  <button className={`unit-row is-${status} ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
+                  <button className={`unit-row is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${active ? "is-active" : ""}`} type="button" key={unit.id} onClick={() => selectUnit(unit)}>
                     <span><i className={`status-swatch is-${status}`} />#{unit.name}</span>
                     <span>{unitAreaLabel(unit, locale)}</span>
                     <span>{t(status)}</span>
@@ -1125,10 +1130,10 @@ function ResidenceFilter({
               const isActive = String(previewResidence?.id) === String(unit.id);
               return (
                 <button
-                  className={`residence-filter-result is-${status} ${isActive ? "is-active" : ""}`}
+                  className={`residence-filter-result is-${status} ${isGoldenUnit(unit) ? "is-golden" : ""} ${isActive ? "is-active" : ""}`}
                   key={`${unit.floor}-${unit.id}`}
                   type="button"
-                  aria-label={`${t("residence")} ${unit.name}, ${t("floor")} ${unit.floor}, ${area === null ? t("areaUnavailable") : `${area.toFixed(1)} ${t("squareMetres")}`}, ${t(status)}`}
+                  aria-label={`${t("residence")} ${unit.name}, ${t("floor")} ${unit.floor}, ${area === null ? t("areaUnavailable") : `${area.toFixed(1)} ${t("squareMetres")}`}, ${t(status)}${isGoldenUnit(unit) ? `, ${t("golden")}` : ""}`}
                   onMouseEnter={() => onPreviewResidence(unit)}
                   onFocus={() => onPreviewResidence(unit)}
                   onClick={() => onOpenResidence(unit)}

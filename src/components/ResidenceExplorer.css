@@ -467,6 +467,9 @@
   color: #c1bdb9;
 }
 
+.residence-filter-result.is-golden,
+.unit-row.is-golden { box-shadow: inset 3px 0 0 #d6a638; }
+
 .residence-filter-result.is-sold {
   background: rgba(25, 72, 106, 0.34);
   box-shadow: inset 0.18rem 0 var(--sold);
@@ -579,6 +582,7 @@
 
 .status-swatch.is-available { border-color: var(--available); background: var(--available); }
 .status-swatch.is-reserved { border-color: #b4bbc7; background: #b4bbc7; } /* Figma legend grey-blue */
+.status-swatch.is-golden { border-color: #9a7420; background: #d6a638; }
 .status-swatch.is-sold,
 .status-swatch.is-unavailable { border-color: var(--sold); background: var(--sold); }
 
@@ -1345,6 +1349,12 @@
   stroke: #5f6878;
   stroke-width: 0.28;
 }
+
+/* Golden Premium: a gold edge whatever the status, filled gold while it can be bought. */
+.unit-hotspot.is-golden polygon { stroke: #c9962c; stroke-width: 0.45; }
+.unit-hotspot.is-golden.is-available polygon { fill: rgba(214, 166, 56, 0.55); }
+.unit-hotspot.is-golden.is-available:is(:hover, :focus, .is-active) polygon { fill: rgba(214, 166, 56, 0.78); stroke: #9a7420; stroke-width: 0.55; }
+.unit-hotspot.is-golden:not(.is-available):is(:hover, :focus, .is-active) polygon { stroke: #9a7420; stroke-width: 0.55; }
 
 .unit-hotspot.is-sold:hover polygon,
 .unit-hotspot.is-sold:focus polygon,
@@ -2497,6 +2507,7 @@
   }
 
   .mobile-room-card.is-reserved { border-color: rgba(111, 120, 137, 0.6); }
+  .mobile-room-card.is-golden { border-color: #c9962c; box-shadow: inset 0 0 0 1px #c9962c; }
   .mobile-room-card.is-sold,
   .mobile-room-card.is-unavailable { border-color: rgba(91, 111, 141, 0.72); color: #334961; }
   .mobile-room-card.is-active { box-shadow: 0 0 0 2px var(--orange); transform: translateY(-1px); }
