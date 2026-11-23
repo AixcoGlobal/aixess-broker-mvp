@@ -3141,6 +3141,9 @@
   /* ALL, AVAILABLE, RESERVED, SOLD and GOLDEN share one full-width row (Kemo, 23 November 2026: GOLDEN
      alone on a second line). Longer translations still wrap, but each row fills the width evenly. */
   .inventory-filters { flex: 1 1 100%; }
+  /* The plan box hugs the plan (it kept 26–30rem, mostly empty silver), so the plan, the count and
+     the filters share one phone screen and a tap visibly fades the plan (Kemo, 23 November 2026). */
+  .floor-plan-pane { min-height: 0; }
   .inventory-filters button { flex: 1 1 auto; padding-inline: 0.35rem; letter-spacing: 0.04em; }
   .unit-facts dt { font-size: 0.7rem; }
   .unit-area-list { font-size: 0.75rem; }
