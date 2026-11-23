@@ -481,6 +481,16 @@
 .residence-filter-result.is-golden,
 .unit-row.is-golden { box-shadow: inset 3px 0 0 #d6a638; }
 
+.residence-filter-result.is-reserved {
+  background: rgba(180, 187, 199, 0.45);
+  box-shadow: inset 0.18rem 0 #6f7889;
+}
+
+.residence-filter-result.is-reserved:is(:hover, :focus-visible, .is-active) {
+  background: rgba(180, 187, 199, 0.7);
+  box-shadow: inset 0.18rem 0 #3f4756;
+}
+
 .residence-filter-result.is-sold {
   background: rgba(25, 72, 106, 0.34);
   box-shadow: inset 0.18rem 0 var(--sold);
@@ -1566,6 +1576,16 @@
   background: rgba(122, 118, 114, 0.22);
 }
 
+.unit-row.is-reserved {
+  background: rgba(111, 120, 137, 0.42);
+  box-shadow: inset 0.18rem 0 #b4bbc7;
+}
+
+.unit-row.is-reserved:hover,
+.unit-row.is-reserved.is-active {
+  background: rgba(111, 120, 137, 0.62);
+}
+
 .unit-row.is-sold {
   background: rgba(25, 72, 106, 0.34);
   box-shadow: inset 0.18rem 0 var(--sold);
@@ -2530,7 +2550,7 @@
     transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
   }
 
-  .mobile-room-card.is-reserved { border-color: rgba(111, 120, 137, 0.6); }
+  .mobile-room-card.is-reserved { border-color: #6f7889; background: rgba(180, 187, 199, 0.42); box-shadow: inset 0.18rem 0 #6f7889; }
   .mobile-room-card.is-golden { border-color: #c9962c; box-shadow: inset 0 0 0 1px #c9962c; }
   .mobile-room-card.is-sold,
   .mobile-room-card.is-unavailable { border-color: rgba(91, 111, 141, 0.72); color: #334961; }
@@ -3273,3 +3293,8 @@
   .residence-status-field button:nth-child(n + 3) { border-top-width: 0; }
   .residence-status-field button.is-golden { grid-column: 1 / -1; }
 }
+
+/* A golden apartment keeps its gold bar or edge on a reserved or sold row or card. */
+.residence-filter-result.is-golden:is(.is-reserved, .is-sold),
+.unit-row.is-golden:is(.is-reserved, .is-sold) { box-shadow: inset 0.18rem 0 #d6a638; }
+.mobile-room-card.is-golden:is(.is-reserved, .is-sold) { border-color: #c9962c; box-shadow: inset 0.18rem 0 #d6a638; }
