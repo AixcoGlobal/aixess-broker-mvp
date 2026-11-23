@@ -188,8 +188,9 @@ describe("Residence explorer", () => {
     const facts = document.querySelector(".unit-facts");
     expect(within(facts).getByText("Sold")).toBeInTheDocument();
     expect(within(facts).queryByText("On request")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /Open 2D PLAN of residence 501 full screen/i }));
-    expect(screen.getByRole("dialog", { name: /Expanded 2D PLAN · RESIDENCE 501/i })).toBeInTheDocument();
+    // 501 has no plan of its own: the floor's plan opens, labelled as the floor plan.
+    await user.click(screen.getByRole("button", { name: /Open Architectural plan · Floor 05 of residence 501 full screen/i }));
+    expect(screen.getByRole("dialog", { name: /Expanded Architectural plan · Floor 05 · RESIDENCE 501/i })).toBeInTheDocument();
   });
 
   it("opens the floor menu in the modal and changes floors without a native select popup", async () => {

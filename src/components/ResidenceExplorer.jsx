@@ -529,7 +529,8 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
   const [imageFailed, setImageFailed] = useState(false);
   const planSource = unit.image2d || fallbackPlanImage;
   const previewSource = imageMode === "3d" ? unit.image3d : planSource;
-  const previewLabel = imageMode === "3d" ? t("threeDView") : t("twoDPlan");
+  // Without its own plan a residence shows the whole floor's plan, and says so.
+  const previewLabel = imageMode === "3d" ? t("threeDView") : unit.image2d ? t("twoDPlan") : t("floorPlanAlt", { floor: floorLabel(unit.floor, t) });
   const status = normalizeStatus(unit.status);
   const previewAlt = `${previewLabel} · ${t("residence")} ${unit.name}`;
 
