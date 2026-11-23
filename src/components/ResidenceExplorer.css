@@ -3131,6 +3131,10 @@
   .floor-navigation-trigger { font-size: 0.8rem; }
   .inventory-filters button,
   .unit-preview-tabs button { min-height: 2.75rem; font-size: 0.7rem; }
+  /* ALL, AVAILABLE, RESERVED, SOLD and GOLDEN share one full-width row (Kemo, 23 November 2026: GOLDEN
+     alone on a second line). Longer translations still wrap, but each row fills the width evenly. */
+  .inventory-filters { flex: 1 1 100%; }
+  .inventory-filters button { flex: 1 1 auto; padding-inline: 0.35rem; letter-spacing: 0.04em; }
   .unit-facts dt { font-size: 0.7rem; }
   .unit-area-list { font-size: 0.75rem; }
   .unit-area-list b { font-size: inherit; }
