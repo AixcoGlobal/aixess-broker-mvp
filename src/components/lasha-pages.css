@@ -135,6 +135,9 @@
 
 .lasha-page .section-eyebrow::after {
   flex: 0 0 clamp(3.5rem, 8.7vw, 7.8rem);
+  /* Safari leaves flex-basis out of the eyebrow's own width, which wrapped
+     FIND A RESIDENCE letter by letter; an explicit width is counted. */
+  width: clamp(3.5rem, 8.7vw, 7.8rem);
   height: 1px;
   margin-left: 1.1rem;
   background: color-mix(in srgb, var(--l-blue) 50%, transparent);
