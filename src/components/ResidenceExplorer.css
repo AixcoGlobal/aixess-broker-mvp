@@ -3144,6 +3144,11 @@
   /* The plan box hugs the plan (it kept 26–30rem, mostly empty silver), so the plan, the count and
      the filters share one phone screen and a tap visibly fades the plan (Kemo, 23 November 2026). */
   .floor-plan-pane { min-height: 0; }
+  /* Phones: the residence list sits right under the filters, so a filter's result is in view; the
+     chosen residence's details (or the intro) follow the list (Kemo, 23 November 2026). */
+  .inventory-pane { display: flex; flex-direction: column; }
+  .inventory-pane > .unit-list { order: 1; }
+  .inventory-pane > :is(.unit-detail, .inventory-intro) { order: 2; }
   .inventory-filters button { flex: 1 1 auto; padding-inline: 0.35rem; letter-spacing: 0.04em; }
   .unit-facts dt { font-size: 0.7rem; }
   .unit-area-list { font-size: 0.75rem; }
