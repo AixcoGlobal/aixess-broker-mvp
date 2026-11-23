@@ -132,6 +132,12 @@ describe("Residence explorer", () => {
     expect(within(list).getByRole("button", { name: "Available" })).toHaveAttribute("aria-pressed", "true");
     expect(within(list).getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "false");
     expect(rows()).toHaveLength(0);
+
+    // A second tap on the ticked status deselects it: back to ALL.
+    await user.click(within(list).getByRole("button", { name: "Available" }));
+    expect(within(list).getByRole("button", { name: "Available" })).toHaveAttribute("aria-pressed", "false");
+    expect(within(list).getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
+    expect(rows()).toEqual([expect.stringContaining("#412")]);
   }, 30000);
 
   it("keeps the verified snapshot when the live service fails and supports filters and floor navigation", async () => {
@@ -311,8 +317,10 @@ describe("Residence explorer", () => {
     expect(screen.getByRole("button", { name: /Residence 412, floor 4/i })).toBeInTheDocument();
 
     await user.click(within(availability).getByRole("button", { name: "AVAILABLE" }));
+    // Unticking the last ticked status deselects it and goes back to ALL.
     await user.click(within(availability).getByRole("button", { name: "RESERVED" }));
-    expect(within(availability).getByRole("button", { name: "RESERVED" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(availability).getByRole("button", { name: "RESERVED" })).toHaveAttribute("aria-pressed", "false");
+    expect(within(availability).getByRole("button", { name: "ALL" })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("lists every snapshot floor in the filter, including floors with no live units", async () => {
