@@ -64,7 +64,7 @@ export function InsightsPageContent({ header, onOpenModal }) {
 
   return (
     <>
-      <LashaPageHero header={header} eyebrow={c.eyebrow} title={c.title} image="batumi-coast" imageAlt={c.heroAlt} copy={c.copy} variant="coastal" />
+      <LashaPageHero header={header} eyebrow={c.eyebrow} title={c.title} image="insights-hero" imageAlt={c.heroAlt} copy={c.copy} variant="coastal" />
       <main className="page-main it-main">
         <section className="it-section it-ink" id="market-insights" aria-labelledby="it-market-title">
           <SectionHeading id="it-market-title" eyebrow={c.marketEyebrow} title={c.marketTitle} copy={c.marketCopy}>
