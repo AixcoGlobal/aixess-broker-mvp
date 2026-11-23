@@ -184,6 +184,10 @@ describe("Residence explorer", () => {
     expect(soldRow).toHaveClass("is-sold");
     await user.click(soldRow);
     expect(await screen.findByRole("heading", { name: "Residence 501" })).toBeInTheDocument();
+    // A sold residence without a price says Sold, not "On request".
+    const facts = document.querySelector(".unit-facts");
+    expect(within(facts).getByText("Sold")).toBeInTheDocument();
+    expect(within(facts).queryByText("On request")).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /Open 2D PLAN of residence 501 full screen/i }));
     expect(screen.getByRole("dialog", { name: /Expanded 2D PLAN · RESIDENCE 501/i })).toBeInTheDocument();
   });

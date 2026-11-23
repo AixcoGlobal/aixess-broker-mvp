@@ -530,6 +530,7 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
   const planSource = unit.image2d || fallbackPlanImage;
   const previewSource = imageMode === "3d" ? unit.image3d : planSource;
   const previewLabel = imageMode === "3d" ? t("threeDView") : t("twoDPlan");
+  const status = normalizeStatus(unit.status);
   const previewAlt = `${previewLabel} · ${t("residence")} ${unit.name}`;
 
   useEffect(() => setImageFailed(false), [previewSource]);
@@ -552,7 +553,8 @@ function UnitDetail({ unit, imageMode, setImageMode, onBrokerAccess, fallbackPla
         {/* German listings count Zimmer as bedrooms plus the living room, never bathrooms or balconies. */}
         <div><dt>{t("rooms")}</dt><dd>{(locale === "de" && Number.isFinite(unit.bedrooms) ? unit.bedrooms + 1 : unit.rooms) || "—"}</dd></div>
         <div><dt>{t("bedrooms")}</dt><dd>{unit.bedrooms || "—"}</dd></div>
-        <div><dt>{t("price")}</dt><dd>{typeof unit.price === "number" && unit.price > 0 ? formatPrice(unit.price, locale) : t("onRequest")}</dd></div>
+        {/* "On request" only where a buyer can still ask: a sold or reserved residence without a price says so. */}
+        <div><dt>{t("price")}</dt><dd>{typeof unit.price === "number" && unit.price > 0 ? formatPrice(unit.price, locale) : { sold: t("soldFilter"), reserved: t("reservedFilter") }[status] || t("onRequest")}</dd></div>
       </dl>
 
       {(planSource || unit.image3d) && (
