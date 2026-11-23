@@ -186,9 +186,11 @@ function isGoldenUnit(unit) {
   return Boolean(unit?.goldenPremium || getGoldenPremiumUnit(`${unit?.block || ""}${unit?.name}`));
 }
 
-// Tick or untick one status; "all" ticks every status. The last ticked status stays ticked.
+// Tick or untick one status; "all" ticks every status. While all are ticked, choosing one status
+// shows just that status. The last ticked status stays ticked.
 function toggleStatusFilter(statuses, value) {
   if (value === "all") return [...FILTER_STATUSES];
+  if (statuses.length === FILTER_STATUSES.length) return [value];
   if (statuses.includes(value)) return statuses.length > 1 ? statuses.filter((status) => status !== value) : statuses;
   return FILTER_STATUSES.filter((status) => status === value || statuses.includes(status));
 }
@@ -199,7 +201,8 @@ function StatusFilterButtons({ filters, onChange }) {
   return (
     <>
       {FILTER_STATUSES.map((status) => {
-        const ticked = filters.statuses.includes(status);
+        // While ALL is on, only ALL shows as ticked; picking a status then shows just that one.
+        const ticked = !allTicked && filters.statuses.includes(status);
         return (
           <button className={`${ticked ? "is-active" : ""} ${status === "sold" ? "is-sold" : ""}`} key={status} type="button" aria-pressed={ticked} onClick={() => onChange("statuses", toggleStatusFilter(filters.statuses, status))}>{t(status)}</button>
         );
