@@ -39,9 +39,8 @@ FAMILIES = {
     "coastal-lifestyle": "03-coastal-lifestyle",
     "glass-architecture": "05-glass-architecture",
     # Klem's 14 October set (/mnt/project-files/klem-oct14/originals), numbered by theme: the
-    # refined Broker Tools hero and the Batumi coast Insights hero.
+    # refined Broker Tools hero (the Batumi coast Insights hero, 04–06, was removed on 23 November 2026).
     "broker-tools-refined": {theme: f"0{i}-broker-tools-refined-{theme}" for i, theme in enumerate(THEMES, 1)},
-    "batumi-coast": {theme: f"0{i}-insights-batumi-coast-{theme}" for i, theme in enumerate(THEMES, 4)},
     "coastal-residence": "07-coastal-residence",
     "workspace-building": "08-workspace-modern-building",
     # Selected Opportunities: the official two-tower Reverance render, with whole-image colour
