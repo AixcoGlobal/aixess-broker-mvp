@@ -272,6 +272,17 @@
   color: #15110f;
 }
 
+/* Availability ticks: a check mark on every ticked choice, and a hairline between neighbours
+   so two ticked statuses never read as one block. */
+.residence-status-field button[aria-pressed="true"]::before { content: "✓"; margin-right: 0.4em; }
+.residence-choice-field button.is-active + button.is-active { box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.55); }
+
+.residence-choice-field button.is-golden.is-active {
+  border-color: #c9962c;
+  background: #d6a638;
+  color: #15110f;
+}
+
 .residence-choice-field button.is-sold.is-active {
   border-color: #2f6f9f;
   background: #2f6f9f;
@@ -2683,6 +2694,10 @@
 
   .mobile-filter-buttons button.is-active { border-color: var(--orange); background: var(--orange); color: #fff; }
   .mobile-filter-buttons button.is-sold.is-active { border-color: #2f6f9f; background: #2f6f9f; color: #fff; }
+  .mobile-filter-buttons button.is-golden.is-active { border-color: #c9962c; background: #d6a638; color: #15110f; }
+  /* On phones the tick sits in the corner so labels keep their full width. */
+  .mobile-filter-buttons button[aria-pressed] { position: relative; }
+  .mobile-filter-buttons button[aria-pressed="true"]::before { content: "✓"; position: absolute; top: 0.2rem; left: 0.3rem; font-size: 0.75em; line-height: 1; }
   .mobile-filter-range { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
   .mobile-filter-range > span { grid-column: 1 / -1; }
   .mobile-filter-range input { width: 100%; accent-color: var(--orange); }
@@ -3135,6 +3150,7 @@
   .mobile-filter-buttons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .mobile-filter-popover > div:nth-child(2) .mobile-filter-buttons { grid-template-columns: 1fr 1fr; }
   .mobile-filter-buttons button { min-height: 2.75rem; font-size: 0.72rem; overflow-wrap: anywhere; hyphens: auto; }
+  .mobile-filter-buttons button.is-golden { grid-column: 1 / -1; }
   .mobile-floor-plan-cta { min-height: 3rem; font-size: 0.8rem; letter-spacing: 0.06em; }
 }
 
@@ -3163,6 +3179,7 @@
   .residence-status-field > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .residence-status-field button:nth-child(odd) { border-left-style: solid; border-left-width: 1px; }
   .residence-status-field button:nth-child(n + 3) { border-top-width: 0; }
+  .residence-status-field button.is-golden { grid-column: 1 / -1; }
 }
 
 @media (max-width: 700px) and (orientation: landscape) {
@@ -3241,4 +3258,5 @@
   .residence-status-field > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .residence-status-field button:nth-child(odd) { border-left-style: solid; border-left-width: 1px; }
   .residence-status-field button:nth-child(n + 3) { border-top-width: 0; }
+  .residence-status-field button.is-golden { grid-column: 1 / -1; }
 }

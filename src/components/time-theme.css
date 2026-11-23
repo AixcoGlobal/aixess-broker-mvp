@@ -116,6 +116,8 @@ html:root:is([data-time-theme='afternoon'], [data-time-theme='night']) :is(
 ) {
   color: #171a1d;
 }
+/* The GOLDEN tick keeps dark text on its gold in every theme. */
+html:root :is(.mobile-residence-sheet, .mobile-residence-drawer) :is(.mobile-filter-buttons button.is-golden.is-active) { color: #15110f; }
 
 /* Buttons on ink grounds keep the theme's ink colour in the afternoon (the light tint above is
    for text)... */
