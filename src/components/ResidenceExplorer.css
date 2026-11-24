@@ -2825,8 +2825,12 @@
   }
 
   .mobile-dock-summary small { align-self: end; }
+  /* The count spans both label rows so it sits on the same middle line as the
+     RESIDENCES / LIVE AVAILABILITY pair and the EXPLORE button. */
   .mobile-dock-summary strong {
-    align-self: end;
+    grid-row: 1 / -1;
+    grid-column: 2;
+    align-self: center;
     color: #fff;
     font-size: 1.52rem;
     font-weight: 800;
@@ -2835,7 +2839,7 @@
   }
 
   .mobile-dock-summary em {
-    grid-column: 1 / -1;
+    grid-column: 1;
     align-self: start;
     color: #65bd8e;
     font-size: 0.43rem;
